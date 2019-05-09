@@ -7,11 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Server", "Rutrack
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Client", "Rutracker.Client\Rutracker.Client.csproj", "{B64284E4-EC6D-4002-B4F4-934CD262E206}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Infrastructure", "Rutracker.Infrastracture\Rutracker.Infrastructure.csproj", "{A0CF4AA2-609B-4326-AD3C-6C2FA33387D0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rutracker.Core", "Rutracker.Core\Rutracker.Core.csproj", "{9A093E26-E69D-4A14-9145-AE9939A0B8AA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rutracker.Shared", "Rutracker.Shared\Rutracker.Shared.csproj", "{710EA8E4-73E2-4DB1-8765-1EBC82EBF0A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Shared", "Rutracker.Shared\Rutracker.Shared.csproj", "{710EA8E4-73E2-4DB1-8765-1EBC82EBF0A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,14 +23,6 @@ Global
 		{B64284E4-EC6D-4002-B4F4-934CD262E206}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B64284E4-EC6D-4002-B4F4-934CD262E206}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B64284E4-EC6D-4002-B4F4-934CD262E206}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A0CF4AA2-609B-4326-AD3C-6C2FA33387D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A0CF4AA2-609B-4326-AD3C-6C2FA33387D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A0CF4AA2-609B-4326-AD3C-6C2FA33387D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A0CF4AA2-609B-4326-AD3C-6C2FA33387D0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9A093E26-E69D-4A14-9145-AE9939A0B8AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9A093E26-E69D-4A14-9145-AE9939A0B8AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9A093E26-E69D-4A14-9145-AE9939A0B8AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9A093E26-E69D-4A14-9145-AE9939A0B8AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{710EA8E4-73E2-4DB1-8765-1EBC82EBF0A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{710EA8E4-73E2-4DB1-8765-1EBC82EBF0A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{710EA8E4-73E2-4DB1-8765-1EBC82EBF0A0}.Release|Any CPU.ActiveCfg = Release|Any CPU

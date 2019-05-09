@@ -1,0 +1,38 @@
+﻿@page "/torrents"
+@inject TorrentServiceClient Client
+
+
+@if (model == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Size</th>
+                <th>Date</th>
+                <th>Title</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var torrent in model.TorrentItems)
+            {
+                <tr>
+                    <td>@torrent.Id</td>
+                    <td>@torrent.Size</td>
+                    <td>@torrent.Date.ToShortDateString()</td>
+                    <td>@torrent.Title)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@functions {
+    TorrentsViewModel model;
+
+    protected override async Task OnInitAsync() => model = await Client.Get();
+}
