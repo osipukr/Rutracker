@@ -7,24 +7,25 @@ namespace Rutracker.Client.Services
 {
     public class TorrentServiceClient
     {
-        private const string _baseUrl = "/api/torrents";
-        private const string _torrentsTemplate = _baseUrl + "?search={0}&sort={1}&order={2}&pageid={3}";
-        private const string _torrentDetailsTemplate = _baseUrl + "?torrentid={0}";
         private readonly HttpClient _client;
+
+        private const string _baseUrl = "http://localhost:60744/api/torrents?";
+        private const string _torrentsTemplate = _baseUrl + "search={0}&sort={1}&order={2}&page={3}";
+        private const string _torrentDetailsTemplate = _baseUrl + "torrentid={0}";
 
         public TorrentServiceClient(HttpClient client)
         {
             _client = client;
         }
 
-        public async Task<TorrentsViewModel> Get(string search = "", string sort = "Id", string order = "Asc", int pageid = 1)
+        public async Task<TorrentsViewModel> GetTorrentsAsync(string search, string sort, string order, int page)
         {
-            var requestUrl = string.Format(_torrentsTemplate, search, sort, order, pageid);
+            var requestUrl = string.Format(_torrentsTemplate, search, sort, order, page);
 
             return await _client.GetJsonAsync<TorrentsViewModel>(requestUrl);
         }
 
-        public async Task<TorrentDetailsViewModel> GetDetails(string torrentid)
+        public async Task<TorrentDetailsViewModel> GetTorrentDetailsAsync(int torrentid)
         {
             var requestUrl = string.Format(_torrentDetailsTemplate, torrentid);
 

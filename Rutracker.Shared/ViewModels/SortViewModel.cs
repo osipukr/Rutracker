@@ -7,9 +7,13 @@
         public SortPropertyStateViewModel SizeSort => SortPropertyStateViewModel.Size;
         public SortPropertyStateViewModel TitleSort => SortPropertyStateViewModel.Title;
 
-        public SortPropertyStateViewModel CurrentProperty { get; }
-        public SortOrderStateViewModel CurrentOrder { get; }
-        public SortOrderStateViewModel NextOrder { get; }
+        public SortPropertyStateViewModel CurrentProperty { get; set; }
+        public SortOrderStateViewModel CurrentOrder { get; set; }
+        public SortOrderStateViewModel NextOrder { get; set; }
+
+        public SortViewModel()
+        {
+        }
 
         public SortViewModel(SortPropertyStateViewModel property, SortOrderStateViewModel order)
         {

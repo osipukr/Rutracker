@@ -1,6 +1,7 @@
 ﻿@page "/torrents"
+@page "/torrents/{search}/{sort}/{order}/{page:int}"
 @inject TorrentServiceClient Client
-
+@inject IUriHelper UriHelper
 
 @if (model == null)
 {
@@ -20,7 +21,7 @@ else
         <tbody>
             @foreach (var torrent in model.TorrentItems)
             {
-                <tr>
+                <tr onclick="@(() => TorrentDetailsClick(torrent.Id))">
                     <td>@torrent.Id</td>
                     <td>@torrent.Size</td>
                     <td>@torrent.Date.ToShortDateString()</td>
@@ -29,10 +30,45 @@ else
             }
         </tbody>
     </table>
+    <nav class="d-flex justify-content-center">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="btn btn-primary page-link @(model.PageModel.HasPrevious ? "active" : "disabled")">
+                    Previous
+                </a>
+            </li>
+
+            <li class="page-item">
+                <a class="btn btn-primary page-link @(model.PageModel.HasNext ? "active" : "disabled")">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </nav>
 }
 
-@functions {
-    TorrentsViewModel model;
+@functions
+{
+    [Parameter] public string Search { get; set; } = "";
+    [Parameter] public string Sort { get; set; } = "id";
+    [Parameter] public string Order { get; set; } = "asc";
+    [Parameter] public int Page { get; set; } = 1;
 
-    protected override async Task OnInitAsync() => model = await Client.Get();
+    [Parameter] protected Func<int, Task> PageChangedAsync { get; set; }  
+
+    private TorrentsViewModel model;
+
+    protected override async Task OnInitAsync() => await LoadAsync();
+
+    private async Task LoadAsync() => model = await Client.GetTorrentsAsync(Search, Sort, Order, Page);
+
+    public void TorrentDetailsClick(long torrentid)
+    {
+        UriHelper.NavigateTo(new Uri($"/details?torrentid={torrentid}", UriKind.Relative).ToString());
+    }
+
+    protected async Task PagerButtonClicked(int page)  
+    {  
+        await PageChangedAsync?.Invoke(page);  
+    }
 }

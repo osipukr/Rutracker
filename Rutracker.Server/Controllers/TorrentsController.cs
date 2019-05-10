@@ -14,17 +14,17 @@ namespace Rutracker.Server.Controllers
             _torrentService = torrentService;
         }
 
-        [HttpGet("{search?}/{sort?}/{order?}/{pageid?}")]
-        public async Task<IActionResult> GetTorrentsAsync(string search = "", string sort = "Id", string order = "Asc", int pageid = 1)
+        [HttpGet("{search?}/{sort?}/{order?}/{page?}")]
+        public async Task<IActionResult> GetTorrentsAsync(string search, string sort, string order, int page)
         {
             var result =
-                await _torrentService.GetTorrentsAsync(pageid, Constants.ItemsPerPage, search, sort, order);
+                await _torrentService.GetTorrentsAsync(page, Constants.ItemsPerPage, search, sort, order);
 
             return Ok(result);
         }
 
         [HttpGet("{torrentid}")]
-        public async Task<IActionResult> GetTorrentAsync(int torrentid)
+        public async Task<IActionResult> GetTorrentAsync(long torrentid)
         {
             var result = await _torrentService.GetTorrentAsync(torrentid);
 

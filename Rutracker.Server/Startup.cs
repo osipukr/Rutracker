@@ -1,13 +1,14 @@
+using System.Linq;
+using System.Net.Mime;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Linq;
-using System.Net.Mime;
-using Microsoft.AspNetCore.Components.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Serialization;
 using Rutracker.Server.Core.Interfaces;
 using Rutracker.Server.Infrastructure.Data;
 using Rutracker.Server.Interfaces;
@@ -36,9 +37,10 @@ namespace Rutracker.Server
             services.AddMemoryCache();
 
             services.AddMvc().AddNewtonsoftJson();
-            services.AddResponseCompression(opts =>
+
+            services.AddResponseCompression(options =>
             {
-                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
                 {
                     MediaTypeNames.Application.Octet,
                     WasmMediaTypeNames.Application.Wasm,
@@ -54,7 +56,7 @@ namespace Rutracker.Server
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBlazorDebugging();
-            }   
+            }
 
             app.UseRouting();
 
