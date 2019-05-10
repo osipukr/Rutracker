@@ -10,6 +10,10 @@ namespace Rutracker.Shared.ViewModels.Torrents
         public string Content { get; set; }
         public FileItemViewModel[] TorrentFiles { get; set; }
 
+        public TorrentDetailsItemViewModel()
+        {
+        }
+
         public TorrentDetailsItemViewModel(long id, DateTime date, long size, string title)
             : base(id, date, size, title)
         {

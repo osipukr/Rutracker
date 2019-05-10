@@ -8,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Serialization;
 using Rutracker.Server.Core.Interfaces;
 using Rutracker.Server.Infrastructure.Data;
 using Rutracker.Server.Interfaces;

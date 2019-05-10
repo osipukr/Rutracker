@@ -1,5 +1,4 @@
 ﻿@page "/torrents"
-@page "/torrents/{search}/{sort}/{order}/{page:int}"
 @inject TorrentServiceClient Client
 @inject IUriHelper UriHelper
 
@@ -7,9 +6,14 @@
 {
     <p><em>Loading...</em></p>
 }
+else if (model.TorrentItems.Length == 0)
+{
+    <p>List torrents is empty...</p>
+    <button onclick="@(async () => await LoadAsync())" class="btn btn-primary">Try to update</button>
+}
 else
 {
-    <table class="table">
+    <table id="torrents-table" class="table table-hover">
         <thead>
             <tr>
                 <th>Id</th>
@@ -30,16 +34,19 @@ else
             }
         </tbody>
     </table>
+
     <nav class="d-flex justify-content-center">
         <ul class="pagination">
-            <li class="page-item">
-                <a class="btn btn-primary page-link @(model.PageModel.HasPrevious ? "active" : "disabled")">
+            <li class="page-item pr-2">
+                <a onclick="@(async () => await PagerButtonClicked(model.PageModel.PageNumber - 1, model.PageModel.HasPrevious))"
+                        class="btn btn-primary page-link @(model.PageModel.HasPrevious ? "active" : "disabled")">
                     Previous
                 </a>
             </li>
 
             <li class="page-item">
-                <a class="btn btn-primary page-link @(model.PageModel.HasNext ? "active" : "disabled")">
+                <a onclick="@(async () => await PagerButtonClicked(model.PageModel.PageNumber + 1, model.PageModel.HasNext))"
+                        class="btn btn-primary page-link @(model.PageModel.HasNext ? "active" : "disabled")">
                     Next
                 </a>
             </li>
@@ -49,26 +56,59 @@ else
 
 @functions
 {
-    [Parameter] public string Search { get; set; } = "";
-    [Parameter] public string Sort { get; set; } = "id";
-    [Parameter] public string Order { get; set; } = "asc";
-    [Parameter] public int Page { get; set; } = 1;
-
-    [Parameter] protected Func<int, Task> PageChangedAsync { get; set; }  
+    private string Search { get; set; } = "";
+    private string Sort { get; set; } = "id";
+    private string Order { get; set; } = "asc";
+    private int Page { get; set; } = 1;
 
     private TorrentsViewModel model;
 
     protected override async Task OnInitAsync() => await LoadAsync();
 
-    private async Task LoadAsync() => model = await Client.GetTorrentsAsync(Search, Sort, Order, Page);
-
-    public void TorrentDetailsClick(long torrentid)
+    private void InitParameters()
     {
-        UriHelper.NavigateTo(new Uri($"/details?torrentid={torrentid}", UriKind.Relative).ToString());
+        var uri = new Uri(UriHelper.GetAbsoluteUri());
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("search", out var search))
+        {
+            Search = search.FirstOrDefault();
+        }
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("sort", out var sort))
+        {
+            Sort = sort.FirstOrDefault();
+        }
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("order", out var order))
+        {
+            Order = order.FirstOrDefault();
+        }
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("page", out var page)
+            && int.TryParse(page.FirstOrDefault(), out var pageid))
+        {
+            Page = pageid;
+        }
     }
 
-    protected async Task PagerButtonClicked(int page)  
-    {  
-        await PageChangedAsync?.Invoke(page);  
+    private async Task LoadAsync()
+    {
+        InitParameters();
+
+        model = await Client.GetTorrentsAsync(Search, Sort, Order, Page);
+    }
+
+    private void TorrentDetailsClick(long id)
+    {
+        UriHelper.NavigateTo($"/details?torrentid={id}");
+    }
+
+    private async Task PagerButtonClicked(int page, bool isAction)
+    {
+        if (isAction)
+        {
+            UriHelper.NavigateTo($"/torrents?search={Search}&sort={Sort}&order={Order}&page={page}");
+            await LoadAsync();
+        }
     }
 }

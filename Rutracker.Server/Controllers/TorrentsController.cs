@@ -23,6 +23,7 @@ namespace Rutracker.Server.Controllers
             return Ok(result);
         }
 
+        [Route("details")]
         [HttpGet("{torrentid}")]
         public async Task<IActionResult> GetTorrentAsync(long torrentid)
         {
