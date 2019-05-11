@@ -22,12 +22,8 @@
 
 @functions 
 {
-    bool collapseNavMenu = true;
+    private bool collapseNavMenu = true;
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-    string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
+    private void ToggleNavMenu() => collapseNavMenu = !collapseNavMenu;
 }

@@ -13,6 +13,9 @@ app {
 .top-row {
     height: 3.5rem;
     display: flex;
+    -ms-align-items: center;
+    -o-align-items: center;
+    -webkit-align-items: center;
     align-items: center;
 }
 
@@ -26,7 +29,7 @@ app {
     }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background-image: linear-gradient(180deg, #052767 0%, #3a0647 70%);
 }
 
     .sidebar .top-row {
@@ -67,13 +70,15 @@ app {
     }
 
         .nav-item a.active {
+            background-color: #ffffff;
             background-color: rgba(255,255,255,0.25);
             color: white;
         }
 
         .nav-item a:hover {
+            background-color: #ffffff;
             background-color: rgba(255,255,255,0.1);
-            color: white;
+                    color: white;
         }
 
 .content {
@@ -81,6 +86,7 @@ app {
 }
 
 .navbar-toggler {
+    background-color: #ffffff;
     background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -129,12 +135,16 @@ app {
     }
 
     .sidebar .collapse {
-        /* Never collapse the sidebar for wide screens */
         display: block;
     }
 }
 
 #torrents-table {
     min-height: 600px;
+    height: 600px;
     max-height: 600px;
+}
+
+tr {
+    cursor: pointer;
 }

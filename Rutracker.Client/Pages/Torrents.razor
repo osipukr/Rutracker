@@ -6,62 +6,76 @@
 {
     <p><em>Loading...</em></p>
 }
-else if (model.TorrentItems.Length == 0)
-{
-    <p>List torrents is empty...</p>
-    <button onclick="@(async () => await LoadAsync())" class="btn btn-primary">Try to update</button>
-}
 else
 {
-    <table id="torrents-table" class="table table-hover">
-        <thead>
+    <div class="form-row my-3">
+        <div class="input-group">
+            <input bind="@searchInput" class="form-control mr-2" maxlength="30" placeholder="Search for torrents by title" type="text" value="@searchInput" />
+            <span class="">
+                <input class="btn btn-primary px-5" data-disable-with="Search" onclick="@(async () => await SearchButtonClick())" type="button" value="Search" />
+            </span>
+        </div>
+    </div>
+
+    if (model.TorrentItems.Length == 0)
+    {
+        <p>Sorry, but torrents list is empty...</p>
+        <button class="btn btn-primary d-block" onclick="@(async () => await LoadAsync())">Try to update</button>
+        <button class="btn btn-primary d-block mt-2" onclick="@(async () => await BackToTorrentsButtonClick())">Back to full torrents list</button>
+    }
+    else
+    {
+        <table id="torrents-table" class="table table-hover table-bordered">
+            <thead>
             <tr>
-                <th>Id</th>
-                <th>Size</th>
-                <th>Date</th>
-                <th>Title</th>
+                <th class="table-primary" onclick="@(async () => await SortClick(model.SortModel.IdSort.ToString(), model.SortModel.NextOrder.ToString()))" scope="col">Id</th>
+                <th class="table-primary" onclick="@(async () => await SortClick(model.SortModel.SizeSort.ToString(), model.SortModel.NextOrder.ToString()))" scope="col">Size</th>
+                <th class="table-primary" onclick="@(async () => await SortClick(model.SortModel.DateSort.ToString(), model.SortModel.NextOrder.ToString()))" scope="col">Date</th>
+                <th class="table-primary" onclick="@(async () => await SortClick(model.SortModel.TitleSort.ToString(), model.SortModel.NextOrder.ToString()))" scope="col">Title</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             @foreach (var torrent in model.TorrentItems)
             {
                 <tr onclick="@(() => TorrentDetailsClick(torrent.Id))">
-                    <td>@torrent.Id</td>
+                    <th scope="row">@torrent.Id</th>
                     <td>@torrent.Size</td>
                     <td>@torrent.Date.ToShortDateString()</td>
                     <td>@torrent.Title)</td>
                 </tr>
             }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
 
-    <nav class="d-flex justify-content-center">
-        <ul class="pagination">
-            <li class="page-item pr-2">
-                <a onclick="@(async () => await PagerButtonClicked(model.PageModel.PageNumber - 1, model.PageModel.HasPrevious))"
-                        class="btn btn-primary page-link @(model.PageModel.HasPrevious ? "active" : "disabled")">
-                    Previous
-                </a>
-            </li>
+        <nav class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item pr-2">
+                    <button class="btn btn-primary px-5 @(model.PageModel.HasPrevious ? "" : "disabled")" 
+                            onclick="@(async () => await PageButtonClicked(model.PageModel.PageNumber - 1, model.PageModel.HasPrevious))">
+                        Previous
+                    </button>
+                </li>
 
-            <li class="page-item">
-                <a onclick="@(async () => await PagerButtonClicked(model.PageModel.PageNumber + 1, model.PageModel.HasNext))"
-                        class="btn btn-primary page-link @(model.PageModel.HasNext ? "active" : "disabled")">
-                    Next
-                </a>
-            </li>
-        </ul>
-    </nav>
+                <li class="page-item">
+                    <button class="btn btn-primary px-5 @(model.PageModel.HasNext ? "" : "disabled")"
+                            onclick="@(async () => await PageButtonClicked(model.PageModel.PageNumber + 1, model.PageModel.HasNext))">
+                        Next
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    }
 }
 
 @functions
 {
-    private string Search { get; set; } = "";
-    private string Sort { get; set; } = "id";
-    private string Order { get; set; } = "asc";
-    private int Page { get; set; } = 1;
-
     private TorrentsViewModel model;
+    private string search;
+    private string sort;
+    private string order;
+    private int page;
+    private string searchInput;
+    private const string quearyTemplate = "/torrents?search={0}&sort={1}&order={2}&page={3}";
 
     protected override async Task OnInitAsync() => await LoadAsync();
 
@@ -69,46 +83,47 @@ else
     {
         var uri = new Uri(UriHelper.GetAbsoluteUri());
 
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("search", out var search))
-        {
-            Search = search.FirstOrDefault();
-        }
+        search = QueryHelpers.ParseQuery(uri.Query).TryGetValue("search", out var searchParam) ? searchParam.FirstOrDefault() : "";
+        sort = QueryHelpers.ParseQuery(uri.Query).TryGetValue("sort", out var sortParam) ? sortParam.FirstOrDefault() : "id";
+        order = QueryHelpers.ParseQuery(uri.Query).TryGetValue("order", out var orderParam) ? orderParam.FirstOrDefault() : "asc";
+        page = QueryHelpers.ParseQuery(uri.Query).TryGetValue("page", out var pageParam)
+               && int.TryParse(pageParam.FirstOrDefault(), out var pageParamId) ? pageParamId : 1;
 
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("sort", out var sort))
-        {
-            Sort = sort.FirstOrDefault();
-        }
-
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("order", out var order))
-        {
-            Order = order.FirstOrDefault();
-        }
-
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("page", out var page)
-            && int.TryParse(page.FirstOrDefault(), out var pageid))
-        {
-            Page = pageid;
-        }
+        searchInput = search;
     }
 
     private async Task LoadAsync()
     {
         InitParameters();
-
-        model = await Client.GetTorrentsAsync(Search, Sort, Order, Page);
+        model = await Client.GetTorrentsAsync(search, sort, order, page);
     }
 
-    private void TorrentDetailsClick(long id)
-    {
-        UriHelper.NavigateTo($"/details?torrentid={id}");
-    }
+    private void TorrentDetailsClick(long id) => UriHelper.NavigateTo($"/details?torrentid={id}");
 
-    private async Task PagerButtonClicked(int page, bool isAction)
+    private async Task PageButtonClicked(int pageId, bool isAction)
     {
         if (isAction)
         {
-            UriHelper.NavigateTo($"/torrents?search={Search}&sort={Sort}&order={Order}&page={page}");
+            UriHelper.NavigateTo(string.Format(quearyTemplate, search, sort, order, page = pageId));
             await LoadAsync();
         }
+    }
+
+    private async Task SearchButtonClick()
+    {
+        UriHelper.NavigateTo(string.Format(quearyTemplate, search = searchInput, sort, order, page = 1));
+        await LoadAsync();
+    }
+
+    private async Task BackToTorrentsButtonClick()
+    {
+        UriHelper.NavigateTo("/torrents");
+        await LoadAsync();
+    }
+
+    private async Task SortClick(string property, string nextOrder)
+    {
+        UriHelper.NavigateTo(string.Format(quearyTemplate, search = searchInput, sort = property, order = nextOrder, page = 1));
+        await LoadAsync();
     }
 }
