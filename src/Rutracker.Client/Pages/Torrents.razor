@@ -1,0 +1,95 @@
+﻿@page "/torrents"
+@implements IDisposable
+@inject TorrentServiceClient Client
+@inject IUriHelper UriHelper
+
+@if (Model == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <Searching Value="@Model.SelectedTitle" ClickHandler="@SearchButtonClick" />
+
+    if (!Model.TorrentItems.Any())
+    {
+        <p>Sorry, but torrents list is empty...</p>
+        <button class="btn btn-primary d-block" onclick="@(async () => await LoadTorrentsAsync())">Try to update</button>
+        <button class="btn btn-primary d-block mt-2" onclick="@(() => BackToButtonClick())">Back to full torrents list</button>
+    }
+    else
+    {
+        <table id="torrents-table" class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th class="table-primary" onclick="@(() => SortButtonClick(Model.SortModel.IdSort, Model.SortModel.NextOrder.ToString()))" scope="col">Id</th>
+                <th class="table-primary" onclick="@(() => SortButtonClick(Model.SortModel.SizeSort, Model.SortModel.NextOrder.ToString()))" scope="col">Size</th>
+                <th class="table-primary" onclick="@(() => SortButtonClick(Model.SortModel.DateSort, Model.SortModel.NextOrder.ToString()))" scope="col">Date</th>
+                <th class="table-primary" onclick="@(() => SortButtonClick(Model.SortModel.TitleSort, Model.SortModel.NextOrder.ToString()))" scope="col">Title</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var torrent in Model.TorrentItems)
+            {
+                <tr onclick="@(() => TorrentDetailsClick(torrent.Id))">
+                    <th scope="row">@torrent.Id</th>
+                    <td>@torrent.Size</td>
+                    <td>@torrent.Date.ToShortDateString()</td>
+                    <td>@torrent.Title)</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+        <Pagination Model="@Model.PageModel" ClickHandler="@PageButtonClick" />
+    }
+}
+
+@functions
+{
+    private TorrentsViewModel Model { get; set; }
+
+    private string Search { get; set; }
+    private string Sort { get; set; }
+    private string Order { get; set; }
+    private int Page { get; set; }
+
+    private const string quearyTemplate = "/torrents?search={0}&sort={1}&order={2}&page={3}";
+
+    protected override void OnInit()
+    {
+        RefreshType();
+        UriHelper.OnLocationChanged += OnLocationChanges;
+    }
+
+    private void OnLocationChanges(object sender, string location) => RefreshType();
+
+    private async void RefreshType()
+    {
+        var uri = new Uri(UriHelper.GetAbsoluteUri());
+
+        Search = QueryHelpers.ParseQuery(uri.Query).TryGetValue("search", out var searchParam) ? searchParam.First() : "";
+        Sort = QueryHelpers.ParseQuery(uri.Query).TryGetValue("sort", out var sortParam) ? sortParam.First() : "id";
+        Order = QueryHelpers.ParseQuery(uri.Query).TryGetValue("order", out var orderParam) ? orderParam.First() : "asc";
+        Page = QueryHelpers.ParseQuery(uri.Query).TryGetValue("page", out var pageParam)
+               && int.TryParse(pageParam.First(), out var pageParamId) ? pageParamId : 1;
+
+        await LoadTorrentsAsync();
+
+        StateHasChanged();
+    }
+
+    private async Task LoadTorrentsAsync() => Model = await Client.GetTorrentsAsync(Search, Sort, Order, Constants.ItemsPerPage, Page);
+
+    private void TorrentDetailsClick(long id) => UriHelper.NavigateTo($"/details/{id}");
+
+    private void PageButtonClick(int page) => UriHelper.NavigateTo(string.Format(quearyTemplate, Search, Sort, Order, page));
+
+    private void SearchButtonClick(string search) => UriHelper.NavigateTo(string.Format(quearyTemplate, search, Sort, Order, 1));
+
+    private void BackToButtonClick() => UriHelper.NavigateTo("/torrents");
+
+    private void SortButtonClick(string property, string nextOrder) => UriHelper.NavigateTo(string.Format(quearyTemplate, Search = Model.SelectedTitle, property, nextOrder, 1));
+
+    public void Dispose() => UriHelper.OnLocationChanged -= OnLocationChanges;
+}

@@ -1,0 +1,40 @@
+﻿<nav class="d-flex justify-content-center">
+    <ul class="pagination">
+        <li class="page-item pr-2">
+            @if (Model.HasPrevious)
+            {
+                <button class="btn btn-primary px-5" onclick="@(() => PageButtonClick(Model.PageNumber - 1))">
+                    Previous
+                </button>
+            }
+            else
+            {
+                <button class="btn btn-primary px-5 disabled">Previous</button>
+            }
+        </li>
+
+        <li class="page-item">
+            @if (Model.HasNext)
+            {
+                <button class="btn btn-primary px-5" onclick="@(() => PageButtonClick(Model.PageNumber + 1))">
+                    Next
+                </button>
+            }
+            else
+            {
+                <button class="btn btn-primary px-5 disabled" >Next</button>
+            }
+        </li>
+    </ul>
+</nav>
+
+@functions
+{
+    [Parameter]
+    protected PaginationInfoViewModel Model { get; set; }
+
+    [Parameter]
+    protected Action<int> ClickHandler { get; set; }
+
+    private void PageButtonClick(int page) => ClickHandler(page);
+}

@@ -1,0 +1,58 @@
+﻿@page "/details/{torrentid:long}"
+@inject TorrentServiceClient Client
+@inject IUriHelper UriHelper
+
+@if (model == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <button class="btn btn-primary my-3" onclick="@BackToTorrentsButtonClick">Back to full torrents list</button>
+
+    if (model.TorrentDetailsItem == null)
+    {
+        <p>Torrent with id=@TorrentId not found</p>
+    }
+    else
+    {
+        <div> <p class="d-inline font-weight-bold">Id</p> - @model.TorrentDetailsItem.Id</div>
+        <div><p class="d-inline font-weight-bold">Size</p> - @model.TorrentDetailsItem.Size</div>
+        <div><p class="d-inline font-weight-bold">Date</p> - @model.TorrentDetailsItem.Date.ToLongDateString()</div>
+        <div><p class="d-inline font-weight-bold">Title</p> - @model.TorrentDetailsItem.Title</div>
+        <div><p class="d-inline font-weight-bold">Hash</p> - @model.TorrentDetailsItem.Hash</div>
+        <div><p class="d-inline font-weight-bold">Forum title</p> Title @model.TorrentDetailsItem.ForumTitle</div>
+        <div><p class="d-inline font-weight-bold">IsDeleted</p> - @model.TorrentDetailsItem.IsDeleted.ToString()</div>
+
+        @if (!model.TorrentDetailsItem.Files.Any())
+        {
+            <div><p class="d-inline font-weight-bold">Files</p> - List files is empty</div>
+        }
+        else
+        {
+            <div><p class="d-inline font-weight-bold">Files</p> -</div>
+            <ul class="text-left mb-4">
+                @foreach (var file in model.TorrentDetailsItem.Files)
+                {
+                    <li>size: @file.Size --- name: <p class="d-inline font-weight-bold">@file.Name</p></li>
+                }
+            </ul>
+        }
+
+        @((MarkupString)model.TorrentDetailsItem.Content)
+    }
+}
+
+@functions
+{
+    [Parameter]
+    public long TorrentId { get; set; }
+
+    private DetailsViewModel model;
+
+    protected override async Task OnInitAsync() => await LoadAsync();
+
+    protected async Task LoadAsync() => model = await Client.GetTorrentDetailsAsync(TorrentId);
+
+    protected void BackToTorrentsButtonClick() => UriHelper.NavigateTo("/torrents");
+}

@@ -1,0 +1,19 @@
+﻿<div class="form-row my-3">
+    <div class="input-group">
+        <input bind="@Value" class="form-control mr-2" maxlength="30" placeholder="Search for torrents by title" type="text" value="@Value" />
+        <span class="">
+            <input class="btn btn-primary px-5" data-disable-with="Search" onclick="@SearchButtonClick" type="button" value="Search" />
+        </span>
+    </div>
+</div>
+
+@functions
+{
+    [Parameter]
+    public string Value { get; set; }
+
+    [Parameter]
+    public Action<string> ClickHandler { get; set; }
+
+    private void SearchButtonClick() => ClickHandler(Value);
+}
