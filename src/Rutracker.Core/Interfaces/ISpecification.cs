@@ -9,8 +9,6 @@ namespace Rutracker.Core.Interfaces
         where TPrimaryKey : IEquatable<TPrimaryKey>
     {
         Expression<Func<TEntity, bool>> Where { get; }
-        Expression<Func<TEntity, object>> OrderBy { get; }
-        Expression<Func<TEntity, object>> OrderByDescending { get; }
 
         int Take { get; }
         int Skip { get; }

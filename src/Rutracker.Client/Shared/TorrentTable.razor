@@ -1,0 +1,25 @@
+﻿<table id="torrents-table" class="table table-hover table-bordered">
+    <thead>
+        <tr>
+            @GridHeader
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var torrent in Items)
+        {
+            <tr onclick="@(() => TorrentRowClick(torrent.Id))">
+                @GridRow(torrent)
+            </tr>
+        }
+    </tbody>
+</table>
+
+@functions
+{
+    [Parameter] public RenderFragment GridHeader { get; set; }
+    [Parameter] public RenderFragment<TorrentItemViewModel> GridRow { get; set; }
+    [Parameter] public IEnumerable<TorrentItemViewModel> Items { get; set; }
+    [Parameter] public Action<long> RowClickHandler { get; set; }
+
+    private void TorrentRowClick(long id) => RowClickHandler(id);
+}

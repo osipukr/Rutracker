@@ -14,7 +14,7 @@ namespace Rutracker.Infrastructure.Data
     {
         protected readonly IQueryable<TEntity> _query;
 
-        protected Repository(TorrentContext context) 
+        protected Repository(TorrentContext context)
             : base(context)
         {
             _query = _context.Set<TEntity>();

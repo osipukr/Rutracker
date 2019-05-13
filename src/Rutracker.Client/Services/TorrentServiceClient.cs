@@ -17,13 +17,13 @@ namespace Rutracker.Client.Services
             _httpClient = client;
 
             var baseUrl = uriHelper.GetBaseUri() + "api/torrents/";
-            _torrentsTemplate = baseUrl + "{0}/{1}?search={2}&sort={3}&order={4}";
+            _torrentsTemplate = baseUrl + "{0}/{1}?search={2}";
             _torrentDetailsTemplate = baseUrl + "details?torrentid={0}";
         }
 
-        public async Task<TorrentsViewModel> GetTorrentsAsync(string search, string sort, string order, int pageSize, int page)
+        public async Task<TorrentsViewModel> GetTorrentsAsync(int pageSize, int page, string search)
         {
-            var requestUri = string.Format(_torrentsTemplate, pageSize, page, search, sort, order);
+            var requestUri = string.Format(_torrentsTemplate, pageSize, page, search);
 
             return await _httpClient.GetJsonAsync<TorrentsViewModel>(requestUri);
         }

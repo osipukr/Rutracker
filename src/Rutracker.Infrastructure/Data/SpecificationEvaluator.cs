@@ -20,14 +20,7 @@ namespace Rutracker.Infrastructure.Data
                 query = query.Where(specification.Where);
             }
 
-            if (specification.OrderBy != null)
-            {
-                query = query.OrderBy(specification.OrderBy);
-            }
-            else if (specification.OrderByDescending != null)
-            {
-                query = query.OrderByDescending(specification.OrderByDescending);
-            }
+            query = query.OrderBy(x => x.Id);
 
             if (specification.IsPagingEnabled)
             {

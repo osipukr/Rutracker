@@ -1,30 +1,30 @@
-﻿@page "/details/{torrentid:long}"
+﻿@page "/details/{id:long}"
 @inject TorrentServiceClient Client
 @inject IUriHelper UriHelper
 
-@if (model == null)
+@if (Model == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <button class="btn btn-primary my-3" onclick="@BackToTorrentsButtonClick">Back to full torrents list</button>
+    <button class="btn btn-primary my-3" onclick="@BackToButtonClick">Back to full torrents list</button>
 
-    if (model.TorrentDetailsItem == null)
+    if (Model.TorrentDetailsItem == null)
     {
-        <p>Torrent with id=@TorrentId not found</p>
+        <p>Torrent with id=@Id not found</p>
     }
     else
     {
-        <div> <p class="d-inline font-weight-bold">Id</p> - @model.TorrentDetailsItem.Id</div>
-        <div><p class="d-inline font-weight-bold">Size</p> - @model.TorrentDetailsItem.Size</div>
-        <div><p class="d-inline font-weight-bold">Date</p> - @model.TorrentDetailsItem.Date.ToLongDateString()</div>
-        <div><p class="d-inline font-weight-bold">Title</p> - @model.TorrentDetailsItem.Title</div>
-        <div><p class="d-inline font-weight-bold">Hash</p> - @model.TorrentDetailsItem.Hash</div>
-        <div><p class="d-inline font-weight-bold">Forum title</p> Title @model.TorrentDetailsItem.ForumTitle</div>
-        <div><p class="d-inline font-weight-bold">IsDeleted</p> - @model.TorrentDetailsItem.IsDeleted.ToString()</div>
+        <div> <p class="d-inline font-weight-bold">Id</p> - @Model.TorrentDetailsItem.Id</div>
+        <div><p class="d-inline font-weight-bold">Size</p> - @Model.TorrentDetailsItem.Size</div>
+        <div><p class="d-inline font-weight-bold">Date</p> - @Model.TorrentDetailsItem.Date.ToLongDateString()</div>
+        <div><p class="d-inline font-weight-bold">Title</p> - @Model.TorrentDetailsItem.Title</div>
+        <div><p class="d-inline font-weight-bold">Hash</p> - @Model.TorrentDetailsItem.Hash</div>
+        <div><p class="d-inline font-weight-bold">Forum title</p> Title @Model.TorrentDetailsItem.ForumTitle</div>
+        <div><p class="d-inline font-weight-bold">IsDeleted</p> - @Model.TorrentDetailsItem.IsDeleted.ToString()</div>
 
-        @if (!model.TorrentDetailsItem.Files.Any())
+        @if (!Model.TorrentDetailsItem.Files.Any())
         {
             <div><p class="d-inline font-weight-bold">Files</p> - List files is empty</div>
         }
@@ -32,27 +32,27 @@ else
         {
             <div><p class="d-inline font-weight-bold">Files</p> -</div>
             <ul class="text-left mb-4">
-                @foreach (var file in model.TorrentDetailsItem.Files)
+                @foreach (var file in Model.TorrentDetailsItem.Files)
                 {
                     <li>size: @file.Size --- name: <p class="d-inline font-weight-bold">@file.Name</p></li>
                 }
             </ul>
         }
 
-        @((MarkupString)model.TorrentDetailsItem.Content)
+        @((MarkupString)Model.TorrentDetailsItem.Content)
     }
 }
 
 @functions
 {
     [Parameter]
-    public long TorrentId { get; set; }
+    public long Id { get; set; }
 
-    private DetailsViewModel model;
+    private DetailsViewModel Model;
 
     protected override async Task OnInitAsync() => await LoadAsync();
 
-    protected async Task LoadAsync() => model = await Client.GetTorrentDetailsAsync(TorrentId);
+    protected async Task LoadAsync() => Model = await Client.GetTorrentDetailsAsync(Id);
 
-    protected void BackToTorrentsButtonClick() => UriHelper.NavigateTo("/torrents");
+    protected void BackToButtonClick() => UriHelper.NavigateTo("/torrents");
 }

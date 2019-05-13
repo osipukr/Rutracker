@@ -13,11 +13,10 @@ namespace Rutracker.Server.Controllers
             _torrentService = torrentService;
         }
 
-        [HttpGet("{pageSize}/{page}/{search?}/{sort?}/{order?}")]
-        public async Task<IActionResult> GetTorrentsAsync(string search, string sort, string order, int pageSize, int page)
+        [HttpGet("{pageSize}/{page}/{search?}")]
+        public async Task<IActionResult> GetTorrentsAsync(string search, int pageSize, int page)
         {
-            var result =
-                await _torrentService.GetTorrentsAsync(page, pageSize, search, sort, order);
+            var result = await _torrentService.GetTorrentsAsync(page, pageSize, search);
 
             return Ok(result);
         }

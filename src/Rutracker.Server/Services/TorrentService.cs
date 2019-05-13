@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Rutracker.Core.Interfaces;
 using Rutracker.Core.Specifications;
@@ -19,20 +18,9 @@ namespace Rutracker.Server.Services
             _torrentRepository = torrentRepository;
         }
 
-        public async Task<TorrentsViewModel> GetTorrentsAsync(int pageIndex, int itemsPage, string search, string sort, string order)
+        public async Task<TorrentsViewModel> GetTorrentsAsync(int pageIndex, int itemsPage, string search)
         {
-            if (pageIndex < 1)
-            {
-                pageIndex = 1;
-            }
-
-            Enum.TryParse(sort, true, out SortPropertyStateViewModel sortProperty);
-            Enum.TryParse(order, true, out SortOrderStateViewModel sortOrder);
-
-            var sortingSpecification = new TorrentsSortPaginatedSpecification((pageIndex - 1) * itemsPage, itemsPage,
-                search, sortProperty.ToString(), sortOrder.ToString());
-
-            var torrents = await _torrentRepository.ListAsync(sortingSpecification);
+            var torrents = await _torrentRepository.ListAsync(new TorrentsFilterPaginatedSpecification((pageIndex - 1) * itemsPage, itemsPage, search));
             var totalItems = await _torrentRepository.CountAsync(new TorrentsFilterSpecification(search));
 
             return new TorrentsViewModel()
@@ -45,7 +33,6 @@ namespace Rutracker.Server.Services
                     Title = x.Title
                 }),
                 PageModel = new PaginationInfoViewModel(totalItems, pageIndex, itemsPage),
-                SortModel = new SortViewModel(sortProperty, sortOrder),
                 SelectedTitle = search
             };
         }
