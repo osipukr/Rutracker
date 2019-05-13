@@ -5,22 +5,34 @@
 
 @if (Model == null)
 {
-    <p><em>Loading...</em></p>
+    <div class="h-100 d-flex justify-content-center align-items-center">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
 }
 else
 {
     if (!Model.TorrentItems.Any())
     {
-        <p>Sorry, but torrents list is empty...</p>
+        <div class="card text-center mb-3">
+            <div class="card-header py-3 font-weight-bold">
+                Oops, an error occurred ;(
+            </div>
+            <div class="card-body d-flex flex-column align-items-center">
+                <p class="card-text">Sorry, but torrents list is empty...</p>
 
-        @if (string.IsNullOrWhiteSpace(Model.SelectedTitle))
-        {
-            <button class="btn btn-primary d-block mt-2" onclick="@(async () => await LoadTorrentsAsync())">Try to update</button>
-        }
-        else
-        {
-            <button class="btn btn-primary d-block mt-2" onclick="@(() => BackToButtonClick())">Back to full torrents list</button>
-        }
+                @if (string.IsNullOrWhiteSpace(Model.SelectedTitle))
+                {
+                    <button class="btn btn-primary d-block mt-2" onclick="@(async () => await LoadTorrentsAsync())">Try to update</button>
+                }
+                else
+                {
+                    <button class="btn btn-primary d-block mt-2" onclick="@(() => BackToButtonClick())">Back to full torrents list</button>
+                }
+            </div>
+            <div class="card-footer text-muted py-4"></div>
+        </div>
     }
     else
     {

@@ -1,40 +1,55 @@
 ﻿<nav class="d-flex justify-content-center">
-    <ul class="pagination">
+    <ul class="pagination d-flex justify-content-center align-items-center m-0">
         <li class="page-item pr-2">
             @if (Model.HasPrevious)
             {
-                <button class="btn btn-primary px-5" onclick="@(() => PageButtonClick(Model.PageNumber - 1))">
+                <button type="button"
+                        class="btn btn-primary px-5" 
+                        onclick="@(() => PageButtonClick(Model.PageNumber - 1))" 
+                        title="Go to previous page">
                     Previous
                 </button>
             }
             else
             {
-                <button class="btn btn-primary px-5 disabled">Previous</button>
+                <button type="button"
+                        class="btn btn-primary px-5 disabled"
+                        title="The previous page is missing">
+                    Previous
+                </button>
             }
         </li>
 
         <li class="page-item">
             @if (Model.HasNext)
             {
-                <button class="btn btn-primary px-5" onclick="@(() => PageButtonClick(Model.PageNumber + 1))">
+                <button type="button"
+                        class="btn btn-primary px-5" 
+                        onclick="@(() => PageButtonClick(Model.PageNumber + 1))"
+                        title="Go to next page">
                     Next
                 </button>
             }
             else
             {
-                <button class="btn btn-primary px-5 disabled" >Next</button>
+                <button type="button"
+                        class="btn btn-primary px-5 disabled" 
+                        title="The next page is missing">
+                    Next
+                </button>
             }
+        </li>
+        <li class="ml-2">
+            <p class="m-0 font-weight-bold">Page: @Model.PageNumber of @Model.TotalPages</p>
+            <p class="m-0 font-weight-bold">Total items: @Model.TotalItems</p>
         </li>
     </ul>
 </nav>
 
 @functions
 {
-    [Parameter]
-    protected PaginationInfoViewModel Model { get; set; }
-
-    [Parameter]
-    protected Action<int> ClickHandler { get; set; }
+    [Parameter] protected PaginationInfoViewModel Model { get; set; }
+    [Parameter] protected Action<int> ClickHandler { get; set; }
 
     private void PageButtonClick(int page) => ClickHandler(page);
 }

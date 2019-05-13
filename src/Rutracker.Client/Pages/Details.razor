@@ -4,51 +4,29 @@
 
 @if (Model == null)
 {
-    <p><em>Loading...</em></p>
+    <div class="d-flex justify-content-center align-items-center">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
 }
 else
 {
-    <button class="btn btn-primary my-3" onclick="@BackToButtonClick">Back to full torrents list</button>
+    <div class="card text-center mb-3">
+        <div class="card-header py-3"></div>
+        <div class="card-body">
+            <button class="btn btn-primary" onclick="@BackToButtonClick">Back to full torrents list</button>
+        </div>
+        <div class="card-footer text-muted py-3"></div>
+    </div>
 
-    if (Model.TorrentDetailsItem == null)
-    {
-        <p>Torrent with id=@Id not found</p>
-    }
-    else
-    {
-        <div> <p class="d-inline font-weight-bold">Id</p> - @Model.TorrentDetailsItem.Id</div>
-        <div><p class="d-inline font-weight-bold">Size</p> - @Model.TorrentDetailsItem.Size</div>
-        <div><p class="d-inline font-weight-bold">Date</p> - @Model.TorrentDetailsItem.Date.ToLongDateString()</div>
-        <div><p class="d-inline font-weight-bold">Title</p> - @Model.TorrentDetailsItem.Title</div>
-        <div><p class="d-inline font-weight-bold">Hash</p> - @Model.TorrentDetailsItem.Hash</div>
-        <div><p class="d-inline font-weight-bold">Forum title</p> Title @Model.TorrentDetailsItem.ForumTitle</div>
-        <div><p class="d-inline font-weight-bold">IsDeleted</p> - @Model.TorrentDetailsItem.IsDeleted.ToString()</div>
-
-        @if (!Model.TorrentDetailsItem.Files.Any())
-        {
-            <div><p class="d-inline font-weight-bold">Files</p> - List files is empty</div>
-        }
-        else
-        {
-            <div><p class="d-inline font-weight-bold">Files</p> -</div>
-            <ul class="text-left mb-4">
-                @foreach (var file in Model.TorrentDetailsItem.Files)
-                {
-                    <li>size: @file.Size --- name: <p class="d-inline font-weight-bold">@file.Name</p></li>
-                }
-            </ul>
-        }
-
-        @((MarkupString)Model.TorrentDetailsItem.Content)
-    }
+    <DetailsInfo Model="@Model.TorrentDetailsItem" />
 }
 
 @functions
 {
-    [Parameter]
-    public long Id { get; set; }
-
-    private DetailsViewModel Model;
+    [Parameter] public long Id { get; set; }
+    private DetailsViewModel Model { get; set; }
 
     protected override async Task OnInitAsync() => await LoadAsync();
 

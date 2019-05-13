@@ -1,4 +1,4 @@
-﻿<div class="form-row my-3">
+﻿<div class="form-row my-3 shadow-lg rounded">
     <div class="input-group">
         <input bind="@Value" class="form-control mr-2" maxlength="30" placeholder="Search for torrents by title" type="text" value="@Value" />
         <span class="">
@@ -9,11 +9,8 @@
 
 @functions
 {
-    [Parameter]
-    public string Value { get; set; }
-
-    [Parameter]
-    public Action<string> ClickHandler { get; set; }
+    [Parameter] protected string Value { get; set; }
+    [Parameter] protected Action<string> ClickHandler { get; set; }
 
     private void SearchButtonClick() => ClickHandler(Value);
 }

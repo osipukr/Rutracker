@@ -6,15 +6,12 @@ html, body {
 
 app {
     position: relative;
-    display: flex;
-    flex-direction: column;
+    display: block;
 }
 
 .top-row {
     height: 3.5rem;
     display: flex;
-    -ms-align-items: center;
-    -o-align-items: center;
     -webkit-align-items: center;
     align-items: center;
 }
@@ -33,10 +30,11 @@ app {
 }
 
     .sidebar .top-row {
+        background-color: #000000;
         background-color: rgba(0,0,0,0.4);
     }
 
-    .sidebar .navbar-brand {
+.sidebar .navbar-brand {
         font-size: 1.1rem;
     }
 
@@ -110,7 +108,7 @@ app {
 
 @media (min-width: 768px) {
     app {
-        flex-direction: row;
+        display: flex;
     }
 
     .sidebar {
