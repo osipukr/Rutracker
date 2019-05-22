@@ -41,24 +41,19 @@ namespace Rutracker.Server.Services
         {
             var torrent = await _torrentRepository.GetAsync(torrentId);
 
-            if (torrent == null)
-            {
-                return new DetailsViewModel();
-            }
-
             return new DetailsViewModel()
             {
-                TorrentDetailsItem = new TorrentDetailsItemViewModel
+                TorrentDetailsItem = torrent == null ? null : new TorrentDetailsItemViewModel
                 {
                     Id = torrent.Id,
                     Size = torrent.Size,
                     Date = torrent.Date,
                     Title = torrent.Title,
                     Hash = torrent.Hash,
-                    ForumTitle = torrent.ForumTitle,
+                    ForumTitle = torrent.Forum.Title,
                     IsDeleted = torrent.IsDeleted,
                     Content = BBCodeHelper.Parse(torrent.Content),
-                    Files = torrent.Files.Select(x => new FileItemViewModel
+                    Files = torrent.Files?.Select(x => new FileItemViewModel
                     {
                         Size = x.Size,
                         Name = x.Name
