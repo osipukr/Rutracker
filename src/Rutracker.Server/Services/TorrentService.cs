@@ -32,8 +32,7 @@ namespace Rutracker.Server.Services
                     Date = x.Date,
                     Title = x.Title
                 }),
-                PageModel = new PaginationInfoViewModel(totalItems, pageIndex, itemsPage),
-                SelectedTitle = search
+                PaginationModel = new PaginationViewModel(totalItems, pageIndex, itemsPage)
             };
         }
 
@@ -59,6 +58,16 @@ namespace Rutracker.Server.Services
                         Name = x.Name
                     })
                 }
+            };
+        }
+
+        public async Task<FiltrationViewModel> GetFiltrationAsync(int count)
+        {
+            var titles = await _torrentRepository.GetPopularForumsAsync(count);
+
+            return new FiltrationViewModel()
+            {
+                PopularForums = titles
             };
         }
     }

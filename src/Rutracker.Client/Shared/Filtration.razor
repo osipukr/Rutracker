@@ -1,0 +1,26 @@
+﻿@if (Model?.PopularForums != null && Model.PopularForums.Any())
+{
+    <div>
+        @foreach (var title in Model.PopularForums)
+        {
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input type="checkbox" 
+                           class="form-check-input"
+                           onchange="@(args => Checked(title, args.Value))" />
+                    @title
+                </label>
+            </div>
+        }
+    </div>
+}
+
+@functions
+{
+    [Parameter] protected FiltrationViewModel Model { get; set; }
+
+    private void Checked(string title, object value)
+    {
+        Console.WriteLine("{0} - {1}", title, value);
+    }
+}

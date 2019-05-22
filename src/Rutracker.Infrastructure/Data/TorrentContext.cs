@@ -19,14 +19,9 @@ namespace Rutracker.Infrastructure.Data
         {
             base.OnModelCreating(builder);
 
-            builder.ApplyConfiguration(new ForumConfiguration());
             builder.ApplyConfiguration(new TorrentConfiguration());
+            builder.ApplyConfiguration(new ForumConfiguration());
             builder.ApplyConfiguration(new FileConfiguration());
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseLazyLoadingProxies();
         }
     }
 }

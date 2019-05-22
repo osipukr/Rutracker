@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Builder;
@@ -25,11 +24,13 @@ namespace Rutracker.Server
 
         public IConfiguration Configuration { get; }
 
-        [Obsolete]
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<TorrentContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("TorrentConnection")));
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("TorrentConnection"));
+                options.UseLazyLoadingProxies();
+            });
 
             services.AddScoped<ITorrentService, CachedTorrentViewModelService>();
             services.AddScoped<ITorrentRepository, TorrentRepository>();

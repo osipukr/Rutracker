@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Rutracker.Shared.ViewModels;
 using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Client.Services
@@ -11,14 +12,16 @@ namespace Rutracker.Client.Services
 
         private readonly string _torrentsTemplate;
         private readonly string _torrentDetailsTemplate;
+        private readonly string _forumsTemplate;
 
         public TorrentServiceClient(HttpClient client, IUriHelper uriHelper)
         {
             _httpClient = client;
 
-            var baseUrl = uriHelper.GetBaseUri() + "api/torrents/";
+            var baseUrl = uriHelper.GetBaseUri() + "api/torrent/";
             _torrentsTemplate = baseUrl + "{0}/{1}?search={2}";
             _torrentDetailsTemplate = baseUrl + "details?torrentid={0}";
+            _forumsTemplate = baseUrl + "forums?count={0}";
         }
 
         public async Task<TorrentsViewModel> GetTorrentsAsync(int pageSize, int page, string search)
@@ -33,6 +36,13 @@ namespace Rutracker.Client.Services
             var requestUri = string.Format(_torrentDetailsTemplate, torrentid);
 
             return await _httpClient.GetJsonAsync<DetailsViewModel>(requestUri);
+        }
+
+        public async Task<FiltrationViewModel> GetForumFilterAsync(int count)
+        {
+            var requestUri = string.Format(_forumsTemplate, count);
+
+            return await _httpClient.GetJsonAsync<FiltrationViewModel>(requestUri);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Rutracker.Core.Entities
 {
@@ -18,6 +18,6 @@ namespace Rutracker.Core.Entities
         public string DupTitle { get; set; }
 
         public virtual Forum Forum { get; set; }
-        public virtual IQueryable<File> Files { get; set; }
+        public virtual ICollection<File> Files { get; set; }
     }
 }

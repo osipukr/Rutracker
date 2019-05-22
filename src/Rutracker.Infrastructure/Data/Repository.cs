@@ -12,23 +12,20 @@ namespace Rutracker.Infrastructure.Data
         where TEntity : BaseEntity<TPrimaryKey>
         where TPrimaryKey : IEquatable<TPrimaryKey>
     {
-        protected readonly IQueryable<TEntity> _query;
-
         protected Repository(TorrentContext context)
             : base(context)
         {
-            _query = _context.Set<TEntity>();
         }
 
-        public async Task<TEntity> GetAsync(TPrimaryKey id) => await _query.SingleOrDefaultAsync(x => x.Id.Equals(id));
+        public async Task<TEntity> GetAsync(TPrimaryKey id) => await _context.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(id));
 
         public virtual async Task<IEnumerable<TEntity>> ListAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
             await ApplySpecification(specification).ToListAsync();
 
         public virtual async Task<int> CountAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
-            await _query.CountAsync(specification.Where);
+            await _context.Set<TEntity>().CountAsync(specification.Where);
 
         protected IQueryable<TEntity> ApplySpecification(ISpecification<TEntity, TPrimaryKey> specification) =>
-            _query.GetQuery(specification);
+            _context.Set<TEntity>().GetQuery(specification);
     }
 }

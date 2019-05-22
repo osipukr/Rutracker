@@ -22,7 +22,7 @@ else
             <div class="card-body d-flex flex-column align-items-center">
                 <p class="card-text">Sorry, but torrents list is empty...</p>
 
-                @if (string.IsNullOrWhiteSpace(Model.SelectedTitle))
+                @if (string.IsNullOrWhiteSpace(Search))
                 {
                     <button class="btn btn-primary d-block mt-2" onclick="@(async () => await LoadTorrentsAsync())">Try to update</button>
                 }
@@ -36,7 +36,8 @@ else
     }
     else
     {
-        <SearchForm Value="@Model.SelectedTitle" ClickHandler="@SearchButtonClick" />
+        <SearchForm ClickHandler="@SearchButtonClick" />
+        <Filtration Model="@FiltrationModel" />
 
         <TorrentTable Items="@Model.TorrentItems" RowClickHandler="@TorrentDetailsClick">
             <GridHeader>
@@ -53,21 +54,23 @@ else
             </GridRow>
         </TorrentTable>
 
-        <Pagination Model="@Model.PageModel" ClickHandler="@PageButtonClick" />
+        <Pagination Model="@Model.PaginationModel" ClickHandler="@PageButtonClick" />
     }
 }
 
 @functions
 {
     private TorrentsViewModel Model { get; set; }
+    private FiltrationViewModel FiltrationModel { get; set;}
     private string Search { get; set; }
     private int Page { get; set; }
     private const string quearyTemplate = "/torrents?search={0}&page={1}";
 
-    protected override void OnInit()
+    protected override async Task OnInitAsync()
     {
         RefreshType();
         UriHelper.OnLocationChanged += OnLocationChanges;
+        FiltrationModel = await Client.GetForumFilterAsync(Constants.TopForumItems);
     }
 
     private void OnLocationChanges(object sender, string location) => RefreshType();
@@ -76,12 +79,12 @@ else
     {
         var uri = new Uri(UriHelper.GetAbsoluteUri());
 
-        Search = QueryHelpers.ParseQuery(uri.Query).TryGetValue("search", out var searchParam) 
-            ? searchParam.FirstOrDefault() 
+        Search = QueryHelpers.ParseQuery(uri.Query).TryGetValue("search", out var searchParam)
+            ? searchParam.FirstOrDefault()
             : "";
 
         Page = QueryHelpers.ParseQuery(uri.Query).TryGetValue("page", out var pageParam)
-               && int.TryParse(pageParam.FirstOrDefault(), out var pageParamId) 
+               && int.TryParse(pageParam.FirstOrDefault(), out var pageParamId)
                && pageParamId > 1
                ? pageParamId
                : 1;
@@ -100,7 +103,7 @@ else
 
     private void BackToButtonClick() => UriHelper.NavigateTo("/torrents");
 
-    private void SortButtonClick(string property) => UriHelper.NavigateTo(string.Format(quearyTemplate, Model.SelectedTitle, 1));
+    private void SortButtonClick(string property) => UriHelper.NavigateTo(string.Format(quearyTemplate, Search, 1));
 
     public void Dispose() => UriHelper.OnLocationChanged -= OnLocationChanges;
 }

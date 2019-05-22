@@ -9,8 +9,8 @@
 
 @functions
 {
-    [Parameter] protected string Value { get; set; }
     [Parameter] protected Action<string> ClickHandler { get; set; }
+    private string Value { get; set; }
 
-    private void SearchButtonClick() => ClickHandler(Value);
+    private void SearchButtonClick() => ClickHandler?.Invoke(Value);
 }

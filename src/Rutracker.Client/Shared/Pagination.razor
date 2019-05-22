@@ -48,8 +48,8 @@
 
 @functions
 {
-    [Parameter] protected PaginationInfoViewModel Model { get; set; }
+    [Parameter] protected PaginationViewModel Model { get; set; }
     [Parameter] protected Action<int> ClickHandler { get; set; }
 
-    private void PageButtonClick(int page) => ClickHandler(page);
+    private void PageButtonClick(int page) => ClickHandler?.Invoke(page);
 }

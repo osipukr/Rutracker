@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace Rutracker.Core.Entities
 {
@@ -6,6 +6,6 @@ namespace Rutracker.Core.Entities
     {
         public string Title { get; set; }
 
-        public virtual IQueryable<Torrent> Torrents { get; set; }
+        public virtual ICollection<Torrent> Torrents { get; set; }
     }
 }
