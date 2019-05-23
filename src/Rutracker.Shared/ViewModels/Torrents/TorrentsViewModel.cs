@@ -6,5 +6,6 @@ namespace Rutracker.Shared.ViewModels.Torrents
     {
         public IEnumerable<TorrentItemViewModel> TorrentItems { get; set; }
         public PaginationViewModel PaginationModel { get; set; }
+        public FiltrationViewModel FiltrationModel { get; set; }
     }
 }  

@@ -1,26 +1,75 @@
-﻿@if (Model?.PopularForums != null && Model.PopularForums.Any())
+﻿@inject TorrentServiceClient Client
+
+@if (TorrentFilter != null)
 {
     <div>
-        @foreach (var title in Model.PopularForums)
-        {
-            <div class="form-check">
-                <label class="form-check-label">
-                    <input type="checkbox" 
-                           class="form-check-input"
-                           onchange="@(args => Checked(title, args.Value))" />
-                    @title
-                </label>
+        <button class="btn btn-primary"
+                onclick="@ToggleFiltrationMenu">
+            Filtration
+        </button>
+
+        <div class="@FiltrationMenuCssClass">
+            @if (TorrentFilter.PopularForumTitles?.Any() ?? false)
+            {
+                <div class="card card-body">
+                    @foreach (var title in TorrentFilter.PopularForumTitles)
+                    {
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       onchange="@(args => Checked(title, args.Value))" />
+                                @title
+                            </label>
+                        </div>
+                    }
+                </div>
+            }
+
+            <div class="card card-body">
+                <div class="form-row">
+                    <div class="col">
+                        <input type="text" class="form-control" placeholder="From">
+                    </div>
+                    <div class="col">
+                        <input type="text" class="form-control" placeholder="To">
+                    </div>
+                </div>
             </div>
-        }
+
+            <button class="btn btn-primary" onclick="@ApplyButton">Apply</button>
+        </div>
     </div>
 }
 
 @functions
 {
     [Parameter] protected FiltrationViewModel Model { get; set; }
+    private TorrentFilterViewModel TorrentFilter { get; set; }
+    private Dictionary<string, bool> checkedList = new Dictionary<string, bool>();
+
+    protected override async Task OnInitAsync()
+    {
+        TorrentFilter = await Client.GetTorrentFilterAsync(Constants.TopForumItems);
+
+        foreach (var title in TorrentFilter.PopularForumTitles)
+        {
+            checkedList.Add(title, false);
+        }
+    }
 
     private void Checked(string title, object value)
     {
-        Console.WriteLine("{0} - {1}", title, value);
+        checkedList[title] = (bool) value;
+    }
+
+    private bool _collapseFiltrationMenu = true;
+    private string FiltrationMenuCssClass => _collapseFiltrationMenu ? "collapse" : null;
+
+    private void ToggleFiltrationMenu() => _collapseFiltrationMenu = !_collapseFiltrationMenu;
+
+    private void ApplyButton()
+    {
+        Model.SelectedTitles = new List<string>(checkedList.Where(x => x.Value).Select(x => x.Key));
     }
 }

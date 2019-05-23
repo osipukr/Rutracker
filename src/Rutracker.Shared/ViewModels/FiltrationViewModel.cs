@@ -4,6 +4,8 @@ namespace Rutracker.Shared.ViewModels
 {
     public class FiltrationViewModel
     {
-        public IEnumerable<string> PopularForums { get; set; }
+        public List<string> SelectedTitles { get; set; }
+        public long? SizeFrom { get; set; }
+        public long? SizeTo { get; set; }
     }
 }

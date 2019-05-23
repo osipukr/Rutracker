@@ -1,7 +1,6 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Rutracker.Shared.ViewModels;
 using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Client.Services
@@ -19,30 +18,30 @@ namespace Rutracker.Client.Services
             _httpClient = client;
 
             var baseUrl = uriHelper.GetBaseUri() + "api/torrent/";
-            _torrentsTemplate = baseUrl + "{0}/{1}?search={2}";
-            _torrentDetailsTemplate = baseUrl + "details?torrentid={0}";
+            _torrentsTemplate = baseUrl + "{0}/{1}?search={2}&titles={3}&sizeFrom={4}&sizeTo={5}";
+            _torrentDetailsTemplate = baseUrl + "details?id={0}";
             _forumsTemplate = baseUrl + "forums?count={0}";
         }
 
-        public async Task<TorrentsViewModel> GetTorrentsAsync(int pageSize, int page, string search)
+        public async Task<TorrentsViewModel> GetTorrentsAsync(int pageSize, int page, string search, string titles, long? sizeFrom, long? sizeTo)
         {
-            var requestUri = string.Format(_torrentsTemplate, pageSize, page, search);
+            var requestUri = string.Format(_torrentsTemplate, pageSize, page, search, titles, sizeFrom, sizeTo);
 
             return await _httpClient.GetJsonAsync<TorrentsViewModel>(requestUri);
         }
 
-        public async Task<DetailsViewModel> GetTorrentDetailsAsync(long torrentid)
+        public async Task<DetailsViewModel> GetTorrentDetailsAsync(long id)
         {
-            var requestUri = string.Format(_torrentDetailsTemplate, torrentid);
+            var requestUri = string.Format(_torrentDetailsTemplate, id);
 
             return await _httpClient.GetJsonAsync<DetailsViewModel>(requestUri);
         }
 
-        public async Task<FiltrationViewModel> GetForumFilterAsync(int count)
+        public async Task<TorrentFilterViewModel> GetTorrentFilterAsync(int count)
         {
             var requestUri = string.Format(_forumsTemplate, count);
 
-            return await _httpClient.GetJsonAsync<FiltrationViewModel>(requestUri);
+            return await _httpClient.GetJsonAsync<TorrentFilterViewModel>(requestUri);
         }
     }
 }

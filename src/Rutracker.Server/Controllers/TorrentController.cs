@@ -13,28 +13,28 @@ namespace Rutracker.Server.Controllers
             _torrentService = torrentService;
         }
 
-        [HttpGet("{pageSize}/{page}/{search?}")]
-        public async Task<IActionResult> GetTorrentsAsync(int pageSize, int page, string search)
+        [HttpGet("{pageSize}/{page}/{search?}/{titles?}/{sizeFrom?}/{sizeTo?}")]
+        public async Task<IActionResult> GetTorrentsAsync(int pageSize, int page, string search, string titles, long? sizeFrom, long? sizeTo)
         {
-            var result = await _torrentService.GetTorrentsAsync(page, pageSize, search);
+            var result = await _torrentService.GetTorrentsAsync(page, pageSize, search, titles, sizeFrom, sizeTo);
 
             return Ok(result);
         }
 
         [Route("details")]
-        [HttpGet("{torrentid}")]
-        public async Task<IActionResult> GetTorrentAsync(long torrentid)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTorrentAsync(long id)
         {
-            var result = await _torrentService.GetTorrentAsync(torrentid);
+            var result = await _torrentService.GetTorrentAsync(id);
 
             return Ok(result);
         }
 
         [Route("forums")]
         [HttpGet("{count}")]
-        public async Task<IActionResult> GetFiltrationAsync(int count)
+        public async Task<IActionResult> GetTorrentFilterAsync(int count)
         {
-            var result = await _torrentService.GetFiltrationAsync(count);
+            var result = await _torrentService.GetTorrentFilterAsync(count);
 
             return Ok(result);
         }

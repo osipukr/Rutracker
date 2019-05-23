@@ -4,17 +4,15 @@
             @if (Model.HasPrevious)
             {
                 <button type="button"
-                        class="btn btn-primary px-5" 
-                        onclick="@(() => PageButtonClick(Model.PageNumber - 1))" 
+                        class="btn btn-primary px-5"
+                        onclick="@(() => PageButtonClick(Model.PageNumber - 1))"
                         title="Go to previous page">
                     Previous
                 </button>
             }
             else
             {
-                <button type="button"
-                        class="btn btn-primary px-5 disabled"
-                        title="The previous page is missing">
+                <button type="button" class="btn btn-primary px-5 disabled" title="The previous page is missing">
                     Previous
                 </button>
             }
@@ -24,7 +22,7 @@
             @if (Model.HasNext)
             {
                 <button type="button"
-                        class="btn btn-primary px-5" 
+                        class="btn btn-primary px-5"
                         onclick="@(() => PageButtonClick(Model.PageNumber + 1))"
                         title="Go to next page">
                     Next
@@ -32,13 +30,12 @@
             }
             else
             {
-                <button type="button"
-                        class="btn btn-primary px-5 disabled" 
-                        title="The next page is missing">
+                <button type="button" class="btn btn-primary px-5 disabled" title="The next page is missing">
                     Next
                 </button>
             }
         </li>
+
         <li class="ml-2">
             <p class="m-0 font-weight-bold">Page: @Model.PageNumber of @Model.TotalPages</p>
             <p class="m-0 font-weight-bold">Total items: @Model.TotalItems</p>
@@ -51,5 +48,5 @@
     [Parameter] protected PaginationViewModel Model { get; set; }
     [Parameter] protected Action<int> ClickHandler { get; set; }
 
-    private void PageButtonClick(int page) => ClickHandler?.Invoke(page);
+    protected void PageButtonClick(int page) => ClickHandler?.Invoke(page);
 }

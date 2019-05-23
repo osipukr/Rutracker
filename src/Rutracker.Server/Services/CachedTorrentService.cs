@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Rutracker.Server.Interfaces;
-using Rutracker.Shared.ViewModels;
 using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Server.Services
@@ -12,7 +11,7 @@ namespace Rutracker.Server.Services
         private readonly IMemoryCache _cache;
         private readonly TorrentService _torrentViewModelService;
 
-        private readonly string _torrentsTemplate = "torrents-{0}-{1}-{2}";
+        private readonly string _torrentsTemplate = "torrents-{0}-{1}-{2}-{3}-{4}-{5}";
         private readonly string _detailsTemplate = "details-{0}";
         private readonly string _forumsTemplate = "forums-{0}";
         private readonly TimeSpan _defaultCacheDuration = TimeSpan.FromSeconds(30);
@@ -23,15 +22,15 @@ namespace Rutracker.Server.Services
             _torrentViewModelService = torrentViewModelService;
         }
 
-        public async Task<TorrentsViewModel> GetTorrentsAsync(int pageIndex, int itemsPage, string search)
+        public async Task<TorrentsViewModel> GetTorrentsAsync(int pageIndex, int itemsPage, string search, string titles, long? sizeFrom, long? sizeTo)
         {
-            var cacheKey = string.Format(_torrentsTemplate, pageIndex, itemsPage, search);
+            var cacheKey = string.Format(_torrentsTemplate, pageIndex, itemsPage, search, titles, sizeFrom, sizeTo);
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
                 entry.SlidingExpiration = _defaultCacheDuration;
 
-                return await _torrentViewModelService.GetTorrentsAsync(pageIndex, itemsPage, search);
+                return await _torrentViewModelService.GetTorrentsAsync(pageIndex, itemsPage, search, titles, sizeFrom, sizeTo);
             });
         }
 
@@ -47,15 +46,15 @@ namespace Rutracker.Server.Services
             });
         }
 
-        public async Task<FiltrationViewModel> GetFiltrationAsync(int count)
+        public async Task<TorrentFilterViewModel> GetTorrentFilterAsync(int forumCount)
         {
-            var cacheKey = string.Format(_forumsTemplate, count);
+            var cacheKey = string.Format(_forumsTemplate, forumCount);
 
             return await _cache.GetOrCreateAsync(cacheKey,  async entry =>
             {
                 entry.SlidingExpiration = _defaultCacheDuration;
 
-                return await _torrentViewModelService.GetFiltrationAsync(count);
+                return await _torrentViewModelService.GetTorrentFilterAsync(forumCount);
             });
         }
     }

@@ -66,11 +66,10 @@ else
     private int Page { get; set; }
     private const string quearyTemplate = "/torrents?search={0}&page={1}";
 
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
         RefreshType();
         UriHelper.OnLocationChanged += OnLocationChanges;
-        FiltrationModel = await Client.GetForumFilterAsync(Constants.TopForumItems);
     }
 
     private void OnLocationChanges(object sender, string location) => RefreshType();
@@ -93,7 +92,8 @@ else
         StateHasChanged();
     }
 
-    private async Task LoadTorrentsAsync() => Model = await Client.GetTorrentsAsync(Constants.ItemsPerPage, Page, Search);
+    private async Task LoadTorrentsAsync() => Model = await Client.GetTorrentsAsync(Constants.ItemsPerPage, Page, Search, 
+        string.Join(",", FiltrationModel.SelectedTitles), FiltrationModel.SizeFrom, FiltrationModel.SizeTo);
 
     private void TorrentDetailsClick(long id) => UriHelper.NavigateTo($"/details/{id}");
 
@@ -102,8 +102,6 @@ else
     private void SearchButtonClick(string search) => UriHelper.NavigateTo(string.Format(quearyTemplate, search, 1));
 
     private void BackToButtonClick() => UriHelper.NavigateTo("/torrents");
-
-    private void SortButtonClick(string property) => UriHelper.NavigateTo(string.Format(quearyTemplate, Search, 1));
 
     public void Dispose() => UriHelper.OnLocationChanged -= OnLocationChanges;
 }
