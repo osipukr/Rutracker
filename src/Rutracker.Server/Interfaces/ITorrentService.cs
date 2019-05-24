@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Rutracker.Shared.ViewModels;
 using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Server.Interfaces
@@ -7,6 +8,6 @@ namespace Rutracker.Server.Interfaces
     {
         Task<TorrentsViewModel> GetTorrentsAsync(int pageIndex, int itemsPage, string search, string titles, long? sizeFrom, long? sizeTo);
         Task<DetailsViewModel> GetTorrentAsync(long torrentId);
-        Task<TorrentFilterViewModel> GetTorrentFilterAsync(int forumCount);
+        Task<FiltrationViewModel> GetTorrentFilterAsync(int forumCount);
     }
 }

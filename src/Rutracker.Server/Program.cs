@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Rutracker.Infrastructure.Data;
 
 namespace Rutracker.Server
 {
@@ -7,7 +9,15 @@ namespace Rutracker.Server
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            using (var scope = host.Services.CreateScope())
+            using (var context = scope.ServiceProvider.GetRequiredService<TorrentContext>())
+            {
+                context.Database.EnsureCreated();
+            }
+
+            host.Run();
         }
 
         public static IWebHostBuilder CreateHostBuilder(string[] args) =>

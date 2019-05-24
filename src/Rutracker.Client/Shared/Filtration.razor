@@ -1,6 +1,6 @@
 ﻿@inject TorrentServiceClient Client
 
-@if (TorrentFilter != null)
+@if (Model != null)
 {
     <div>
         <button class="btn btn-primary"
@@ -9,17 +9,15 @@
         </button>
 
         <div class="@FiltrationMenuCssClass">
-            @if (TorrentFilter.PopularForumTitles?.Any() ?? false)
+            @if (Model.ForumTitles?.Any() ?? false)
             {
                 <div class="card card-body">
-                    @foreach (var title in TorrentFilter.PopularForumTitles)
+                    @foreach (var title in Model.ForumTitles)
                     {
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input type="checkbox"
-                                       class="form-check-input"
-                                       onchange="@(args => Checked(title, args.Value))" />
-                                @title
+                                <input class="form-check-input" onchange="@(args => Checked(title.Key, args.Value))" type="checkbox" />
+                                @title.Key
                             </label>
                         </div>
                     }
@@ -29,10 +27,11 @@
             <div class="card card-body">
                 <div class="form-row">
                     <div class="col">
-                        <input type="text" class="form-control" placeholder="From">
+                        <input min="0" bind="@Model.SizeFrom" class="form-control" placeholder="From" type="number" value="@Model.SizeFrom" />
                     </div>
+
                     <div class="col">
-                        <input type="text" class="form-control" placeholder="To">
+                        <input min="0" bind="@Model.SizeTo" class="form-control" placeholder="To" type="number" value="@Model.SizeTo" />
                     </div>
                 </div>
             </div>
@@ -45,23 +44,9 @@
 @functions
 {
     [Parameter] protected FiltrationViewModel Model { get; set; }
-    private TorrentFilterViewModel TorrentFilter { get; set; }
-    private Dictionary<string, bool> checkedList = new Dictionary<string, bool>();
+    [Parameter] protected Action ClickHandler { get; set; }
 
-    protected override async Task OnInitAsync()
-    {
-        TorrentFilter = await Client.GetTorrentFilterAsync(Constants.TopForumItems);
-
-        foreach (var title in TorrentFilter.PopularForumTitles)
-        {
-            checkedList.Add(title, false);
-        }
-    }
-
-    private void Checked(string title, object value)
-    {
-        checkedList[title] = (bool) value;
-    }
+    private void Checked(string title, object value) => Model.ForumTitles[title] = (bool) value;
 
     private bool _collapseFiltrationMenu = true;
     private string FiltrationMenuCssClass => _collapseFiltrationMenu ? "collapse" : null;
@@ -70,6 +55,8 @@
 
     private void ApplyButton()
     {
-        Model.SelectedTitles = new List<string>(checkedList.Where(x => x.Value).Select(x => x.Key));
+        ToggleFiltrationMenu();
+        ClickHandler?.Invoke();
     }
+
 }

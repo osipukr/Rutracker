@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Rutracker.Server.Interfaces;
+using Rutracker.Shared.ViewModels;
 using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Server.Services
@@ -46,7 +47,7 @@ namespace Rutracker.Server.Services
             });
         }
 
-        public async Task<TorrentFilterViewModel> GetTorrentFilterAsync(int forumCount)
+        public async Task<FiltrationViewModel> GetTorrentFilterAsync(int forumCount)
         {
             var cacheKey = string.Format(_forumsTemplate, forumCount);
 

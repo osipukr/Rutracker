@@ -37,7 +37,7 @@ else
     else
     {
         <SearchForm ClickHandler="@SearchButtonClick" />
-        <Filtration Model="@FiltrationModel" />
+        <Filtration Model="@FiltrationModel" ClickHandler="@FiltrationButtClick" />
 
         <TorrentTable Items="@Model.TorrentItems" RowClickHandler="@TorrentDetailsClick">
             <GridHeader>
@@ -66,15 +66,19 @@ else
     private int Page { get; set; }
     private const string quearyTemplate = "/torrents?search={0}&page={1}";
 
-    protected override void OnInit()
+    protected override async Task OnInitAsync()
     {
-        RefreshType();
+        FiltrationModel = await Client.GetTorrentFilterAsync(Constants.TopForumItems);
+        FiltrationModel.SizeFrom = null;
+        FiltrationModel.SizeTo = null;
+
+        await RefreshType();
         UriHelper.OnLocationChanged += OnLocationChanges;
     }
 
-    private void OnLocationChanges(object sender, string location) => RefreshType();
+    private void OnLocationChanges(object sender, string location) => RefreshType().GetAwaiter();
 
-    private async void RefreshType()
+    private async Task RefreshType()
     {
         var uri = new Uri(UriHelper.GetAbsoluteUri());
 
@@ -92,8 +96,8 @@ else
         StateHasChanged();
     }
 
-    private async Task LoadTorrentsAsync() => Model = await Client.GetTorrentsAsync(Constants.ItemsPerPage, Page, Search, 
-        string.Join(",", FiltrationModel.SelectedTitles), FiltrationModel.SizeFrom, FiltrationModel.SizeTo);
+    private async Task LoadTorrentsAsync() => Model = await Client.GetTorrentsAsync(Constants.ItemsPerPage, Page, Search,
+        string.Join(";", FiltrationModel.ForumTitles.Where(x => x.Value).Select(x => x.Key)), FiltrationModel.SizeFrom, FiltrationModel.SizeTo);
 
     private void TorrentDetailsClick(long id) => UriHelper.NavigateTo($"/details/{id}");
 
@@ -102,6 +106,12 @@ else
     private void SearchButtonClick(string search) => UriHelper.NavigateTo(string.Format(quearyTemplate, search, 1));
 
     private void BackToButtonClick() => UriHelper.NavigateTo("/torrents");
+
+    private void FiltrationButtClick()
+    {
+        Console.WriteLine(FiltrationModel.SizeFrom);
+        Console.WriteLine(FiltrationModel.SizeTo);
+    }
 
     public void Dispose() => UriHelper.OnLocationChanged -= OnLocationChanges;
 }

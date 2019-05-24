@@ -66,11 +66,13 @@ namespace Rutracker.Server.Services
             };
         }
 
-        public async Task<TorrentFilterViewModel> GetTorrentFilterAsync(int forumCount)
+        public async Task<FiltrationViewModel> GetTorrentFilterAsync(int forumCount)
         {
-            return new TorrentFilterViewModel()
+            var titles = await _torrentRepository.GetPopularForumsAsync(forumCount);
+
+            return new FiltrationViewModel()
             {
-                PopularForumTitles = await _torrentRepository.GetPopularForumsAsync(forumCount)
+                ForumTitles = titles.ToDictionary(x => x, x => false)
             };
         }
     }

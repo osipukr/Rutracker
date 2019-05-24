@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Rutracker.Shared.ViewModels;
 using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Client.Services
@@ -37,11 +38,11 @@ namespace Rutracker.Client.Services
             return await _httpClient.GetJsonAsync<DetailsViewModel>(requestUri);
         }
 
-        public async Task<TorrentFilterViewModel> GetTorrentFilterAsync(int count)
+        public async Task<FiltrationViewModel> GetTorrentFilterAsync(int count)
         {
             var requestUri = string.Format(_forumsTemplate, count);
 
-            return await _httpClient.GetJsonAsync<TorrentFilterViewModel>(requestUri);
+            return await _httpClient.GetJsonAsync<FiltrationViewModel>(requestUri);
         }
     }
 }
