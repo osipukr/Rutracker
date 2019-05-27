@@ -6,7 +6,7 @@ namespace Rutracker.Server.Interfaces
 {
     public interface ITorrentService
     {
-        Task<TorrentsViewModel> GetTorrentsAsync(int pageIndex, int itemsPage, string search, string titles, long? sizeFrom, long? sizeTo);
+        Task<TorrentsViewModel> GetTorrentsAsync(int pageIndex, int itemsPage, string search, FiltrationViewModel filter);
         Task<DetailsViewModel> GetTorrentAsync(long torrentId);
         Task<FiltrationViewModel> GetTorrentFilterAsync(int forumCount);
     }

@@ -1,23 +1,21 @@
-﻿@inject TorrentServiceClient Client
-
-@if (Model != null)
+﻿@if (Model != null)
 {
-    <div>
+    <div class="row mx-0 d-flex flex-column my-2">
         <button class="btn btn-primary"
                 onclick="@ToggleFiltrationMenu">
             Filtration
         </button>
 
-        <div class="@FiltrationMenuCssClass">
+        <div class="card mb-2 @FiltrationMenuCssClass">
             @if (Model.ForumTitles?.Any() ?? false)
             {
                 <div class="card card-body">
-                    @foreach (var title in Model.ForumTitles)
+                    @foreach (var key in Model.ForumTitles.Keys)
                     {
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input class="form-check-input" onchange="@(args => Checked(title.Key, args.Value))" type="checkbox" />
-                                @title.Key
+                                <input class="form-check-input" bind="@Model.ForumTitles[key]" type="checkbox" />
+                                @key
                             </label>
                         </div>
                     }
@@ -27,11 +25,11 @@
             <div class="card card-body">
                 <div class="form-row">
                     <div class="col">
-                        <input min="0" bind="@Model.SizeFrom" class="form-control" placeholder="From" type="number" value="@Model.SizeFrom" />
+                        <input min="0" bind="@Model.SizeFrom" class="form-control" placeholder="Torrent size from" type="number" value="@Model.SizeFrom" />
                     </div>
 
                     <div class="col">
-                        <input min="0" bind="@Model.SizeTo" class="form-control" placeholder="To" type="number" value="@Model.SizeTo" />
+                        <input min="0" bind="@Model.SizeTo" class="form-control" placeholder="Torrent size to" type="number" value="@Model.SizeTo" />
                     </div>
                 </div>
             </div>
@@ -44,9 +42,7 @@
 @functions
 {
     [Parameter] protected FiltrationViewModel Model { get; set; }
-    [Parameter] protected Action ClickHandler { get; set; }
-
-    private void Checked(string title, object value) => Model.ForumTitles[title] = (bool) value;
+    [Parameter] protected Action ApplyClickHandler { get; set; }
 
     private bool _collapseFiltrationMenu = true;
     private string FiltrationMenuCssClass => _collapseFiltrationMenu ? "collapse" : null;
@@ -56,7 +52,6 @@
     private void ApplyButton()
     {
         ToggleFiltrationMenu();
-        ClickHandler?.Invoke();
+        ApplyClickHandler?.Invoke();
     }
-
 }

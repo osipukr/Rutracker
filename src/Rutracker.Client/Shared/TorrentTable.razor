@@ -5,10 +5,19 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var torrent in Items)
+        @if (Items.Any())
         {
-            <tr onclick="@(() => TorrentRowClick(torrent.Id))">
-                @GridRow(torrent)
+            @foreach (var torrent in Items)
+             {
+                 <tr onclick="@(() => TorrentRowClick(torrent.Id))">
+                     @GridRow(torrent)
+                 </tr>
+             }
+        }
+        else
+        {
+            <tr class="text-center">
+                <td colspan="4">Torrent list empty ;(</td>
             </tr>
         }
     </tbody>

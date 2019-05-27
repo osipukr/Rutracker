@@ -1,5 +1,7 @@
-﻿using System.Net.Http;
+﻿using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Components;
 using Rutracker.Shared.ViewModels;
 using Rutracker.Shared.ViewModels.Torrents;
@@ -19,14 +21,19 @@ namespace Rutracker.Client.Services
             _httpClient = client;
 
             var baseUrl = uriHelper.GetBaseUri() + "api/torrent/";
-            _torrentsTemplate = baseUrl + "{0}/{1}?search={2}&titles={3}&sizeFrom={4}&sizeTo={5}";
+            _torrentsTemplate = baseUrl + "{0}/{1}?search={2}&{3}";
             _torrentDetailsTemplate = baseUrl + "details?id={0}";
             _forumsTemplate = baseUrl + "forums?count={0}";
         }
 
-        public async Task<TorrentsViewModel> GetTorrentsAsync(int pageSize, int page, string search, string titles, long? sizeFrom, long? sizeTo)
+        public async Task<TorrentsViewModel> GetTorrentsAsync(int pageSize, int page, string search, FiltrationViewModel filter)
         {
-            var requestUri = string.Format(_torrentsTemplate, pageSize, page, search, titles, sizeFrom, sizeTo);
+            var filterUri = string.Join("&",
+                                filter.ForumTitles.Where(x => x.Value).Select(x =>
+                                    $"{nameof(filter.ForumTitles)}[{HttpUtility.UrlEncode(x.Key)}]={HttpUtility.UrlEncode(x.Value.ToString())}")) +
+                            $"&{nameof(filter.SizeFrom)}={filter.SizeFrom}&{nameof(filter.SizeTo)}={filter.SizeTo}";
+
+            var requestUri = string.Format(_torrentsTemplate, pageSize, page, search, filterUri);
 
             return await _httpClient.GetJsonAsync<TorrentsViewModel>(requestUri);
         }

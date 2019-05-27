@@ -18,15 +18,15 @@ namespace Rutracker.Server.Services
             _torrentRepository = torrentRepository;
         }
 
-        public async Task<TorrentsViewModel> GetTorrentsAsync(int pageIndex, int itemsPage, string search,
-            string titles, long? sizeFrom, long? sizeTo)
+        public async Task<TorrentsViewModel> GetTorrentsAsync(int pageIndex, int itemsPage, string search, FiltrationViewModel filter)
         {
-            var torrents = await _torrentRepository.ListAsync(
-                new TorrentsFilterPaginatedSpecification((pageIndex - 1) * itemsPage, itemsPage, search, titles,
-                    sizeFrom, sizeTo));
+            var specification = new TorrentsFilterPaginatedSpecification(
+                (pageIndex - 1) * itemsPage, itemsPage,
+                search, filter.ForumTitles?.Select(x => x.Key).ToArray(),
+                filter.SizeFrom, filter.SizeTo);
 
-            var totalItems =
-                await _torrentRepository.CountAsync(new TorrentsFilterSpecification(search, titles, sizeFrom, sizeTo));
+            var torrents = await _torrentRepository.ListAsync(specification);
+            var totalItems = await _torrentRepository.CountAsync((TorrentsFilterSpecification)specification);
 
             return new TorrentsViewModel()
             {
@@ -72,7 +72,9 @@ namespace Rutracker.Server.Services
 
             return new FiltrationViewModel()
             {
-                ForumTitles = titles.ToDictionary(x => x, x => false)
+                ForumTitles = titles.ToDictionary(x => x, x => false),
+                SizeFrom = null,
+                SizeTo = null
             };
         }
     }

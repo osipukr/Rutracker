@@ -138,11 +138,10 @@ app {
 }
 
 #torrents-table {
-    min-height: 600px;
-    height: 600px;
     max-height: 600px;
 }
 
 tr {
     cursor: pointer;
+    height: 50px;
 }

@@ -57,7 +57,6 @@ namespace Rutracker.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseBlazorDebugging();
             }
 
             app.UseRouting();

@@ -12,7 +12,7 @@ namespace Rutracker.Server.Services
         private readonly IMemoryCache _cache;
         private readonly TorrentService _torrentViewModelService;
 
-        private readonly string _torrentsTemplate = "torrents-{0}-{1}-{2}-{3}-{4}-{5}";
+        private readonly string _torrentsTemplate = "torrents-{0}-{1}-{2}-{3}";
         private readonly string _detailsTemplate = "details-{0}";
         private readonly string _forumsTemplate = "forums-{0}";
         private readonly TimeSpan _defaultCacheDuration = TimeSpan.FromSeconds(30);
@@ -23,15 +23,15 @@ namespace Rutracker.Server.Services
             _torrentViewModelService = torrentViewModelService;
         }
 
-        public async Task<TorrentsViewModel> GetTorrentsAsync(int pageIndex, int itemsPage, string search, string titles, long? sizeFrom, long? sizeTo)
+        public async Task<TorrentsViewModel> GetTorrentsAsync(int pageIndex, int itemsPage, string search, FiltrationViewModel filter)
         {
-            var cacheKey = string.Format(_torrentsTemplate, pageIndex, itemsPage, search, titles, sizeFrom, sizeTo);
+            var cacheKey = string.Format(_torrentsTemplate, pageIndex, itemsPage, search, filter.GetHashCode());
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
                 entry.SlidingExpiration = _defaultCacheDuration;
 
-                return await _torrentViewModelService.GetTorrentsAsync(pageIndex, itemsPage, search, titles, sizeFrom, sizeTo);
+                return await _torrentViewModelService.GetTorrentsAsync(pageIndex, itemsPage, search, filter);
             });
         }
 
