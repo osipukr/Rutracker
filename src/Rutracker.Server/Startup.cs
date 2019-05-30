@@ -1,6 +1,9 @@
+using System;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -26,20 +29,10 @@ namespace Rutracker.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<TorrentContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("TorrentConnection"));
-                options.UseLazyLoadingProxies();
-            });
-
-            services.AddScoped<ITorrentService, CachedTorrentViewModelService>();
-            services.AddScoped<ITorrentRepository, TorrentRepository>();
-            services.AddScoped<TorrentService>();
-
-            services.AddMemoryCache();
-
             services.AddMvc().AddNewtonsoftJson();
-
+            services.AddRazorPages();
+            services.AddServerSideBlazor();
+            services.AddMemoryCache();
             services.AddResponseCompression(options =>
             {
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
@@ -47,6 +40,25 @@ namespace Rutracker.Server
                     MediaTypeNames.Application.Octet,
                     WasmMediaTypeNames.Application.Wasm,
                 });
+            });
+
+            services.AddScoped<ITorrentService, CachedTorrentViewModelService>();
+            services.AddScoped<ITorrentRepository, TorrentRepository>();
+            services.AddScoped<TorrentService>();
+            services.AddScoped(s =>
+            {
+                var uriHelper = s.GetRequiredService<IUriHelper>();
+
+                return new HttpClient
+                {
+                    BaseAddress = new Uri(uriHelper.GetBaseUri())
+                };
+            });
+
+            services.AddDbContext<TorrentContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("TorrentConnection"));
+                options.UseLazyLoadingProxies();
             });
         }
 
@@ -57,6 +69,10 @@ namespace Rutracker.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseHsts();
             }
 
             app.UseRouting();

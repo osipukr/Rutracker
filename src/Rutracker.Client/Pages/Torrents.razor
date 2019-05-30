@@ -31,10 +31,10 @@ else
             <th scope="col">Title</th>
         </GridHeader>
         <GridRow>
-            <th scope="row">@context.Id</th>
+            <th scope="row"><a href="/details/@context.Id" class="text-body">@context.Id</a></th>
             <td>@context.Size</td>
             <td>@context.Date.ToShortDateString()</td>
-            <td>@context.Title)</td>
+            <td><a href="/details/@context.Id" class="text-body">@context.Title</a></td>
         </GridRow>
     </TorrentTable>
 

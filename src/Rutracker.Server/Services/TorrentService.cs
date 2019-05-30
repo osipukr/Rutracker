@@ -22,7 +22,7 @@ namespace Rutracker.Server.Services
         {
             var specification = new TorrentsFilterPaginatedSpecification(
                 (pageIndex - 1) * itemsPage, itemsPage,
-                search, filter.ForumTitles?.Select(x => x.Key).ToArray(),
+                search, filter.ForumTitles?.Where(x => x.Value).Select(x => x.Key).ToArray(),
                 filter.SizeFrom, filter.SizeTo);
 
             var torrents = await _torrentRepository.ListAsync(specification);
