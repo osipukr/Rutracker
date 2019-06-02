@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Rutracker.Server.Interfaces;
-using Rutracker.Shared.ViewModels;
 
 namespace Rutracker.Server.Controllers
 {
@@ -14,31 +14,52 @@ namespace Rutracker.Server.Controllers
             _torrentService = torrentService;
         }
 
-        [HttpGet("{pageSize}/{page}/{search?}")]
-        public async Task<IActionResult> GetTorrentsAsync(int pageSize, int page, string search,
-            [FromQuery] FiltrationViewModel filter)
+        [Route("torrents")]
+        [HttpGet("{page}/{pageSize}/{search?}")]
+        public async Task<IActionResult> GetTorrentsAsync(int page, int pageSize, string search)
         {
-            var result = await _torrentService.GetTorrentsAsync(page, pageSize, search, filter);
+            try
+            {
+                var result = await _torrentService.GetTorrentsIndexAsync(page, pageSize, search);
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         [Route("details")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTorrentAsync(long id)
         {
-            var result = await _torrentService.GetTorrentAsync(id);
+            try
+            {
+                var result = await _torrentService.GetTorrentIndexAsync(id);
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
-        [Route("forums")]
+        [Route("titles")]
         [HttpGet("{count}")]
-        public async Task<IActionResult> GetTorrentFilterAsync(int count)
+        public async Task<IActionResult> GetTitlesAsync(int count)
         {
-            var result = await _torrentService.GetTorrentFilterAsync(count);
+            try
+            {
+                var result = await _torrentService.GetTitlesAsync(count);
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
     }
 }

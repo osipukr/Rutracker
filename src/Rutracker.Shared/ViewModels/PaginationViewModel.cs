@@ -4,21 +4,11 @@ namespace Rutracker.Shared.ViewModels
 {
     public class PaginationViewModel
     {
-        public int PageNumber { get; set; }
-        public int TotalPages { get; set; }
+        public int CurrentPage { get; set; }
         public int TotalItems { get; set; }
-        public bool HasPrevious => PageNumber > 1 && PageNumber <= TotalPages;
-        public bool HasNext => PageNumber < TotalPages;
-
-        public PaginationViewModel()
-        {
-        }
-
-        public PaginationViewModel(int totalItems, int pageNumber, int pageSize)
-        {
-            TotalItems = totalItems;
-            PageNumber = pageNumber;
-            TotalPages = (int) Math.Ceiling(totalItems / (double) pageSize);
-        }
+        public int PageSize { get; set; }
+        public int TotalPages => (int) Math.Ceiling(TotalItems / (double) PageSize);
+        public bool HasPrevious => CurrentPage > 1 && CurrentPage <= TotalPages;
+        public bool HasNext => CurrentPage < TotalPages;
     }
 }    

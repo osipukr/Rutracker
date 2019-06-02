@@ -5,7 +5,7 @@
             {
                 <button type="button"
                         class="btn btn-primary px-5"
-                        onclick="@(() => PageButtonClick(Model.PageNumber - 1))"
+                        onclick="@(() => PageButtonClick(Model.CurrentPage - 1))"
                         title="Go to previous page">
                     Previous
                 </button>
@@ -23,7 +23,7 @@
             {
                 <button type="button"
                         class="btn btn-primary px-5"
-                        onclick="@(() => PageButtonClick(Model.PageNumber + 1))"
+                        onclick="@(() => PageButtonClick(Model.CurrentPage + 1))"
                         title="Go to next page">
                     Next
                 </button>
@@ -37,7 +37,7 @@
         </li>
 
         <li class="ml-2">
-            <p class="m-0 font-weight-bold">Page: @Model.PageNumber of @Model.TotalPages</p>
+            <p class="m-0 font-weight-bold">Page: @Model.CurrentPage of @Model.TotalPages</p>
             <p class="m-0 font-weight-bold">Total items: @Model.TotalItems</p>
         </li>
     </ul>
@@ -48,5 +48,5 @@
     [Parameter] protected PaginationViewModel Model { get; set; }
     [Parameter] protected Action<int> ClickHandler { get; set; }
 
-    protected void PageButtonClick(int page) => ClickHandler?.Invoke(page);
+    private void PageButtonClick(int page) => ClickHandler?.Invoke(page);
 }

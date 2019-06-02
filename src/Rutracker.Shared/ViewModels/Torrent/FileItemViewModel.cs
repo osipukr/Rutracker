@@ -1,4 +1,4 @@
-﻿namespace Rutracker.Shared.ViewModels.Torrents
+﻿namespace Rutracker.Shared.ViewModels.Torrent
 {
     public class FileItemViewModel
     {

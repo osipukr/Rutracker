@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Rutracker.Core.Interfaces;
 using Rutracker.Core.Specifications;
 using Rutracker.Server.Helpers;
 using Rutracker.Server.Interfaces;
 using Rutracker.Shared.ViewModels;
+using Rutracker.Shared.ViewModels.Torrent;
 using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Server.Services
@@ -18,17 +20,15 @@ namespace Rutracker.Server.Services
             _torrentRepository = torrentRepository;
         }
 
-        public async Task<TorrentsViewModel> GetTorrentsAsync(int pageIndex, int itemsPage, string search, FiltrationViewModel filter)
+        public async Task<TorrentsViewModel> GetTorrentsIndexAsync(int page, int pageSize, string search)
         {
-            var specification = new TorrentsFilterPaginatedSpecification(
-                (pageIndex - 1) * itemsPage, itemsPage,
-                search, filter.ForumTitles?.Where(x => x.Value).Select(x => x.Key).ToArray(),
-                filter.SizeFrom, filter.SizeTo);
+            var filterSpecification = new TorrentsFilterSpecification(search);
+            var filterPaginatedSpecification = new TorrentsFilterPaginatedSpecification((page - 1) * pageSize, pageSize, search);
 
-            var torrents = await _torrentRepository.ListAsync(specification);
-            var totalItems = await _torrentRepository.CountAsync((TorrentsFilterSpecification)specification);
+            var torrents = await _torrentRepository.ListAsync(filterPaginatedSpecification);
+            var totalItems = await _torrentRepository.CountAsync(filterSpecification);
 
-            return new TorrentsViewModel()
+            return new TorrentsViewModel
             {
                 TorrentItems = torrents?.Select(x => new TorrentItemViewModel
                 {
@@ -37,15 +37,20 @@ namespace Rutracker.Server.Services
                     Date = x.Date,
                     Title = x.Title
                 }),
-                PaginationModel = new PaginationViewModel(totalItems, pageIndex, itemsPage)
+                PaginationModel = new PaginationViewModel
+                {
+                    CurrentPage = page,
+                    TotalItems = totalItems,
+                    PageSize = pageSize
+                }
             };
         }
 
-        public async Task<DetailsViewModel> GetTorrentAsync(long torrentId)
+        public async Task<TorrentViewModel> GetTorrentIndexAsync(long torrentId)
         {
             var torrent = await _torrentRepository.GetAsync(torrentId);
 
-            return new DetailsViewModel()
+            return new TorrentViewModel
             {
                 TorrentDetailsItem = torrent == null ? null : new TorrentDetailsItemViewModel
                 {
@@ -66,16 +71,14 @@ namespace Rutracker.Server.Services
             };
         }
 
-        public async Task<FiltrationViewModel> GetTorrentFilterAsync(int forumCount)
+        public async Task<IEnumerable<FacetItem>> GetTitlesAsync(int count)
         {
-            var titles = await _torrentRepository.GetPopularForumsAsync(forumCount);
+            var titles = await _torrentRepository.GetPopularForumsAsync(count);
 
-            return new FiltrationViewModel()
+            return titles.Select(x => new FacetItem
             {
-                ForumTitles = titles.ToDictionary(x => x, x => false),
-                SizeFrom = null,
-                SizeTo = null
-            };
+                Value = x
+            });
         }
     }
 }

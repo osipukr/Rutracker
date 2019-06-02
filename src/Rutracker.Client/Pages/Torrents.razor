@@ -14,28 +14,28 @@
 else
 {
     <div class="card card-body mb-3">
-        <SearchForm Value="@Search" ClickHandler="@SearchButtonClick" />
+        <SearchForm ClickHandler="@SearchButtonClick" />
 
-        <div class="row d-flex justify-content-end mx-0">
+        @*<div class="row d-flex justify-content-end mx-0">
             <button class="btn btn-primary" onclick="@(async () => await BackToFullButtonClick())">Back to full torrents list</button>
         </div>
 
-        <Filtration Model="@FiltrationModel" ApplyClickHandler="@FiltrationButtClick" />
+        <Filtration Model="@FiltrationModel" ApplyClickHandler="@FiltrationButtClick" />*@
     </div>
 
     <TorrentTable Items="@Model.TorrentItems" RowClickHandler="@TorrentDetailsClick">
-        <GridHeader>
+        <TableHeader>
             <th scope="col">Id</th>
             <th scope="col">Size</th>
             <th scope="col">Date</th>
             <th scope="col">Title</th>
-        </GridHeader>
-        <GridRow>
-            <th scope="row"><a href="/details/@context.Id" class="text-body">@context.Id</a></th>
-            <td>@context.Size</td>
-            <td>@context.Date.ToShortDateString()</td>
-            <td><a href="/details/@context.Id" class="text-body">@context.Title</a></td>
-        </GridRow>
+        </TableHeader>
+        <RowTemplate Context="torrent">
+            <th scope="row"><a href="/torrent/@torrent.Id" class="text-body">@torrent.Id</a></th>
+            <td>@torrent.Size</td>
+            <td>@torrent.Date.ToShortDateString()</td>
+            <td><a href="/torrent/@torrent.Id" class="text-body">@torrent.Title</a></td>
+        </RowTemplate>
     </TorrentTable>
 
     if (Model.TorrentItems?.Any() ?? false)
@@ -47,14 +47,12 @@ else
 @functions
 {
     private TorrentsViewModel Model { get; set; }
-    private FiltrationViewModel FiltrationModel { get; set; }
     private string Search { get; set; }
     private int Page { get; set; }
     private const string quearyTemplate = "/torrents?search={0}&page={1}";
 
     protected override async Task OnInitAsync()
     {
-        await LoadTorrentFilterAsync();
         await RefreshType();
 
         UriHelper.OnLocationChanged += OnLocationChanges;
@@ -80,23 +78,13 @@ else
         StateHasChanged();
     }
 
-    private async Task LoadTorrentsAsync() => Model = await Client.GetTorrentsAsync(Constants.ItemsPerPage, Page, Search, FiltrationModel);
+    private async Task LoadTorrentsAsync() => Model = await Client.GetTorrentsAsync(Page, Constants.DefaultPageSize, Search);
 
-    private async Task LoadTorrentFilterAsync() => FiltrationModel = await Client.GetTorrentFilterAsync(Constants.TopForumItems);
-
-    private void TorrentDetailsClick(long id) => UriHelper.NavigateTo($"/details/{id}");
+    private void TorrentDetailsClick(long id) => UriHelper.NavigateTo($"/torrent/{id}");
 
     private void PageButtonClick(int page) => UriHelper.NavigateTo(string.Format(quearyTemplate, Search, page));
 
     private void SearchButtonClick(string search) => UriHelper.NavigateTo(string.Format(quearyTemplate, search, 1));
-
-    private void FiltrationButtClick() => UriHelper.NavigateTo(string.Format(quearyTemplate, Search, 1));
-
-    private async Task BackToFullButtonClick()
-    {
-        await LoadTorrentFilterAsync();
-        UriHelper.NavigateTo("/torrents");
-    }
 
     public void Dispose() => UriHelper.OnLocationChanged -= OnLocationChanges;
 }

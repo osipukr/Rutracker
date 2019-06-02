@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using Rutracker.Shared.ViewModels.Torrents;
 
-namespace Rutracker.Shared.ViewModels.Torrents
+namespace Rutracker.Shared.ViewModels.Torrent
 {
     public class TorrentDetailsItemViewModel : TorrentItemViewModel
     {

@@ -6,14 +6,13 @@ using Rutracker.Core.Interfaces;
 
 namespace Rutracker.Infrastructure.Data
 {
-    public static class SpecificationEvaluator
+    public static class SpecificationEvaluator<TEntity, TPrimaryKey>
+        where TEntity : BaseEntity<TPrimaryKey>
+        where TPrimaryKey : IEquatable<TPrimaryKey>
     {
-        public static IQueryable<TEntity> GetQuery<TEntity, TPrimaryKey>(this IQueryable<TEntity> inputQuery,
-            ISpecification<TEntity, TPrimaryKey> specification)
-            where TEntity : BaseEntity<TPrimaryKey>
-            where TPrimaryKey : IEquatable<TPrimaryKey>
+        public static IQueryable<TEntity> ApplySpecification(IQueryable<TEntity> src, ISpecification<TEntity, TPrimaryKey> specification)
         {
-            var query = inputQuery;
+            var query = src;
 
             if (specification.Where != null)
             {

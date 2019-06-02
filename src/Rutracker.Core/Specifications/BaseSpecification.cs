@@ -9,15 +9,15 @@ namespace Rutracker.Core.Specifications
         where TEntity : BaseEntity<TPrimaryKey>
         where TPrimaryKey : IEquatable<TPrimaryKey>
     {
-        public Expression<Func<TEntity, bool>> Where { get; private set; }
+        public virtual Expression<Func<TEntity, bool>> Where { get; private set; }
 
-        public int Take { get; private set; }
-        public int Skip { get; private set; }
-        public bool IsPagingEnabled { get; private set; }
+        public virtual int Take { get; private set; }
+        public virtual int Skip { get; private set; }
+        public virtual bool IsPagingEnabled { get; private set; }
 
         protected BaseSpecification(Expression<Func<TEntity, bool>> expression) => Where = expression;
 
-        protected virtual void ApplyPaging(int skip, int take)
+        protected void ApplyPaging(int skip, int take)
         {
             Skip = skip;
             Take = take;

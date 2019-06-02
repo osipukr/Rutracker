@@ -1,13 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rutracker.Shared.ViewModels;
+using Rutracker.Shared.ViewModels.Torrent;
 using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Server.Interfaces
 {
     public interface ITorrentService
     {
-        Task<TorrentsViewModel> GetTorrentsAsync(int pageIndex, int itemsPage, string search, FiltrationViewModel filter);
-        Task<DetailsViewModel> GetTorrentAsync(long torrentId);
-        Task<FiltrationViewModel> GetTorrentFilterAsync(int forumCount);
+        Task<TorrentsViewModel> GetTorrentsIndexAsync(int page, int pageSize, string search);
+        Task<TorrentViewModel> GetTorrentIndexAsync(long id);
+        Task<IEnumerable<FacetItem>> GetTitlesAsync(int count);
     }
 }

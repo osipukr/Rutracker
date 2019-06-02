@@ -1,16 +1,31 @@
-﻿<div class="form-row my-2 mx-0 shadow-lg rounded">
+﻿@*<div class="form-row my-2 mx-0 shadow-lg rounded">
     <div class="input-group">
         <input bind-value-oninput="@Value" class="form-control mr-2" maxlength="30" placeholder="Search for torrents by title" type="search" value="@Value" />
         <span class="">
             <input class="btn btn-primary px-5" onclick="@SearchButtonClick" type="button" value="Search" />
         </span>
     </div>
-</div>
+</div>*@
+
+<EditForm Model="@Value" OnValidSubmit="@HandleValidSubmit">
+    <div class="input-group">
+        <InputText bind-Value="@Value"/>
+        <span>
+            <button type="submit" class="btn btn-primary px-5">Search</button>
+        </span>
+    </div>
+</EditForm>
 
 @functions
 {
     [Parameter] protected Action<string> ClickHandler { get; set; }
-    [Parameter] protected string Value { get; set; }
+
+    private string Value { get; set; }
 
     private void SearchButtonClick() => ClickHandler?.Invoke(Value);
+
+    private void HandleValidSubmit()
+    {
+        Console.WriteLine("OnValidSubmit");
+    }
 }

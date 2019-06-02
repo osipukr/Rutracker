@@ -2,10 +2,10 @@
 {
     public class TorrentsFilterPaginatedSpecification : TorrentsFilterSpecification
     {
-        public TorrentsFilterPaginatedSpecification(int skip, int take, string search, string[] titles, long? sizeFrom, long? sizeTo)
-            : base(search, titles, sizeFrom, sizeTo)
+        public TorrentsFilterPaginatedSpecification(int skip, int take, string search)
+            : base(search)
         {
-            base.ApplyPaging(skip, take);
+            ApplyPaging(skip, take);
         }
     }
 }

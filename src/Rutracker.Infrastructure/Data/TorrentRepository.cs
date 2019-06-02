@@ -14,13 +14,8 @@ namespace Rutracker.Infrastructure.Data
         {
         }
 
-        public async Task<IEnumerable<string>> GetPopularForumsAsync(int count)
-        {
-            return await _context.Torrents.GroupBy(x => x.Forum.Title)
-                .OrderByDescending(x => x.Count())
-                .Take(count)
-                .Select(x => x.Key)
-                .ToListAsync();
-        }
+        public async Task<IEnumerable<string>> GetPopularForumsAsync(int count) =>
+            await _context.Torrents.GroupBy(x => x.Forum.Title).OrderByDescending(x => x.Count()).Take(count)
+                .Select(x => x.Key).ToListAsync();
     }
 }

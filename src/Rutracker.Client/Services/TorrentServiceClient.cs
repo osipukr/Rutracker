@@ -1,9 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
 using Microsoft.AspNetCore.Components;
 using Rutracker.Shared.ViewModels;
+using Rutracker.Shared.ViewModels.Torrent;
 using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Client.Services
@@ -12,44 +12,34 @@ namespace Rutracker.Client.Services
     {
         private readonly HttpClient _httpClient;
 
-        private readonly string _torrentsTemplate;
-        private readonly string _torrentDetailsTemplate;
-        private readonly string _forumsTemplate;
+        private readonly string _torrentsTemplate = "api/torrent/torrents?page={0}&pageSize={1}&search={2}";
+        private readonly string _torrentTemplate = "api/torrent/details?id={0}";
+        private readonly string _titlesTemplate = "api/torrent/titles?count={0}";
 
-        public TorrentServiceClient(HttpClient client, IUriHelper uriHelper)
+        public TorrentServiceClient(HttpClient client)
         {
             _httpClient = client;
-
-            var baseUrl = uriHelper.GetBaseUri() + "api/torrent/";
-            _torrentsTemplate = baseUrl + "{0}/{1}?search={2}&{3}";
-            _torrentDetailsTemplate = baseUrl + "details?id={0}";
-            _forumsTemplate = baseUrl + "forums?count={0}";
         }
 
-        public async Task<TorrentsViewModel> GetTorrentsAsync(int pageSize, int page, string search, FiltrationViewModel filter)
+        public async Task<TorrentsViewModel> GetTorrentsAsync(int page, int pageSize, string search)
         {
-            var filterUri = string.Join("&",
-                                filter.ForumTitles.Where(x => x.Value).Select(x =>
-                                    $"{nameof(filter.ForumTitles)}[{HttpUtility.UrlEncode(x.Key)}]={HttpUtility.UrlEncode(x.Value.ToString())}")) +
-                            $"&{nameof(filter.SizeFrom)}={filter.SizeFrom}&{nameof(filter.SizeTo)}={filter.SizeTo}";
-
-            var requestUri = string.Format(_torrentsTemplate, pageSize, page, search, filterUri);
+            var requestUri = string.Format(_torrentsTemplate, page, pageSize, search);
 
             return await _httpClient.GetJsonAsync<TorrentsViewModel>(requestUri);
         }
 
-        public async Task<DetailsViewModel> GetTorrentDetailsAsync(long id)
+        public async Task<TorrentViewModel> GetTorrentAsync(long id)
         {
-            var requestUri = string.Format(_torrentDetailsTemplate, id);
+            var requestUri = string.Format(_torrentTemplate, id);
 
-            return await _httpClient.GetJsonAsync<DetailsViewModel>(requestUri);
+            return await _httpClient.GetJsonAsync<TorrentViewModel>(requestUri);
         }
 
-        public async Task<FiltrationViewModel> GetTorrentFilterAsync(int count)
+        public async Task<IEnumerable<FacetItem>> GetTitlesAsync(int count)
         {
-            var requestUri = string.Format(_forumsTemplate, count);
+            var requestUri = string.Format(_titlesTemplate, count);
 
-            return await _httpClient.GetJsonAsync<FiltrationViewModel>(requestUri);
+            return await _httpClient.GetJsonAsync<IEnumerable<FacetItem>>(requestUri);
         }
     }
 }

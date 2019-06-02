@@ -1,18 +1,18 @@
-﻿<table id="torrents-table" class="table table-hover table-bordered shadow-lg rounded">
+﻿<table class="table table-hover table-bordered shadow-lg rounded">
     <thead class="thead-dark">
         <tr>
-            @GridHeader
+            @TableHeader
         </tr>
     </thead>
     <tbody>
         @if (Items.Any())
         {
             @foreach (var torrent in Items)
-             {
-                 <tr onclick="@(() => TorrentRowClick(torrent.Id))">
-                     @GridRow(torrent)
-                 </tr>
-             }
+            {
+                <tr onclick="@(() => TorrentRowClick(torrent.Id))">
+                    @RowTemplate(torrent)
+                </tr>
+            }
         }
         else
         {
@@ -21,12 +21,16 @@
             </tr>
         }
     </tbody>
+    <tfoot>
+        <tr>@TableFooter</tr>
+    </tfoot>
 </table>
 
 @functions
 {
-    [Parameter] protected RenderFragment GridHeader { get; set; }
-    [Parameter] protected RenderFragment<TorrentItemViewModel> GridRow { get; set; }
+    [Parameter] protected RenderFragment TableHeader { get; set; }
+    [Parameter] protected RenderFragment<TorrentItemViewModel> RowTemplate { get; set; }
+    [Parameter] protected RenderFragment TableFooter { get; set; }
     [Parameter] protected IEnumerable<TorrentItemViewModel> Items { get; set; }
     [Parameter] protected Action<long> RowClickHandler { get; set; }
 

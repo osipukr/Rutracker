@@ -8,7 +8,7 @@ using Rutracker.Core.Interfaces;
 
 namespace Rutracker.Infrastructure.Data
 {
-    public class Repository<TEntity, TPrimaryKey> : BaseRepository, IRepository<TEntity, TPrimaryKey>
+    public abstract class Repository<TEntity, TPrimaryKey> : BaseRepository, IRepository<TEntity, TPrimaryKey>
         where TEntity : BaseEntity<TPrimaryKey>
         where TPrimaryKey : IEquatable<TPrimaryKey>
     {
@@ -17,15 +17,17 @@ namespace Rutracker.Infrastructure.Data
         {
         }
 
-        public async Task<TEntity> GetAsync(TPrimaryKey id) => await _context.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(id));
+        public virtual async Task<TEntity> GetAsync(TPrimaryKey id) =>
+            await _context.Set<TEntity>().AsQueryable().SingleOrDefaultAsync(x => x.Id.Equals(id));
 
         public virtual async Task<IEnumerable<TEntity>> ListAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
             await ApplySpecification(specification).ToListAsync();
 
         public virtual async Task<int> CountAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
-            await _context.Set<TEntity>().CountAsync(specification.Where);
+            await _context.Set<TEntity>().AsQueryable().CountAsync(specification.Where);
 
-        protected IQueryable<TEntity> ApplySpecification(ISpecification<TEntity, TPrimaryKey> specification) =>
-            _context.Set<TEntity>().GetQuery(specification);
+        private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity, TPrimaryKey> specification) =>
+           SpecificationEvaluator<TEntity, TPrimaryKey>.ApplySpecification(_context.Set<TEntity>().AsQueryable(),
+               specification);
     }
 }
