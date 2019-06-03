@@ -5,5 +5,6 @@
         public const string ServiceName = "Rutracker";
         public const int DefaultPageSize = 10;
         public const int TitlesCount = 10;
+        public const int PaginationCount = 4;
     }
 }

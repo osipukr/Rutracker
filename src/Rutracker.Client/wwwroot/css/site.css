@@ -17,3 +17,17 @@ main {
     margin-top: 3.5rem;
     padding-top: 1rem;
 }
+
+.active {
+    border-bottom: 2px inset;
+}
+
+.table {
+    table-layout: fixed;
+}
+
+    .table td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }

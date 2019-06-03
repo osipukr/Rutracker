@@ -12,7 +12,7 @@ namespace Rutracker.Client.Services
     {
         private readonly HttpClient _httpClient;
 
-        private readonly string _torrentsTemplate = "api/torrent/torrents?page={0}&pageSize={1}&search={2}";
+        private readonly string _torrentsTemplate = "api/torrent/torrents?page={0}&pageSize={1}";
         private readonly string _torrentTemplate = "api/torrent/details?id={0}";
         private readonly string _titlesTemplate = "api/torrent/titles?count={0}";
 
@@ -21,11 +21,11 @@ namespace Rutracker.Client.Services
             _httpClient = client;
         }
 
-        public async Task<TorrentsViewModel> GetTorrentsAsync(int page, int pageSize, string search)
+        public async Task<TorrentsViewModel> GetTorrentsAsync(int page, int pageSize, FiltrationViewModel fitration)
         {
-            var requestUri = string.Format(_torrentsTemplate, page, pageSize, search);
+            var requestUri = string.Format(_torrentsTemplate, page, pageSize);
 
-            return await _httpClient.GetJsonAsync<TorrentsViewModel>(requestUri);
+            return await _httpClient.PostJsonAsync<TorrentsViewModel>(requestUri, fitration);
         }
 
         public async Task<TorrentViewModel> GetTorrentAsync(long id)

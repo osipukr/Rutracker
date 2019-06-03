@@ -25,15 +25,15 @@ namespace Rutracker.Server.Services
             _torrentViewModelService = torrentViewModelService;
         }
 
-        public async Task<TorrentsViewModel> GetTorrentsIndexAsync(int page, int pageSize, string search)
+        public async Task<TorrentsViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
         {
-            var cacheKey = string.Format(_torrentsTemplate, page, pageSize, search);
+            var cacheKey = string.Format(_torrentsTemplate, page, pageSize, filter.GetHashCode());
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
                 entry.SlidingExpiration = _defaultCacheDuration;
 
-                return await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, search);
+                return await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, filter);
             });
         }
 

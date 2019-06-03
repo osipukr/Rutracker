@@ -13,48 +13,43 @@
 }
 else
 {
-    <div class="card card-body mb-3">
-        <SearchForm ClickHandler="@SearchButtonClick" />
+    <Filtration Model="@FilterModel" ChangedHandler="@FiltrationhButtonClick" />
 
-        @*<div class="row d-flex justify-content-end mx-0">
-            <button class="btn btn-primary" onclick="@(async () => await BackToFullButtonClick())">Back to full torrents list</button>
-        </div>
-
-        <Filtration Model="@FiltrationModel" ApplyClickHandler="@FiltrationButtClick" />*@
-    </div>
-
-    <TorrentTable Items="@Model.TorrentItems" RowClickHandler="@TorrentDetailsClick">
+    <TorrentTable Items="@Model.TorrentItems" ClickHandler="@TorrentDetailsClick" Context="torrent">
         <TableHeader>
-            <th scope="col">Id</th>
-            <th scope="col">Size</th>
-            <th scope="col">Date</th>
-            <th scope="col">Title</th>
+            <th scope="col" style="width:10%">@nameof(TorrentItemViewModel.Id)</th>
+            <th scope="col" style="width:15%">@nameof(TorrentItemViewModel.Size)</th>
+            <th scope="col" style="width:10%">@nameof(TorrentItemViewModel.Date)</th>
+            <th scope="col">@nameof(TorrentItemViewModel.Title)</th>
         </TableHeader>
-        <RowTemplate Context="torrent">
-            <th scope="row"><a href="/torrent/@torrent.Id" class="text-body">@torrent.Id</a></th>
+        <RowTemplate>
+            <th scope="row">
+                <a href="/torrent/@torrent.Id" class="text-body">@torrent.Id</a>
+            </th>
             <td>@torrent.Size</td>
             <td>@torrent.Date.ToShortDateString()</td>
             <td><a href="/torrent/@torrent.Id" class="text-body">@torrent.Title</a></td>
         </RowTemplate>
+        <TableFooter>
+
+        </TableFooter>
     </TorrentTable>
 
-    if (Model.TorrentItems?.Any() ?? false)
-    {
-        <Pagination Model="@Model.PaginationModel" ClickHandler="@PageButtonClick" />
-    }
+    <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonClick" />
 }
 
 @functions
 {
     private TorrentsViewModel Model { get; set; }
-    private string Search { get; set; }
+    private FiltrationViewModel FilterModel { get; set; }
     private int Page { get; set; }
     private const string quearyTemplate = "/torrents?search={0}&page={1}";
 
     protected override async Task OnInitAsync()
     {
-        await RefreshType();
+        FilterModel = new FiltrationViewModel();
 
+        await RefreshType();
         UriHelper.OnLocationChanged += OnLocationChanges;
     }
 
@@ -64,7 +59,7 @@ else
     {
         var uri = new Uri(UriHelper.GetAbsoluteUri());
 
-        Search = QueryHelpers.ParseQuery(uri.Query).TryGetValue("search", out var searchParam)
+        FilterModel.Search = QueryHelpers.ParseQuery(uri.Query).TryGetValue("search", out var searchParam)
             ? searchParam.FirstOrDefault()
             : null;
 
@@ -78,13 +73,23 @@ else
         StateHasChanged();
     }
 
-    private async Task LoadTorrentsAsync() => Model = await Client.GetTorrentsAsync(Page, Constants.DefaultPageSize, Search);
+    private async Task LoadTorrentsAsync() => Model = await Client.GetTorrentsAsync(Page, Constants.DefaultPageSize, FilterModel);
 
     private void TorrentDetailsClick(long id) => UriHelper.NavigateTo($"/torrent/{id}");
 
-    private void PageButtonClick(int page) => UriHelper.NavigateTo(string.Format(quearyTemplate, Search, page));
+    private void PageButtonClick(int page)
+    {
+        var uri = string.Format(quearyTemplate, FilterModel.Search, page);
 
-    private void SearchButtonClick(string search) => UriHelper.NavigateTo(string.Format(quearyTemplate, search, 1));
+        UriHelper.NavigateTo(uri);
+    }
+
+    private void FiltrationhButtonClick()
+    {
+        var uri = string.Format(quearyTemplate, FilterModel.Search, 1);
+
+        UriHelper.NavigateTo(uri);
+    }
 
     public void Dispose() => UriHelper.OnLocationChanged -= OnLocationChanges;
 }

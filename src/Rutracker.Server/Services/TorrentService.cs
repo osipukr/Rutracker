@@ -20,8 +20,10 @@ namespace Rutracker.Server.Services
             _torrentRepository = torrentRepository;
         }
 
-        public async Task<TorrentsViewModel> GetTorrentsIndexAsync(int page, int pageSize, string search)
+        public async Task<TorrentsViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
         {
+            var search = filter?.Search ?? null;
+
             var filterSpecification = new TorrentsFilterSpecification(search);
             var filterPaginatedSpecification = new TorrentsFilterPaginatedSpecification((page - 1) * pageSize, pageSize, search);
 

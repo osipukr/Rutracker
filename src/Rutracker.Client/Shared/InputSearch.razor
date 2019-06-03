@@ -1,0 +1,15 @@
+﻿@inherits InputBase<string>
+
+<input bind-value-oninput="@CurrentValue" type="search" id="@Id" class="@CssClass" placeholder="@Placeholder" />
+
+@functions
+{
+    [Parameter] protected string Placeholder { get; set; }
+
+    protected override bool TryParseValueFromString(string value, out string result, out string validationErrorMessage)
+    {
+        result = value;
+        validationErrorMessage = null;
+        return true;
+    }
+}  

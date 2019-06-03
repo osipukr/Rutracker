@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Rutracker.Server.Interfaces;
+using Rutracker.Shared.ViewModels;
 
 namespace Rutracker.Server.Controllers
 {
@@ -15,12 +16,12 @@ namespace Rutracker.Server.Controllers
         }
 
         [Route("torrents")]
-        [HttpGet("{page}/{pageSize}/{search?}")]
-        public async Task<IActionResult> GetTorrentsAsync(int page, int pageSize, string search)
+        [HttpGet("{page}/{pageSize}")]
+        public async Task<IActionResult> GetTorrentsAsync(int page, int pageSize, [FromBody] FiltrationViewModel fitration)
         {
             try
             {
-                var result = await _torrentService.GetTorrentsIndexAsync(page, pageSize, search);
+                var result = await _torrentService.GetTorrentsIndexAsync(page, pageSize, fitration);
 
                 return Ok(result);
             }

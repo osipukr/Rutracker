@@ -1,57 +1,76 @@
-﻿@*@if (Model != null)
+﻿@inject TorrentServiceClient Client
+
+@if (Model == null)
 {
-    <div class="row mx-0 d-flex flex-column my-2">
-        <button class="btn btn-primary"
-                onclick="@ToggleFiltrationMenu">
-            Filtration
-        </button>
 
-        <div class="card mb-2 @FiltrationMenuCssClass">
-            @if (Model.ForumTitles?.Any() ?? false)
-            {
-                <div class="card card-body">
-                    @foreach (var key in Model.ForumTitles.Keys)
-                    {
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input class="form-check-input" bind="@Model.ForumTitles[key]" type="checkbox" />
-                                @key
-                            </label>
-                        </div>
-                    }
-                </div>
-            }
-
-            <div class="card card-body">
-                <div class="form-row">
-                    <div class="col">
-                        <input min="0" bind="@Model.SizeFrom" class="form-control" placeholder="Torrent size from" type="number" value="@Model.SizeFrom" />
-                    </div>
-
-                    <div class="col">
-                        <input min="0" bind="@Model.SizeTo" class="form-control" placeholder="Torrent size to" type="number" value="@Model.SizeTo" />
-                    </div>
+}
+else
+{
+    <div class="card card-body mb-3">
+        <EditForm Model="@Model" OnValidSubmit="@ApplyChanged">
+            <div class="form-row my-2 mx-0 shadow-lg rounded">
+                <div class="input-group">
+                    <InputSearch bind-Value="@Model.Search" Class="form-control mr-2" Placeholder="Search for torrents by title" />
+                    <span class="">
+                        <input class="btn btn-primary px-5" type="submit" value="Search" />
+                    </span>
                 </div>
             </div>
 
-            <button class="btn btn-primary" onclick="@ApplyButton">Apply</button>
-        </div>
+            <div class="row mx-0 d-flex flex-column my-2">
+                <button class="btn btn-primary"
+                        type="button"
+                        onclick="@ToggleFiltrationMenu">
+                    Filtration
+                </button>
+
+                <div class="card mb-2 @FiltrationMenuCssClass">
+                    @if (TitlesFacet == null)
+                    {
+                        <p>Loading titles...</p>
+                    }
+                    else
+                    {
+                        <div class="card card-body">
+                            @foreach (var facet in TitlesFacet)
+                            {
+
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" value="@facet.Id" />
+                                         @facet.Value - (@facet.Count)
+                                    </label>
+                                </div>
+
+                            }
+                        </div>
+                    }
+
+                    <button class="btn btn-primary" type="submit" onclick="@ToggleFiltrationMenu">Apply</button>
+                </div>
+            </div>
+        </EditForm>
     </div>
 }
 
 @functions
 {
     [Parameter] protected FiltrationViewModel Model { get; set; }
-    [Parameter] protected Action ApplyClickHandler { get; set; }
+    [Parameter] protected Action ChangedHandler { get; set; }
+
+    private string Name { get; set; } = "Titles";
+
+    private IEnumerable<FacetItem> TitlesFacet { get; set; }
 
     private bool _collapseFiltrationMenu = true;
     private string FiltrationMenuCssClass => _collapseFiltrationMenu ? "collapse" : null;
 
+    protected override async Task OnInitAsync()
+    {
+        TitlesFacet = await Client.GetTitlesAsync(Constants.TitlesCount);
+    }
+
     private void ToggleFiltrationMenu() => _collapseFiltrationMenu = !_collapseFiltrationMenu;
 
-    private void ApplyButton()
-    {
-        ToggleFiltrationMenu();
-        ApplyClickHandler?.Invoke();
-    }
-}*@
+    private void ApplyChanged() => ChangedHandler?.Invoke();
+}

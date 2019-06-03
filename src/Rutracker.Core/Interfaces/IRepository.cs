@@ -10,7 +10,9 @@ namespace Rutracker.Core.Interfaces
         where TPrimaryKey : IEquatable<TPrimaryKey>
     {
         Task<TEntity> GetAsync(TPrimaryKey id);
-        Task<IEnumerable<TEntity>> ListAsync(ISpecification<TEntity, TPrimaryKey> specification);
+        Task<IReadOnlyList<TEntity>> ListAsync();
+        Task<IReadOnlyList<TEntity>> ListAsync(ISpecification<TEntity, TPrimaryKey> specification);
+        Task<int> CountAsync();
         Task<int> CountAsync(ISpecification<TEntity, TPrimaryKey> specification);
     }
 }

@@ -1,30 +1,40 @@
-﻿<table class="table table-hover table-bordered shadow-lg rounded">
-    <thead class="thead-dark">
-        <tr>
-            @TableHeader
-        </tr>
-    </thead>
-    <tbody>
-        @if (Items.Any())
-        {
-            @foreach (var torrent in Items)
+﻿<div class="table-responsive">
+    <table class="table table-hover table-bordered rounded">
+        <thead class="thead-dark">
+            <tr>
+                @if (TableHeader != null)
+                {
+                    @TableHeader
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (Items.Any())
             {
-                <tr onclick="@(() => TorrentRowClick(torrent.Id))">
-                    @RowTemplate(torrent)
+                @foreach (var torrent in Items)
+                {
+                    <tr onclick="@(_ => RowClicked(torrent.Id))">
+                        @RowTemplate(torrent)
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr class="text-center">
+                    <td colspan="4">Torrent list empty ;(</td>
                 </tr>
             }
-        }
-        else
-        {
-            <tr class="text-center">
-                <td colspan="4">Torrent list empty ;(</td>
+        </tbody>
+        <tfoot>
+            <tr>
+                @if (TableFooter != null)
+                {
+                    @TableFooter
+                }
             </tr>
-        }
-    </tbody>
-    <tfoot>
-        <tr>@TableFooter</tr>
-    </tfoot>
-</table>
+        </tfoot>
+    </table>
+</div>
 
 @functions
 {
@@ -32,7 +42,7 @@
     [Parameter] protected RenderFragment<TorrentItemViewModel> RowTemplate { get; set; }
     [Parameter] protected RenderFragment TableFooter { get; set; }
     [Parameter] protected IEnumerable<TorrentItemViewModel> Items { get; set; }
-    [Parameter] protected Action<long> RowClickHandler { get; set; }
+    [Parameter] protected Action<long> ClickHandler { get; set; }
 
-    private void TorrentRowClick(long id) => RowClickHandler?.Invoke(id);
+    private void RowClicked(long id) => ClickHandler?.Invoke(id);
 }
