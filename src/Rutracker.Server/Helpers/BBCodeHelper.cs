@@ -4,6 +4,6 @@ namespace Rutracker.Server.Helpers
 {
     public static class BBCodeHelper
     {
-        public static string Parse(string bbCode) => BBCode.ToHtml(bbCode);
+        public static string ParseToHtml(string bbCode) => BBCode.ToHtml(bbCode);
     }
 }

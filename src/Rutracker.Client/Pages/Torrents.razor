@@ -5,55 +5,38 @@
 
 @if (Model == null)
 {
-    <div class="h-100 d-flex justify-content-center align-items-center">
-        <div class="spinner-border text-primary" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
+    <Loader />
 }
 else
 {
-    <Filtration Model="@FilterModel" ChangedHandler="@FiltrationhButtonClick" />
+    <div class="row">
+        <div class="col-lg-3 pb-3">
+            <Filtration Model="@FilterModel" ChangedHandler="@FiltrationhButtonClick" />
+        </div>
 
-    <TorrentTable Items="@Model.TorrentItems" ClickHandler="@TorrentDetailsClick" Context="torrent">
-        <TableHeader>
-            <th scope="col" style="width:10%">@nameof(TorrentItemViewModel.Id)</th>
-            <th scope="col" style="width:15%">@nameof(TorrentItemViewModel.Size)</th>
-            <th scope="col" style="width:10%">@nameof(TorrentItemViewModel.Date)</th>
-            <th scope="col">@nameof(TorrentItemViewModel.Title)</th>
-        </TableHeader>
-        <RowTemplate>
-            <th scope="row">
-                <a href="/torrent/@torrent.Id" class="text-body">@torrent.Id</a>
-            </th>
-            <td>@torrent.Size</td>
-            <td>@torrent.Date.ToShortDateString()</td>
-            <td><a href="/torrent/@torrent.Id" class="text-body">@torrent.Title</a></td>
-        </RowTemplate>
-        <TableFooter>
+        <div class="col-lg-9">
+            <TorrentTable Items="@Model.TorrentItems" />
 
-        </TableFooter>
-    </TorrentTable>
-
-    <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonClick" />
+            <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonClick" />
+        </div>
+    </div>
 }
 
 @functions
 {
     private TorrentsViewModel Model { get; set; }
-    private FiltrationViewModel FilterModel { get; set; }
+    private FiltrationViewModel FilterModel { get; set; } = new FiltrationViewModel();
     private int Page { get; set; }
+    private int PageSize { get; set; }
     private const string quearyTemplate = "/torrents?search={0}&page={1}";
 
     protected override async Task OnInitAsync()
     {
-        FilterModel = new FiltrationViewModel();
-
         await RefreshType();
         UriHelper.OnLocationChanged += OnLocationChanges;
     }
 
-    private void OnLocationChanges(object sender, string location) => RefreshType().GetAwaiter();
+    private async void OnLocationChanges(object sender, string location) => await RefreshType();
 
     private async Task RefreshType()
     {
@@ -61,7 +44,7 @@ else
 
         FilterModel.Search = QueryHelpers.ParseQuery(uri.Query).TryGetValue("search", out var searchParam)
             ? searchParam.FirstOrDefault()
-            : null;
+            : "";
 
         Page = QueryHelpers.ParseQuery(uri.Query).TryGetValue("page", out var pageParam)
                && int.TryParse(pageParam.FirstOrDefault(), out var pageParamId)
@@ -69,11 +52,13 @@ else
                ? pageParamId
                : 1;
 
+        PageSize = Constants.DefaultPageSize;
+
         await LoadTorrentsAsync();
         StateHasChanged();
     }
 
-    private async Task LoadTorrentsAsync() => Model = await Client.GetTorrentsAsync(Page, Constants.DefaultPageSize, FilterModel);
+    private async Task LoadTorrentsAsync() => Model = await Client.GetTorrentsAsync(Page, PageSize, FilterModel);
 
     private void TorrentDetailsClick(long id) => UriHelper.NavigateTo($"/torrent/{id}");
 

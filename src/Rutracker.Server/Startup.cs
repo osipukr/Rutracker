@@ -42,12 +42,13 @@ namespace Rutracker.Server
                 });
             });
 
-            services.AddScoped<ITorrentService, CachedTorrentViewModelService>();
             services.AddScoped<ITorrentRepository, TorrentRepository>();
+            services.AddScoped<IForumRepository, ForumRepository>();
+            services.AddScoped<ITorrentService, CachedTorrentViewModelService>();
             services.AddScoped<TorrentService>();
-            services.AddScoped(s =>
+            services.AddScoped(options =>
             {
-                var uriHelper = s.GetRequiredService<IUriHelper>();
+                var uriHelper = options.GetRequiredService<IUriHelper>();
 
                 return new HttpClient
                 {
@@ -76,7 +77,6 @@ namespace Rutracker.Server
             }
 
             app.UseRouting();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();

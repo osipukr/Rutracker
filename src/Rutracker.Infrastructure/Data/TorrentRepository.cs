@@ -14,8 +14,15 @@ namespace Rutracker.Infrastructure.Data
         {
         }
 
-        public async Task<IReadOnlyList<string>> GetPopularForumsAsync(int count) =>
-            await _context.Torrents.GroupBy(x => x.Forum.Title).OrderByDescending(x => x.Count()).Take(count)
-                .Select(x => x.Key).ToListAsync();
+        public async Task<IReadOnlyList<long>> GetPopularForumsAsync(int count) =>
+            await _context.Torrents.AsNoTracking()
+                .GroupBy(x => x.ForumId)
+                .OrderByDescending(x => x.Count())
+                .Take(count)
+                .Select(x => x.Key)
+                .ToListAsync();
+
+        public async Task<int> GetForumsCountAsync(long forumId) => 
+            await _context.Torrents.CountAsync(x => x.ForumId == forumId);
     }
 }

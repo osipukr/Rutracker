@@ -14,18 +14,27 @@ namespace Rutracker.Server.Services
     public class TorrentService : ITorrentService
     {
         private readonly ITorrentRepository _torrentRepository;
+        private readonly IForumRepository _forumRepository;
 
-        public TorrentService(ITorrentRepository torrentRepository)
+        public TorrentService(ITorrentRepository torrentRepository, IForumRepository forumRepository)
         {
             _torrentRepository = torrentRepository;
+            _forumRepository = forumRepository;
         }
 
         public async Task<TorrentsViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
         {
-            var search = filter?.Search ?? null;
+            var filterSpecification = new TorrentsFilterSpecification(filter?.Search,
+                                                                      filter?.SelectedTitles,
+                                                                      filter?.SizeFrom,
+                                                                      filter?.SizeTo);
 
-            var filterSpecification = new TorrentsFilterSpecification(search);
-            var filterPaginatedSpecification = new TorrentsFilterPaginatedSpecification((page - 1) * pageSize, pageSize, search);
+            var filterPaginatedSpecification = new TorrentsFilterPaginatedSpecification((page - 1) * pageSize,
+                                                                                        pageSize,
+                                                                                        filter?.Search,
+                                                                                        filter?.SelectedTitles,
+                                                                                        filter?.SizeFrom,
+                                                                                        filter?.SizeTo);
 
             var torrents = await _torrentRepository.ListAsync(filterPaginatedSpecification);
             var totalItems = await _torrentRepository.CountAsync(filterSpecification);
@@ -63,7 +72,7 @@ namespace Rutracker.Server.Services
                     Hash = torrent.Hash,
                     ForumTitle = torrent.Forum.Title,
                     IsDeleted = torrent.IsDeleted,
-                    Content = BBCodeHelper.Parse(torrent.Content),
+                    Content = BBCodeHelper.ParseToHtml(torrent.Content),
                     Files = torrent.Files?.Select(x => new FileItemViewModel
                     {
                         Size = x.Size,
@@ -75,12 +84,22 @@ namespace Rutracker.Server.Services
 
         public async Task<IEnumerable<FacetItem>> GetTitlesAsync(int count)
         {
-            var titles = await _torrentRepository.GetPopularForumsAsync(count);
+            var forumsId = await _torrentRepository.GetPopularForumsAsync(count);
 
-            return titles.Select(x => new FacetItem
+            var tasks = forumsId?.Select(async id =>
             {
-                Value = x
+                var forum = await _forumRepository.GetAsync(id);
+                var forumCount = await _torrentRepository.GetForumsCountAsync(id);
+
+                return new FacetItem
+                {
+                    Id = id.ToString(),
+                    Value = forum.Title,
+                    Count = forumCount
+                };
             });
+
+            return await Task.WhenAll(tasks);
         }
     }
 }

@@ -6,49 +6,87 @@
 }
 else
 {
-    <div class="card card-body mb-3">
+    <button type="button" onclick="@ToggleFiltrationMenu" class="d-block d-md-none btn btn-primary btn-block mb-3">Filters &dtrif;</button>
+
+    <div class="card @FiltrationMenuCssClass d-md-block">
         <EditForm Model="@Model" OnValidSubmit="@ApplyChanged">
-            <div class="form-row my-2 mx-0 shadow-lg rounded">
-                <div class="input-group">
-                    <InputSearch bind-Value="@Model.Search" Class="form-control mr-2" Placeholder="Search for torrents by title" />
-                    <span class="">
-                        <input class="btn btn-primary px-5" type="submit" value="Search" />
-                    </span>
+            <DataAnnotationsValidator />
+
+            <article>
+                <div class="card-header">
+                    <h6 class="title">Search </h6>
                 </div>
-            </div>
-
-            <div class="row mx-0 d-flex flex-column my-2">
-                <button class="btn btn-primary"
-                        type="button"
-                        onclick="@ToggleFiltrationMenu">
-                    Filtration
-                </button>
-
-                <div class="card mb-2 @FiltrationMenuCssClass">
-                    @if (TitlesFacet == null)
-                    {
-                        <p>Loading titles...</p>
-                    }
-                    else
-                    {
-                        <div class="card card-body">
-                            @foreach (var facet in TitlesFacet)
-                            {
-
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" value="@facet.Id" />
-                                         @facet.Value - (@facet.Count)
-                                    </label>
-                                </div>
-
-                            }
+                <div class="filter-content">
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="input-group">
+                                <InputSearch bind-Value="@Model.Search" Class="form-control mr-2" Placeholder="Search" />
+                                <ValidationMessage For="@(() => Model.Search)" />
+                            </div>
                         </div>
-                    }
-
-                    <button class="btn btn-primary" type="submit" onclick="@ToggleFiltrationMenu">Apply</button>
+                    </div>
                 </div>
-            </div>
+            </article>
+
+            <article>
+                <div class="card-header">
+                    <h6 class="title">Range size </h6>
+                </div>
+                <div class="filter-content">
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6 col-6">
+                                <label class="w-100">
+                                    Min size
+                                    <InputNumber bind-Value="@Model.SizeFrom" Class="form-control" />
+                                </label>
+                            </div>
+                            <div class="form-group col-md-6 col-6 text-right">
+                                <label class="w-100">
+                                    Max size
+                                    <InputNumber bind-Value="@Model.SizeTo" Class="form-control" />
+                                </label>
+                            </div>
+                            <ValidationMessage For="@(() => Model.SizeFrom)" />
+                            <ValidationMessage For="@(() => Model.SizeTo)" />
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article>
+                <div class="card-header">
+                    <h6 class="title">Title category </h6>
+                </div>
+                <div class="filter-content">
+                    <div class="card-body">
+                        @if (Titles == null)
+                        {
+
+                        }
+                        else
+                        {
+                            foreach (var facet in Titles.Keys)
+                            {
+                                <div class="custom-control custom-checkbox">
+                                    <span class="float-right badge badge-light">@facet.Count</span>
+                                    <input type="checkbox"
+                                           bind="@Titles[facet]"
+                                           class="custom-control-input"
+                                           id="@facet.Id" />
+                                    <label class="custom-control-label" for="@facet.Id">@facet.Value</label>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </article>
+
+            <article>
+                <div class="card-footer">
+                    <button class="btn btn-primary w-100" type="submit">Apply</button>
+                </div>
+            </article>
         </EditForm>
     </div>
 }
@@ -58,19 +96,26 @@ else
     [Parameter] protected FiltrationViewModel Model { get; set; }
     [Parameter] protected Action ChangedHandler { get; set; }
 
-    private string Name { get; set; } = "Titles";
-
-    private IEnumerable<FacetItem> TitlesFacet { get; set; }
+    private int TitleCount { get; set; }
+    private IDictionary<FacetItem, bool> Titles { get; set; }
 
     private bool _collapseFiltrationMenu = true;
     private string FiltrationMenuCssClass => _collapseFiltrationMenu ? "collapse" : null;
 
     protected override async Task OnInitAsync()
     {
-        TitlesFacet = await Client.GetTitlesAsync(Constants.TitlesCount);
+        TitleCount = Constants.TitlesCount;
+
+        var facets = await Client.GetTitlesAsync(TitleCount);
+
+        Titles = facets?.ToDictionary(x => x, x => false);
     }
 
     private void ToggleFiltrationMenu() => _collapseFiltrationMenu = !_collapseFiltrationMenu;
 
-    private void ApplyChanged() => ChangedHandler?.Invoke();
+    private void ApplyChanged()
+    {
+        Model.SelectedTitles = Titles?.Where(x => x.Value).Select(x => x.Key.Id).ToArray();
+        ChangedHandler?.Invoke();
+    }
 }

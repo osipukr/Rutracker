@@ -1,32 +1,31 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 }
 
-app {
+body {
     position: relative;
-    display: block;
+}
+
+#main-loader {
+    width: 100px;
+    height: 100px;
+}
+
+header {
+    height: 3.5rem;
 }
 
 .navbar-right {
     justify-content: flex-end;
 }
 
-main {
-    margin-top: 3.5rem;
-    padding-top: 1rem;
-}
-
-.active {
-    border-bottom: 2px inset;
-}
-
 .table {
     table-layout: fixed;
 }
 
-    .table td {
+    .table td, th {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;

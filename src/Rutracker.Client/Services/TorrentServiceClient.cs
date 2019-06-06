@@ -24,22 +24,25 @@ namespace Rutracker.Client.Services
         public async Task<TorrentsViewModel> GetTorrentsAsync(int page, int pageSize, FiltrationViewModel fitration)
         {
             var requestUri = string.Format(_torrentsTemplate, page, pageSize);
+            var result = await _httpClient.PostJsonAsync<TorrentsViewModel>(requestUri, fitration);
 
-            return await _httpClient.PostJsonAsync<TorrentsViewModel>(requestUri, fitration);
+            return result;
         }
 
         public async Task<TorrentViewModel> GetTorrentAsync(long id)
         {
             var requestUri = string.Format(_torrentTemplate, id);
+            var result = await _httpClient.GetJsonAsync<TorrentViewModel>(requestUri);
 
-            return await _httpClient.GetJsonAsync<TorrentViewModel>(requestUri);
+            return result;
         }
 
         public async Task<IEnumerable<FacetItem>> GetTitlesAsync(int count)
         {
             var requestUri = string.Format(_titlesTemplate, count);
+            var result = await _httpClient.GetJsonAsync<IEnumerable<FacetItem>>(requestUri);
 
-            return await _httpClient.GetJsonAsync<IEnumerable<FacetItem>>(requestUri);
+            return result;
         }
     }
 }

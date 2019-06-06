@@ -1,7 +1,11 @@
 ﻿@inherits LayoutComponentBase
 
-<NavMenu />
+<header>
+    <NavMenu />
+</header>
 
-<main class="container">
-    @Body
+<main role="main">
+    <div class="container py-3">
+        @Body
+    </div>
 </main>

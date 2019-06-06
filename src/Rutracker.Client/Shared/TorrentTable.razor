@@ -1,48 +1,41 @@
-﻿<div class="table-responsive">
-    <table class="table table-hover table-bordered rounded">
-        <thead class="thead-dark">
-            <tr>
-                @if (TableHeader != null)
-                {
-                    @TableHeader
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @if (Items.Any())
-            {
+﻿@if (Items == null)
+{
+
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col" style="width:10%">Id</th>
+                    <th scope="col" style="width:15%">Size</th>
+                    <th scope="col" style="width:15%">Date</th>
+                    <th scope="col">Title</th>
+                </tr>
+            </thead>
+            <tbody>
                 @foreach (var torrent in Items)
                 {
-                    <tr onclick="@(_ => RowClicked(torrent.Id))">
-                        @RowTemplate(torrent)
+                    <tr>
+                        <th scope="row" title="@torrent.Id">
+                            <a href="@TorrentDetailsUri(torrent.Id)" class="text-body">@torrent.Id</a>
+                        </th>
+                        <td title="@torrent.Size">@torrent.Size</td>
+                        <td title="@torrent.Date.ToShortDateString()">@torrent.Date.ToShortDateString()</td>
+                        <td title="@torrent.Title">
+                            <a href="@TorrentDetailsUri(torrent.Id)" class="text-body">@torrent.Title</a>
+                        </td>
                     </tr>
                 }
-            }
-            else
-            {
-                <tr class="text-center">
-                    <td colspan="4">Torrent list empty ;(</td>
-                </tr>
-            }
-        </tbody>
-        <tfoot>
-            <tr>
-                @if (TableFooter != null)
-                {
-                    @TableFooter
-                }
-            </tr>
-        </tfoot>
-    </table>
-</div>
+            </tbody>
+        </table>
+    </div>
+}
 
 @functions
 {
-    [Parameter] protected RenderFragment TableHeader { get; set; }
-    [Parameter] protected RenderFragment<TorrentItemViewModel> RowTemplate { get; set; }
-    [Parameter] protected RenderFragment TableFooter { get; set; }
     [Parameter] protected IEnumerable<TorrentItemViewModel> Items { get; set; }
-    [Parameter] protected Action<long> ClickHandler { get; set; }
 
-    private void RowClicked(long id) => ClickHandler?.Invoke(id);
+    private string TorrentDetailsUri(long id) => $"/torrent/{id}";
 }
