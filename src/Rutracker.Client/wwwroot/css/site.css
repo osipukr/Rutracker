@@ -30,3 +30,19 @@ header {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
+.validation-message {
+    margin-top: 10px;
+    font-size: 13px;
+    color: red;
+}
+
+.title-facet {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 65px;
+}
+
+    .title-facet:not(:last-child) {
+        margin-bottom: 10px;
+    }

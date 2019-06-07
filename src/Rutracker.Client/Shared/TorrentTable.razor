@@ -1,19 +1,15 @@
-﻿@if (Items == null)
-{
-
-}
-else
-{
-    <div class="table-responsive">
-        <table class="table table-hover table-bordered">
-            <thead class="thead-light">
-                <tr>
-                    <th scope="col" style="width:10%">Id</th>
-                    <th scope="col" style="width:15%">Size</th>
-                    <th scope="col" style="width:15%">Date</th>
-                    <th scope="col">Title</th>
-                </tr>
-            </thead>
+﻿<div class="table-responsive">
+    <table class="table table-hover table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col" style="width:10%">Id</th>
+                <th scope="col" style="width:15%">Size</th>
+                <th scope="col" style="width:15%">Date</th>
+                <th scope="col">Title</th>
+            </tr>
+        </thead>
+        @if (Items?.Any() ?? false)
+        {
             <tbody>
                 @foreach (var torrent in Items)
                 {
@@ -29,9 +25,17 @@ else
                     </tr>
                 }
             </tbody>
-        </table>
-    </div>
-}
+        }
+        else
+        {
+            <tfoot>
+                <tr>
+                    <th colspan="4" class="text-center">Torrent list is empty</th>
+                </tr>
+            </tfoot>
+        }
+    </table>
+</div>
 
 @functions
 {

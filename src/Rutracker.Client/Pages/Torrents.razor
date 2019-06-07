@@ -3,24 +3,24 @@
 @inject TorrentServiceClient Client
 @inject IUriHelper UriHelper
 
-@if (Model == null)
-{
-    <Loader />
-}
-else
-{
-    <div class="row">
-        <div class="col-lg-3 pb-3">
-            <Filtration Model="@FilterModel" ChangedHandler="@FiltrationhButtonClick" />
-        </div>
+<div class="row">
+    <div class="col-lg-3 pb-3">
+        <Filtration Model="@FilterModel" ChangedHandler="@FilterApplyButtonClick" />
+    </div>
 
-        <div class="col-lg-9">
+    <div class="col-lg-9">
+        @if (Model == null)
+        {
+            <Loader />
+        }
+        else
+        {
             <TorrentTable Items="@Model.TorrentItems" />
 
             <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonClick" />
-        </div>
+        }
     </div>
-}
+</div>
 
 @functions
 {
@@ -40,41 +40,30 @@ else
 
     private async Task RefreshType()
     {
-        var uri = new Uri(UriHelper.GetAbsoluteUri());
+        var uriQuery = new Uri(UriHelper.GetAbsoluteUri()).Query;
 
-        FilterModel.Search = QueryHelpers.ParseQuery(uri.Query).TryGetValue("search", out var searchParam)
-            ? searchParam.FirstOrDefault()
-            : "";
-
-        Page = QueryHelpers.ParseQuery(uri.Query).TryGetValue("page", out var pageParam)
+        Page = QueryHelpers.ParseQuery(uriQuery).TryGetValue("page", out var pageParam)
                && int.TryParse(pageParam.FirstOrDefault(), out var pageParamId)
                && pageParamId > 1
                ? pageParamId
                : 1;
 
-        PageSize = Constants.DefaultPageSize;
+        PageSize = Constants.DEFAULT_PAGE_SIZE;
+
+        FilterModel.Search = QueryHelpers.ParseQuery(uriQuery).TryGetValue("search", out var searchParam)
+            ? searchParam.FirstOrDefault()
+            : null;
 
         await LoadTorrentsAsync();
+
         StateHasChanged();
     }
 
     private async Task LoadTorrentsAsync() => Model = await Client.GetTorrentsAsync(Page, PageSize, FilterModel);
 
     private void TorrentDetailsClick(long id) => UriHelper.NavigateTo($"/torrent/{id}");
-
-    private void PageButtonClick(int page)
-    {
-        var uri = string.Format(quearyTemplate, FilterModel.Search, page);
-
-        UriHelper.NavigateTo(uri);
-    }
-
-    private void FiltrationhButtonClick()
-    {
-        var uri = string.Format(quearyTemplate, FilterModel.Search, 1);
-
-        UriHelper.NavigateTo(uri);
-    }
+    private void PageButtonClick(int page) => UriHelper.NavigateTo(string.Format(quearyTemplate, FilterModel.Search, page));
+    private void FilterApplyButtonClick() => UriHelper.NavigateTo(string.Format(quearyTemplate, FilterModel.Search, 1));
 
     public void Dispose() => UriHelper.OnLocationChanged -= OnLocationChanges;
 }

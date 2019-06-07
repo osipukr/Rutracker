@@ -16,7 +16,11 @@ else
         <div class="card-footer text-muted py-3"></div>
     </div>
 
-    @if (Model.TorrentDetailsItem != null)
+    @if (Model.TorrentDetailsItem == null)
+    {
+        <p>Torrent not found</p>
+    }
+    else
     {
         var torrent = Model.TorrentDetailsItem;
 
@@ -44,10 +48,6 @@ else
             <li class="list-group-item rounded">@((MarkupString)torrent.Content)</li>
         </ul>
     }
-    else
-    {
-        <p>Torrent not found</p>
-    }
 }
 
 @functions
@@ -55,9 +55,9 @@ else
     [Parameter] protected long Id { get; set; }
     private TorrentViewModel Model { get; set; }
 
-    protected override async Task OnInitAsync() => await LoadAsync();
+    protected override async Task OnInitAsync() => await LoadTorrentsync();
 
-    private async Task LoadAsync() => Model = await Client.GetTorrentAsync(Id);
+    private async Task LoadTorrentsync() => Model = await Client.GetTorrentAsync(Id);
 
     private void BackToButtonClick() => UriHelper.NavigateTo("/torrents");
 }

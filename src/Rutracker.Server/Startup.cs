@@ -15,6 +15,7 @@ using Rutracker.Core.Interfaces;
 using Rutracker.Infrastructure.Data;
 using Rutracker.Server.Interfaces;
 using Rutracker.Server.Services;
+using AutoMapper;
 
 namespace Rutracker.Server
 {
@@ -29,6 +30,9 @@ namespace Rutracker.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
+#pragma warning disable 618
+            services.AddAutoMapper();
+#pragma warning restore 618
             services.AddMvc().AddNewtonsoftJson();
             services.AddRazorPages();
             services.AddServerSideBlazor();

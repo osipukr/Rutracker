@@ -1,5 +1,5 @@
 ﻿<div class="d-flex flex-column align-items-center">
-    @if (Model.TotalPages > 1)
+    @if (Model.TotalPages > 1 && Model.CurrentPage <= Model.TotalPages)
     {
         <ul class="pagination">
             <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
@@ -43,7 +43,10 @@
         <p class="m-0">Page: @Model.CurrentPage of @Model.TotalPages</p>
     }
 
-    <p class="m-0">Total items: @Model.TotalItems</p>
+    @if (Model.TotalItems > 0)
+    {
+        <p class="m-0">Total items: @Model.TotalItems</p>
+    }
 </div>
 
 @functions
@@ -56,8 +59,8 @@
 
     protected override void OnParametersSet()
     {
-        StartIndex = Math.Max(Model.CurrentPage - Constants.PaginationCount / 2, 1);
-        FinishIndex = Math.Min(Model.CurrentPage + Constants.PaginationCount / 2, Model.TotalPages);
+        StartIndex = Math.Max(Model.CurrentPage - Constants.PAGINATION_COUNT / 2, 1);
+        FinishIndex = Math.Min(Model.CurrentPage + Constants.PAGINATION_COUNT / 2, Model.TotalPages);
 
         base.OnParametersSet();
     }

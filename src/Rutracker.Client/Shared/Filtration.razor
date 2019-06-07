@@ -20,7 +20,7 @@ else
                     <div class="card-body">
                         <div class="form-row">
                             <div class="input-group">
-                                <InputSearch bind-Value="@Model.Search" Class="form-control mr-2" Placeholder="Search" />
+                                <InputSearch bind-Value="@Model.Search" Class="form-control w-100" Placeholder="Search" />
                                 <ValidationMessage For="@(() => Model.Search)" />
                             </div>
                         </div>
@@ -35,13 +35,13 @@ else
                 <div class="filter-content">
                     <div class="card-body">
                         <div class="form-row">
-                            <div class="form-group col-md-6 col-6">
+                            <div class="col-md-6 col-6">
                                 <label class="w-100">
                                     Min size
                                     <InputNumber bind-Value="@Model.SizeFrom" Class="form-control" />
                                 </label>
                             </div>
-                            <div class="form-group col-md-6 col-6 text-right">
+                            <div class="col-md-6 col-6 text-right">
                                 <label class="w-100">
                                     Max size
                                     <InputNumber bind-Value="@Model.SizeTo" Class="form-control" />
@@ -62,19 +62,19 @@ else
                     <div class="card-body">
                         @if (Titles == null)
                         {
-
+                            <Loader />
                         }
                         else
                         {
                             foreach (var facet in Titles.Keys)
                             {
-                                <div class="custom-control custom-checkbox">
+                                <div class="custom-control custom-checkbox title-facet">
                                     <span class="float-right badge badge-light">@facet.Count</span>
                                     <input type="checkbox"
                                            bind="@Titles[facet]"
-                                           class="custom-control-input"
+                                           class="custom-control-input d-none"
                                            id="@facet.Id" />
-                                    <label class="custom-control-label" for="@facet.Id">@facet.Value</label>
+                                    <label class="custom-control-label h-100" for="@facet.Id" title="@facet.Value">@facet.Value</label>
                                 </div>
                             }
                         }
@@ -104,7 +104,7 @@ else
 
     protected override async Task OnInitAsync()
     {
-        TitleCount = Constants.TitlesCount;
+        TitleCount = Constants.FORUM_TITLES_COUNT;
 
         var facets = await Client.GetTitlesAsync(TitleCount);
 

@@ -9,20 +9,23 @@ namespace Rutracker.Infrastructure.Data
 {
     public class TorrentRepository : Repository<Torrent, long>, ITorrentRepository
     {
-        public TorrentRepository(TorrentContext context) 
+        public TorrentRepository(TorrentContext context)
             : base(context)
         {
         }
 
-        public async Task<IReadOnlyList<long>> GetPopularForumsAsync(int count) =>
-            await _context.Torrents.AsNoTracking()
+        public async Task<IReadOnlyList<long>> GetPopularForumsAsync(int count)
+        {
+            return await _context.Torrents.AsNoTracking()
                 .GroupBy(x => x.ForumId)
                 .OrderByDescending(x => x.Count())
                 .Take(count)
                 .Select(x => x.Key)
                 .ToListAsync();
 
-        public async Task<int> GetForumsCountAsync(long forumId) => 
+        }
+
+        public async Task<int> GetForumsCountAsync(long forumId) =>
             await _context.Torrents.CountAsync(x => x.ForumId == forumId);
     }
 }
