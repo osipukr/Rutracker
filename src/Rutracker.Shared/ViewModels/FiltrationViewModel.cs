@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Rutracker.Shared.ViewModels
 {
@@ -17,6 +18,6 @@ namespace Rutracker.Shared.ViewModels
         public int? SizeTo { get; set; }
 
         [Display(Name = "Forum titles")]
-        public string[] SelectedTitles { get; set; }
+        public IReadOnlyCollection<string> SelectedTitles { get; set; }
     }
 }

@@ -15,6 +15,7 @@ namespace Rutracker.Server
             using (var context = scope.ServiceProvider.GetRequiredService<TorrentContext>())
             {
                 context.Database.EnsureCreated();
+                context.ChangeTracker.AutoDetectChangesEnabled = false;
             }
 
             host.Run();

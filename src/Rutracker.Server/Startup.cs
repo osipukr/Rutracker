@@ -47,9 +47,8 @@ namespace Rutracker.Server
             });
 
             services.AddScoped<ITorrentRepository, TorrentRepository>();
-            services.AddScoped<IForumRepository, ForumRepository>();
             services.AddScoped<ITorrentService, CachedTorrentViewModelService>();
-            services.AddScoped<TorrentService>();
+            services.AddScoped<TorrentViewModelService>();
             services.AddScoped(options =>
             {
                 var uriHelper = options.GetRequiredService<IUriHelper>();

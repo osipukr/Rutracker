@@ -6,7 +6,6 @@ namespace Rutracker.Core.Interfaces
 {
     public interface ITorrentRepository : IRepository<Torrent, long>
     {
-        Task<IReadOnlyList<long>> GetPopularForumsAsync(int count);
-        Task<int> GetForumsCountAsync(long forumId);
+        Task<IReadOnlyList<(long Id, string Value, int Count)>> GetPopularForumsAsync(int count);
     }
 }

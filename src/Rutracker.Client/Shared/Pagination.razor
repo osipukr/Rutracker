@@ -2,9 +2,9 @@
     @if (Model.TotalPages > 1 && Model.CurrentPage <= Model.TotalPages)
     {
         <ul class="pagination">
-            <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+            <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : null)">
                 <button class="page-link" onclick="@(_ => PageButtonClick(1))">
-                    <span aria-hidden="true">&laquo;</span>
+                    <span aria-hidden="true">&#171;</span>
                     <span class="sr-only">Begin</span>
                 </button>
             </li>
@@ -32,9 +32,9 @@
                 }
             }
 
-            <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+            <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : null)">
                 <button class="page-link" onclick="@(_ => PageButtonClick(Model.TotalPages))">
-                    <span aria-hidden="true">&raquo;</span>
+                    <span aria-hidden="true">&#187;</span>
                     <span class="sr-only">End</span>
                 </button>
             </li>
@@ -59,8 +59,23 @@
 
     protected override void OnParametersSet()
     {
-        StartIndex = Math.Max(Model.CurrentPage - Constants.PAGINATION_COUNT / 2, 1);
-        FinishIndex = Math.Min(Model.CurrentPage + Constants.PAGINATION_COUNT / 2, Model.TotalPages);
+        var start = Model.HasNext ? Constants.PaginationCount / 2 : Constants.PaginationCount - 1;
+        var finish = Model.HasPrevious ? Constants.PaginationCount / 2 : Constants.PaginationCount - 1;
+
+        // for penultimate page
+        if (Model.CurrentPage == Model.TotalPages - 1)
+        {
+            start++;
+        }
+
+        // for second page
+        if (Model.CurrentPage == 2)
+        {
+            finish++;
+        }
+
+        StartIndex = Math.Max(Model.CurrentPage - start, 1);
+        FinishIndex = Math.Min(Model.CurrentPage + finish, Model.TotalPages);
 
         base.OnParametersSet();
     }

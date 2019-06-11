@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -14,18 +15,15 @@ namespace Rutracker.Infrastructure.Data
         {
         }
 
-        public async Task<IReadOnlyList<long>> GetPopularForumsAsync(int count)
+        public async Task<IReadOnlyList<(long Id, string Value, int Count)>> GetPopularForumsAsync(int count)
         {
-            return await _context.Torrents.AsNoTracking()
-                .GroupBy(x => x.ForumId)
-                .OrderByDescending(x => x.Count())
+            return await _context.Torrents.GroupBy(
+                    x => x.ForumId,
+                    x => x.Forum.Title,
+                    (id, titles) => ValueTuple.Create(id, titles.FirstOrDefault(), titles.Count()))
+                .OrderByDescending(x => x.Item3)
                 .Take(count)
-                .Select(x => x.Key)
                 .ToListAsync();
-
         }
-
-        public async Task<int> GetForumsCountAsync(long forumId) =>
-            await _context.Torrents.CountAsync(x => x.ForumId == forumId);
     }
 }

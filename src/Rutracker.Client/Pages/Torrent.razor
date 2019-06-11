@@ -10,54 +10,100 @@ else
 {
     <div class="card text-center mb-3">
         <div class="card-header py-3"></div>
+
         <div class="card-body">
-            <button class="btn btn-primary" onclick="@BackToButtonClick">Back to full torrents list</button>
+            <button class="btn btn-primary"
+                    onclick="@BackToButtonClick">
+                Back to full torrents list
+            </button>
         </div>
+
         <div class="card-footer text-muted py-3"></div>
     </div>
 
     @if (Model.TorrentDetailsItem == null)
     {
-        <p>Torrent not found</p>
+        <h1 class="text-center">Torrent not found ;(</h1>
     }
     else
     {
         var torrent = Model.TorrentDetailsItem;
 
-        <ul class="list-group mb-4 shadow-lg rounded">
-            <li class="list-group-item rounded">Id - @torrent.Id</li>
-            <li class="list-group-item rounded">Size - @torrent.Size</li>
-            <li class="list-group-item rounded">Date - @torrent.Date.ToLongDateString()</li>
-            <li class="list-group-item rounded">Title - @torrent.Title</li>
-            <li class="list-group-item rounded">Hash - @torrent.Hash</li>
-            <li class="list-group-item rounded">Forum title - @torrent.ForumTitle</li>
-            <li class="list-group-item rounded">Is deleted - @(torrent.IsDeleted ? "Yes" : "No")</li>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <span class="badge badge-primary">Id</span> - @torrent.Id
+            </div>
+        </div>
 
-            @if (torrent.Files.Any())
-            {
-                <li class="list-group-item rounded">
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <span class="badge badge-primary">Title</span> - @torrent.Title
+            </div>
+        </div>
+
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <span class="badge badge-primary">Size</span> - @torrent.Size bytes
+            </div>
+        </div>
+
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <span class="badge badge-primary">Date</span> - @torrent.Date.ToLongDateString()
+            </div>
+        </div>
+
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <span class="badge badge-primary">Hash</span> - @torrent.Hash
+            </div>
+        </div>
+
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <span class="badge badge-primary">Forum title</span> - @torrent.ForumTitle
+            </div>
+        </div>
+
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <span class="badge badge-primary">Is deleted</span> - @(torrent.IsDeleted ? "Yes" : "No")
+            </div>
+        </div>
+
+        @if (torrent.Files.Any())
+        {
+            <div class="card mb-2 shadow-sm">
+                <div class="card-body">
+                    <span class="badge badge-primary mb-2">Files</span>
+
                     <ul class="list-group">
                         @foreach (var file in torrent.Files)
                         {
-                            <li class="list-group-item rounded">@file.Name [Size: @file.Size]</li>
+                            <li class="list-group-item rounded">
+                                <span class="badge badge-primary">Name:</span> @file.Name <br />
+                                <span class="badge badge-primary">Size:</span> @file.Size
+                            </li>
                         }
                     </ul>
-                </li>
-            }
+                </div>
+            </div>
+        }
 
-            <li class="list-group-item rounded">@((MarkupString)torrent.Content)</li>
-        </ul>
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">@((MarkupString)torrent.Content)</div>
+        </div>
     }
 }
 
 @functions
 {
     [Parameter] protected long Id { get; set; }
-    private TorrentViewModel Model { get; set; }
+    private TorrentIndexViewModel Model { get; set; }
 
-    protected override async Task OnInitAsync() => await LoadTorrentsync();
+    protected override async Task OnInitAsync() => await LoadTorrentAsync();
 
-    private async Task LoadTorrentsync() => Model = await Client.GetTorrentAsync(Id);
+    private async Task LoadTorrentAsync() => Model = await Client.GetTorrentAsync(Id);
 
     private void BackToButtonClick() => UriHelper.NavigateTo("/torrents");
 }

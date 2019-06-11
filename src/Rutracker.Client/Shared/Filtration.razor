@@ -1,95 +1,109 @@
 ﻿@inject TorrentServiceClient Client
+@inject IUriHelper UriHelper
 
-@if (Model == null)
-{
+<EditForm Model="@Model" OnValidSubmit="@ApplyButtonClick">
+    <DataAnnotationsValidator />
 
-}
-else
-{
-    <button type="button" onclick="@ToggleFiltrationMenu" class="d-block d-md-none btn btn-primary btn-block mb-3">Filters &dtrif;</button>
+    <div class="card filter-card">
+        <div class="card-header" onclick="@(_ => ToggleButton(ref _collapseSearchCard))">
+            <h6>
+                Search
+                <span class="font-weight-bold">@((MarkupString)ArrowSymbol(_collapseSearchCard))</span>
+            </h6>
+        </div>
 
-    <div class="card @FiltrationMenuCssClass d-md-block">
-        <EditForm Model="@Model" OnValidSubmit="@ApplyChanged">
-            <DataAnnotationsValidator />
-
-            <article>
-                <div class="card-header">
-                    <h6 class="title">Search </h6>
+        <div class="card-body @CollapseCssClass(_collapseSearchCard)">
+            <div class="form-row">
+                <div class="input-group">
+                    <InputSearch bind-Value="@Model.Search" Class="form-control w-100" Placeholder="Search" />
+                    <ValidationMessage For="@(() => Model.Search)" />
                 </div>
-                <div class="filter-content">
-                    <div class="card-body">
-                        <div class="form-row">
-                            <div class="input-group">
-                                <InputSearch bind-Value="@Model.Search" Class="form-control w-100" Placeholder="Search" />
-                                <ValidationMessage For="@(() => Model.Search)" />
-                            </div>
-                        </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card filter-card">
+        <div class="card-header" onclick="@(_ => ToggleButton(ref _collapseSizeCard))">
+            <h6>
+                Range size
+                <span class="font-weight-bold">@((MarkupString)ArrowSymbol(_collapseSizeCard))</span>
+            </h6>
+        </div>
+
+        <div class="card-body @CollapseCssClass(_collapseSizeCard)">
+            <div class="form-row">
+                <div class="col-md-6 col-6">
+                    <label class="w-100">
+                        Min size
+                        <InputNumber bind-Value="@Model.SizeFrom" Class="form-control" />
+                    </label>
+                </div>
+                <div class="col-md-6 col-6 text-right">
+                    <label class="w-100">
+                        Max size
+                        <InputNumber bind-Value="@Model.SizeTo" Class="form-control" />
+                    </label>
+                </div>
+
+                <ValidationMessage For="@(() => Model.SizeFrom)" />
+                <ValidationMessage For="@(() => Model.SizeTo)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="card filter-card">
+        <div class="card-header" onclick="@(_ => ToggleButton(ref _collapseTitlesCard))">
+            <h6>
+                Forum titles category
+                <span class="font-weight-bold">@((MarkupString)ArrowSymbol(_collapseTitlesCard))</span>
+            </h6>
+        </div>
+
+        <div class="card-body @CollapseCssClass(_collapseTitlesCard)">
+            @if (TitleFacets == null)
+            {
+                <Loader />
+            }
+            else
+            {
+                foreach (var facet in TitleFacets)
+                {
+                    <div class="custom-control custom-checkbox title-facet">
+                        <span class="float-right badge badge-primary">@facet.Count</span>
+
+                        <InputCheckbox bind-Value="@facet.IsSelected"
+                                       Class="custom-control-input d-none"
+                                       Id="@facet.Id" />
+
+                        <label class="custom-control-label h-100"
+                               for="@facet.Id"
+                               title="@facet.Value">
+                            @facet.Value
+                        </label>
                     </div>
-                </div>
-            </article>
+                }
+            }
+        </div>
+    </div>
 
-            <article>
-                <div class="card-header">
-                    <h6 class="title">Range size </h6>
-                </div>
-                <div class="filter-content">
-                    <div class="card-body">
-                        <div class="form-row">
-                            <div class="col-md-6 col-6">
-                                <label class="w-100">
-                                    Min size
-                                    <InputNumber bind-Value="@Model.SizeFrom" Class="form-control" />
-                                </label>
-                            </div>
-                            <div class="col-md-6 col-6 text-right">
-                                <label class="w-100">
-                                    Max size
-                                    <InputNumber bind-Value="@Model.SizeTo" Class="form-control" />
-                                </label>
-                            </div>
-                            <ValidationMessage For="@(() => Model.SizeFrom)" />
-                            <ValidationMessage For="@(() => Model.SizeTo)" />
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article>
-                <div class="card-header">
-                    <h6 class="title">Title category </h6>
-                </div>
-                <div class="filter-content">
-                    <div class="card-body">
-                        @if (Titles == null)
-                        {
-                            <Loader />
-                        }
-                        else
-                        {
-                            foreach (var facet in Titles.Keys)
-                            {
-                                <div class="custom-control custom-checkbox title-facet">
-                                    <span class="float-right badge badge-light">@facet.Count</span>
-                                    <input type="checkbox"
-                                           bind="@Titles[facet]"
-                                           class="custom-control-input d-none"
-                                           id="@facet.Id" />
-                                    <label class="custom-control-label h-100" for="@facet.Id" title="@facet.Value">@facet.Value</label>
-                                </div>
-                            }
-                        }
-                    </div>
-                </div>
-            </article>
-
-            <article>
-                <div class="card-footer">
+    <div class="card filter-card">
+        <div class="card-footer border-top-0">
+            <div class="row">
+                <div class="col-6">
                     <button class="btn btn-primary w-100" type="submit">Apply</button>
                 </div>
-            </article>
-        </EditForm>
+
+                <div class="col-6">
+                    <button class="btn btn-primary w-100"
+                            onclick="@AllButtonClick"
+                            type="reset">
+                        All
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-}
+</EditForm>
 
 @functions
 {
@@ -97,25 +111,43 @@ else
     [Parameter] protected Action ChangedHandler { get; set; }
 
     private int TitleCount { get; set; }
-    private IDictionary<FacetItem, bool> Titles { get; set; }
+    private IEnumerable<FacetItem> TitleFacets { get; set; }
 
-    private bool _collapseFiltrationMenu = true;
-    private string FiltrationMenuCssClass => _collapseFiltrationMenu ? "collapse" : null;
+    // Can be done through an array
+    private bool _collapseSearchCard = false;
+    private bool _collapseSizeCard = true;
+    private bool _collapseTitlesCard = true;
+
+    private static string ArrowSymbol(bool value) => value ? "&#8595" : "&#8593";
+    private static string CollapseCssClass(bool value) => value ? "collapse" : null;
 
     protected override async Task OnInitAsync()
     {
-        TitleCount = Constants.FORUM_TITLES_COUNT;
-
-        var facets = await Client.GetTitlesAsync(TitleCount);
-
-        Titles = facets?.ToDictionary(x => x, x => false);
+        TitleCount = Constants.ForumTitlesCount;
+        TitleFacets = await Client.GetTitlesAsync(TitleCount);
     }
 
-    private void ToggleFiltrationMenu() => _collapseFiltrationMenu = !_collapseFiltrationMenu;
+    private static void ToggleButton(ref bool value) => value = !value;
 
-    private void ApplyChanged()
+    private void ApplyButtonClick()
     {
-        Model.SelectedTitles = Titles?.Where(x => x.Value).Select(x => x.Key.Id).ToArray();
+        Model.SelectedTitles = TitleFacets?.Where(x => x.IsSelected).Select(x => x.Id).ToArray();
         ChangedHandler?.Invoke();
+    }
+
+    private void AllButtonClick()
+    {
+        Model.SelectedTitles = default;
+        Model.SizeFrom = Model.SizeTo = default;
+
+        if (TitleFacets != null)
+        {
+            foreach (var facet in TitleFacets)
+            {
+                facet.IsSelected = false;
+            }
+        }
+
+        UriHelper.NavigateTo("/torrents");
     }
 }

@@ -4,6 +4,7 @@
     {
         public string Id { get; set; }
         public string Value { get; set; }
-        public int Count { get; set; }
+        public string Count { get; set; }
+        public bool IsSelected { get; set; }
     }
 }

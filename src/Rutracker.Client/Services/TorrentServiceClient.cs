@@ -12,37 +12,34 @@ namespace Rutracker.Client.Services
     {
         private readonly HttpClient _httpClient;
 
-        private readonly string _torrentsTemplate = "api/torrent/torrents?page={0}&pageSize={1}";
-        private readonly string _torrentTemplate = "api/torrent/details?id={0}";
-        private readonly string _titlesTemplate = "api/torrent/titles?count={0}";
+        private const string TorrentsTemplate = "api/torrent/torrents?page={0}&pageSize={1}";
+        private const string TorrentTemplate = "api/torrent/details?id={0}";
+        private const string TitlesTemplate = "api/torrent/titles?count={0}";
 
         public TorrentServiceClient(HttpClient client)
         {
             _httpClient = client;
         }
 
-        public async Task<TorrentsViewModel> GetTorrentsAsync(int page, int pageSize, FiltrationViewModel fitration)
+        public async Task<TorrentsIndexViewModel> GetTorrentsAsync(int page, int pageSize, FiltrationViewModel filter)
         {
-            var requestUri = string.Format(_torrentsTemplate, page, pageSize);
-            var result = await _httpClient.PostJsonAsync<TorrentsViewModel>(requestUri, fitration);
+            var requestUri = string.Format(TorrentsTemplate, page, pageSize);
 
-            return result;
+            return await _httpClient.PostJsonAsync<TorrentsIndexViewModel>(requestUri, filter);
         }
 
-        public async Task<TorrentViewModel> GetTorrentAsync(long id)
+        public async Task<TorrentIndexViewModel> GetTorrentAsync(long id)
         {
-            var requestUri = string.Format(_torrentTemplate, id);
-            var result = await _httpClient.GetJsonAsync<TorrentViewModel>(requestUri);
+            var requestUri = string.Format(TorrentTemplate, id);
 
-            return result;
+            return await _httpClient.GetJsonAsync<TorrentIndexViewModel>(requestUri);
         }
 
         public async Task<IEnumerable<FacetItem>> GetTitlesAsync(int count)
         {
-            var requestUri = string.Format(_titlesTemplate, count);
-            var result = await _httpClient.GetJsonAsync<IEnumerable<FacetItem>>(requestUri);
+            var requestUri = string.Format(TitlesTemplate, count);
 
-            return result;
+            return await _httpClient.GetJsonAsync<IEnumerable<FacetItem>>(requestUri);
         }
     }
 }

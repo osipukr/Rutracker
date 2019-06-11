@@ -25,7 +25,13 @@ header {
     table-layout: fixed;
 }
 
-    .table td, th {
+    .table tbody tr,
+    .table tfoot tr {
+        transition: 0.3s;
+    }
+
+    .table tbody, td, th
+    .table tfoot td, th {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -40,9 +46,26 @@ header {
 .title-facet {
     overflow: hidden;
     text-overflow: ellipsis;
-    height: 65px;
+    max-height: 65px;
 }
 
     .title-facet:not(:last-child) {
         margin-bottom: 10px;
     }
+
+.filter-card {
+    user-select: none;
+}
+
+    .filter-card:not(:last-child) {
+        margin-bottom: .5rem !important
+    }
+
+    .filter-card .card-header:not(:last-child) {
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .filter-card .card-header:not(:last-child):hover {
+            background-color: lightgray;
+        }

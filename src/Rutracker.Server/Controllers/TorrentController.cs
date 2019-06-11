@@ -17,17 +17,17 @@ namespace Rutracker.Server.Controllers
 
         [Route("torrents")]
         [HttpGet("{page}/{pageSize}")]
-        public async Task<IActionResult> GetTorrentsAsync(int page, int pageSize, [FromBody] FiltrationViewModel fitration)
+        public async Task<IActionResult> GetTorrentsAsync(int page, int pageSize, [FromBody] FiltrationViewModel filter)
         {
             try
             {
-                var result = await _torrentService.GetTorrentsIndexAsync(page, pageSize, fitration);
+                var result = await _torrentService.GetTorrentsIndexAsync(page, pageSize, filter);
 
                 return Ok(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
@@ -41,9 +41,9 @@ namespace Rutracker.Server.Controllers
 
                 return Ok(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
@@ -57,9 +57,9 @@ namespace Rutracker.Server.Controllers
 
                 return Ok(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
     }

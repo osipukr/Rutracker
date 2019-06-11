@@ -1,12 +1,12 @@
 ﻿<nav class="navbar navbar-expand-sm fixed-top navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="">@brand</a>
+        <a class="navbar-brand" href="/">@Brand</a>
 
         <button class="navbar-toggler" onclick="@ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="@navMenuCssClass navbar-collapse navbar-right">
+        <div class="@NavMenuCssClass navbar-collapse navbar-right">
             <ul class="nav navbar-nav">
                 <li class="nav-item">
                     <NavLink class="nav-link" href="/torrents">Torrents</NavLink>
@@ -21,9 +21,10 @@
 
 @functions
 {
-    private bool collapseNavMenu = true;
-    private string navMenuCssClass => collapseNavMenu ? "collapse" : null;
-    private string brand = Constants.SERVICE_NAME;
+    private const string Brand = Constants.ServiceName;
 
-    private void ToggleNavMenu() => collapseNavMenu = !collapseNavMenu;
+    private bool _collapseNavMenu = true;
+    private string NavMenuCssClass => _collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu() => _collapseNavMenu = !_collapseNavMenu;
 }

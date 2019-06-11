@@ -32,7 +32,7 @@ namespace Rutracker.Infrastructure.Data
         public virtual async Task<int> CountAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
             await _context.Set<TEntity>().CountAsync(specification.Where);
 
-        private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity, TPrimaryKey> specification) =>
+        protected IQueryable<TEntity> ApplySpecification(ISpecification<TEntity, TPrimaryKey> specification) =>
            SpecificationEvaluator<TEntity, TPrimaryKey>.ApplySpecification(_context.Set<TEntity>(), specification);
     }
 }

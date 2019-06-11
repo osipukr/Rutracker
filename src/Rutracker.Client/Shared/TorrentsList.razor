@@ -1,9 +1,9 @@
-﻿<div class="table-responsive">
-    <table class="table table-hover table-bordered">
+﻿<div class="table-responsive rounded mb-3">
+    <table class="table table-hover table-bordered mb-0">
         <thead class="thead-light">
             <tr>
                 <th scope="col" style="width:10%">Id</th>
-                <th scope="col" style="width:15%">Size</th>
+                <th scope="col" style="width:15%">Size (bytes)</th>
                 <th scope="col" style="width:15%">Date</th>
                 <th scope="col">Title</th>
             </tr>
@@ -30,7 +30,7 @@
         {
             <tfoot>
                 <tr>
-                    <th colspan="4" class="text-center">Torrent list is empty</th>
+                    <th colspan="4" class="text-center">Torrent list is empty ;(</th>
                 </tr>
             </tfoot>
         }
@@ -41,5 +41,5 @@
 {
     [Parameter] protected IEnumerable<TorrentItemViewModel> Items { get; set; }
 
-    private string TorrentDetailsUri(long id) => $"/torrent/{id}";
+    private static string TorrentDetailsUri(long id) => $"/torrent/{id}";
 }

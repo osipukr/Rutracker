@@ -15,8 +15,7 @@
         }
         else
         {
-            <TorrentTable Items="@Model.TorrentItems" />
-
+            <TorrentsList Items="@Model.TorrentItems" />
             <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonClick" />
         }
     </div>
@@ -24,11 +23,13 @@
 
 @functions
 {
-    private TorrentsViewModel Model { get; set; }
+    private TorrentsIndexViewModel Model { get; set; }
     private FiltrationViewModel FilterModel { get; set; } = new FiltrationViewModel();
+
     private int Page { get; set; }
     private int PageSize { get; set; }
-    private const string quearyTemplate = "/torrents?search={0}&page={1}";
+
+    private const string QuearyTemplate = "/torrents?search={0}&page={1}";
 
     protected override async Task OnInitAsync()
     {
@@ -48,22 +49,20 @@
                ? pageParamId
                : 1;
 
-        PageSize = Constants.DEFAULT_PAGE_SIZE;
+        PageSize = Constants.DefaultPageSize;
 
         FilterModel.Search = QueryHelpers.ParseQuery(uriQuery).TryGetValue("search", out var searchParam)
             ? searchParam.FirstOrDefault()
             : null;
 
         await LoadTorrentsAsync();
-
         StateHasChanged();
     }
 
     private async Task LoadTorrentsAsync() => Model = await Client.GetTorrentsAsync(Page, PageSize, FilterModel);
 
-    private void TorrentDetailsClick(long id) => UriHelper.NavigateTo($"/torrent/{id}");
-    private void PageButtonClick(int page) => UriHelper.NavigateTo(string.Format(quearyTemplate, FilterModel.Search, page));
-    private void FilterApplyButtonClick() => UriHelper.NavigateTo(string.Format(quearyTemplate, FilterModel.Search, 1));
+    private void PageButtonClick(int page) => UriHelper.NavigateTo(string.Format(QuearyTemplate, FilterModel.Search, page));
+    private void FilterApplyButtonClick() => UriHelper.NavigateTo(string.Format(QuearyTemplate, FilterModel.Search, 1));
 
     public void Dispose() => UriHelper.OnLocationChanged -= OnLocationChanges;
 }

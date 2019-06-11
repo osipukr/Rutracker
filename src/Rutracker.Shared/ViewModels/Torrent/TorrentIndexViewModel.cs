@@ -1,6 +1,6 @@
 ﻿namespace Rutracker.Shared.ViewModels.Torrent
 {
-    public class TorrentViewModel
+    public class TorrentIndexViewModel
     {
         public TorrentDetailsItemViewModel TorrentDetailsItem { get; set; }
     }
