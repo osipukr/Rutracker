@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Rutracker.Shared.ViewModels.Torrents;
+﻿using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Shared.ViewModels.Torrent
 {
@@ -9,6 +8,6 @@ namespace Rutracker.Shared.ViewModels.Torrent
         public string ForumTitle { get; set; }
         public bool IsDeleted { get; set; }
         public string Content { get; set; }
-        public IEnumerable<FileItemViewModel> Files { get; set; }
+        public FileItemViewModel[] Files { get; set; }
     }
 }

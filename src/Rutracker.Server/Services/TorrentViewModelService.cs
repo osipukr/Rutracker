@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -30,20 +29,20 @@ namespace Rutracker.Server.Services
                 filter = new FiltrationViewModel();
             }
 
-            var filterSpecification = new TorrentsFilterSpecification(filter.Search, 
-                                                                      filter.SelectedTitles, 
+            var filterSpecification = new TorrentsFilterSpecification(filter.Search,
+                                                                      filter.SelectedTitles,
                                                                       filter.SizeFrom,
                                                                       filter.SizeTo);
 
             var filterPaginatedSpecification = new TorrentsFilterPaginatedSpecification((page - 1) * pageSize,
                                                                                         pageSize,
-                                                                                        filter.Search,      
+                                                                                        filter.Search,
                                                                                         filter.SelectedTitles,
                                                                                         filter.SizeFrom,
                                                                                         filter.SizeTo);
 
             var torrents = await _torrentRepository.ListAsync(filterPaginatedSpecification);
-            var torrentsResult = _mapper.Map<IEnumerable<TorrentItemViewModel>>(torrents);
+            var torrentsResult = _mapper.Map<TorrentItemViewModel[]>(torrents);
 
             var totalItems = await _torrentRepository.CountAsync(filterSpecification);
             var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
@@ -74,17 +73,17 @@ namespace Rutracker.Server.Services
             };
         }
 
-        public async Task<IEnumerable<FacetItem>> GetTitlesAsync(int count)
+        public async Task<FacetItemViewModel[]> GetTitlesAsync(int count)
         {
             var facets = await _torrentRepository.GetPopularForumsAsync(count);
 
-            return facets?.Select(x => new FacetItem
+            return facets.Select(x => new FacetItemViewModel
             {
                 Id = x.Id.ToString(),
                 Value = x.Value,
                 Count = x.Count.ToString(),
                 IsSelected = false
-            }) ?? Enumerable.Empty<FacetItem>();
+            }).ToArray();
         }
     }
 }

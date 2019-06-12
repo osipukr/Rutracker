@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Client", "src\Rut
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Shared", "src\Rutracker.Shared\Rutracker.Shared.csproj", "{D177B871-1BD0-46C4-B582-9CE0B8DA5AE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rutracker.Core", "src\Rutracker.Core\Rutracker.Core.csproj", "{C7DD15CA-A155-42B6-BC29-552DDE99A11B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Core", "src\Rutracker.Core\Rutracker.Core.csproj", "{C7DD15CA-A155-42B6-BC29-552DDE99A11B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rutracker.Infrastructure", "src\Rutracker.Infrastructure\Rutracker.Infrastructure.csproj", "{85DD731E-BC51-411B-B5A1-12F65218A9E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Infrastructure", "src\Rutracker.Infrastructure\Rutracker.Infrastructure.csproj", "{85DD731E-BC51-411B-B5A1-12F65218A9E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

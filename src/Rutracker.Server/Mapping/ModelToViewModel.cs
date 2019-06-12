@@ -11,8 +11,10 @@ namespace Rutracker.Server.Mapping
         public ModelToViewModel()
         {
             CreateMap<Torrent, TorrentItemViewModel>();
-            CreateMap<Torrent, TorrentDetailsItemViewModel>().ForMember(dist => dist.Content, opt => 
-                opt.MapFrom(src => BBCodeHelper.ParseToHtml(src.Content)));
+            CreateMap<Torrent, TorrentDetailsItemViewModel>().ForMember(
+                dist => dist.Content,
+                opt => opt.MapFrom(
+                src => BBCodeHelper.ParseToHtml(src.Content)));
             CreateMap<File, FileItemViewModel>();
         }
     }

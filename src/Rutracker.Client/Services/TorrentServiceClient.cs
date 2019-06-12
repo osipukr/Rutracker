@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Rutracker.Shared.ViewModels;
@@ -35,11 +34,11 @@ namespace Rutracker.Client.Services
             return await _httpClient.GetJsonAsync<TorrentIndexViewModel>(requestUri);
         }
 
-        public async Task<IEnumerable<FacetItem>> GetTitlesAsync(int count)
+        public async Task<FacetItemViewModel[]> GetTitlesAsync(int count)
         {
             var requestUri = string.Format(TitlesTemplate, count);
 
-            return await _httpClient.GetJsonAsync<IEnumerable<FacetItem>>(requestUri);
+            return await _httpClient.GetJsonAsync<FacetItemViewModel[]>(requestUri);
         }
     }
 }

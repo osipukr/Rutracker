@@ -1,9 +1,6 @@
-using System;
 using System.Linq;
-using System.Net.Http;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -34,8 +31,6 @@ namespace Rutracker.Server
             services.AddAutoMapper();
 #pragma warning restore 618
             services.AddMvc().AddNewtonsoftJson();
-            services.AddRazorPages();
-            services.AddServerSideBlazor();
             services.AddMemoryCache();
             services.AddResponseCompression(options =>
             {
@@ -49,15 +44,6 @@ namespace Rutracker.Server
             services.AddScoped<ITorrentRepository, TorrentRepository>();
             services.AddScoped<ITorrentService, CachedTorrentViewModelService>();
             services.AddScoped<TorrentViewModelService>();
-            services.AddScoped(options =>
-            {
-                var uriHelper = options.GetRequiredService<IUriHelper>();
-
-                return new HttpClient
-                {
-                    BaseAddress = new Uri(uriHelper.GetBaseUri())
-                };
-            });
 
             services.AddDbContext<TorrentContext>(options =>
             {

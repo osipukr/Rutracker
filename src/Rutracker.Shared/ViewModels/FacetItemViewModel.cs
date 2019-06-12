@@ -1,6 +1,6 @@
 ﻿namespace Rutracker.Shared.ViewModels
 {
-    public class FacetItem
+    public class FacetItemViewModel
     {
         public string Id { get; set; }
         public string Value { get; set; }

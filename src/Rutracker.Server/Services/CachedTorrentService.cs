@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Rutracker.Server.Interfaces;
@@ -14,10 +13,11 @@ namespace Rutracker.Server.Services
         private readonly IMemoryCache _cache;
         private readonly TorrentViewModelService _torrentViewModelService;
 
-        private readonly string _torrentsTemplate = "torrents-{0}-{1}-{2}";
-        private readonly string _torrentTemplate = "torrent-{0}";
-        private readonly string _titlesTemplate = "titles-{0}";
         private readonly TimeSpan _defaultCacheDuration = TimeSpan.FromSeconds(30);
+
+        private const string TorrentsTemplate = "torrents-{0}-{1}-{2}";
+        private const string TorrentTemplate = "torrent-{0}";
+        private const string TitlesTemplate = "titles-{0}";
 
         public CachedTorrentViewModelService(IMemoryCache cache, TorrentViewModelService torrentViewModelService)
         {
@@ -27,7 +27,7 @@ namespace Rutracker.Server.Services
 
         public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
         {
-            var cacheKey = string.Format(_torrentsTemplate, page, pageSize, filter.GetHashCode());
+            var cacheKey = string.Format(TorrentsTemplate, page, pageSize, filter.GetHashCode());
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
@@ -39,7 +39,7 @@ namespace Rutracker.Server.Services
 
         public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id)
         {
-            var cacheKey = string.Format(_torrentTemplate, id);
+            var cacheKey = string.Format(TorrentTemplate, id);
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
@@ -49,9 +49,9 @@ namespace Rutracker.Server.Services
             });
         }
 
-        public async Task<IEnumerable<FacetItem>> GetTitlesAsync(int count)
+        public async Task<FacetItemViewModel[]> GetTitlesAsync(int count)
         {
-            var cacheKey = string.Format(_titlesTemplate, count);
+            var cacheKey = string.Format(TitlesTemplate, count);
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {

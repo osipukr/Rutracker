@@ -4,4 +4,4 @@
     {
         public TorrentDetailsItemViewModel TorrentDetailsItem { get; set; }
     }
-} 
+}

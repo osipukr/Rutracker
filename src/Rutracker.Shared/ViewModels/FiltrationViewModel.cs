@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Rutracker.Shared.ViewModels
 {
@@ -11,13 +10,13 @@ namespace Rutracker.Shared.ViewModels
 
         [Display(Name = "Size From")]
         [Range(0, long.MaxValue, ErrorMessage = "Size From must be greater than 0.")]
-        public int? SizeFrom { get; set; }
+        public long? SizeFrom { get; set; }
 
         [Display(Name = "Size To")]
         [Range(0, long.MaxValue, ErrorMessage = "Size To must be greater than 0.")]
-        public int? SizeTo { get; set; }
+        public long? SizeTo { get; set; }
 
         [Display(Name = "Forum titles")]
-        public IReadOnlyCollection<string> SelectedTitles { get; set; }
+        public string[] SelectedTitles { get; set; }
     }
 }

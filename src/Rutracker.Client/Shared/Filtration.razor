@@ -4,98 +4,71 @@
 <EditForm Model="@Model" OnValidSubmit="@ApplyButtonClick">
     <DataAnnotationsValidator />
 
-    <div class="card filter-card">
-        <div class="card-header" onclick="@(_ => ToggleButton(ref _collapseSearchCard))">
-            <h6>
-                Search
-                <span class="font-weight-bold">@((MarkupString)ArrowSymbol(_collapseSearchCard))</span>
-            </h6>
-        </div>
-
-        <div class="card-body @CollapseCssClass(_collapseSearchCard)">
-            <div class="form-row">
-                <div class="input-group">
-                    <InputSearch bind-Value="@Model.Search" Class="form-control w-100" Placeholder="Search" />
-                    <ValidationMessage For="@(() => Model.Search)" />
-                </div>
+    <FilterCard Class="filter-card" Title="Search">
+        <div class="form-row">
+            <div class="input-group">
+                <InputSearch bind-Value="@Model.Search" Class="form-control w-100" Placeholder="Search" />
+                <ValidationMessage For="@(() => Model.Search)" />
             </div>
         </div>
-    </div>
+    </FilterCard>
 
-    <div class="card filter-card">
-        <div class="card-header" onclick="@(_ => ToggleButton(ref _collapseSizeCard))">
-            <h6>
-                Range size
-                <span class="font-weight-bold">@((MarkupString)ArrowSymbol(_collapseSizeCard))</span>
-            </h6>
-        </div>
-
-        <div class="card-body @CollapseCssClass(_collapseSizeCard)">
-            <div class="form-row">
-                <div class="col-md-6 col-6">
-                    <label class="w-100">
-                        Min size
-                        <InputNumber bind-Value="@Model.SizeFrom" Class="form-control" />
-                    </label>
-                </div>
-                <div class="col-md-6 col-6 text-right">
-                    <label class="w-100">
-                        Max size
-                        <InputNumber bind-Value="@Model.SizeTo" Class="form-control" />
-                    </label>
-                </div>
-
-                <ValidationMessage For="@(() => Model.SizeFrom)" />
-                <ValidationMessage For="@(() => Model.SizeTo)" />
+    <FilterCard Class="filter-card" Title="Range size">
+        <div class="form-row">
+            <div class="col-md-6 col-6">
+                <label class="w-100">
+                    Min size
+                    <InputNumber bind-Value="@Model.SizeFrom" Class="form-control" />
+                </label>
             </div>
-        </div>
-    </div>
+            <div class="col-md-6 col-6 text-right">
+                <label class="w-100">
+                    Max size
+                    <InputNumber bind-Value="@Model.SizeTo" Class="form-control" />
+                </label>
+            </div>
 
-    <div class="card filter-card">
-        <div class="card-header" onclick="@(_ => ToggleButton(ref _collapseTitlesCard))">
-            <h6>
-                Forum titles category
-                <span class="font-weight-bold">@((MarkupString)ArrowSymbol(_collapseTitlesCard))</span>
-            </h6>
+            <ValidationMessage For="@(() => Model.SizeFrom)" />
+            <ValidationMessage For="@(() => Model.SizeTo)" />
         </div>
+    </FilterCard>
 
-        <div class="card-body @CollapseCssClass(_collapseTitlesCard)">
-            @if (TitleFacets == null)
+    <FilterCard Class="filter-card" Title="Forum titles category">
+        @if (TitleFacets == null)
+        {
+            <LoadSpinner />
+        }
+        else
+        {
+            foreach (var facet in TitleFacets)
             {
-                <Loader />
-            }
-            else
-            {
-                foreach (var facet in TitleFacets)
-                {
-                    <div class="custom-control custom-checkbox title-facet">
-                        <span class="float-right badge badge-primary">@facet.Count</span>
+                <div class="custom-control custom-checkbox title-facet">
+                    <span class="float-right badge badge-primary">@facet.Count</span>
 
-                        <InputCheckbox bind-Value="@facet.IsSelected"
-                                       Class="custom-control-input d-none"
-                                       Id="@facet.Id" />
+                    <InputCheckbox bind-Value="@facet.IsSelected"
+                                   Class="custom-control-input d-none"
+                                   Id="@facet.Id" />
 
-                        <label class="custom-control-label h-100"
-                               for="@facet.Id"
-                               title="@facet.Value">
-                            @facet.Value
-                        </label>
-                    </div>
-                }
+                    <label class="custom-control-label h-100"
+                           for="@facet.Id"
+                           title="@facet.Value">
+                        @facet.Value
+                    </label>
+                </div>
             }
-        </div>
-    </div>
+        }
+    </FilterCard>
 
     <div class="card filter-card">
         <div class="card-footer border-top-0">
             <div class="row">
                 <div class="col-6">
-                    <button class="btn btn-primary w-100" type="submit">Apply</button>
+                    <button class="btn btn-outline-primary w-100" type="submit">Apply</button>
                 </div>
 
                 <div class="col-6">
-                    <button class="btn btn-primary w-100"
-                            onclick="@AllButtonClick"
+                    <button class="btn btn-outline-primary w-100"
+                            onclick="@ResetButtonClick"
                             type="reset">
                         All
                     </button>
@@ -111,15 +84,7 @@
     [Parameter] protected Action ChangedHandler { get; set; }
 
     private int TitleCount { get; set; }
-    private IEnumerable<FacetItem> TitleFacets { get; set; }
-
-    // Can be done through an array
-    private bool _collapseSearchCard = false;
-    private bool _collapseSizeCard = true;
-    private bool _collapseTitlesCard = true;
-
-    private static string ArrowSymbol(bool value) => value ? "&#8595" : "&#8593";
-    private static string CollapseCssClass(bool value) => value ? "collapse" : null;
+    private FacetItemViewModel[] TitleFacets { get; set; }
 
     protected override async Task OnInitAsync()
     {
@@ -127,15 +92,13 @@
         TitleFacets = await Client.GetTitlesAsync(TitleCount);
     }
 
-    private static void ToggleButton(ref bool value) => value = !value;
-
     private void ApplyButtonClick()
     {
         Model.SelectedTitles = TitleFacets?.Where(x => x.IsSelected).Select(x => x.Id).ToArray();
         ChangedHandler?.Invoke();
     }
 
-    private void AllButtonClick()
+    private void ResetButtonClick()
     {
         Model.SelectedTitles = default;
         Model.SizeFrom = Model.SizeTo = default;

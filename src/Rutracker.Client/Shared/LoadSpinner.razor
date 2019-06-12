@@ -1,0 +1,11 @@
+﻿<div class="@Class">
+    <div class="spinner-border text-dark" role="status">
+        <span class="sr-only">@Text</span>
+    </div>
+</div>
+
+@functions
+{
+    [Parameter] protected string Class { get; set; } = "d-flex justify-content-center align-items-center";
+    [Parameter] protected string Text { get; set; } = "Loading...";
+}

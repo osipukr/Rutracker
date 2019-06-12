@@ -1,0 +1,25 @@
+﻿<div class="card @Class">
+    <div class="card-header" onclick="@ToggleButton">
+        <h6 class="m-0">
+            @Title
+            <span class="float-right @ArrowCssClass"></span>
+        </h6>
+    </div>
+
+    <div class="card-body @CollapseCssClass">
+        @ChildContent
+    </div>
+</div>
+
+@functions
+{
+    [Parameter] protected string Class { get; set; }
+    [Parameter] protected string Title { get; set; }
+    [Parameter] protected bool Collapse { get; set; }
+    [Parameter] protected RenderFragment ChildContent { get; set; }
+
+    private string CollapseCssClass => Collapse ? "collapse" : null;
+    private string ArrowCssClass => Collapse ? "oi oi-arrow-bottom" : "oi oi-arrow-top";
+
+    private void ToggleButton() => Collapse = !Collapse;
+}

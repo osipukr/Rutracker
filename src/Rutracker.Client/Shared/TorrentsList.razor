@@ -8,7 +8,15 @@
                 <th scope="col">Title</th>
             </tr>
         </thead>
-        @if (Items?.Any() ?? false)
+        @if (Items == null || Items.Length == 0)
+        {
+            <tfoot>
+                <tr>
+                    <th colspan="4" class="text-center">Torrent list is empty ;(</th>
+                </tr>
+            </tfoot>
+        }
+        else
         {
             <tbody>
                 @foreach (var torrent in Items)
@@ -26,20 +34,12 @@
                 }
             </tbody>
         }
-        else
-        {
-            <tfoot>
-                <tr>
-                    <th colspan="4" class="text-center">Torrent list is empty ;(</th>
-                </tr>
-            </tfoot>
-        }
     </table>
 </div>
 
 @functions
 {
-    [Parameter] protected IEnumerable<TorrentItemViewModel> Items { get; set; }
+    [Parameter] protected TorrentItemViewModel[] Items { get; set; }
 
     private static string TorrentDetailsUri(long id) => $"/torrent/{id}";
 }

@@ -4,21 +4,16 @@
 
 @if (Model == null)
 {
-    <Loader />
+    <LoadSpinner />
 }
 else
 {
     <div class="card text-center mb-3">
-        <div class="card-header py-3"></div>
-
         <div class="card-body">
-            <button class="btn btn-primary"
-                    onclick="@BackToButtonClick">
+            <button class="btn btn-outline-primary" onclick="@BackToButtonClick">
                 Back to full torrents list
             </button>
         </div>
-
-        <div class="card-footer text-muted py-3"></div>
     </div>
 
     @if (Model.TorrentDetailsItem == null)
@@ -71,18 +66,25 @@ else
             </div>
         </div>
 
-        @if (torrent.Files.Any())
+        @if (torrent.Files == null || torrent.Files.Length == 0)
+        {
+
+        }
+        else
         {
             <div class="card mb-2 shadow-sm">
                 <div class="card-body">
-                    <span class="badge badge-primary mb-2">Files</span>
+                    <div class="@(_collapseFiles ? null : "mb-2")">
+                        <span class="badge badge-primary">Files</span> -
+                        <button class="btn btn-primary btn-sm" onclick="@ToggleButton">Show / Hide</button>
+                    </div>
 
-                    <ul class="list-group">
+                    <ul class="list-group list-group-horizontal flex-wrap justify-content-around align-items-center @CollapseCssClass">
                         @foreach (var file in torrent.Files)
                         {
-                            <li class="list-group-item rounded">
-                                <span class="badge badge-primary">Name:</span> @file.Name <br />
-                                <span class="badge badge-primary">Size:</span> @file.Size
+                            <li class="list-group-item list-group-item-action m-1 w-auto rounded">
+                                <p class="m-0" title="@file.Name"><span class="badge badge-primary">Name:</span> @file.Name</p>
+                                <p class="m-0" title="@file.Size"><span class="badge badge-primary">Size:</span> @file.Size bytes</p>
                             </li>
                         }
                     </ul>
@@ -99,11 +101,16 @@ else
 @functions
 {
     [Parameter] protected long Id { get; set; }
+
     private TorrentIndexViewModel Model { get; set; }
+    private bool _collapseFiles = true;
+
+    private string CollapseCssClass => _collapseFiles ? "collapse" : null;
 
     protected override async Task OnInitAsync() => await LoadTorrentAsync();
 
     private async Task LoadTorrentAsync() => Model = await Client.GetTorrentAsync(Id);
 
+    private void ToggleButton() => _collapseFiles = !_collapseFiles;
     private void BackToButtonClick() => UriHelper.NavigateTo("/torrents");
 }

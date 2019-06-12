@@ -20,7 +20,7 @@ namespace Rutracker.Infrastructure.Data
         public virtual async Task<TEntity> GetAsync(TPrimaryKey id) =>
             await _context.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(id));
 
-        public async Task<IReadOnlyList<TEntity>> ListAsync() => 
+        public async Task<IReadOnlyList<TEntity>> ListAsync() =>
             await _context.Set<TEntity>().AsNoTracking().ToListAsync();
 
         public virtual async Task<IReadOnlyList<TEntity>> ListAsync(ISpecification<TEntity, TPrimaryKey> specification) =>

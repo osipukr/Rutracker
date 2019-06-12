@@ -17,12 +17,14 @@ namespace Rutracker.Infrastructure.Data
 
         public async Task<IReadOnlyList<(long Id, string Value, int Count)>> GetPopularForumsAsync(int count)
         {
-            return await _context.Torrents.GroupBy(
-                    x => x.ForumId,
-                    x => x.Forum.Title,
-                    (id, titles) => ValueTuple.Create(id, titles.FirstOrDefault(), titles.Count()))
-                .OrderByDescending(x => x.Item3)
+            return await _context.Torrents
+                .GroupBy(x => x.ForumId, (key, items) => new { Key = key, Count = items.Count() })
+                .OrderByDescending(x => x.Count)
                 .Take(count)
+                .Join(_context.Forums,
+                    g => g.Key,
+                    f => f.Id,
+                    (g, f) => ValueTuple.Create(g.Key, f.Title, g.Count))
                 .ToListAsync();
         }
     }
