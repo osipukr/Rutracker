@@ -11,7 +11,7 @@ using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Server.Services
 {
-    public class TorrentViewModelService : ITorrentService
+    public class TorrentViewModelService : ITorrentViewModelService
     {
         private readonly ITorrentRepository _torrentRepository;
         private readonly IMapper _mapper;

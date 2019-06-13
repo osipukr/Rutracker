@@ -14,12 +14,19 @@ namespace Rutracker.Infrastructure.Data
         {
             var query = src;
 
-            if (specification.Where != null)
+            if (specification.Criteria != null)
             {
-                query = query.Where(specification.Where);
+                query = query.Where(specification.Criteria);
             }
 
-            query = query.OrderBy(x => x.Id);
+            if (specification.OrderBy != null)
+            {
+                query = query.OrderBy(specification.OrderBy);
+            }
+            else if (specification.OrderByDescending != null)
+            {
+                query = query.OrderByDescending(specification.OrderByDescending);
+            }
 
             if (specification.IsPagingEnabled)
             {

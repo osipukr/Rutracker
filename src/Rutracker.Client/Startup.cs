@@ -12,14 +12,9 @@ namespace Rutracker.Client
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<TorrentServiceClient>();
-            services.AddScoped(options =>
+            services.AddScoped(options => new HttpClient
             {
-                var uriHelper = options.GetRequiredService<IUriHelper>();
-
-                return new HttpClient
-                {
-                    BaseAddress = new Uri(uriHelper.GetBaseUri())
-                };
+                BaseAddress = new Uri(options.GetRequiredService<IUriHelper>().GetBaseUri())
             });
         }
 

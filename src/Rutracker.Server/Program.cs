@@ -9,7 +9,7 @@ namespace Rutracker.Server
     {
         public static void Main(string[] args)
         {
-            var host = CreateHostBuilder(args).Build();
+            var host = BuildWebHost(args);
 
             using (var scope = host.Services.CreateScope())
             using (var context = scope.ServiceProvider.GetRequiredService<TorrentContext>())
@@ -21,8 +21,9 @@ namespace Rutracker.Server
             host.Run();
         }
 
-        public static IWebHostBuilder CreateHostBuilder(string[] args) =>
+        public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .Build();
     }
 }

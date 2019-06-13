@@ -4,9 +4,6 @@
     {
         protected readonly TorrentContext _context;
 
-        protected BaseRepository(TorrentContext context)
-        {
-            _context = context;
-        }
+        protected BaseRepository(TorrentContext context) => _context = context;
     }
 }

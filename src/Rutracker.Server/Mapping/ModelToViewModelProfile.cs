@@ -6,9 +6,9 @@ using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Server.Mapping
 {
-    public class ModelToViewModel : Profile
+    public class ModelToViewModelProfile : Profile
     {
-        public ModelToViewModel()
+        public ModelToViewModelProfile()
         {
             CreateMap<Torrent, TorrentItemViewModel>();
             CreateMap<Torrent, TorrentDetailsItemViewModel>().ForMember(

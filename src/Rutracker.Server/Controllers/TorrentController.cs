@@ -2,26 +2,25 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Rutracker.Server.Interfaces;
+using Rutracker.Server.Services.Types;
 using Rutracker.Shared.ViewModels;
 
 namespace Rutracker.Server.Controllers
 {
     public class TorrentController : BaseController
     {
-        private readonly ITorrentService _torrentService;
+        private readonly ITorrentViewModelService _torrentViewModelService;
 
-        public TorrentController(ITorrentService torrentService)
-        {
-            _torrentService = torrentService;
-        }
+        public TorrentController(Func<TorrentViewModelServiceEnum, ITorrentViewModelService> serviceResolver) =>
+            _torrentViewModelService = serviceResolver(TorrentViewModelServiceEnum.Cached);
 
         [Route("torrents")]
         [HttpGet("{page}/{pageSize}")]
-        public async Task<IActionResult> GetTorrentsAsync(int page, int pageSize, [FromBody] FiltrationViewModel filter)
+        public async Task<IActionResult> GetTorrentsIndexAsync(int page, int pageSize, [FromBody] FiltrationViewModel filter)
         {
             try
             {
-                var result = await _torrentService.GetTorrentsIndexAsync(page, pageSize, filter);
+                var result = await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, filter);
 
                 return Ok(result);
             }
@@ -33,11 +32,11 @@ namespace Rutracker.Server.Controllers
 
         [Route("details")]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTorrentAsync(long id)
+        public async Task<IActionResult> GetTorrentIndexAsync(long id)
         {
             try
             {
-                var result = await _torrentService.GetTorrentIndexAsync(id);
+                var result = await _torrentViewModelService.GetTorrentIndexAsync(id);
 
                 return Ok(result);
             }
@@ -53,7 +52,7 @@ namespace Rutracker.Server.Controllers
         {
             try
             {
-                var result = await _torrentService.GetTitlesAsync(count);
+                var result = await _torrentViewModelService.GetTitlesAsync(count);
 
                 return Ok(result);
             }

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Builder;
@@ -13,15 +14,13 @@ using Rutracker.Infrastructure.Data;
 using Rutracker.Server.Interfaces;
 using Rutracker.Server.Services;
 using AutoMapper;
+using Rutracker.Server.Services.Types;
 
 namespace Rutracker.Server
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        public Startup(IConfiguration configuration) => Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 
@@ -36,14 +35,28 @@ namespace Rutracker.Server
             {
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
                 {
-                    MediaTypeNames.Application.Octet,
-                    WasmMediaTypeNames.Application.Wasm,
+                    MediaTypeNames.Application.Json,
+                    WasmMediaTypeNames.Application.Wasm
                 });
             });
 
             services.AddScoped<ITorrentRepository, TorrentRepository>();
-            services.AddScoped<ITorrentService, CachedTorrentViewModelService>();
             services.AddScoped<TorrentViewModelService>();
+            services.AddScoped<CachedTorrentViewModelService>();
+            services.AddTransient<Func<TorrentViewModelServiceEnum, ITorrentViewModelService>>(provider => key =>
+            {
+                switch (key)
+                {
+                    case TorrentViewModelServiceEnum.Default:
+                        return provider.GetService<TorrentViewModelService>();
+
+                    case TorrentViewModelServiceEnum.Cached:
+                        return provider.GetService<CachedTorrentViewModelService>();
+
+                    default: return null;
+                }
+
+            });
 
             services.AddDbContext<TorrentContext>(options =>
             {

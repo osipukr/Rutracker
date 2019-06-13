@@ -2,32 +2,37 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Rutracker.Server.Interfaces;
+using Rutracker.Server.Services.Types;
 using Rutracker.Shared.ViewModels;
 using Rutracker.Shared.ViewModels.Torrent;
 using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Server.Services
 {
-    public class CachedTorrentViewModelService : ITorrentService
+    public class CachedTorrentViewModelService : ITorrentViewModelService
     {
+        private static class KeyTemplate
+        {
+            public const string TorrentsIndex = "torrents-{0}-{1}-{2}";
+            public const string TorrentIndex = "torrent-{0}";
+            public const string Titles = "titles-{0}";
+        }
+
         private readonly IMemoryCache _cache;
-        private readonly TorrentViewModelService _torrentViewModelService;
+        private readonly ITorrentViewModelService _torrentViewModelService;
+        private readonly TimeSpan _defaultCacheDuration;
 
-        private readonly TimeSpan _defaultCacheDuration = TimeSpan.FromSeconds(30);
-
-        private const string TorrentsTemplate = "torrents-{0}-{1}-{2}";
-        private const string TorrentTemplate = "torrent-{0}";
-        private const string TitlesTemplate = "titles-{0}";
-
-        public CachedTorrentViewModelService(IMemoryCache cache, TorrentViewModelService torrentViewModelService)
+        public CachedTorrentViewModelService(IMemoryCache cache,
+            Func<TorrentViewModelServiceEnum, ITorrentViewModelService> serviceResolver)
         {
             _cache = cache;
-            _torrentViewModelService = torrentViewModelService;
+            _torrentViewModelService = serviceResolver(TorrentViewModelServiceEnum.Default);
+            _defaultCacheDuration = TimeSpan.FromSeconds(30);
         }
 
         public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
         {
-            var cacheKey = string.Format(TorrentsTemplate, page, pageSize, filter.GetHashCode());
+            var cacheKey = string.Format(KeyTemplate.TorrentsIndex, page, pageSize, filter.GetHashCode());
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
@@ -39,7 +44,7 @@ namespace Rutracker.Server.Services
 
         public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id)
         {
-            var cacheKey = string.Format(TorrentTemplate, id);
+            var cacheKey = string.Format(KeyTemplate.TorrentIndex, id);
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
@@ -51,7 +56,7 @@ namespace Rutracker.Server.Services
 
         public async Task<FacetItemViewModel[]> GetTitlesAsync(int count)
         {
-            var cacheKey = string.Format(TitlesTemplate, count);
+            var cacheKey = string.Format(KeyTemplate.Titles, count);
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {

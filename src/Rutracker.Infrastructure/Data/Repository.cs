@@ -20,19 +20,15 @@ namespace Rutracker.Infrastructure.Data
         public virtual async Task<TEntity> GetAsync(TPrimaryKey id) =>
             await _context.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(id));
 
-        public async Task<IReadOnlyList<TEntity>> ListAsync() =>
-            await _context.Set<TEntity>().AsNoTracking().ToListAsync();
-
         public virtual async Task<IReadOnlyList<TEntity>> ListAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
             await ApplySpecification(specification).ToListAsync();
 
-        public async Task<int> CountAsync() =>
-            await _context.Set<TEntity>().CountAsync();
-
         public virtual async Task<int> CountAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
-            await _context.Set<TEntity>().CountAsync(specification.Where);
+            await ApplySpecification(specification).CountAsync();
 
         protected IQueryable<TEntity> ApplySpecification(ISpecification<TEntity, TPrimaryKey> specification) =>
-           SpecificationEvaluator<TEntity, TPrimaryKey>.ApplySpecification(_context.Set<TEntity>(), specification);
+           SpecificationEvaluator<TEntity, TPrimaryKey>.ApplySpecification(_context.Set<TEntity>()
+                   .AsQueryable(),
+               specification);
     }
 }
