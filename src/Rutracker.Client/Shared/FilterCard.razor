@@ -1,5 +1,5 @@
 ﻿<div class="card @Class">
-    <div class="card-header" onclick="@ToggleButton">
+    <div class="card-header" onclick="@ToggleButtonClick">
         <h6 class="m-0">
             @Title
             <span class="float-right @ArrowCssClass"></span>
@@ -21,5 +21,5 @@
     private string CollapseCssClass => Collapse ? "collapse" : null;
     private string ArrowCssClass => Collapse ? "oi oi-arrow-bottom" : "oi oi-arrow-top";
 
-    private void ToggleButton() => Collapse = !Collapse;
+    private void ToggleButtonClick() => Collapse = !Collapse;
 }

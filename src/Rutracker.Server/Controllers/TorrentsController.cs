@@ -7,15 +7,15 @@ using Rutracker.Shared.ViewModels;
 
 namespace Rutracker.Server.Controllers
 {
-    public class TorrentController : BaseController
+    public class TorrentsController : BaseController
     {
         private readonly ITorrentViewModelService _torrentViewModelService;
 
-        public TorrentController(Func<TorrentViewModelServiceEnum, ITorrentViewModelService> serviceResolver) =>
-            _torrentViewModelService = serviceResolver(TorrentViewModelServiceEnum.Cached);
+        public TorrentsController(Func<TorrentViewModelServiceType, ITorrentViewModelService> serviceResolver) =>
+            _torrentViewModelService = serviceResolver(TorrentViewModelServiceType.Cached);
 
-        [Route("torrents")]
-        [HttpGet("{page}/{pageSize}")]
+        [Route("paging")]
+        [HttpGet("{page}/{pageSize}", Name = "GetTorrentsIndexAsync")]
         public async Task<IActionResult> GetTorrentsIndexAsync(int page, int pageSize, [FromBody] FiltrationViewModel filter)
         {
             try
@@ -30,8 +30,8 @@ namespace Rutracker.Server.Controllers
             }
         }
 
-        [Route("details")]
-        [HttpGet("{id}")]
+        [Route("")]
+        [HttpGet("{id}", Name = "GetTorrentIndexAsync")]
         public async Task<IActionResult> GetTorrentIndexAsync(long id)
         {
             try
@@ -47,7 +47,7 @@ namespace Rutracker.Server.Controllers
         }
 
         [Route("titles")]
-        [HttpGet("{count}")]
+        [HttpGet("{count}", Name = "GetTitlesAsync")]
         public async Task<IActionResult> GetTitlesAsync(int count)
         {
             try

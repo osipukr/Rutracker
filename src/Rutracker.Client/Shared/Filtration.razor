@@ -1,10 +1,9 @@
-﻿@inject TorrentServiceClient Client
-@inject IUriHelper UriHelper
+﻿@inject ITorrentsClientService Client
 
 <EditForm Model="@Model" OnValidSubmit="@ApplyButtonClick">
     <DataAnnotationsValidator />
 
-    <FilterCard Class="filter-card" Title="Search">
+    <FilterCard Class="filter-card no-select" Title="Search">
         <div class="form-row">
             <div class="input-group">
                 <InputSearch bind-Value="@Model.Search" Class="form-control w-100" Placeholder="Search" />
@@ -13,7 +12,7 @@
         </div>
     </FilterCard>
 
-    <FilterCard Class="filter-card" Title="Range size">
+    <FilterCard Class="filter-card no-select" Title="Range size">
         <div class="form-row">
             <div class="col-md-6 col-6">
                 <label class="w-100">
@@ -33,7 +32,7 @@
         </div>
     </FilterCard>
 
-    <FilterCard Class="filter-card" Title="Forum titles category">
+    <FilterCard Class="filter-card no-select" Title="Forum titles category">
         @if (TitleFacets == null)
         {
             <LoadSpinner />
@@ -59,20 +58,38 @@
         }
     </FilterCard>
 
-    <div class="card filter-card">
+    <div class="card filter-card no-select">
         <div class="card-footer border-top-0">
             <div class="row">
-                <div class="col-6">
-                    <button class="btn btn-outline-primary w-100" type="submit">Apply</button>
-                </div>
+                @if (SearchTask.IsCompleted)
+                {
+                    <div class="col-6">
+                        <button class="btn btn-outline-primary w-100" type="submit">Apply</button>
+                    </div>
 
-                <div class="col-6">
-                    <button class="btn btn-outline-primary w-100"
-                            onclick="@ResetButtonClick"
-                            type="reset">
-                        All
-                    </button>
-                </div>
+                    <div class="col-6">
+                        <button class="btn btn-outline-primary w-100"
+                                onclick="@ResetButtonClick"
+                                type="reset">
+                            All
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-6">
+                        <button class="btn btn-outline-primary w-100 h-100 d-flex justify-content-center align-items-center" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span class="sr-only">Loading...</span>
+                        </button>
+                    </div>
+
+                    <div class="col-6">
+                        <button class="btn btn-outline-primary w-100" type="button" disabled>
+                            All
+                        </button>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -82,35 +99,40 @@
 {
     [Parameter] protected FiltrationViewModel Model { get; set; }
     [Parameter] protected Action ChangedHandler { get; set; }
+    [Parameter] protected Task<TorrentsIndexViewModel> SearchTask { get; set; }
 
     private int TitleCount { get; set; }
     private FacetItemViewModel[] TitleFacets { get; set; }
 
     protected override async Task OnInitAsync()
     {
-        TitleCount = Constants.ForumTitlesCount;
+        TitleCount = ClientConstants.ForumTitlesCount;
         TitleFacets = await Client.GetTitlesAsync(TitleCount);
+    }
+
+    private void ResetFiltrationModel()
+    {
+        Model.Search = default;
+        Model.SelectedTitles = default;
+        Model.SizeFrom = default;
+        Model.SizeTo = default;
+
+        foreach (var facet in TitleFacets ?? Array.Empty<FacetItemViewModel>())
+        {
+            facet.IsSelected = false;
+        }
     }
 
     private void ApplyButtonClick()
     {
-        Model.SelectedTitles = TitleFacets?.Where(x => x.IsSelected).Select(x => x.Id).ToArray();
+        Model.SelectedTitles = TitleFacets?.Where(x => x.IsSelected).Select(x => x.Id);
+
         ChangedHandler?.Invoke();
     }
 
     private void ResetButtonClick()
     {
-        Model.SelectedTitles = default;
-        Model.SizeFrom = Model.SizeTo = default;
-
-        if (TitleFacets != null)
-        {
-            foreach (var facet in TitleFacets)
-            {
-                facet.IsSelected = false;
-            }
-        }
-
-        UriHelper.NavigateTo("/torrents");
+        ResetFiltrationModel();
+        ApplyButtonClick();
     }
 }

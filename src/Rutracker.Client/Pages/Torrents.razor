@@ -1,22 +1,22 @@
 ﻿@page "/torrents"
 @implements IDisposable
-@inject TorrentServiceClient Client
+@inject ITorrentsClientService Client
 @inject IUriHelper UriHelper
 
 <div class="row">
     <div class="col-lg-3 pb-3">
-        <Filtration Model="@FilterModel" ChangedHandler="@FilterApplyButtonClick" />
+        <Filtration Model="@FilterModel" ChangedHandler="@FilterApplyButtonClick" SearchTask="@SearchTask" />
     </div>
 
     <div class="col-lg-9">
-        @if (Model == null)
-        {
-            <LoadSpinner />
-        }
-        else
+        @if (SearchTask.IsCompleted)
         {
             <TorrentsList Items="@Model.TorrentItems" />
             <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonClick" />
+        }
+        else
+        {
+            <LoadSpinner />
         }
     </div>
 </div>
@@ -25,6 +25,7 @@
 {
     private TorrentsIndexViewModel Model { get; set; }
     private FiltrationViewModel FilterModel { get; set; } = new FiltrationViewModel();
+    private Task<TorrentsIndexViewModel> SearchTask { get; set; }
 
     private int Page { get; set; }
     private int PageSize { get; set; }
@@ -33,13 +34,14 @@
 
     protected override async Task OnInitAsync()
     {
-        await RefreshType();
+        await RefreshTypesAsync();
+
         UriHelper.OnLocationChanged += OnLocationChanges;
     }
 
-    private async void OnLocationChanges(object sender, string location) => await RefreshType();
+    private async void OnLocationChanges(object sender, string location) => await RefreshTypesAsync();
 
-    private async Task RefreshType()
+    private async Task RefreshTypesAsync()
     {
         var uriQuery = new Uri(UriHelper.GetAbsoluteUri()).Query;
 
@@ -49,19 +51,27 @@
                ? pageParamId
                : 1;
 
-        PageSize = Constants.DefaultPageSize;
+        PageSize = ClientConstants.ItemsPerPageCount;
 
         FilterModel.Search = QueryHelpers.ParseQuery(uriQuery).TryGetValue("search", out var searchParam)
             ? searchParam.FirstOrDefault()
             : null;
 
-        await LoadTorrentsAsync();
+        await LoadTorrentsIndexAsync();
         StateHasChanged();
     }
 
-    private async Task LoadTorrentsAsync() => Model = await Client.GetTorrentsAsync(Page, PageSize, FilterModel);
+    private async Task LoadTorrentsIndexAsync()
+    {
+        SearchTask = null;
+        StateHasChanged();
+
+        SearchTask = Client.GetTorrentsIndexAsync(Page, PageSize, FilterModel);
+        Model = await SearchTask;
+    }
 
     private void PageButtonClick(int page) => UriHelper.NavigateTo(string.Format(QuearyTemplate, FilterModel.Search, page));
+
     private void FilterApplyButtonClick() => UriHelper.NavigateTo(string.Format(QuearyTemplate, FilterModel.Search, 1));
 
     public void Dispose() => UriHelper.OnLocationChanged -= OnLocationChanges;

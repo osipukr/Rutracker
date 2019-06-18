@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net.Mime;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Rutracker.Server.Controllers
 {
-    [Produces("application/json")]
+    [Produces(MediaTypeNames.Application.Json)]
     [Route("api/[controller]")]
     public class BaseController : Controller
     {

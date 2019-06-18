@@ -9,6 +9,7 @@ namespace Rutracker.Core.Interfaces
         where TEntity : BaseEntity<TPrimaryKey>
         where TPrimaryKey : IEquatable<TPrimaryKey>
     {
+        Task<TEntity> GetAsync(ISpecification<TEntity, TPrimaryKey> specification);
         Task<TEntity> GetAsync(TPrimaryKey id);
         Task<IReadOnlyList<TEntity>> ListAsync(ISpecification<TEntity, TPrimaryKey> specification);
         Task<int> CountAsync(ISpecification<TEntity, TPrimaryKey> specification);

@@ -1,5 +1,5 @@
 ﻿@page "/torrent/{id:long}"
-@inject TorrentServiceClient Client
+@inject ITorrentsClientService Client
 @inject IUriHelper UriHelper
 
 @if (Model == null)
@@ -56,7 +56,17 @@ else
 
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
-                <span class="badge badge-primary">Forum title</span> - @torrent.ForumTitle
+                <span class="badge badge-primary mb-2">Forum</span>
+
+                <ul class="list-group">
+                    <li class="list-group-item mb-1 rounded">
+                        <p class="m-0"><span class="badge badge-primary">Id:</span> @torrent.Forum.Id</p>
+                    </li>
+
+                    <li class="list-group-item rounded">
+                        <p class="m-0"><span class="badge badge-primary">Title:</span> @torrent.Forum.Title</p>
+                    </li>
+                </ul>
             </div>
         </div>
 
@@ -76,7 +86,7 @@ else
                 <div class="card-body">
                     <div class="@(_collapseFiles ? null : "mb-2")">
                         <span class="badge badge-primary">Files</span> -
-                        <button class="btn btn-primary btn-sm" onclick="@ToggleButton">Show / Hide</button>
+                        <button class="btn btn-primary btn-sm" onclick="@ToggleButtonClick">Show / Hide</button>
                     </div>
 
                     <ul class="list-group list-group-horizontal flex-wrap justify-content-around align-items-center @CollapseCssClass">
@@ -107,10 +117,11 @@ else
 
     private string CollapseCssClass => _collapseFiles ? "collapse" : null;
 
-    protected override async Task OnInitAsync() => await LoadTorrentAsync();
+    protected override async Task OnInitAsync() => await LoadTorrentIndexAsync();
 
-    private async Task LoadTorrentAsync() => Model = await Client.GetTorrentAsync(Id);
+    private async Task LoadTorrentIndexAsync() => Model = await Client.GetTorrentIndexAsync(Id);
 
-    private void ToggleButton() => _collapseFiles = !_collapseFiles;
+    private void ToggleButtonClick() => _collapseFiles = !_collapseFiles;
+
     private void BackToButtonClick() => UriHelper.NavigateTo("/torrents");
 }

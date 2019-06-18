@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +13,7 @@ using Rutracker.Infrastructure.Data;
 using Rutracker.Server.Interfaces;
 using Rutracker.Server.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Components.Server;
 using Rutracker.Server.Services.Types;
 
 namespace Rutracker.Server
@@ -26,31 +26,30 @@ namespace Rutracker.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
-#pragma warning disable 618
             services.AddAutoMapper();
-#pragma warning restore 618
             services.AddMvc().AddNewtonsoftJson();
             services.AddMemoryCache();
             services.AddResponseCompression(options =>
             {
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
                 {
-                    MediaTypeNames.Application.Json,
-                    WasmMediaTypeNames.Application.Wasm
+                    MediaTypeNames.Application.Octet,
+                    WasmMediaTypeNames.Application.Wasm,
+                    MediaTypeNames.Application.Json
                 });
             });
 
             services.AddScoped<ITorrentRepository, TorrentRepository>();
             services.AddScoped<TorrentViewModelService>();
             services.AddScoped<CachedTorrentViewModelService>();
-            services.AddTransient<Func<TorrentViewModelServiceEnum, ITorrentViewModelService>>(provider => key =>
+            services.AddTransient<Func<TorrentViewModelServiceType, ITorrentViewModelService>>(provider => types =>
             {
-                switch (key)
+                switch (types)
                 {
-                    case TorrentViewModelServiceEnum.Default:
+                    case TorrentViewModelServiceType.Default:
                         return provider.GetService<TorrentViewModelService>();
 
-                    case TorrentViewModelServiceEnum.Cached:
+                    case TorrentViewModelServiceType.Cached:
                         return provider.GetService<CachedTorrentViewModelService>();
 
                     default: return null;
@@ -60,8 +59,9 @@ namespace Rutracker.Server
 
             services.AddDbContext<TorrentContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("TorrentConnection"));
                 options.UseLazyLoadingProxies();
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                options.UseSqlServer(Configuration.GetConnectionString("TorrentConnection"));
             });
         }
 
@@ -72,10 +72,7 @@ namespace Rutracker.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseHsts();
+                app.UseBlazorDebugging();
             }
 
             app.UseRouting();

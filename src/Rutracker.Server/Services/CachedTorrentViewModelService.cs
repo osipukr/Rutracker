@@ -23,16 +23,16 @@ namespace Rutracker.Server.Services
         private readonly TimeSpan _defaultCacheDuration;
 
         public CachedTorrentViewModelService(IMemoryCache cache,
-            Func<TorrentViewModelServiceEnum, ITorrentViewModelService> serviceResolver)
+            Func<TorrentViewModelServiceType, ITorrentViewModelService> serviceResolver)
         {
             _cache = cache;
-            _torrentViewModelService = serviceResolver(TorrentViewModelServiceEnum.Default);
+            _torrentViewModelService = serviceResolver(TorrentViewModelServiceType.Default);
             _defaultCacheDuration = TimeSpan.FromSeconds(30);
         }
 
         public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
         {
-            var cacheKey = string.Format(KeyTemplate.TorrentsIndex, page, pageSize, filter.GetHashCode());
+            var cacheKey = string.Format(KeyTemplate.TorrentsIndex, page, pageSize, filter?.GetHashCode());
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {

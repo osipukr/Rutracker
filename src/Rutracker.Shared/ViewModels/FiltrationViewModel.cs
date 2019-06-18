@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Rutracker.Shared.ViewModels
 {
     public class FiltrationViewModel
     {
         [Display(Name = "Search")]
-        [StringLength(20, ErrorMessage = "The string must be less than 20 characters.")]
+        [StringLength(50, ErrorMessage = "The string must be less than 50 characters.")]
         public string Search { get; set; }
 
         [Display(Name = "Size From")]
@@ -17,6 +18,6 @@ namespace Rutracker.Shared.ViewModels
         public long? SizeTo { get; set; }
 
         [Display(Name = "Forum titles")]
-        public string[] SelectedTitles { get; set; }
+        public IEnumerable<string> SelectedTitles { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Rutracker.Core.Entities;
 using Rutracker.Core.Interfaces;
@@ -10,6 +11,7 @@ namespace Rutracker.Core.Specifications
         where TPrimaryKey : IEquatable<TPrimaryKey>
     {
         public virtual Expression<Func<TEntity, bool>> Criteria { get; private set; }
+        public virtual List<Expression<Func<TEntity, object>>> Includes { get; private set; }
         public virtual Expression<Func<TEntity, object>> OrderBy { get; private set; }
         public virtual Expression<Func<TEntity, object>> OrderByDescending { get; private set; }
 
@@ -18,6 +20,16 @@ namespace Rutracker.Core.Specifications
         public virtual bool IsPagingEnabled { get; private set; }
 
         protected BaseSpecification(Expression<Func<TEntity, bool>> expression) => Criteria = expression;
+
+        protected void AddInclude(Expression<Func<TEntity, object>> includeExpression)
+        {
+            if (Includes == null)
+            {
+                Includes = new List<Expression<Func<TEntity, object>>>();
+            }
+
+            Includes.Add(includeExpression);
+        }
 
         protected void ApplyOrderBy(Expression<Func<TEntity, object>> orderByExpression) => OrderBy = orderByExpression;
 
