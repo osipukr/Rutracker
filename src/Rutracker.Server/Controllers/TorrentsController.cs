@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Rutracker.Server.Interfaces;
-using Rutracker.Server.Services.Types;
 using Rutracker.Shared.ViewModels;
 
 namespace Rutracker.Server.Controllers
@@ -11,8 +10,8 @@ namespace Rutracker.Server.Controllers
     {
         private readonly ITorrentViewModelService _torrentViewModelService;
 
-        public TorrentsController(Func<TorrentViewModelServiceType, ITorrentViewModelService> serviceResolver) =>
-            _torrentViewModelService = serviceResolver(TorrentViewModelServiceType.Cached);
+        public TorrentsController(ITorrentViewModelService torrentViewModelService) =>
+            _torrentViewModelService = torrentViewModelService;
 
         [Route("paging")]
         [HttpGet("{page}/{pageSize}", Name = "GetTorrentsIndexAsync")]

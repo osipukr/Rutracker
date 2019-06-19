@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.Extensions.Caching.Memory;
 using Rutracker.Core.Interfaces;
 using Rutracker.Core.Specifications;
 using Rutracker.Server.Interfaces;
@@ -15,72 +16,97 @@ namespace Rutracker.Server.Services
     {
         private readonly ITorrentRepository _torrentRepository;
         private readonly IMapper _mapper;
+        private readonly IMemoryCache _cache;
+        private readonly TimeSpan _defaultCacheDuration;
 
-        public TorrentViewModelService(ITorrentRepository torrentRepository, IMapper mapper)
+        public TorrentViewModelService(ITorrentRepository torrentRepository, IMapper mapper, IMemoryCache cache)
         {
             _torrentRepository = torrentRepository;
             _mapper = mapper;
+            _cache = cache;
+            _defaultCacheDuration = TimeSpan.FromMinutes(1.0);
         }
 
         public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
         {
-            var filterSpecification = new TorrentsFilterSpecification(filter?.Search,
-                                                                      filter?.SelectedTitles,
-                                                                      filter?.SizeFrom,
-                                                                      filter?.SizeTo);
+            var cacheKey = string.Format(CachedTorrentKeys.TorrentsIndex, page, pageSize, filter?.GetHashCode());
 
-            var filterPaginatedSpecification = new TorrentsFilterPaginatedSpecification((page - 1) * pageSize,
-                                                                                        pageSize,
-                                                                                        filter?.Search,
-                                                                                        filter?.SelectedTitles,
-                                                                                        filter?.SizeFrom,
-                                                                                        filter?.SizeTo);
-
-            var torrents = await _torrentRepository.ListAsync(filterPaginatedSpecification);
-            var torrentsResult = _mapper.Map<TorrentItemViewModel[]>(torrents);
-
-            var totalItems = await _torrentRepository.CountAsync(filterSpecification);
-            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
-
-            return new TorrentsIndexViewModel
+            return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
-                TorrentItems = torrentsResult,
-                PaginationModel = new PaginationViewModel
+                entry.SlidingExpiration = _defaultCacheDuration;
+
+                var filterSpecification = new TorrentsFilterSpecification(filter?.Search,
+                    filter?.SelectedTitles,
+                    filter?.SizeFrom,
+                    filter?.SizeTo);
+
+                var filterPaginatedSpecification = new TorrentsFilterPaginatedSpecification((page - 1) * pageSize,
+                    pageSize,
+                    filter?.Search,
+                    filter?.SelectedTitles,
+                    filter?.SizeFrom,
+                    filter?.SizeTo);
+
+                var torrents = await _torrentRepository.ListAsync(filterPaginatedSpecification);
+                var torrentsResult = _mapper.Map<TorrentItemViewModel[]>(torrents);
+
+                var totalItems = await _torrentRepository.CountAsync(filterSpecification);
+                var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+                return new TorrentsIndexViewModel
                 {
-                    CurrentPage = page,
-                    TotalItems = totalItems,
-                    PageSize = pageSize,
-                    TotalPages = totalPages,
-                    HasPrevious = page > 1 && page <= totalPages,
-                    HasNext = page < totalPages
-                }
-            };
+                    TorrentItems = torrentsResult,
+                    PaginationModel = new PaginationViewModel
+                    {
+                        CurrentPage = page,
+                        TotalItems = totalItems,
+                        PageSize = pageSize,
+                        TotalPages = totalPages,
+                        HasPrevious = page > 1 && page <= totalPages,
+                        HasNext = page < totalPages
+                    }
+                };
+            });
         }
 
         public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id)
         {
-            var specification = new TorrentWithForumAndFilesSpecification(id);
+            var cacheKey = string.Format(CachedTorrentKeys.TorrentIndex, id);
 
-            var torrent = await _torrentRepository.GetAsync(specification);
-            var torrentResult = _mapper.Map<TorrentDetailsItemViewModel>(torrent);
-
-            return new TorrentIndexViewModel
+            return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
-                TorrentDetailsItem = torrentResult
-            };
+                entry.SlidingExpiration = _defaultCacheDuration;
+
+                var specification = new TorrentWithForumAndFilesSpecification(id);
+
+                var torrent = await _torrentRepository.GetAsync(specification);
+                var torrentResult = _mapper.Map<TorrentDetailsItemViewModel>(torrent);
+
+                return new TorrentIndexViewModel
+                {
+                    TorrentDetailsItem = torrentResult
+                };
+            });
         }
 
         public async Task<FacetItemViewModel[]> GetTitlesAsync(int count)
         {
-            var facets = await _torrentRepository.GetPopularForumsAsync(count);
+            var cacheKey = string.Format(CachedTorrentKeys.Titles, count);
 
-            return facets.Select(x => new FacetItemViewModel
+            return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
-                Id = x.Id.ToString(),
-                Value = x.Value,
-                Count = x.Count.ToString(),
-                IsSelected = false
-            }).ToArray();
+                entry.SlidingExpiration = _defaultCacheDuration;
+
+                var facets = await _torrentRepository.GetPopularForumsAsync(count);
+
+                return facets.Select(x => new FacetItemViewModel
+                {
+                    Id = x.Id.ToString(),
+                    Value = x.Value,
+                    Count = x.Count.ToString(),
+                    IsSelected = false
+                }).ToArray();
+            });
         }
     }
 }

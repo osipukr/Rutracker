@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Builder;
@@ -14,7 +13,6 @@ using Rutracker.Server.Interfaces;
 using Rutracker.Server.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Components.Server;
-using Rutracker.Server.Services.Types;
 
 namespace Rutracker.Server
 {
@@ -40,22 +38,7 @@ namespace Rutracker.Server
             });
 
             services.AddScoped<ITorrentRepository, TorrentRepository>();
-            services.AddScoped<TorrentViewModelService>();
-            services.AddScoped<CachedTorrentViewModelService>();
-            services.AddTransient<Func<TorrentViewModelServiceType, ITorrentViewModelService>>(provider => types =>
-            {
-                switch (types)
-                {
-                    case TorrentViewModelServiceType.Default:
-                        return provider.GetService<TorrentViewModelService>();
-
-                    case TorrentViewModelServiceType.Cached:
-                        return provider.GetService<CachedTorrentViewModelService>();
-
-                    default: return null;
-                }
-
-            });
+            services.AddScoped<ITorrentViewModelService, TorrentViewModelService>();
 
             services.AddDbContext<TorrentContext>(options =>
             {
