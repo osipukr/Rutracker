@@ -13,6 +13,11 @@ namespace Rutracker.Infrastructure.Data
         public static IQueryable<TEntity> Apply(IQueryable<TEntity> src,
             ISpecification<TEntity, TPrimaryKey> specification)
         {
+            if(specification == null)
+            {
+                return src;
+            }
+
             var query = src;
 
             if (specification.Criteria != null)
