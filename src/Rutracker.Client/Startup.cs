@@ -1,6 +1,3 @@
-using System;
-using System.Net.Http;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Rutracker.Client.Interfaces;
@@ -13,10 +10,6 @@ namespace Rutracker.Client
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<ITorrentsClientService, TorrentsClientService>();
-            services.AddScoped(options => new HttpClient
-            {
-                BaseAddress = new Uri(options.GetRequiredService<IUriHelper>().GetBaseUri())
-            });
         }
 
         public void Configure(IComponentsApplicationBuilder app)

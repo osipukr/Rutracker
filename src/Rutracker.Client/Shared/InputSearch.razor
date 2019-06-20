@@ -1,8 +1,8 @@
 ﻿@inherits InputBase<string>
 
-<input bind-value-oninput="@CurrentValue" type="search" id="@Id" class="@CssClass" placeholder="@Placeholder" />
+<input @bind-value="@CurrentValue" @bind-value:event="oninput" type="search" id="@Id" class="@CssClass" placeholder="@Placeholder" />
 
-@functions
+@code
 {
     [Parameter] protected string Placeholder { get; set; }
 

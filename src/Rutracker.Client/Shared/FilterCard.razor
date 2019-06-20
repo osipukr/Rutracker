@@ -1,5 +1,5 @@
 ﻿<div class="card @Class">
-    <div class="card-header" onclick="@ToggleButtonClick">
+    <div class="card-header" @onclick="@ToggleButtonClick">
         <h6 class="m-0">
             @Title
             <span class="float-right @ArrowCssClass"></span>
@@ -11,7 +11,7 @@
     </div>
 </div>
 
-@functions
+@code
 {
     [Parameter] protected string Class { get; set; }
     [Parameter] protected string Title { get; set; }

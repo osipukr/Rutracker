@@ -15,9 +15,7 @@ namespace Rutracker.Infrastructure.Data
         {
         }
 
-        public async Task<IReadOnlyList<(long Id, string Value, int Count)>> GetPopularForumsAsync(int count)
-        {
-            return await _context.Torrents
+        public async Task<IReadOnlyList<(long Id, string Value, int Count)>> GetPopularForumsAsync(int count) => await _context.Torrents
                 .GroupBy(x => x.ForumId, (key, items) => new { Key = key, Count = items.Count() })
                 .OrderByDescending(x => x.Count)
                 .Take(count)
@@ -26,6 +24,5 @@ namespace Rutracker.Infrastructure.Data
                     f => f.Id,
                     (g, f) => ValueTuple.Create(g.Key, f.Title, g.Count))
                 .ToArrayAsync();
-        }
     }
 }

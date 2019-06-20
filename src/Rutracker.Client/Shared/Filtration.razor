@@ -6,7 +6,7 @@
     <FilterCard Class="filter-card no-select" Title="Search">
         <div class="form-row">
             <div class="input-group">
-                <InputSearch bind-Value="@Model.Search" Class="form-control w-100" Placeholder="Search" />
+                <InputSearch @bind-Value="@Model.Search" Class="form-control w-100" Placeholder="Search" />
                 <ValidationMessage For="@(() => Model.Search)" />
             </div>
         </div>
@@ -17,13 +17,13 @@
             <div class="col-md-6 col-6">
                 <label class="w-100">
                     Min size
-                    <InputNumber bind-Value="@Model.SizeFrom" Class="form-control" />
+                    <InputNumber @bind-Value="@Model.SizeFrom" Class="form-control" />
                 </label>
             </div>
             <div class="col-md-6 col-6 text-right">
                 <label class="w-100">
                     Max size
-                    <InputNumber bind-Value="@Model.SizeTo" Class="form-control" />
+                    <InputNumber @bind-Value="@Model.SizeTo" Class="form-control" />
                 </label>
             </div>
 
@@ -44,9 +44,10 @@
                 <div class="custom-control custom-checkbox title-facet">
                     <span class="float-right badge badge-primary">@facet.Count</span>
 
-                    <InputCheckbox bind-Value="@facet.IsSelected"
+                    <InputCheckbox @bind-Value="@facet.IsSelected"
                                    Class="custom-control-input d-none"
-                                   Id="@facet.Id" />
+                                   Id="@facet.Id"
+                                   @key="facet"/>
 
                     <label class="custom-control-label h-100"
                            for="@facet.Id"
@@ -69,7 +70,7 @@
 
                     <div class="col-6">
                         <button class="btn btn-outline-primary w-100"
-                                onclick="@ResetButtonClick"
+                                @onclick="@ResetButtonClick"
                                 type="reset">
                             All
                         </button>
@@ -95,7 +96,7 @@
     </div>
 </EditForm>
 
-@functions
+@code
 {
     [Parameter] protected FiltrationViewModel Model { get; set; }
     [Parameter] protected Action ChangedHandler { get; set; }

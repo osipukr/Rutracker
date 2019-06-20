@@ -1,4 +1,5 @@
-﻿<div id="not-found">
+﻿
+<div id="not-found">
     <div class="not-found">
         <div class="not-found-404">
             <h3>Oops! Page not found</h3>
@@ -9,7 +10,7 @@
     </div>
 </div>
 
-@functions
+@code
 {
-    private string Message = "we are sorry, but the page you requested was not found";
+    private string Message {get; set;} = "we are sorry, but the page you requested was not found";
 }

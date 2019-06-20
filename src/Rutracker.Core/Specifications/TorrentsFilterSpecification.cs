@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using Rutracker.Core.Entities;
 
 namespace Rutracker.Core.Specifications
@@ -8,7 +7,7 @@ namespace Rutracker.Core.Specifications
     public class TorrentsFilterSpecification : BaseSpecification<Torrent, long>
     {
         public TorrentsFilterSpecification(string search, IEnumerable<string> titles, long? sizeFrom, long? sizeTo)
-            : base(x => string.IsNullOrWhiteSpace(search) || EF.Functions.Like(x.Title, $"%{search}%"))
+            : base(x => string.IsNullOrWhiteSpace(search) || x.Title.Contains(search))
         {
             var titleIds = titles?.Select(long.Parse).ToArray();
 

@@ -17,7 +17,7 @@ namespace Rutracker.Infrastructure.Data
         {
         }
 
-        public async Task<TEntity> GetAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
+        public virtual async Task<TEntity> GetAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
             await ApplySpecification(specification)
                 .SingleOrDefaultAsync();
 

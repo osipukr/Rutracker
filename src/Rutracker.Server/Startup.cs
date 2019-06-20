@@ -29,6 +29,7 @@ namespace Rutracker.Server
             services.AddMemoryCache();
             services.AddResponseCompression(options =>
             {
+                options.Providers.Add<GzipCompressionProvider>();
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
                 {
                     MediaTypeNames.Application.Octet,
@@ -37,15 +38,7 @@ namespace Rutracker.Server
                 });
             });
 
-            services.AddScoped<ITorrentRepository, TorrentRepository>();
-            services.AddScoped<ITorrentViewModelService, TorrentViewModelService>();
-
-            services.AddDbContext<TorrentContext>(options =>
-            {
-                options.UseLazyLoadingProxies();
-                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-                options.UseSqlServer(Configuration.GetConnectionString("TorrentConnection"));
-            });
+            RegisterDependencyInjection(services);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -58,13 +51,27 @@ namespace Rutracker.Server
                 app.UseBlazorDebugging();
             }
 
+            app.UseClientSideBlazorFiles<Client.Startup>();
+
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
+                endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
             });
+        }
 
-            app.UseBlazor<Client.Startup>();
+        private void RegisterDependencyInjection(IServiceCollection services)
+        {
+            services.AddScoped<ITorrentRepository, TorrentRepository>();
+            services.AddScoped<ITorrentViewModelService, TorrentViewModelService>();
+
+            services.AddDbContext<TorrentContext>(options =>
+            {
+                options.UseLazyLoadingProxies();
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                options.UseSqlServer(Configuration.GetConnectionString("TorrentConnection"));
+            });
         }
     }
 }

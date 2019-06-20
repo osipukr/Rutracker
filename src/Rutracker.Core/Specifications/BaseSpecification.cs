@@ -50,7 +50,7 @@ namespace Rutracker.Core.Specifications
                 Criteria.Parameters[0]);
 
         protected void ApplyOrCriteria(Expression<Func<TEntity, bool>> expression) =>
-            Criteria = Expression.Lambda<Func<TEntity, bool>>(Expression.OrAssign(Criteria.Body,
+            Criteria = Expression.Lambda<Func<TEntity, bool>>(Expression.OrElse(Criteria.Body,
                     Expression.Invoke(expression,
                         Criteria.Parameters[0])),
                 Criteria.Parameters[0]);
