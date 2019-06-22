@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using Rutracker.Core.Specifications;
 using Xunit;
 
@@ -6,59 +6,35 @@ namespace Rutracker.UnitTests.Specifications
 {
     public class TorrentsFilterPaginatedSpecificationTests
     {
-        [Theory(DisplayName = "TorrentsFilterPaginatedSpecification() check the number of items on the first page")]
-        [InlineData(0)]
-        [InlineData(1)]
-        [InlineData(10)]
-        [InlineData(20)]
-        public void Expected_Items_Count_On_First_Page(int count)
+        [Theory(DisplayName = "TorrentsFilterPaginatedSpecification(params) check the pagination criteria")]
+        [MemberData(nameof(FilterPaginatedSpecificationTestData))]
+        public void Specification_FilterPaginated_Should_Return_Apply_Filer(int skip, int take,
+            string search,
+            IEnumerable<string> titles,
+            long? sizeFrom,
+            long? sizeTo)
         {
             // Arrange
-            var specification = new TorrentsFilterPaginatedSpecification(0, count,
-                default,
-                default,
-                default,
-                default);
-
-            var torrents = DataSeed.GetTestTorrentItems().AsQueryable();
-
-            // Act
-            var result = torrents.Where(specification.Criteria)
-                .Skip(specification.Skip)
-                .Take(specification.Take)
-                .Count();
-
-            // Assert
-            Assert.Equal(count, result);
+            var specification = new TorrentsFilterPaginatedSpecification(skip, take,
+                search,
+                titles,
+                sizeFrom,
+                sizeTo);
+            
+            // Act & Assert
+            Assert.Equal(skip, specification.Skip);
+            Assert.Equal(take, specification.Take);
+            Assert.True(specification.IsPagingEnabled);
+            Assert.NotNull(specification.Criteria);
         }
 
-        [Theory(DisplayName = "TorrentsFilterPaginatedSpecification() check the number of items on the N-page")]
-        [InlineData(3, 10, 0)]
-        [InlineData(4, 6, 2)]
-        [InlineData(1, 5, 5)]
-        [InlineData(3, 8, 4)]
-        [InlineData(1, 10, 10)]
-        [InlineData(1, 20, 20)]
-        
-        public void Expected_Items_Count_Per_Page(int page, int count, int expectedCount)
-        {
-            // Arrange
-            var specification = new TorrentsFilterPaginatedSpecification((page - 1) * count, count,
-                default,
-                default,
-                default,
-                default);
-
-            var torrents = DataSeed.GetTestTorrentItems().AsQueryable();
-
-            // Act
-            var result = torrents.Where(specification.Criteria)
-                .Skip(specification.Skip)
-                .Take(specification.Take)
-                .Count();
-
-            // Assert
-            Assert.Equal(expectedCount, result);
-        }
+        public static IEnumerable<object[]> FilterPaginatedSpecificationTestData =>
+            new[]
+            {
+                new object[] { 0, 0, default, default, default, default },
+                new object[] { 10, 20, "search", default, default, default },
+                new object[] { 20, 30, default, new [] { "20", "30" }, long.MinValue, long.MaxValue / 2 },
+                new object[] { 30, 40, "search", new string[] { }, long.MinValue, long.MaxValue }
+            };
     }
 }

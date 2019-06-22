@@ -175,12 +175,12 @@ namespace Rutracker.Infrastructure.Data.Extensions
                 {
                     Id = 10,
                     Date = new DateTime(2009, 7, 10),
-                    Size = 10124,
-                    Title = "Torrent Title 9",
+                    Size = 101204,
+                    Title = "Torrent Title 8",
                     Hash = "aaa2sd2sa3sa23d1sad1sad1AsTa231asf",
                     Content = "Torrent Content 9",
                     TrackerId = 5,
-                    ForumId = 10,
+                    ForumId = 5,
                     IsDeleted = false
                 },
                 new Torrent
@@ -188,7 +188,7 @@ namespace Rutracker.Infrastructure.Data.Extensions
                     Id = 11,
                     Date = new DateTime(2010, 7, 10),
                     Size = 100000,
-                    Title = "Torrent Title 10",
+                    Title = "Torrent Title 8",
                     Hash = "aaa2sd2sa3sa23d1sad1sad1AsTa231asf",
                     Content = "Torrent Content 1",
                     TrackerId = 8,
@@ -200,7 +200,7 @@ namespace Rutracker.Infrastructure.Data.Extensions
                     Id = 12,
                     Date = new DateTime(2019, 7, 10),
                     Size = 102500,
-                    Title = "Torrent Title 10",
+                    Title = "Torrent Title 8",
                     Hash = "aaa2sd2sa3sa23d1sad1sad1AsTa231asf",
                     Content = "Torrent Content 10",
                     TrackerId = 120,

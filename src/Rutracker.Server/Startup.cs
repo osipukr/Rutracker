@@ -68,9 +68,8 @@ namespace Rutracker.Server
 
             services.AddDbContext<TorrentContext>(options =>
             {
-                options.UseLazyLoadingProxies();
-                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 options.UseSqlServer(Configuration.GetConnectionString("TorrentConnection"));
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
         }
     }
