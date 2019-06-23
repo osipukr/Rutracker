@@ -114,7 +114,7 @@
     private void ResetFiltrationModel()
     {
         Model.Search = default;
-        Model.SelectedTitles = default;
+        Model.SelectedTitleIds = default;
         Model.SizeFrom = default;
         Model.SizeTo = default;
 
@@ -126,7 +126,7 @@
 
     private void ApplyButtonClick()
     {
-        Model.SelectedTitles = TitleFacets?.Where(x => x.IsSelected).Select(x => x.Id);
+        Model.SelectedTitleIds = TitleFacets?.Where(x => x.IsSelected).Select(x => x.Id);
 
         ChangedHandler?.Invoke();
     }

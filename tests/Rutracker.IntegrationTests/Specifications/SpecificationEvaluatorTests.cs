@@ -35,11 +35,11 @@ namespace Rutracker.IntegrationTests.Specifications
         public static IEnumerable<object[]> EvaluatorTestData =>
             new []
             {
-                new object[] { new TorrentsFilterSpecification(default, default, default, default), 12 },
+                new object[] { new TorrentsFilterSpecification(null, null, null, null), 12 },
                 new object[] { new TorrentsFilterSpecification("Title 8", new[] { "5" }, 100000, long.MaxValue), 2},
 
-                new object[] { new TorrentsFilterPaginatedSpecification(0, 10, default, default, default, default), 10,  },
-                new object[] { new TorrentsFilterPaginatedSpecification(5, 20, "Torrent", default, default, default), 7 },
+                new object[] { new TorrentsFilterPaginatedSpecification(0, 10, null, null, null, null), 10,  },
+                new object[] { new TorrentsFilterPaginatedSpecification(5, 20, "Torrent", null, null, null), 7 },
 
                 new object[] { new TorrentWithForumAndFilesSpecification(0), 0 },
                 new object[] { new TorrentWithForumAndFilesSpecification(10), 1 }

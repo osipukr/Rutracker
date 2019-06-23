@@ -24,10 +24,11 @@ namespace Rutracker.IntegrationTests.Repositories
             const long expectedId = 10;
 
             // Act
-            var torrentId = (await _torrentRepository.GetAsync(expectedId)).Id;
+            var torrent = await _torrentRepository.GetAsync(expectedId);
 
             // Assert
-            Assert.Equal(expectedId, torrentId);
+            Assert.NotNull(torrent);
+            Assert.Equal(expectedId, torrent.Id);
         }
 
         [Fact(DisplayName = "GetAsync(spec) should return an object based on the specification")]
@@ -45,7 +46,6 @@ namespace Rutracker.IntegrationTests.Repositories
             Assert.NotNull(torrent.Forum);
             Assert.NotNull(torrent.Files);
             Assert.Equal(expectedId, torrent.Id);
-            Assert.Equal(torrent.ForumId, torrent.Forum.Id);
         }
 
         [Fact(DisplayName = "ListAsync() should return all items")]
@@ -55,10 +55,11 @@ namespace Rutracker.IntegrationTests.Repositories
             const int expectedCount = 12;
 
             // Act
-            var count = (await _torrentRepository.ListAsync()).Count;
+            var torrents = await _torrentRepository.ListAsync();
 
             // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.NotNull(torrents);
+            Assert.Equal(expectedCount, torrents.Count);
         }
 
         [Fact(DisplayName = "ListAsync(spec) should return all items based on the specification")]
@@ -67,16 +68,17 @@ namespace Rutracker.IntegrationTests.Repositories
             // Arrange
             const int expectedCount = 5;
             var specification = new TorrentsFilterPaginatedSpecification(0, expectedCount,
-                default,
-                default,
-                default,
-                default);
+                null,
+                null,
+                null,
+                null);
 
             // Act
-            var count = (await _torrentRepository.ListAsync(specification)).Count;
+            var torrents = await _torrentRepository.ListAsync(specification);
 
             // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.NotNull(torrents);
+            Assert.Equal(expectedCount, torrents.Count);
         }
 
         [Fact(DisplayName = "CountAsync() should return the number of items")]
@@ -98,10 +100,10 @@ namespace Rutracker.IntegrationTests.Repositories
             // Arrange
             const int expectedCount = 5;
             var specification = new TorrentsFilterPaginatedSpecification(0, expectedCount,
-                default,
-                default,
-                default,
-                default);
+                null,
+                null,
+                null,
+                null);
 
             // Act
             var count = await _torrentRepository.CountAsync(specification);
@@ -117,10 +119,11 @@ namespace Rutracker.IntegrationTests.Repositories
             const int expectedCount = 5;
          
             // Act
-            var count = (await _torrentRepository.GetPopularForumsAsync(expectedCount)).Count;
+            var forums = await _torrentRepository.GetPopularForumsAsync(expectedCount);
 
             // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.NotNull(forums);
+            Assert.Equal(expectedCount, forums.Count);
         }
 
         [Fact(DisplayName = "GetAsync(null) should return ArgumentNullException")]

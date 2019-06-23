@@ -12,14 +12,14 @@ namespace Rutracker.UnitTests.Specifications
         public void Specification_ForumWithFiles_Should_Return_Related_Entity(long id)
         {
             // Arrange
-            const int expectedCount = 2;
-            var specification = new TorrentWithForumAndFilesSpecification(id);
+            const int expectedIncludeCount = 2;
 
             // Act
-            var count = specification.Includes.Count;
+            var specification = new TorrentWithForumAndFilesSpecification(id);
 
             // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.NotNull(specification.Includes);
+            Assert.Equal(expectedIncludeCount, specification.Includes.Count);
         }
     }
 }

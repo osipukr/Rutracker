@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Rutracker.Core\Rutracker.Core.csproj" />
     <ProjectReference Include="..\..\src\Rutracker.Infrastructure\Rutracker.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Rutracker.Server\Rutracker.Server.csproj" />
   </ItemGroup>
 
 </Project>

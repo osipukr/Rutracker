@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Rutracker.Core.Specifications;
 using Xunit;
 
@@ -14,27 +15,29 @@ namespace Rutracker.UnitTests.Specifications
             long? sizeFrom,
             long? sizeTo)
         {
-            // Arrange
+            // Act
             var specification = new TorrentsFilterPaginatedSpecification(skip, take,
                 search,
                 titles,
                 sizeFrom,
                 sizeTo);
-            
-            // Act & Assert
+
+            // Assert
+            Assert.NotNull(specification.Criteria);
+
             Assert.Equal(skip, specification.Skip);
             Assert.Equal(take, specification.Take);
+
             Assert.True(specification.IsPagingEnabled);
-            Assert.NotNull(specification.Criteria);
         }
 
         public static IEnumerable<object[]> FilterPaginatedSpecificationTestData =>
             new[]
             {
-                new object[] { 0, 0, default, default, default, default },
-                new object[] { 10, 20, "search", default, default, default },
-                new object[] { 20, 30, default, new [] { "20", "30" }, long.MinValue, long.MaxValue / 2 },
-                new object[] { 30, 40, "search", new string[] { }, long.MinValue, long.MaxValue }
+                new object[] { 0, 0, null, null, null, null },
+                new object[] { 10, 20, "search", null, null, null },
+                new object[] { 20, 30, null, new [] { "20", "30" }, long.MinValue, long.MaxValue / 2 },
+                new object[] { 30, 40, "search", Enumerable.Empty<string>(), long.MinValue, long.MaxValue }
             };
     }
 }

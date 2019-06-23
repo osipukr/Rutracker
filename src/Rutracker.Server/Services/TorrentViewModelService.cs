@@ -36,14 +36,14 @@ namespace Rutracker.Server.Services
                 entry.SlidingExpiration = _defaultCacheDuration;
 
                 var filterSpecification = new TorrentsFilterSpecification(filter?.Search,
-                    filter?.SelectedTitles,
+                    filter?.SelectedTitleIds,
                     filter?.SizeFrom,
                     filter?.SizeTo);
 
                 var filterPaginatedSpecification = new TorrentsFilterPaginatedSpecification((page - 1) * pageSize,
                     pageSize,
                     filter?.Search,
-                    filter?.SelectedTitles,
+                    filter?.SelectedTitleIds,
                     filter?.SizeFrom,
                     filter?.SizeTo);
 
