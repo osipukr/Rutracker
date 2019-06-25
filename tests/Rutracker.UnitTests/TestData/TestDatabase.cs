@@ -2,7 +2,7 @@
 using Rutracker.Infrastructure.Data;
 using Rutracker.Infrastructure.Data.Extensions;
 
-namespace Rutracker.IntegrationTests
+namespace Rutracker.UnitTests.TestData
 {
     public static class TestDatabase
     {

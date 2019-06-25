@@ -8,9 +8,10 @@ using Rutracker.Server.Interfaces;
 using Rutracker.Server.Mapping;
 using Rutracker.Server.Services;
 using Rutracker.Shared.ViewModels;
+using Rutracker.UnitTests.TestData;
 using Xunit;
 
-namespace Rutracker.IntegrationTests.Services
+namespace Rutracker.UnitTests.Server.Services
 {
     public class TorrentViewModelServiceTests : IDisposable
     {

@@ -16,8 +16,10 @@ namespace Rutracker.Server
             using (var scope = host.Services.CreateScope())
             using (var context = scope.ServiceProvider.GetRequiredService<TorrentContext>())
             {
-                await context.Database.EnsureCreatedAsync();
-                await context.SeedAsync();
+                if (await context.Database.EnsureCreatedAsync())
+                {
+                    await context.SeedAsync();
+                }
             }
 
             await host.RunAsync();

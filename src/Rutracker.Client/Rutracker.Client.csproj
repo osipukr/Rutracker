@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <OutputType>Exe</OutputType>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>8</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
   </PropertyGroup>
 

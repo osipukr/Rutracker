@@ -24,7 +24,7 @@ namespace Rutracker.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper();
+            services.AddAutoMapper(typeof(Startup));
             services.AddMvc().AddNewtonsoftJson();
             services.AddMemoryCache();
             services.AddResponseCompression(options =>

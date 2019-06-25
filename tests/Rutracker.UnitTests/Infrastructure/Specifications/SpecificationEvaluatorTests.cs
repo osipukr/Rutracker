@@ -5,9 +5,10 @@ using Rutracker.Core.Entities;
 using Rutracker.Core.Interfaces;
 using Rutracker.Core.Specifications;
 using Rutracker.Infrastructure.Data;
+using Rutracker.UnitTests.TestData;
 using Xunit;
 
-namespace Rutracker.IntegrationTests.Specifications
+namespace Rutracker.UnitTests.Infrastructure.Specifications
 {
     public class SpecificationEvaluatorTests : IDisposable
     {

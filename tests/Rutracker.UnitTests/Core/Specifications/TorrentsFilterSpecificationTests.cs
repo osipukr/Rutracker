@@ -3,7 +3,7 @@ using System.Linq;
 using Rutracker.Core.Specifications;
 using Xunit;
 
-namespace Rutracker.UnitTests.Specifications
+namespace Rutracker.UnitTests.Core.Specifications
 {
     public class TorrentsFilterSpecificationTests
     {

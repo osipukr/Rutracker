@@ -2,9 +2,10 @@
 using Rutracker.Core.Interfaces;
 using Rutracker.Core.Specifications;
 using Rutracker.Infrastructure.Data;
+using Rutracker.UnitTests.TestData;
 using Xunit;
 
-namespace Rutracker.IntegrationTests.Repositories
+namespace Rutracker.UnitTests.Infrastructure.Repositories
 {
     public class TorrentRepositoryTests : IDisposable
     {

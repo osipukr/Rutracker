@@ -15,7 +15,7 @@ namespace Rutracker.Server.Controllers
         public TorrentsController(ITorrentViewModelService torrentViewModelService) => _torrentViewModelService = torrentViewModelService;
 
         [Route("paging")]
-        [HttpGet("{page}/{pageSize}")]
+        [HttpGet("{page:int}/{pageSize:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<TorrentIndexViewModel>> GetTorrentsIndexAsync(int page, int pageSize, [FromBody] FiltrationViewModel filter)
@@ -33,7 +33,7 @@ namespace Rutracker.Server.Controllers
         }
 
         [Route("")]
-        [HttpGet("{id}")]
+        [HttpGet("{id:long}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<TorrentIndexViewModel>> GetTorrentIndexAsync(long id)
@@ -51,7 +51,7 @@ namespace Rutracker.Server.Controllers
         }
 
         [Route("titles")]
-        [HttpGet("{count}")]
+        [HttpGet("{count:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<FacetItemViewModel[]>> GetTitlesAsync(int count)
