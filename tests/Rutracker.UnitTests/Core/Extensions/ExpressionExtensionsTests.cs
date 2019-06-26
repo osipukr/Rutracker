@@ -22,6 +22,7 @@ namespace Rutracker.UnitTests.Core.Extensions
             var expression = left.And(right);
             var count = TestData().AsQueryable().Where(expression).Count();
             
+            // Assert
             Assert.Equal(expectedCount, count);
         }
 
@@ -38,6 +39,7 @@ namespace Rutracker.UnitTests.Core.Extensions
             var expression = left.Or(right);
             var count = TestData().AsQueryable().Where(expression).Count();
 
+            // Assert
             Assert.Equal(expectedCount, count);
         }
 

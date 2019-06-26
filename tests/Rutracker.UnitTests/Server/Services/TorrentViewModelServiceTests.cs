@@ -1,28 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
-using Rutracker.Infrastructure.Data;
 using Rutracker.Server.Interfaces;
 using Rutracker.Server.Mapping;
 using Rutracker.Server.Services;
 using Rutracker.Shared.ViewModels;
-using Rutracker.UnitTests.TestData;
+using Rutracker.UnitTests.Setup;
 using Xunit;
 
 namespace Rutracker.UnitTests.Server.Services
 {
-    public class TorrentViewModelServiceTests : IDisposable
+    public class TorrentViewModelServiceTests
     {
-        private readonly TorrentContext _context;
         private readonly ITorrentViewModelService _torrentViewModelService;
 
         public TorrentViewModelServiceTests()
         {
-            _context = TestDatabase.GetContext("TorrentServiceInMemoryTestDb");
-
-            var repository = new TorrentRepository(_context);
+            var repository = MockInitializer.GetTorrentRepository();
             var cache = new MemoryCache(new MemoryCacheOptions());
             var mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfiles(new Profile[]
             {
@@ -99,9 +94,7 @@ namespace Rutracker.UnitTests.Server.Services
             {
                 new object[] { 1, 5, null, 5 },
                 new object[] { 2, 7, new FiltrationViewModel(string.Empty, Enumerable.Empty<string>(), long.MinValue, long.MaxValue), 5 },
-                new object[] { 1, 10, new FiltrationViewModel("Torrent", new []{ "1", "3", "5", "10" }, 100000, long.MaxValue), 7 } 
+                new object[] { 1, 10, new FiltrationViewModel("Torrent", new []{ "1", "3", "5", "10" }, 100000, long.MaxValue), 7 }
             };
-
-        public void Dispose() => _context?.Dispose();
     }
 }

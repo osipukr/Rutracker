@@ -20,13 +20,11 @@ namespace Rutracker.Core.Specifications
         public virtual int Skip { get; private set; }
         public virtual bool IsPagingEnabled { get; private set; }
 
-        private BaseSpecification()
+        protected BaseSpecification(Expression<Func<TEntity, bool>> expression)
         {
+            Criteria = expression;
             Includes = new List<Expression<Func<TEntity, object>>>();
-            IsPagingEnabled = false;
         }
-
-        protected BaseSpecification(Expression<Func<TEntity, bool>> expression) : this() => Criteria = expression;
 
         protected void AddInclude(Expression<Func<TEntity, object>> includeExpression) => Includes.Add(includeExpression);
 

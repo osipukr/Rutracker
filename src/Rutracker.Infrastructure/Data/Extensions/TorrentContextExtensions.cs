@@ -45,7 +45,7 @@ namespace Rutracker.Infrastructure.Data.Extensions
 
         #region GetPreconfiguredItems
 
-        private static IEnumerable<Forum> GetPreconfiguredForums() =>
+        public static IEnumerable<Forum> GetPreconfiguredForums() =>
             new[]
             {
                 new Forum {Id = 1, Title = "Forum Title 1"},
@@ -60,7 +60,7 @@ namespace Rutracker.Infrastructure.Data.Extensions
                 new Forum {Id = 10, Title = "Forum Title 10"}
             };
 
-        private static IEnumerable<Torrent> GetPreconfiguredTorrents() =>
+        public static IEnumerable<Torrent> GetPreconfiguredTorrents() =>
             new[]
             {
                 new Torrent
@@ -209,7 +209,7 @@ namespace Rutracker.Infrastructure.Data.Extensions
                 }
             };
 
-        private static IEnumerable<File> GetPreconfiguredFiles() =>
+        public static IEnumerable<File> GetPreconfiguredFiles() =>
             new[]
             {
                 new File {Name = "File Name 1", Size = 100, TorrentId = 1},

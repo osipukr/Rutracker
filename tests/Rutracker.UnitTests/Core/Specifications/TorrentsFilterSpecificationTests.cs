@@ -8,7 +8,7 @@ namespace Rutracker.UnitTests.Core.Specifications
     public class TorrentsFilterSpecificationTests
     {
         [Theory(DisplayName = "TorrentsFilterSpecification(params) check the search criteria")]
-        [MemberData(nameof(FilterSpecificationTestData))]
+        [MemberData(nameof(FilterSpecificationTestCases))]
         public void Specification_Filter_Should_Return_Apply_Filter(string search,
             IEnumerable<string> titles,
             long? sizeFrom,
@@ -21,7 +21,7 @@ namespace Rutracker.UnitTests.Core.Specifications
             Assert.NotNull(specification.Criteria);
         }
 
-        public static IEnumerable<object[]> FilterSpecificationTestData =>
+        public static IEnumerable<object[]> FilterSpecificationTestCases =>
             new[]
             {
                 new object[] { null, null, null, null },

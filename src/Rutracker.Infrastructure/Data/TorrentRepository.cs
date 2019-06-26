@@ -27,9 +27,7 @@ namespace Rutracker.Infrastructure.Data
                 .Join(_context.Forums,
                     g => g.Key,
                     f => f.Id,
-                    (g, f) => ValueTuple.Create(g.Key,
-                        f.Title,
-                        g.Count))
+                    (g, f) => ValueTuple.Create(g.Key, f.Title, g.Count))
                 .ToArrayAsync();
     }
 }

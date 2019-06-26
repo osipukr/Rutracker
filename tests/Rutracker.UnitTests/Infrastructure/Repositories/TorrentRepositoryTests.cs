@@ -2,20 +2,20 @@
 using Rutracker.Core.Interfaces;
 using Rutracker.Core.Specifications;
 using Rutracker.Infrastructure.Data;
-using Rutracker.UnitTests.TestData;
+using Rutracker.UnitTests.Setup;
 using Xunit;
 
 namespace Rutracker.UnitTests.Infrastructure.Repositories
 {
-    public class TorrentRepositoryTests : IDisposable
+    public class TorrentRepositoryTests
     {
-        private readonly TorrentContext _context;
         private readonly ITorrentRepository _torrentRepository;
 
         public TorrentRepositoryTests()
         {
-            _context = TestDatabase.GetContext("TorrentRepositoryInMemoryTestDb");
-            _torrentRepository = new TorrentRepository(_context);
+            var context = MockInitializer.GetTorrentContext();
+
+            _torrentRepository = new TorrentRepository(context);
         }
 
         [Fact(DisplayName = "GetAsync(id) should return object with the same id")]
@@ -118,7 +118,7 @@ namespace Rutracker.UnitTests.Infrastructure.Repositories
         {
             // Arrange
             const int expectedCount = 5;
-         
+
             // Act
             var forums = await _torrentRepository.GetPopularForumsAsync(expectedCount);
 
@@ -147,7 +147,5 @@ namespace Rutracker.UnitTests.Infrastructure.Repositories
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await _torrentRepository.CountAsync(null));
         }
-
-        public void Dispose() => _context?.Dispose();
     }
 }

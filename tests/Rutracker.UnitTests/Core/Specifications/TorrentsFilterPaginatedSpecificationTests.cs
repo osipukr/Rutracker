@@ -8,7 +8,7 @@ namespace Rutracker.UnitTests.Core.Specifications
     public class TorrentsFilterPaginatedSpecificationTests
     {
         [Theory(DisplayName = "TorrentsFilterPaginatedSpecification(params) check the pagination criteria")]
-        [MemberData(nameof(FilterPaginatedSpecificationTestData))]
+        [MemberData(nameof(FilterPaginatedSpecificationTestCases))]
         public void Specification_FilterPaginated_Should_Return_Apply_Filer(int skip, int take,
             string search,
             IEnumerable<string> titles,
@@ -31,7 +31,7 @@ namespace Rutracker.UnitTests.Core.Specifications
             Assert.True(specification.IsPagingEnabled);
         }
 
-        public static IEnumerable<object[]> FilterPaginatedSpecificationTestData =>
+        public static IEnumerable<object[]> FilterPaginatedSpecificationTestCases =>
             new[]
             {
                 new object[] { 0, 0, null, null, null, null },

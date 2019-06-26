@@ -20,6 +20,7 @@ namespace Rutracker.IntegrationTests.Server
                 services.AddDbContext<TorrentContext>(options =>
                 {
                     options.UseInMemoryDatabase("InMemoryTestingDb");
+                    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                     options.UseInternalServiceProvider(provider);
                 });
 

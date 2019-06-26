@@ -9,7 +9,14 @@ namespace Rutracker.Core.Specifications
         public TorrentsFilterSpecification(string search, IEnumerable<string> selectedTitleIds, long? sizeFrom, long? sizeTo)
             : base(x => string.IsNullOrWhiteSpace(search) || x.Title.Contains(search))
         {
-            var titleIds = selectedTitleIds?.Select(long.Parse).ToArray();
+            var titleIds = selectedTitleIds?.Select(x => new
+            {
+                Success = long.TryParse(x, out var value),
+                Value = value
+            })
+            .Where(x => x.Success)
+            .Select(x => x.Value)
+            .ToArray();
 
             ApplyAndCriteria(x => titleIds == null || titleIds.Length == 0 || titleIds.Contains(x.ForumId));
             ApplyAndCriteria(x => !sizeFrom.HasValue || x.Size >= sizeFrom);

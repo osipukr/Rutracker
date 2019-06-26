@@ -8,15 +8,16 @@ using Rutracker.Infrastructure.Data.Extensions;
 
 namespace Rutracker.Infrastructure.Data
 {
-    public abstract class Repository<TEntity, TPrimaryKey> : BaseRepository, IRepository<TEntity, TPrimaryKey>
+    public abstract class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TPrimaryKey>
         where TEntity : BaseEntity<TPrimaryKey>
         where TPrimaryKey : IEquatable<TPrimaryKey>
     {
+        protected readonly TorrentContext _context;
         protected readonly DbSet<TEntity> _dbSet;
 
         protected Repository(TorrentContext context)
-            : base(context)
         {
+            _context = context;
             _dbSet = _context.Set<TEntity>();
         }
 
