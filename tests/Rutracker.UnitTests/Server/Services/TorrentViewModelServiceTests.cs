@@ -1,11 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
-using Microsoft.Extensions.Caching.Memory;
+﻿using System;
+using System.Threading.Tasks;
 using Rutracker.Server.Interfaces;
-using Rutracker.Server.Mapping;
 using Rutracker.Server.Services;
-using Rutracker.Shared.ViewModels;
 using Rutracker.UnitTests.Setup;
 using Xunit;
 
@@ -18,83 +14,87 @@ namespace Rutracker.UnitTests.Server.Services
         public TorrentViewModelServiceTests()
         {
             var repository = MockInitializer.GetTorrentRepository();
-            var cache = new MemoryCache(new MemoryCacheOptions());
-            var mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfiles(new Profile[]
-            {
-                new TorrentViewModelProfile(),
-                new TorrentDetailsViewModelProfile(),
-                new ForumViewModelProfile(),
-                new FileViewModelProfile()
-            })));
+            var cache = MockInitializer.GetMemoryCache();
+            var mapper = MockInitializer.GeMapper();
 
             _torrentViewModelService = new TorrentViewModelService(repository, mapper, cache);
         }
 
-        [Theory(DisplayName = "GetTorrentsIndexAsync(page,size,filter) should return the torrents page")]
-        [MemberData(nameof(TorrentsIndexTestData))]
-        public async void Service_GetTorrentsIndexAsync_Should_Return_Torrents_Page(int page, int pageSize,
-            FiltrationViewModel filter,
-            int expectedCount)
+        [Fact(DisplayName = "GetTorrentsIndexAsync(page,size,filter) should return the torrents page")]
+        public async Task Service_GetTorrentsIndexAsync_Should_Return_Torrents_Page()
         {
+            // Arrange
+            const int page = 1;
+            const int pageSize = 10;
+
             // Act
-            var result = await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, filter);
+            var result = await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, null);
 
             // Assert
             Assert.NotNull(result);
             Assert.NotNull(result.TorrentItems);
-            Assert.NotNull(result.PaginationModel);
-
-            Assert.Equal(expectedCount, result.TorrentItems.Length);
-            Assert.Equal(page, result.PaginationModel.CurrentPage);
-            Assert.Equal(pageSize, result.PaginationModel.PageSize);
-
-            Assert.InRange(result.PaginationModel.TotalPages, int.MinValue, int.MaxValue);
-            Assert.InRange(result.PaginationModel.TotalItems, int.MinValue, int.MaxValue);
+            Assert.Equal(pageSize, result.TorrentItems.Length);
         }
 
-        [Theory(DisplayName = "GetTorrentIndexAsync(id) should return a torrent page for a specific id")]
-        [InlineData(1)]
-        [InlineData(5)]
-        [InlineData(12)]
-        public async void Service_GetTorrentIndexAsync_Should_Return_Torrent_Details_Page(long id)
+        [Fact(DisplayName = "GetTorrentIndexAsync(id) should return a torrent page for a specific id")]
+        public async Task Service_GetTorrentIndexAsync_Should_Return_Torrent_Details_Page()
         {
+            // Arrange
+            const long expectedId = 5;
+
             // Act
-            var result = await _torrentViewModelService.GetTorrentIndexAsync(id);
+            var result = await _torrentViewModelService.GetTorrentIndexAsync(expectedId);
 
             // Assert
             Assert.NotNull(result);
             Assert.NotNull(result.TorrentDetailsItem);
-            Assert.NotNull(result.TorrentDetailsItem.Forum);
-
-            Assert.Equal(id, result.TorrentDetailsItem.Id);
+            Assert.Equal(expectedId, result.TorrentDetailsItem.Id);
         }
 
-        [Theory(DisplayName = "GetTitlesAsync(count) should return a count of forum titles")]
-        [InlineData(0, 0)]
-        [InlineData(5, 5)]
-        [InlineData(10, 8)]
-        public async void Service_GetTitlesAsync_Should_Return_N_Forum_Titles(int count, int expectedCount)
+        [Fact(DisplayName = "GetTitlesAsync(count) should return a count of forum titles")]
+        public async Task Service_GetTitlesAsync_Should_Return_N_Forum_Titles()
         {
+            // Arrange
+            const int expectedCount = 5;
+
             // Act
-            var result = await _torrentViewModelService.GetTitlesAsync(count);
+            var result = await _torrentViewModelService.GetTitlesAsync(expectedCount);
 
             // Assert
             Assert.NotNull(result);
-
             Assert.Equal(expectedCount, result.Length);
-
-            Assert.DoesNotContain(result, x => string.IsNullOrEmpty(x.Id));
-            Assert.DoesNotContain(result, x => string.IsNullOrEmpty(x.Value));
-            Assert.DoesNotContain(result, x => string.IsNullOrEmpty(x.Count));
-            Assert.DoesNotContain(result, x => x.IsSelected);
         }
 
-        public static IEnumerable<object[]> TorrentsIndexTestData() =>
-            new[]
-            {
-                new object[] { 1, 5, null, 5 },
-                new object[] { 2, 7, new FiltrationViewModel(string.Empty, Enumerable.Empty<string>(), long.MinValue, long.MaxValue), 5 },
-                new object[] { 1, 10, new FiltrationViewModel("Torrent", new []{ "1", "3", "5", "10" }, 100000, long.MaxValue), 7 }
-            };
+        [Fact(DisplayName = "GetTorrentsIndexAsync(page,size,filter) with negative page number should return ArgumentOutOfRangeException")]
+        public async Task Service_GetTorrentsIndexAsync_NegativePageNumber_Should_Return_ArgumentOutOfRangeException()
+        {
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+                await _torrentViewModelService.GetTorrentsIndexAsync(-10, 10, null));
+        }
+
+        [Fact(DisplayName = "GetTorrentsIndexAsync(page,size,filter) with negative pageSize number should return ArgumentOutOfRangeException")]
+        public async Task Service_GetTorrentsIndexAsync_NegativePageSizeNumber_Should_Return_ArgumentOutOfRangeException()
+        {
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+                await _torrentViewModelService.GetTorrentsIndexAsync(10, -10, null));
+        }
+
+        [Fact(DisplayName = "GetTorrentIndexAsync(id) with negative id number should return ArgumentOutOfRangeException")]
+        public async Task Service_GetTorrentIndexAsync_NegativePageNumber_Should_Return_ArgumentOutOfRangeException()
+        {
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+                await _torrentViewModelService.GetTorrentIndexAsync(-10));
+        }
+
+        [Fact(DisplayName = "GetTitlesAsync(count) with negative count number should return ArgumentOutOfRangeException")]
+        public async Task Service_GetTitlesAsync_NegativePageNumber_Should_Return_ArgumentOutOfRangeException()
+        {
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+                await _torrentViewModelService.GetTitlesAsync(-10));
+        }
     }
 }

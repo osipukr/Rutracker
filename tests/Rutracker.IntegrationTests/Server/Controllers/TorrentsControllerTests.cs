@@ -5,6 +5,7 @@ using System.Net.Mime;
 using System.Text;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
+using Rutracker.Server;
 using Rutracker.Shared.ViewModels;
 using Rutracker.Shared.ViewModels.Torrent;
 using Rutracker.Shared.ViewModels.Torrents;
@@ -12,11 +13,11 @@ using Xunit;
 
 namespace Rutracker.IntegrationTests.Server.Controllers
 {
-    public class TorrentsControllerTests : IClassFixture<CustomWebApplicationFactory>
+    public class TorrentsControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly HttpClient _client;
 
-        public TorrentsControllerTests(CustomWebApplicationFactory factory) =>
+        public TorrentsControllerTests(CustomWebApplicationFactory<Startup> factory) =>
             _client = factory.CreateClient();
 
         [Fact(DisplayName = "GetTorrentsIndexAsync(page,pageSize,filter) should return torrents index page")]

@@ -10,7 +10,7 @@ else
 {
     <div class="card text-center mb-3">
         <div class="card-body">
-            <button class="btn btn-outline-primary" @onclick="@BackToButtonClick">
+            <button class="btn btn-outline-primary" onclick="@BackToButtonClick">
                 Back to full torrents list
             </button>
         </div>
@@ -86,7 +86,7 @@ else
                 <div class="card-body">
                     <div class="@(_collapseFiles ? null : "mb-2")">
                         <span class="badge badge-primary">Files</span> -
-                        <button class="btn btn-primary btn-sm" @onclick="@ToggleButtonClick">Show / Hide</button>
+                        <button class="btn btn-primary btn-sm" onclick="@ToggleButtonClick">Show / Hide</button>
                     </div>
 
                     <ul class="list-group list-group-horizontal flex-wrap justify-content-around align-items-center @CollapseCssClass">
@@ -108,7 +108,7 @@ else
     }
 }
 
-@code
+@functions
 {
     [Parameter] protected long Id { get; set; }
 

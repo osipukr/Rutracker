@@ -21,7 +21,7 @@
     </div>
 </div>
 
-@code
+@functions
 {
     private TorrentsIndexViewModel Model { get; set; }
     private FiltrationViewModel FilterModel { get; set; } = new FiltrationViewModel();
@@ -39,7 +39,7 @@
         UriHelper.OnLocationChanged += OnLocationChanges;
     }
 
-    private async void OnLocationChanges(object sender, LocationChangedEventArgs args) => await RefreshTypesAsync();
+    private async void OnLocationChanges(object sender, string args) => await RefreshTypesAsync();
 
     private async Task RefreshTypesAsync()
     {
