@@ -45,7 +45,7 @@ namespace Rutracker.Infrastructure.Data.Extensions
 
         #region GetPreconfiguredItems
 
-        public static IEnumerable<Forum> GetPreconfiguredForums() =>
+        private static IEnumerable<Forum> GetPreconfiguredForums() =>
             new[]
             {
                 new Forum {Id = 1, Title = "Forum Title 1"},
@@ -60,7 +60,7 @@ namespace Rutracker.Infrastructure.Data.Extensions
                 new Forum {Id = 10, Title = "Forum Title 10"}
             };
 
-        public static IEnumerable<Torrent> GetPreconfiguredTorrents() =>
+        private static IEnumerable<Torrent> GetPreconfiguredTorrents() =>
             new[]
             {
                 new Torrent
@@ -209,36 +209,36 @@ namespace Rutracker.Infrastructure.Data.Extensions
                 }
             };
 
-        public static IEnumerable<File> GetPreconfiguredFiles() =>
+        private static IEnumerable<File> GetPreconfiguredFiles() =>
             new[]
             {
-                new File {Name = "File Name 1", Size = 100, TorrentId = 1},
-                new File {Name = "File Name 2", Size = 100, TorrentId = 1},
-                new File {Name = "File Name 3", Size = 100, TorrentId = 1},
-                new File {Name = "File Name 4", Size = 100, TorrentId = 1},
-                new File {Name = "File Name 5", Size = 100, TorrentId = 2},
-                new File {Name = "File Name 6", Size = 100, TorrentId = 2},
-                new File {Name = "File Name 7", Size = 100, TorrentId = 3},
-                new File {Name = "File Name 8", Size = 100, TorrentId = 4},
-                new File {Name = "File Name 9", Size = 100, TorrentId = 4},
-                new File {Name = "File Name 10", Size = 100, TorrentId = 5},
-                new File {Name = "File Name 11", Size = 100, TorrentId = 6},
-                new File {Name = "File Name 12", Size = 100, TorrentId = 6},
-                new File {Name = "File Name 13", Size = 100, TorrentId = 6},
-                new File {Name = "File Name 14", Size = 100, TorrentId = 7},
-                new File {Name = "File Name 15", Size = 100, TorrentId = 8},
-                new File {Name = "File Name 16", Size = 100, TorrentId = 8},
-                new File {Name = "File Name 17", Size = 100, TorrentId = 8},
-                new File {Name = "File Name 18", Size = 100, TorrentId = 9},
-                new File {Name = "File Name 19", Size = 100, TorrentId = 9},
-                new File {Name = "File Name 20", Size = 100, TorrentId = 9},
-                new File {Name = "File Name 21", Size = 100, TorrentId = 9},
-                new File {Name = "File Name 22", Size = 100, TorrentId = 10},
-                new File {Name = "File Name 23", Size = 100, TorrentId = 10},
-                new File {Name = "File Name 24", Size = 100, TorrentId = 10},
-                new File {Name = "File Name 25", Size = 100, TorrentId = 11},
-                new File {Name = "File Name 26", Size = 100, TorrentId = 11},
-                new File {Name = "File Name 27", Size = 100, TorrentId = 11}
+                new File {Id = 1, Name = "File Name 1", Size = 100, TorrentId = 1},
+                new File {Id = 2, Name = "File Name 2", Size = 100, TorrentId = 1},
+                new File {Id = 3, Name = "File Name 3", Size = 100, TorrentId = 1},
+                new File {Id = 4, Name = "File Name 4", Size = 100, TorrentId = 1},
+                new File {Id = 5, Name = "File Name 5", Size = 100, TorrentId = 2},
+                new File {Id = 6, Name = "File Name 6", Size = 100, TorrentId = 2},
+                new File {Id = 7, Name = "File Name 7", Size = 100, TorrentId = 3},
+                new File {Id = 8, Name = "File Name 8", Size = 100, TorrentId = 4},
+                new File {Id = 9, Name = "File Name 9", Size = 100, TorrentId = 4},
+                new File {Id = 10, Name = "File Name 10", Size = 100, TorrentId = 5},
+                new File {Id = 11, Name = "File Name 11", Size = 100, TorrentId = 6},
+                new File {Id = 12, Name = "File Name 12", Size = 100, TorrentId = 6},
+                new File {Id = 13, Name = "File Name 13", Size = 100, TorrentId = 6},
+                new File {Id = 14, Name = "File Name 14", Size = 100, TorrentId = 7},
+                new File {Id = 15, Name = "File Name 15", Size = 100, TorrentId = 8},
+                new File {Id = 16, Name = "File Name 16", Size = 100, TorrentId = 8},
+                new File {Id = 17, Name = "File Name 17", Size = 100, TorrentId = 8},
+                new File {Id = 18, Name = "File Name 18", Size = 100, TorrentId = 9},
+                new File {Id = 19, Name = "File Name 19", Size = 100, TorrentId = 9},
+                new File {Id = 20, Name = "File Name 20", Size = 100, TorrentId = 9},
+                new File {Id = 21, Name = "File Name 21", Size = 100, TorrentId = 9},
+                new File {Id = 22, Name = "File Name 22", Size = 100, TorrentId = 10},
+                new File {Id = 23, Name = "File Name 23", Size = 100, TorrentId = 10},
+                new File {Id = 24, Name = "File Name 24", Size = 100, TorrentId = 10},
+                new File {Id = 25, Name = "File Name 25", Size = 100, TorrentId = 11},
+                new File {Id = 26, Name = "File Name 26", Size = 100, TorrentId = 11},
+                new File {Id = 27, Name = "File Name 27", Size = 100, TorrentId = 11}
             };
 
         #endregion

@@ -61,12 +61,8 @@ namespace Rutracker.UnitTests.Setup
             return mockTorrentRepository.Object;
         }
 
-        public static IMemoryCache GetMemoryCache()
-        {
-            // Extension method GetOrCreateAsync() can not be mocked
-
-            return new MemoryCache(new MemoryCacheOptions());
-        }
+        public static IMemoryCache GetMemoryCache() => 
+            new Mock<MemoryCache>(new Mock<MemoryCacheOptions>().Object).Object;
 
         public static IMapper GeMapper()
         {

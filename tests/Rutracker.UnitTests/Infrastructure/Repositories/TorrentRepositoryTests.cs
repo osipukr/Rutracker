@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Rutracker.Core.Interfaces;
 using Rutracker.Core.Specifications;
 using Rutracker.Infrastructure.Data;
@@ -19,10 +20,10 @@ namespace Rutracker.UnitTests.Infrastructure.Repositories
         }
 
         [Fact(DisplayName = "GetAsync(id) should return object with the same id")]
-        public async void Repository_GetAsync_Should_Find_Item_By_Id()
+        public async Task Repository_GetAsync_Should_Find_Item_By_Id()
         {
             // Arrange
-            const long expectedId = 10;
+            const long expectedId = 5;
 
             // Act
             var torrent = await _torrentRepository.GetAsync(expectedId);
@@ -33,10 +34,10 @@ namespace Rutracker.UnitTests.Infrastructure.Repositories
         }
 
         [Fact(DisplayName = "GetAsync(spec) should return an object based on the specification")]
-        public async void Repository_GetAsync_Should_Find_Item_By_Specification()
+        public async Task Repository_GetAsync_Should_Find_Item_By_Specification()
         {
             // Arrange
-            const long expectedId = 10;
+            const long expectedId = 5;
             var specification = new TorrentWithForumAndFilesSpecification(expectedId);
 
             // Act
@@ -44,16 +45,14 @@ namespace Rutracker.UnitTests.Infrastructure.Repositories
 
             // Assert
             Assert.NotNull(torrent);
-            Assert.NotNull(torrent.Forum);
-            Assert.NotNull(torrent.Files);
             Assert.Equal(expectedId, torrent.Id);
         }
 
         [Fact(DisplayName = "ListAsync() should return all items")]
-        public async void Repository_ListAsync_Should_Return_All_Items()
+        public async Task Repository_ListAsync_Should_Return_All_Items()
         {
             // Arrange
-            const int expectedCount = 12;
+            const int expectedCount = 9;
 
             // Act
             var torrents = await _torrentRepository.ListAsync();
@@ -64,7 +63,7 @@ namespace Rutracker.UnitTests.Infrastructure.Repositories
         }
 
         [Fact(DisplayName = "ListAsync(spec) should return all items based on the specification")]
-        public async void Repository_ListAsync_Should_Return_All_Items_By_Specification()
+        public async Task Repository_ListAsync_Should_Return_All_Items_By_Specification()
         {
             // Arrange
             const int expectedCount = 5;
@@ -83,10 +82,10 @@ namespace Rutracker.UnitTests.Infrastructure.Repositories
         }
 
         [Fact(DisplayName = "CountAsync() should return the number of items")]
-        public async void Repository_CountAsync_Should_Return_Number_Of_Items()
+        public async Task Repository_CountAsync_Should_Return_Number_Of_Items()
         {
             // Arrange
-            const int expectedCount = 12;
+            const int expectedCount = 9;
 
             // Act
             var count = await _torrentRepository.CountAsync();
@@ -96,7 +95,7 @@ namespace Rutracker.UnitTests.Infrastructure.Repositories
         }
 
         [Fact(DisplayName = "CountAsync() should return the number of items based on the specification")]
-        public async void Repository_CountAsync_Should_Return_Number_Of_Items_By_Specification()
+        public async Task Repository_CountAsync_Should_Return_Number_Of_Items_By_Specification()
         {
             // Arrange
             const int expectedCount = 5;
@@ -114,7 +113,7 @@ namespace Rutracker.UnitTests.Infrastructure.Repositories
         }
 
         [Fact(DisplayName = "GetPopularForumsAsync(count) should return the popular forum title count")]
-        public async void Repository_GetPopularForumsAsync_Should_Return_N_Popular_Forum_Title()
+        public async Task Repository_GetPopularForumsAsync_Should_Return_N_Popular_Forum_Title()
         {
             // Arrange
             const int expectedCount = 5;
@@ -128,21 +127,21 @@ namespace Rutracker.UnitTests.Infrastructure.Repositories
         }
 
         [Fact(DisplayName = "GetAsync(null) should return ArgumentNullException")]
-        public async void Repository_GetAsync_Null_Should_Return_ArgumentNullException()
+        public async Task Repository_GetAsync_Null_Should_Return_ArgumentNullException()
         {
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await _torrentRepository.GetAsync(null));
         }
 
         [Fact(DisplayName = "ListAsync(null) should return ArgumentNullException")]
-        public async void Repository_ListAsync_Null_Should_Return_ArgumentNullException()
+        public async Task Repository_ListAsync_Null_Should_Return_ArgumentNullException()
         {
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await _torrentRepository.ListAsync(null));
         }
 
         [Fact(DisplayName = "CountAsync(null) should return ArgumentNullException")]
-        public async void Repository_CountAsync_Null_Should_Return_ArgumentNullException()
+        public async Task Repository_CountAsync_Null_Should_Return_ArgumentNullException()
         {
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await _torrentRepository.CountAsync(null));

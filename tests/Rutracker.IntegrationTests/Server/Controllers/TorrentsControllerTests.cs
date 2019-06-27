@@ -1,10 +1,17 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Rutracker.Infrastructure.Data;
+using Rutracker.Infrastructure.Data.Extensions;
 using Rutracker.Server;
 using Rutracker.Shared.ViewModels;
 using Rutracker.Shared.ViewModels.Torrent;
@@ -13,36 +20,58 @@ using Xunit;
 
 namespace Rutracker.IntegrationTests.Server.Controllers
 {
-    public class TorrentsControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class TorrentsControllerTests : IClassFixture<WebApplicationFactory<Startup>>
     {
         private readonly HttpClient _client;
 
-        public TorrentsControllerTests(CustomWebApplicationFactory<Startup> factory) =>
-            _client = factory.CreateClient();
+        public TorrentsControllerTests(WebApplicationFactory<Startup> factory) =>
+            _client = factory.WithWebHostBuilder(config =>
+                config.ConfigureServices(services =>
+                {
+                    services
+                        .AddEntityFrameworkInMemoryDatabase()
+                        .AddDbContext<TorrentContext>((provider, options) =>
+                        {
+                            options.UseInMemoryDatabase(Guid.NewGuid().ToString());
+                            options.UseInternalServiceProvider(provider);
+                        });
+
+                    using var scope = services.BuildServiceProvider().CreateScope();
+                    using var context = scope.ServiceProvider.GetRequiredService<TorrentContext>();
+
+                    context.Database.EnsureCreated();
+                    context.SeedAsync().Wait();
+                }))
+                .CreateClient();
 
         [Fact(DisplayName = "GetTorrentsIndexAsync(page,pageSize,filter) should return torrents index page")]
-        public async void Controller_GetTorrentsIndexAsync_Should_Return_Torrents_Page()
+        public async Task Controller_GetTorrentsIndexAsync_Should_Return_Torrents_Page()
         {
             // Arrange
-            const int expectedCount = 5;
+            const int page = 1;
+            const int pageSize = 5;
+            const int expectedCount = page * pageSize;
 
             // Act
             var model = await _client.PostJsonAsync<TorrentsIndexViewModel>(
-                $"/api/torrents/paging/?page=1&pageSize={expectedCount}",
+                $"/api/torrents/paging/?page={page}&pageSize={pageSize}",
                 null);
 
             // Assert
             Assert.NotNull(model);
             Assert.NotNull(model.TorrentItems);
             Assert.NotNull(model.PaginationModel);
+
+            Assert.Equal(page, model.PaginationModel.CurrentPage);
+            Assert.Equal(pageSize, model.PaginationModel.PageSize);
             Assert.Equal(expectedCount, model.TorrentItems.Length);
         }
 
         [Fact(DisplayName = "GetTorrentIndexAsync(id) should return torrent details page")]
-        public async void Controller_GetTorrentIndexAsync_Should_Return_Torrent_Details_Page()
+        public async Task Controller_GetTorrentIndexAsync_Should_Return_Torrent_Details_Page()
         {
             // Arrange
-            const long expectedId = 2404;
+            const long expectedId = 5;
 
             // Act
             var model = await _client.GetJsonAsync<TorrentIndexViewModel>($"/api/torrents/?id={expectedId}");
@@ -54,7 +83,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         }
 
         [Fact(DisplayName = "GetTitlesAsync(count) should return forum titles list")]
-        public async void Controller_GetTitlesAsync_Should_Return_Forum_Title_Facets()
+        public async Task Controller_GetTitlesAsync_Should_Return_Forum_Title_Facets()
         {
             // Arrange
             const int expectedCount = 5;
@@ -68,7 +97,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         }
 
         [Fact(DisplayName = "GetTorrentsIndexAsync() with negative number should return BadRequest")]
-        public async void Controller_GetTorrentsIndexAsync_NegativeNumber_Should_Return_BadRequest()
+        public async Task Controller_GetTorrentsIndexAsync_NegativeNumber_Should_Return_BadRequest()
         {
             // Arrange
             const long page = -10;
@@ -76,8 +105,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
 
             // Act
             var data = JsonConvert.SerializeObject(null);
-            var buffer = Encoding.UTF8.GetBytes(data);
-            using var content = new ByteArrayContent(buffer);
+            using var content = new ByteArrayContent(Encoding.UTF8.GetBytes(data));
             content.Headers.ContentType = new MediaTypeHeaderValue(MediaTypeNames.Application.Json);
 
             var response = await _client.PostAsync($"/api/torrents/paging/?page={page}&pageSize={pageSize}", content);
@@ -87,7 +115,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         }
 
         [Fact(DisplayName = "GetTorrentIndexAsync() with negative number should return BadRequest")]
-        public async void Controller_GetTorrentIndexAsync_NegativeNumber_Should_Return_BadRequest()
+        public async Task Controller_GetTorrentIndexAsync_NegativeNumber_Should_Return_BadRequest()
         {
             // Arrange
             const long id = -10;
@@ -100,7 +128,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         }
 
         [Fact(DisplayName = "GetTitlesAsync() with negative number should return BadRequest")]
-        public async void Controller_GetTitlesAsync_NegativeNumber_Should_Return_BadRequest()
+        public async Task Controller_GetTitlesAsync_NegativeNumber_Should_Return_BadRequest()
         {
             // Arrange
             const int count = -10;
