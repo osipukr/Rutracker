@@ -11,9 +11,11 @@ namespace Rutracker.UnitTests.Infrastructure.Specifications
 {
     public class SpecificationEvaluatorTests
     {
-        [Theory(DisplayName = "Apply(query,spec) should return the correct number of items after applying the specification")]
+        [Theory(DisplayName =
+            "Apply(query,spec) should return the correct number of items after applying the specification")]
         [MemberData(nameof(EvaluatorTestCases))]
-        public void Evaluator_Should_Correctly_Apply_The_Specification(ISpecification<Torrent, long> specification, int expectedCount)
+        public void Evaluator_Should_Correctly_Apply_The_Specification(ISpecification<Torrent, long> specification,
+            int expectedCount)
         {
             // Arrange
             var torrents = DataInitializer.GeTorrents().AsQueryable();

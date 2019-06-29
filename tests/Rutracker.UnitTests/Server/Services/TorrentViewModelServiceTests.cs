@@ -65,7 +65,8 @@ namespace Rutracker.UnitTests.Server.Services
             Assert.Equal(expectedCount, result.Length);
         }
 
-        [Fact(DisplayName = "GetTorrentsIndexAsync(page,size,filter) with negative page number should return ArgumentOutOfRangeException")]
+        [Fact(DisplayName =
+            "GetTorrentsIndexAsync(page,size,filter) with negative page number should return ArgumentOutOfRangeException")]
         public async Task Service_GetTorrentsIndexAsync_NegativePageNumber_Should_Return_ArgumentOutOfRangeException()
         {
             // Act & Assert
@@ -73,7 +74,8 @@ namespace Rutracker.UnitTests.Server.Services
                 await _torrentViewModelService.GetTorrentsIndexAsync(-10, 10, null));
         }
 
-        [Fact(DisplayName = "GetTorrentsIndexAsync(page,size,filter) with negative pageSize number should return ArgumentOutOfRangeException")]
+        [Fact(DisplayName =
+            "GetTorrentsIndexAsync(page,size,filter) with negative pageSize number should return ArgumentOutOfRangeException")]
         public async Task Service_GetTorrentsIndexAsync_NegativePageSizeNumber_Should_Return_ArgumentOutOfRangeException()
         {
             // Act & Assert
@@ -81,7 +83,8 @@ namespace Rutracker.UnitTests.Server.Services
                 await _torrentViewModelService.GetTorrentsIndexAsync(10, -10, null));
         }
 
-        [Fact(DisplayName = "GetTorrentIndexAsync(id) with negative id number should return ArgumentOutOfRangeException")]
+        [Fact(DisplayName =
+            "GetTorrentIndexAsync(id) with negative id number should return ArgumentOutOfRangeException")]
         public async Task Service_GetTorrentIndexAsync_NegativePageNumber_Should_Return_ArgumentOutOfRangeException()
         {
             // Act & Assert
@@ -89,7 +92,8 @@ namespace Rutracker.UnitTests.Server.Services
                 await _torrentViewModelService.GetTorrentIndexAsync(-10));
         }
 
-        [Fact(DisplayName = "GetTitlesAsync(count) with negative count number should return ArgumentOutOfRangeException")]
+        [Fact(DisplayName =
+            "GetTitlesAsync(count) with negative count number should return ArgumentOutOfRangeException")]
         public async Task Service_GetTitlesAsync_NegativePageNumber_Should_Return_ArgumentOutOfRangeException()
         {
             // Act & Assert

@@ -1,17 +1,11 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Rutracker.Infrastructure.Data;
-using Rutracker.Infrastructure.Data.Extensions;
 using Rutracker.Server;
 using Rutracker.Shared.ViewModels;
 using Rutracker.Shared.ViewModels.Torrent;
@@ -20,29 +14,11 @@ using Xunit;
 
 namespace Rutracker.IntegrationTests.Server.Controllers
 {
-    public class TorrentsControllerTests : IClassFixture<WebApplicationFactory<Startup>>
+    public class TorrentsControllerTests : IClassFixture<ServerFactory<Startup>>
     {
         private readonly HttpClient _client;
 
-        public TorrentsControllerTests(WebApplicationFactory<Startup> factory) =>
-            _client = factory.WithWebHostBuilder(config =>
-                config.ConfigureServices(services =>
-                {
-                    services
-                        .AddEntityFrameworkInMemoryDatabase()
-                        .AddDbContext<TorrentContext>((provider, options) =>
-                        {
-                            options.UseInMemoryDatabase(Guid.NewGuid().ToString());
-                            options.UseInternalServiceProvider(provider);
-                        });
-
-                    using var scope = services.BuildServiceProvider().CreateScope();
-                    using var context = scope.ServiceProvider.GetRequiredService<TorrentContext>();
-
-                    context.Database.EnsureCreated();
-                    context.SeedAsync().Wait();
-                }))
-                .CreateClient();
+        public TorrentsControllerTests(ServerFactory<Startup> factory) => _client = factory.CreateClient();
 
         [Fact(DisplayName = "GetTorrentsIndexAsync(page,pageSize,filter) should return torrents index page")]
         public async Task Controller_GetTorrentsIndexAsync_Should_Return_Torrents_Page()
@@ -50,7 +26,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             // Arrange
             const int page = 1;
             const int pageSize = 5;
-            const int expectedCount = page * pageSize;
+            const int expectedCount = 5;
 
             // Act
             var model = await _client.PostJsonAsync<TorrentsIndexViewModel>(
@@ -100,15 +76,17 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         public async Task Controller_GetTorrentsIndexAsync_NegativeNumber_Should_Return_BadRequest()
         {
             // Arrange
-            const long page = -10;
-            const long pageSize = 10;
+            const int page = -10;
+            const int pageSize = 10;
 
             // Act
             var data = JsonConvert.SerializeObject(null);
             using var content = new ByteArrayContent(Encoding.UTF8.GetBytes(data));
             content.Headers.ContentType = new MediaTypeHeaderValue(MediaTypeNames.Application.Json);
 
-            var response = await _client.PostAsync($"/api/torrents/paging/?page={page}&pageSize={pageSize}", content);
+            using var response = await _client.PostAsync(
+                $"/api/torrents/paging/?page={page}&pageSize={pageSize}",
+                        content);
 
             // Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -121,7 +99,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             const long id = -10;
 
             // Act
-            var response = await _client.GetAsync($"/api/torrents/?id={id}");
+            using var response = await _client.GetAsync($"/api/torrents/?id={id}");
 
             // Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -134,7 +112,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             const int count = -10;
 
             // Act
-            var response = await _client.GetAsync($"/api/torrents/titles/?count={count}");
+            using var response = await _client.GetAsync($"/api/torrents/titles/?count={count}");
 
             // Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);

@@ -14,16 +14,17 @@ namespace Rutracker.UnitTests.Core.Extensions
         {
             // Arrange
             const int expectedCount = 2;
+            var data = TestData().AsQueryable();
 
             Expression<Func<string, bool>> left = x => x.StartsWith('t');
             Expression<Func<string, bool>> right = x => x.Length == 6;
 
             // Act
             var expression = left.And(right);
-            var count = TestData().AsQueryable().Where(expression).Count();
             
             // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.NotNull(expression);
+            Assert.Equal(expectedCount, data.Where(expression).Count());
         }
 
         [Fact(DisplayName = "Or() should apply || between the two expression")]
@@ -31,16 +32,17 @@ namespace Rutracker.UnitTests.Core.Extensions
         {
             // Arrange
             const int expectedCount = 4;
+            var data = TestData().AsQueryable();
 
             Expression<Func<string, bool>> left = x => x.StartsWith('t');
             Expression<Func<string, bool>> right = x => x.Length == 1;
 
             // Act
             var expression = left.Or(right);
-            var count = TestData().AsQueryable().Where(expression).Count();
 
             // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.NotNull(expression);
+            Assert.Equal(expectedCount, data.Where(expression).Count());
         }
 
         [Fact(DisplayName = "And(null) should return ArgumentNullException")]
