@@ -1,4 +1,4 @@
-﻿namespace Rutracker.Shared.ViewModels
+﻿namespace Rutracker.Shared.ViewModels.Shared
 {
     public class PaginationViewModel
     {

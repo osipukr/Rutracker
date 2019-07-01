@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Rutracker.Client.Constants;
 using Rutracker.Client.Interfaces;
-using Rutracker.Shared.ViewModels;
+using Rutracker.Client.Response;
+using Rutracker.Shared.ViewModels.Shared;
 using Rutracker.Shared.ViewModels.Torrent;
 using Rutracker.Shared.ViewModels.Torrents;
 
@@ -19,25 +20,25 @@ namespace Rutracker.Client.Services
         public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
         {
             var requestUri = string.Format(ApiUris.TorrentsIndex, page, pageSize);
-            var result = await _httpClient.PostJsonAsync<TorrentsIndexViewModel>(requestUri, filter);
+            var response = await _httpClient.PostJsonAsync<OkResponse<TorrentsIndexViewModel>>(requestUri, filter);
 
-            return result;
+            return response.Value;
         }
 
         public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id)
         {
             var requestUri = string.Format(ApiUris.TorrentIndex, id);
-            var result = await _httpClient.GetJsonAsync<TorrentIndexViewModel>(requestUri);
+            var response = await _httpClient.GetJsonAsync<OkResponse<TorrentIndexViewModel>>(requestUri);
 
-            return result;
+            return response.Value;
         }
 
-        public async Task<FacetItemViewModel[]> GetTitlesAsync(int count)
+        public async Task<FacetViewModel> GetTitlesAsync(int count)
         {
             var requestUri = string.Format(ApiUris.Titles, count);
-            var result = await _httpClient.GetJsonAsync<FacetItemViewModel[]>(requestUri);
+            var response = await _httpClient.GetJsonAsync<OkResponse<FacetViewModel>>(requestUri);
 
-            return result;
+            return response.Value;
         }
     }
 }

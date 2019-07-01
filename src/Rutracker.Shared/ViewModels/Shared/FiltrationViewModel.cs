@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Rutracker.Shared.ViewModels
+namespace Rutracker.Shared.ViewModels.Shared
 {
     public class FiltrationViewModel
     {
@@ -19,17 +19,5 @@ namespace Rutracker.Shared.ViewModels
 
         [Display(Name = "Forum titles")]
         public IEnumerable<string> SelectedTitleIds { get; set; }
-
-        public FiltrationViewModel()
-        {
-        }
-
-        public FiltrationViewModel(string search, IEnumerable<string> selectedTitleIds, long? sizeFrom, long? sizeTo)
-        {
-            Search = search;
-            SelectedTitleIds = selectedTitleIds;
-            SizeFrom = sizeFrom;
-            SizeTo = sizeTo;
-        }
     }
 }

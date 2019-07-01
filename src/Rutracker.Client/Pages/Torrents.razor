@@ -9,7 +9,7 @@
     </div>
 
     <div class="col-lg-9">
-        @if (SearchTask.IsCompleted)
+        @if (SearchTask.IsCompleted && Model != null)
         {
             <TorrentsList Items="@Model.TorrentItems" />
             <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonClick" />
