@@ -29,6 +29,16 @@ namespace Rutracker.Server.Services
 
         public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
         {
+            if (page < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(page));
+            }
+
+            if (pageSize < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize));
+            }
+
             var cacheKey = string.Format(CachedTorrentKeys.TorrentsIndex, page, pageSize, filter?.GetHashCode());
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
@@ -36,14 +46,14 @@ namespace Rutracker.Server.Services
                 entry.SlidingExpiration = _defaultCacheDuration;
 
                 var filterSpecification = new TorrentsFilterSpecification(filter?.Search,
-                    filter?.SelectedTitles,
+                    filter?.SelectedTitleIds,
                     filter?.SizeFrom,
                     filter?.SizeTo);
 
                 var filterPaginatedSpecification = new TorrentsFilterPaginatedSpecification((page - 1) * pageSize,
                     pageSize,
                     filter?.Search,
-                    filter?.SelectedTitles,
+                    filter?.SelectedTitleIds,
                     filter?.SizeFrom,
                     filter?.SizeTo);
 
@@ -71,6 +81,11 @@ namespace Rutracker.Server.Services
 
         public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id)
         {
+            if (id < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id));
+            }
+
             var cacheKey = string.Format(CachedTorrentKeys.TorrentIndex, id);
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
@@ -91,6 +106,11 @@ namespace Rutracker.Server.Services
 
         public async Task<FacetItemViewModel[]> GetTitlesAsync(int count)
         {
+            if (count < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
+
             var cacheKey = string.Format(CachedTorrentKeys.Titles, count);
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>

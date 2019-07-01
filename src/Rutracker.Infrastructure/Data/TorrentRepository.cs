@@ -15,8 +15,13 @@ namespace Rutracker.Infrastructure.Data
         {
         }
 
-        public async Task<IReadOnlyList<(long Id, string Value, int Count)>> GetPopularForumsAsync(int count) => await _context.Torrents
-                .GroupBy(x => x.ForumId, (key, items) => new { Key = key, Count = items.Count() })
+        public async Task<IReadOnlyList<(long Id, string Value, int Count)>> GetPopularForumsAsync(int count) =>
+            await _dbSet.GroupBy(x => x.ForumId,
+                    (key, items) => new
+                    {
+                        Key = key,
+                        Count = items.Count()
+                    })
                 .OrderByDescending(x => x.Count)
                 .Take(count)
                 .Join(_context.Forums,

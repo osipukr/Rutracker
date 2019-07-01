@@ -6,7 +6,10 @@
     <FilterCard Class="filter-card no-select" Title="Search">
         <div class="form-row">
             <div class="input-group">
-                <InputSearch @bind-Value="@Model.Search" Class="form-control w-100" Placeholder="Search" />
+                <InputSearch @bind-Value="@Model.Search"
+                             Class="form-control w-100"
+                             Placeholder="Search" />
+
                 <ValidationMessage For="@(() => Model.Search)" />
             </div>
         </div>
@@ -46,8 +49,7 @@
 
                     <InputCheckbox @bind-Value="@facet.IsSelected"
                                    Class="custom-control-input d-none"
-                                   Id="@facet.Id"
-                                   @key="facet"/>
+                                   Id="@facet.Id" />
 
                     <label class="custom-control-label h-100"
                            for="@facet.Id"
@@ -113,10 +115,10 @@
 
     private void ResetFiltrationModel()
     {
-        Model.Search = default;
-        Model.SelectedTitles = default;
-        Model.SizeFrom = default;
-        Model.SizeTo = default;
+        Model.Search = null;
+        Model.SelectedTitleIds = null;
+        Model.SizeFrom = null;
+        Model.SizeTo = null;
 
         foreach (var facet in TitleFacets ?? Array.Empty<FacetItemViewModel>())
         {
@@ -126,7 +128,7 @@
 
     private void ApplyButtonClick()
     {
-        Model.SelectedTitles = TitleFacets?.Where(x => x.IsSelected).Select(x => x.Id);
+        Model.SelectedTitleIds = TitleFacets?.Where(x => x.IsSelected).Select(x => x.Id);
 
         ChangedHandler?.Invoke();
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Rutracker.Core.Entities;
+using Rutracker.Core.Extensions;
 using Rutracker.Core.Interfaces;
 
 namespace Rutracker.Core.Specifications
@@ -19,17 +20,13 @@ namespace Rutracker.Core.Specifications
         public virtual int Skip { get; private set; }
         public virtual bool IsPagingEnabled { get; private set; }
 
-        protected BaseSpecification(Expression<Func<TEntity, bool>> expression) => Criteria = expression;
-
-        protected void AddInclude(Expression<Func<TEntity, object>> includeExpression)
+        protected BaseSpecification(Expression<Func<TEntity, bool>> expression)
         {
-            if (Includes == null)
-            {
-                Includes = new List<Expression<Func<TEntity, object>>>();
-            }
-
-            Includes.Add(includeExpression);
+            Criteria = expression;
+            Includes = new List<Expression<Func<TEntity, object>>>();
         }
+
+        protected void AddInclude(Expression<Func<TEntity, object>> includeExpression) => Includes.Add(includeExpression);
 
         protected void ApplyOrderBy(Expression<Func<TEntity, object>> orderByExpression) => OrderBy = orderByExpression;
 
@@ -43,16 +40,8 @@ namespace Rutracker.Core.Specifications
             IsPagingEnabled = true;
         }
 
-        protected void ApplyAndCriteria(Expression<Func<TEntity, bool>> expression) =>
-            Criteria = Expression.Lambda<Func<TEntity, bool>>(Expression.AndAlso(Criteria.Body,
-                    Expression.Invoke(expression,
-                        Criteria.Parameters[0])),
-                Criteria.Parameters[0]);
+        protected void ApplyAndCriteria(Expression<Func<TEntity, bool>> expression) => Criteria = Criteria.And(expression);
 
-        protected void ApplyOrCriteria(Expression<Func<TEntity, bool>> expression) =>
-            Criteria = Expression.Lambda<Func<TEntity, bool>>(Expression.OrElse(Criteria.Body,
-                    Expression.Invoke(expression,
-                        Criteria.Parameters[0])),
-                Criteria.Parameters[0]);
+        protected void ApplyOrCriteria(Expression<Func<TEntity, bool>> expression) => Criteria = Criteria.Or(expression);
     }
 }

@@ -7,10 +7,10 @@ namespace Rutracker.Core.Specifications
         public TorrentsFilterPaginatedSpecification(int skip,
                                                     int take,
                                                     string search,
-                                                    IEnumerable<string> titles,
+                                                    IEnumerable<string> selectedTitleIds,
                                                     long? sizeFrom,
                                                     long? sizeTo)
-            : base(search, titles, sizeFrom, sizeTo)
+            : base(search, selectedTitleIds, sizeFrom, sizeTo)
         {
             ApplyPaging(skip, take);
         }
