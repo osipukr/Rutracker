@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Rutracker.Server.Interfaces;
 using Rutracker.Server.Services;
 using Rutracker.UnitTests.Setup;
@@ -64,42 +63,6 @@ namespace Rutracker.UnitTests.Server.Services
             Assert.NotNull(result);
             Assert.NotNull(result.FacetItems);
             Assert.Equal(expectedCount, result.FacetItems.Length);
-        }
-
-        [Fact(DisplayName =
-            "GetTorrentsIndexAsync(page,size,filter) with negative page number should return ArgumentOutOfRangeException")]
-        public async Task ViewService_GetTorrentsIndexAsync_NegativePageNumber_Should_Return_ArgumentOutOfRangeException()
-        {
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
-                await _torrentViewModelService.GetTorrentsIndexAsync(-10, 10, null));
-        }
-
-        [Fact(DisplayName =
-            "GetTorrentsIndexAsync(page,size,filter) with negative pageSize number should return ArgumentOutOfRangeException")]
-        public async Task ViewService_GetTorrentsIndexAsync_NegativePageSizeNumber_Should_Return_ArgumentOutOfRangeException()
-        {
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
-                await _torrentViewModelService.GetTorrentsIndexAsync(10, -10, null));
-        }
-
-        [Fact(DisplayName =
-            "GetTorrentIndexAsync(id) with negative id number should return ArgumentOutOfRangeException")]
-        public async Task ViewService_GetTorrentIndexAsync_NegativePageNumber_Should_Return_ArgumentOutOfRangeException()
-        {
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
-                await _torrentViewModelService.GetTorrentIndexAsync(-10));
-        }
-
-        [Fact(DisplayName =
-            "GetTitlesAsync(count) with negative count number should return ArgumentOutOfRangeException")]
-        public async Task ViewService_GetTitlesAsync_NegativePageNumber_Should_Return_ArgumentOutOfRangeException()
-        {
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
-                await _torrentViewModelService.GetTitleFacetAsync(-10));
         }
     }
 }

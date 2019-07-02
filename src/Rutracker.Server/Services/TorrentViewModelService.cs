@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
 using Rutracker.Core.Interfaces;
@@ -29,9 +28,6 @@ namespace Rutracker.Server.Services
 
         public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
         {
-            Guard.Against.OutOfRange(page, nameof(page), 1, int.MaxValue);
-            Guard.Against.OutOfRange(pageSize, nameof(pageSize), 1, int.MaxValue);
-
             var cacheKey = string.Format(CachedTorrentKeys.TorrentsIndex, page, pageSize, filter?.GetHashCode());
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
@@ -65,8 +61,6 @@ namespace Rutracker.Server.Services
 
         public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id)
         {
-            Guard.Against.OutOfRange((int)id, nameof(id), 1, int.MaxValue);
-
             var cacheKey = string.Format(CachedTorrentKeys.TorrentIndex, id);
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
@@ -85,8 +79,6 @@ namespace Rutracker.Server.Services
 
         public async Task<FacetViewModel> GetTitleFacetAsync(int count)
         {
-            Guard.Against.OutOfRange(count, nameof(count), 1, int.MaxValue);
-
             var cacheKey = string.Format(CachedTorrentKeys.Titles, count);
 
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>

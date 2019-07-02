@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Rutracker.Core.Entities;
-using Rutracker.Core.Exceptions;
+using Rutracker.Core.Extensions;
 using Rutracker.Core.Interfaces;
 using Rutracker.Core.Specifications;
 
@@ -14,9 +14,16 @@ namespace Rutracker.Core.Services
 
         public TorrentService(ITorrentRepository torrentRepository) => _torrentRepository = torrentRepository;
 
-        public async Task<IReadOnlyList<Torrent>> GetTorrentsOnPageAsync(int page, int pageSize, string search,
-            IEnumerable<string> selectedTitleIds, long? sizeFrom, long? sizeTo)
+        public async Task<IReadOnlyList<Torrent>> GetTorrentsOnPageAsync(int page,
+            int pageSize,
+            string search,
+            IEnumerable<string> selectedTitleIds,
+            long? sizeFrom,
+            long? sizeTo)
         {
+            Guard.Against.OutOfRange(nameof(page), page, 1, int.MaxValue);
+            Guard.Against.OutOfRange(nameof(pageSize) ,pageSize, 1, int.MaxValue);
+
             var specification = new TorrentsFilterPaginatedSpecification((page - 1) * pageSize, pageSize, search,
                 selectedTitleIds, sizeFrom, sizeTo);
 
@@ -29,8 +36,9 @@ namespace Rutracker.Core.Services
 
         public async Task<Torrent> GetTorrentDetailsAsync(long id)
         {
-            var specification = new TorrentWithForumAndFilesSpecification(id);
+            Guard.Against.OutOfRange(nameof(id), id, 1, long.MaxValue);
 
+            var specification = new TorrentWithForumAndFilesSpecification(id);
             var torrent = await _torrentRepository.GetAsync(specification);
 
             Guard.Against.NullTorrent(id, torrent);
@@ -44,14 +52,17 @@ namespace Rutracker.Core.Services
             long? sizeTo)
         {
             var specification = new TorrentsFilterSpecification(search, selectedTitleIds, sizeFrom, sizeTo);
-
             var count = await _torrentRepository.CountAsync(specification);
+
+            Guard.Against.OutOfRange(nameof(count), count, 0, int.MaxValue);
 
             return count;
         }
 
         public async Task<IReadOnlyList<(long Id, string Value, int Count)>> GetPopularForumsAsync(int count)
         {
+            Guard.Against.OutOfRange(nameof(count), count, 1, int.MaxValue);
+
             var forums = await _torrentRepository.GetPopularForumsAsync(count);
 
             Guard.Against.NullTorrentForums(forums);

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Rutracker.Server.Filters;
 using Rutracker.Server.Interfaces;
 using Rutracker.Server.Response;
 using Rutracker.Shared.ViewModels.Shared;
@@ -9,7 +8,6 @@ using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Server.Controllers
 {
-    [ApiExceptionFilter]
     public class TorrentsController : BaseController
     {
         private readonly ITorrentViewModelService _torrentViewModelService;

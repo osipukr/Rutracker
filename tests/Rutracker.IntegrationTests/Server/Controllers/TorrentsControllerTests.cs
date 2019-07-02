@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
 using Rutracker.IntegrationTests.Response;
 using Rutracker.Server;
 using Rutracker.Shared.ViewModels.Shared;
@@ -79,6 +80,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             // Arrange
             const int page = -10;
             const int pageSize = 10;
+            const int exceptedStatusCode = StatusCodes.Status400BadRequest;
 
             // Act
             var response = await _client.PostJsonAsync<BadRequestResponse>(
@@ -87,6 +89,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             // Assert
             Assert.False(response.IsSuccess);
             Assert.NotNull(response.Message);
+            Assert.Equal(exceptedStatusCode, response.StatusCode);
         }
 
         [Fact(DisplayName = "GetTorrentIndexAsync() with negative number should return BadRequestResponse")]
@@ -94,6 +97,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         {
             // Arrange
             const long id = -10;
+            const int exceptedStatusCode = StatusCodes.Status400BadRequest;
 
             // Act
             var response = await _client.GetJsonAsync<BadRequestResponse>($"/api/torrents/?id={id}");
@@ -101,6 +105,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             // Assert
             Assert.False(response.IsSuccess);
             Assert.NotNull(response.Message);
+            Assert.Equal(exceptedStatusCode, response.StatusCode);
         }
 
         [Fact(DisplayName = "GetTitlesAsync() with negative number should return BadRequestResponse")]
@@ -108,6 +113,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         {
             // Arrange
             const int count = -10;
+            const int exceptedStatusCode = StatusCodes.Status400BadRequest;
 
             // Act
             var response = await _client.GetJsonAsync<BadRequestResponse>($"/api/torrents/titles/?count={count}");
@@ -115,6 +121,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             // Assert
             Assert.False(response.IsSuccess);
             Assert.NotNull(response.Message);
+            Assert.Equal(exceptedStatusCode, response.StatusCode);
         }
     }
 }

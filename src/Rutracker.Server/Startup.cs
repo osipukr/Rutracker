@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using AutoMapper;
+using Rutracker.Server.Filters;
 
 namespace Rutracker.Server
 {
@@ -24,7 +25,7 @@ namespace Rutracker.Server
                 .AddCaching()
                 .AddCustomResponseCompression()
                 .AddAutoMapper(typeof(Startup))
-                .AddMvc()
+                .AddMvc(options => options.Filters.Add<ApiExceptionFilter>())
                 .AddNewtonsoftJson()
                 .Services
                 .AddRepositories()

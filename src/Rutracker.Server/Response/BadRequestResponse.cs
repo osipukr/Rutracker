@@ -2,9 +2,12 @@
 {
     public class BadRequestResponse : BaseResponse
     {
-        public BadRequestResponse(string message) 
+        public int StatusCode { get; protected set; }
+
+        public BadRequestResponse(string message, int statusCode)
             : base(false, message)
         {
+            StatusCode = statusCode;
         }
     }
 }
