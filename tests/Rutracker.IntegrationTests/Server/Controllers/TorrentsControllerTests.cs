@@ -26,7 +26,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
 
             // Act
             var response = await _client.PostJsonAsync<OkResponse<TorrentsIndexViewModel>>(
-                $"/api/torrents/paging/?page={page}&pageSize={pageSize}", null);
+                $"/api/torrents/pagination/?page={page}&pageSize={pageSize}", null);
 
             // Assert
             Assert.NotNull(response);
@@ -73,8 +73,8 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             Assert.Equal(expectedCount, response.Value.FacetItems.Length);
         }
 
-        [Fact(DisplayName = "GetTorrentsIndexAsync() with negative number should return BadRequest")]
-        public async Task Controller_GetTorrentsIndexAsync_NegativeNumber_Should_Return_BadRequest()
+        [Fact(DisplayName = "GetTorrentsIndexAsync() with negative number should return BadRequestResponse")]
+        public async Task Controller_GetTorrentsIndexAsync_NegativeNumber_Should_Return_BadRequestResponse()
         {
             // Arrange
             const int page = -10;
@@ -82,15 +82,15 @@ namespace Rutracker.IntegrationTests.Server.Controllers
 
             // Act
             var response = await _client.PostJsonAsync<BadRequestResponse>(
-                $"/api/torrents/paging/?page={page}&pageSize={pageSize}", null);
+                $"/api/torrents/pagination/?page={page}&pageSize={pageSize}", null);
 
             // Assert
             Assert.False(response.IsSuccess);
             Assert.NotNull(response.Message);
         }
 
-        [Fact(DisplayName = "GetTorrentIndexAsync() with negative number should return BadRequest")]
-        public async Task Controller_GetTorrentIndexAsync_NegativeNumber_Should_Return_BadRequest()
+        [Fact(DisplayName = "GetTorrentIndexAsync() with negative number should return BadRequestResponse")]
+        public async Task Controller_GetTorrentIndexAsync_NegativeNumber_Should_Return_BadRequestResponse()
         {
             // Arrange
             const long id = -10;
@@ -103,8 +103,8 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             Assert.NotNull(response.Message);
         }
 
-        [Fact(DisplayName = "GetTitlesAsync() with negative number should return BadRequest")]
-        public async Task Controller_GetTitlesAsync_NegativeNumber_Should_Return_BadRequest()
+        [Fact(DisplayName = "GetTitlesAsync() with negative number should return BadRequestResponse")]
+        public async Task Controller_GetTitlesAsync_NegativeNumber_Should_Return_BadRequestResponse()
         {
             // Arrange
             const int count = -10;

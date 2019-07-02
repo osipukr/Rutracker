@@ -73,7 +73,7 @@ namespace Rutracker.UnitTests.Setup
                 .Returns<long>(x => Task.FromResult(new Torrent { Id = x }));
 
             mockTorrentService.Setup(x => x.GetTorrentsCountAsync(null, null, null, null))
-                .Returns(Task.FromResult(torrents.Count()));
+                .ReturnsAsync(torrents.Count());
 
             mockTorrentService.Setup(x => x.GetPopularForumsAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive)))
                 .Returns<int>(x =>
