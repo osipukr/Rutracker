@@ -1,8 +1,6 @@
 ﻿using System.IO.Compression;
 using System.Linq;
-using System.Net.Mime;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -13,6 +11,7 @@ using Rutracker.Core.Services;
 using Rutracker.Infrastructure.Data;
 using Rutracker.Server.Interfaces;
 using Rutracker.Server.Services;
+using Rutracker.Server.Settings;
 
 namespace Rutracker.Server
 {
@@ -25,24 +24,33 @@ namespace Rutracker.Server
         public static IServiceCollection AddCaching(this IServiceCollection services) =>
             services.AddMemoryCache();
 
+        /// <summary>
+        ///     Configures the settings by binding the contents of the appsettings.json file.
+        /// </summary>
+        public static IServiceCollection AddCustomOptions(
+            this IServiceCollection services,
+            IConfiguration configuration) =>
+            services
+                // Adds IOptions<CacheSettings> to the services container.
+                .Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)));
 
         /// <summary>
         ///     Adds response compression to enable GZIP compression of responses.
         /// </summary>
         public static IServiceCollection AddCustomResponseCompression(
-            this IServiceCollection services) =>
+            this IServiceCollection services,
+            IConfiguration configuration) =>
             services
                 .AddResponseCompression(
                     options =>
                     {
                         options.EnableForHttps = true;
-                        options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
-                        {
-                            MediaTypeNames.Application.Octet,
-                            WasmMediaTypeNames.Application.Wasm,
-                            MediaTypeNames.Application.Json,
-                            MediaTypeNames.Image.Jpeg
-                        });
+
+                        var responseCompressionSettings = configuration.GetSection(nameof(ResponseCompressionSettings))
+                            .Get<ResponseCompressionSettings>();
+
+                        options.MimeTypes =
+                            ResponseCompressionDefaults.MimeTypes.Concat(responseCompressionSettings.MimeTypes);
                     })
                 .Configure<GzipCompressionProviderOptions>(options =>
                 {

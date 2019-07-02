@@ -105,7 +105,7 @@
     [Parameter] protected Task<TorrentsIndexViewModel> SearchTask { get; set; }
 
     private int TitleCount { get; set; }
-    private FacetViewModel TitleFacet { get; set; }
+    private FacetViewModel<string> TitleFacet { get; set; }
 
     protected override async Task OnInitAsync()
     {

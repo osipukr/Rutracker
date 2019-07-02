@@ -12,17 +12,24 @@ namespace Rutracker.Server
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;
 
-        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
+        public Startup(IWebHostEnvironment environment)
         {
-            _configuration = configuration;
             _environment = environment;
+
+            _configuration = new ConfigurationBuilder()
+               .SetBasePath(_environment.ContentRootPath)
+               .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+               .AddJsonFile($"appsettings.{_environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+               .AddEnvironmentVariables()
+               .Build();
         }
 
         public void ConfigureServices(IServiceCollection services) =>
             services
                 .AddDatabaseContext(_configuration)
                 .AddCaching()
-                .AddCustomResponseCompression()
+                .AddCustomOptions(_configuration)
+                .AddCustomResponseCompression(_configuration)
                 .AddAutoMapper(typeof(Startup))
                 .AddMvc()
                 .AddNewtonsoftJson()

@@ -64,7 +64,8 @@ namespace Rutracker.IntegrationTests.Server.Controllers
 
             // Act
             var response =
-                await _client.GetJsonAsync<OkResponse<FacetViewModel>>($"/api/torrents/titles/?count={expectedCount}");
+                await _client.GetJsonAsync<OkResponse<FacetViewModel<string>>>(
+                    $"/api/torrents/titles/?count={expectedCount}");
 
             // Assert
             Assert.NotNull(response);

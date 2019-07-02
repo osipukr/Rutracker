@@ -39,7 +39,7 @@ namespace Rutracker.Server.Controllers
         public async Task<IActionResult> Titles(int count)
         {
             var result = await _torrentViewModelService.GetTitleFacetAsync(count);
-            var response = new OkResponse<FacetViewModel>(result);
+            var response = new OkResponse<FacetViewModel<string>>(result);
 
             return Ok(response);
         }

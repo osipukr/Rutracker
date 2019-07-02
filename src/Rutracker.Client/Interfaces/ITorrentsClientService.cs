@@ -9,6 +9,6 @@ namespace Rutracker.Client.Interfaces
     {
         Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter);
         Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id);
-        Task<FacetViewModel> GetTitlesAsync(int count);
+        Task<FacetViewModel<string>> GetTitlesAsync(int count);
     }
 }
