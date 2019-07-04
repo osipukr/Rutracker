@@ -1,7 +1,6 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Rutracker.IntegrationTests.Response;
 using Rutracker.Server;
 using Rutracker.Shared.ViewModels.Shared;
 using Rutracker.Shared.ViewModels.Torrent;
@@ -25,18 +24,16 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             const int expectedCount = 5;
 
             // Act
-            var response = await _client.PostJsonAsync<OkResponse<TorrentsIndexViewModel>>(
+            var result = await _client.PostJsonAsync<TorrentsIndexViewModel>(
                 $"/api/torrents/pagination/?page={page}&pageSize={pageSize}", null);
 
             // Assert
-            Assert.NotNull(response);
-            Assert.True(response.IsSuccess);
-            Assert.NotNull(response.Value);
-            Assert.NotNull(response.Value.TorrentItems);
-            Assert.NotNull(response.Value.PaginationModel);
-            Assert.Equal(page, response.Value.PaginationModel.CurrentPage);
-            Assert.Equal(pageSize, response.Value.PaginationModel.PageSize);
-            Assert.Equal(expectedCount, response.Value.TorrentItems.Length);
+            Assert.NotNull(result);
+            Assert.NotNull(result.TorrentItems);
+            Assert.NotNull(result.PaginationModel);
+            Assert.Equal(page, result.PaginationModel.CurrentPage);
+            Assert.Equal(pageSize, result.PaginationModel.PageSize);
+            Assert.Equal(expectedCount, result.TorrentItems.Length);
         }
 
         [Fact(DisplayName = "GetTorrentIndexAsync(id) should return torrent details page")]
@@ -46,14 +43,12 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             const long expectedId = 5;
 
             // Act
-            var response =
-                await _client.GetJsonAsync<OkResponse<TorrentIndexViewModel>>($"/api/torrents/?id={expectedId}");
+            var result = await _client.GetJsonAsync<TorrentIndexViewModel>($"/api/torrents/?id={expectedId}");
 
             // Assert
-            Assert.NotNull(response);
-            Assert.True(response.IsSuccess);
-            Assert.NotNull(response.Value.TorrentDetailsItem);
-            Assert.Equal(expectedId, response.Value.TorrentDetailsItem.Id);
+            Assert.NotNull(result);
+            Assert.NotNull(result.TorrentDetailsItem);
+            Assert.Equal(expectedId, result.TorrentDetailsItem.Id);
         }
 
         [Fact(DisplayName = "GetTitlesAsync(count) should return forum titles list")]
@@ -63,59 +58,37 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             const int expectedCount = 5;
 
             // Act
-            var response =
-                await _client.GetJsonAsync<OkResponse<FacetViewModel<string>>>(
-                    $"/api/torrents/titles/?count={expectedCount}");
+            var result = await _client.GetJsonAsync<FacetViewModel<string>>($"/api/torrents/titles/?count={expectedCount}");
 
             // Assert
-            Assert.NotNull(response);
-            Assert.True(response.IsSuccess);
-            Assert.NotNull(response.Value.FacetItems);
-            Assert.Equal(expectedCount, response.Value.FacetItems.Length);
+            Assert.NotNull(result);
+            Assert.NotNull(result.FacetItems);
+            Assert.Equal(expectedCount, result.FacetItems.Length);
         }
 
-        [Fact(DisplayName = "GetTorrentsIndexAsync() with negative number should return BadRequestResponse")]
-        public async Task Controller_GetTorrentsIndexAsync_NegativeNumber_Should_Return_BadRequestResponse()
+        [Fact(DisplayName = "GetTorrentsIndexAsync() with negative number should return HttpRequestException")]
+        public async Task Controller_GetTorrentsIndexAsync_NegativeNumber_Should_Return_HttpRequestException()
         {
-            // Arrange
-            const int page = -10;
-            const int pageSize = 10;
-
-            // Act
-            var response = await _client.PostJsonAsync<BadRequestResponse>(
-                $"/api/torrents/pagination/?page={page}&pageSize={pageSize}", null);
-
-            // Assert
-            Assert.False(response.IsSuccess);
-            Assert.NotNull(response.Message);
+            // Act & Assert
+            await Assert.ThrowsAsync<HttpRequestException>(async () => 
+                await _client.PostJsonAsync<TorrentsIndexViewModel>(
+                    $"/api/torrents/pagination/?page=-10&pageSize=-10", null));
         }
 
-        [Fact(DisplayName = "GetTorrentIndexAsync() with negative number should return BadRequestResponse")]
-        public async Task Controller_GetTorrentIndexAsync_NegativeNumber_Should_Return_BadRequestResponse()
+        [Fact(DisplayName = "GetTorrentIndexAsync() with negative number should return HttpRequestException")]
+        public async Task Controller_GetTorrentIndexAsync_NegativeNumber_Should_Return_HttpRequestException()
         {
-            // Arrange
-            const long id = -10;
-
-            // Act
-            var response = await _client.GetJsonAsync<BadRequestResponse>($"/api/torrents/?id={id}");
-
-            // Assert
-            Assert.False(response.IsSuccess);
-            Assert.NotNull(response.Message);
+            // Act & Assert
+            await Assert.ThrowsAsync<HttpRequestException>(async () => 
+                await _client.GetJsonAsync<TorrentIndexViewModel>($"/api/torrents/?id=-10"));
         }
 
-        [Fact(DisplayName = "GetTitlesAsync() with negative number should return BadRequestResponse")]
-        public async Task Controller_GetTitlesAsync_NegativeNumber_Should_Return_BadRequestResponse()
+        [Fact(DisplayName = "GetTitlesAsync() with negative number should return HttpRequestException")]
+        public async Task Controller_GetTitlesAsync_NegativeNumber_Should_Return_HttpRequestException()
         {
-            // Arrange
-            const int count = -10;
-
-            // Act
-            var response = await _client.GetJsonAsync<BadRequestResponse>($"/api/torrents/titles/?count={count}");
-
-            // Assert
-            Assert.False(response.IsSuccess);
-            Assert.NotNull(response.Message);
+            // Act & Assert
+            await Assert.ThrowsAsync<HttpRequestException>(async () =>
+                await _client.GetJsonAsync<FacetViewModel>($"/api/torrents/titles/?count=-10"));
         }
     }
 }

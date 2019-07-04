@@ -89,13 +89,13 @@ namespace Rutracker.UnitTests.Setup
             mockTorrentService.Setup(x =>
                     x.GetTorrentsOnPageAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive),
                         It.IsInRange(int.MinValue, 0, Range.Inclusive), null, null, null, null))
-                .ThrowsAsync(new TorrentNotFoundException(string.Empty));
+                .ThrowsAsync(new TorrentException(string.Empty, ExceptionEvent.NotValidParameters));
 
             mockTorrentService.Setup(x => x.GetTorrentDetailsAsync(It.IsInRange(long.MinValue, 0, Range.Inclusive)))
-                .ThrowsAsync(new TorrentNotFoundException(string.Empty));
+                .ThrowsAsync(new TorrentException(string.Empty, ExceptionEvent.NotValidParameters));
 
             mockTorrentService.Setup(x => x.GetPopularForumsAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive)))
-                .ThrowsAsync(new ForumNotFoundException(string.Empty));
+                .ThrowsAsync(new TorrentException(string.Empty, ExceptionEvent.NotValidParameters));
 
 
             return mockTorrentService.Object;
