@@ -25,7 +25,7 @@ namespace Rutracker.Server.Filters
             }
             else
             {
-                result = new ObjectResult(context.Exception.Message)
+                result = new ObjectResult(string.Empty)
                 {
                     StatusCode = StatusCodes.Status500InternalServerError
                 };
