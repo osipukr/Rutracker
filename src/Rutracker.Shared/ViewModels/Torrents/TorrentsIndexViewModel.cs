@@ -1,4 +1,6 @@
-﻿namespace Rutracker.Shared.ViewModels.Torrents
+﻿using Rutracker.Shared.ViewModels.Shared;
+
+namespace Rutracker.Shared.ViewModels.Torrents
 {
     public class TorrentsIndexViewModel
     {

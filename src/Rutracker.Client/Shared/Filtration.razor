@@ -36,13 +36,13 @@
     </FilterCard>
 
     <FilterCard Class="filter-card no-select" Title="Forum titles category">
-        @if (TitleFacets == null)
+        @if (TitleFacet == null || TitleFacet.FacetItems == null)
         {
             <LoadSpinner />
         }
         else
         {
-            foreach (var facet in TitleFacets)
+            foreach (var facet in TitleFacet.FacetItems)
             {
                 <div class="custom-control custom-checkbox title-facet">
                     <span class="float-right badge badge-primary">@facet.Count</span>
@@ -64,7 +64,7 @@
     <div class="card filter-card no-select">
         <div class="card-footer border-top-0">
             <div class="row">
-                @if (SearchTask.IsCompleted)
+                @if (SearchTask.IsCompleted && TitleFacet != null && TitleFacet.FacetItems != null)
                 {
                     <div class="col-6">
                         <button class="btn btn-outline-primary w-100" type="submit">Apply</button>
@@ -105,12 +105,12 @@
     [Parameter] protected Task<TorrentsIndexViewModel> SearchTask { get; set; }
 
     private int TitleCount { get; set; }
-    private FacetItemViewModel[] TitleFacets { get; set; }
+    private FacetViewModel TitleFacet { get; set; }
 
     protected override async Task OnInitAsync()
     {
         TitleCount = ClientConstants.ForumTitlesCount;
-        TitleFacets = await Client.GetTitlesAsync(TitleCount);
+        TitleFacet = await Client.GetTitlesAsync(TitleCount);
     }
 
     private void ResetFiltrationModel()
@@ -120,7 +120,7 @@
         Model.SizeFrom = null;
         Model.SizeTo = null;
 
-        foreach (var facet in TitleFacets ?? Array.Empty<FacetItemViewModel>())
+        foreach (var facet in TitleFacet.FacetItems)
         {
             facet.IsSelected = false;
         }
@@ -128,7 +128,7 @@
 
     private void ApplyButtonClick()
     {
-        Model.SelectedTitleIds = TitleFacets?.Where(x => x.IsSelected).Select(x => x.Id);
+        Model.SelectedTitleIds = TitleFacet.FacetItems.Where(x => x.IsSelected).Select(x => x.Id);
 
         ChangedHandler?.Invoke();
     }

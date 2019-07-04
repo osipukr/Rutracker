@@ -1,10 +1,7 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Rutracker.Server.Interfaces;
-using Rutracker.Shared.ViewModels;
-using Rutracker.Shared.ViewModels.Torrent;
+using Rutracker.Shared.ViewModels.Shared;
 
 namespace Rutracker.Server.Controllers
 {
@@ -12,60 +9,31 @@ namespace Rutracker.Server.Controllers
     {
         private readonly ITorrentViewModelService _torrentViewModelService;
 
-        public TorrentsController(ITorrentViewModelService torrentViewModelService) => _torrentViewModelService = torrentViewModelService;
+        public TorrentsController(ITorrentViewModelService torrentViewModelService) =>
+            _torrentViewModelService = torrentViewModelService;
 
-        [Route("paging")]
-        [HttpGet("{page:int}/{pageSize:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<TorrentIndexViewModel>> GetTorrentsIndexAsync(int page, int pageSize, [FromBody] FiltrationViewModel filter)
+        [Route(nameof(Pagination))]
+        public async Task<IActionResult> Pagination(int page, int pageSize, [FromBody] FiltrationViewModel filter)
         {
-            try
-            {
-                var result = await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, filter);
+            var result = await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, filter);
 
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok(result);
         }
 
         [Route("")]
-        [HttpGet("{id:long}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<TorrentIndexViewModel>> GetTorrentIndexAsync(long id)
+        public async Task<IActionResult> Get(long id)
         {
-            try
-            {
-                var result = await _torrentViewModelService.GetTorrentIndexAsync(id);
+            var result = await _torrentViewModelService.GetTorrentIndexAsync(id);
 
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok(result);
         }
 
-        [Route("titles")]
-        [HttpGet("{count:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<FacetItemViewModel[]>> GetTitlesAsync(int count)
+        [Route(nameof(Titles))]
+        public async Task<IActionResult> Titles(int count)
         {
-            try
-            {
-                var result = await _torrentViewModelService.GetTitlesAsync(count);
+            var result = await _torrentViewModelService.GetTitleFacetAsync(count);
 
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok(result);
         }
     }
 }

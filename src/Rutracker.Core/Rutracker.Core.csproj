@@ -5,4 +5,8 @@
     <LangVersion>8</LangVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Ardalis.GuardClauses" Version="1.2.8" />
+  </ItemGroup>
+
 </Project>

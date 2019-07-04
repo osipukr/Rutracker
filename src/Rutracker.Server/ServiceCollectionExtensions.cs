@@ -9,6 +9,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rutracker.Core.Interfaces;
+using Rutracker.Core.Services;
 using Rutracker.Infrastructure.Data;
 using Rutracker.Server.Interfaces;
 using Rutracker.Server.Services;
@@ -60,6 +61,7 @@ namespace Rutracker.Server
         /// </summary>
         public static IServiceCollection AddServices(this IServiceCollection services) =>
             services
+                .AddScoped<ITorrentService, TorrentService>()
                 .AddScoped<ITorrentViewModelService, TorrentViewModelService>();
 
         /// <summary>
