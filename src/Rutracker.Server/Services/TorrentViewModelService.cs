@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Rutracker.Core.Interfaces;
+using Rutracker.Server.Extensions;
 using Rutracker.Server.Interfaces;
 using Rutracker.Server.Settings;
 using Rutracker.Shared.ViewModels.Shared;
@@ -30,7 +31,7 @@ namespace Rutracker.Server.Services
             _cache = cache;
             _cacheEntryOptions = new MemoryCacheEntryOptions
             {
-                SlidingExpiration = cacheOptions.Value.DefaultCacheDuration
+                SlidingExpiration = cacheOptions.Value?.DefaultCacheDuration
             };
         }
 
@@ -38,36 +39,21 @@ namespace Rutracker.Server.Services
         {
             var cacheKey = $"torrents-{page}-{pageSize}-{filter?.GetHashCode()}";
 
-            return await _cache.GetOrCreateAsync(cacheKey, async entry =>
-            {
-                entry.SetOptions(_cacheEntryOptions);
-
-                return await TorrentsIndexCallbackAsync(page, pageSize, filter);
-            });
+            return await _cache.GetOrCreateAsync(cacheKey, () => TorrentsIndexCallbackAsync(page, pageSize, filter), _cacheEntryOptions);
         }
 
         public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id)
         {
             var cacheKey = $"torrent-{id}";
 
-            return await _cache.GetOrCreateAsync(cacheKey, async entry =>
-            {
-                entry.SetOptions(_cacheEntryOptions);
-
-                return await TorrentIndexCallbackAsync(id);
-            });
+            return await _cache.GetOrCreateAsync(cacheKey, () => TorrentIndexCallbackAsync(id), _cacheEntryOptions);
         }
 
         public async Task<FacetViewModel<string>> GetTitleFacetAsync(int count)
         {
             var cacheKey = $"titles-{count}";
 
-            return await _cache.GetOrCreateAsync(cacheKey, async entry =>
-            {
-                entry.SetOptions(_cacheEntryOptions);
-
-                return await TitleFacetCallbackAsync(count);
-            });
+            return await _cache.GetOrCreateAsync(cacheKey, () => TitleFacetCallbackAsync(count), _cacheEntryOptions);
         }
 
         #region Cache entry callback functions

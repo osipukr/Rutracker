@@ -51,7 +51,7 @@ namespace Rutracker.Client.Services
         public async Task<FacetViewModel<string>> GetTitlesAsync(int count)
         {
             var requestUri = string.Format(ApiUris.Titles, count);
-            var result = default(FacetViewModel);
+            var result = default(FacetViewModel<string>);
 
             try
             {

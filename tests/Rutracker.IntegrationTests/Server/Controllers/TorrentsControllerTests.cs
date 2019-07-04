@@ -88,7 +88,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         {
             // Act & Assert
             await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.GetJsonAsync<FacetViewModel>($"/api/torrents/titles/?count=-10"));
+                await _client.GetJsonAsync<FacetViewModel<string>>($"/api/torrents/titles/?count=-10"));
         }
     }
 }
