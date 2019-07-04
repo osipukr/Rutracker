@@ -48,14 +48,14 @@ namespace Rutracker.Client.Services
             return result;
         }
 
-        public async Task<FacetViewModel> GetTitlesAsync(int count)
+        public async Task<FacetViewModel<string>> GetTitlesAsync(int count)
         {
             var requestUri = string.Format(ApiUris.Titles, count);
-            var result = default(FacetViewModel);
+            var result = default(FacetViewModel<string>);
 
             try
             {
-                result = await _httpClient.GetJsonAsync<FacetViewModel>(requestUri);
+                result = await _httpClient.GetJsonAsync<FacetViewModel<string>>(requestUri);
             }
             catch
             {

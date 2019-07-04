@@ -15,8 +15,9 @@ namespace Rutracker.UnitTests.Server.Services
             var service = MockInitializer.GeTorrentService();
             var cache = MockInitializer.GetMemoryCache();
             var mapper = MockInitializer.GeMapper();
+            var options = MockInitializer.GetCacheOptions();
 
-            _torrentViewModelService = new TorrentViewModelService(service, mapper, cache);
+            _torrentViewModelService = new TorrentViewModelService(service, mapper, cache, options);
         }
 
         [Fact(DisplayName = "GetTorrentsIndexAsync(page,size,filter) should return the torrents page")]

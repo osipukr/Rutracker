@@ -58,7 +58,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             const int expectedCount = 5;
 
             // Act
-            var result = await _client.GetJsonAsync<FacetViewModel>($"/api/torrents/titles/?count={expectedCount}");
+            var result = await _client.GetJsonAsync<FacetViewModel<string>>($"/api/torrents/titles/?count={expectedCount}");
 
             // Assert
             Assert.NotNull(result);
@@ -88,7 +88,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         {
             // Act & Assert
             await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.GetJsonAsync<FacetViewModel>($"/api/torrents/titles/?count=-10"));
+                await _client.GetJsonAsync<FacetViewModel<string>>($"/api/torrents/titles/?count=-10"));
         }
     }
 }

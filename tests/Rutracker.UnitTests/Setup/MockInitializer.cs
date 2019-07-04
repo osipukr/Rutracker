@@ -1,17 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using Moq;
 using Rutracker.Core.Entities;
 using Rutracker.Core.Exceptions;
 using Rutracker.Core.Interfaces;
 using Rutracker.Infrastructure.Data;
+using Rutracker.Server.Settings;
 using Rutracker.Shared.ViewModels.Torrent;
 using Rutracker.Shared.ViewModels.Torrents;
+using Range = Moq.Range;
 
 namespace Rutracker.UnitTests.Setup
 {
@@ -99,6 +103,20 @@ namespace Rutracker.UnitTests.Setup
 
         public static IMemoryCache GetMemoryCache() =>
             new Mock<MemoryCache>(new Mock<MemoryCacheOptions>().Object).Object;
+
+        public static IOptions<CacheSettings> GetCacheOptions()
+        {
+            var settings = new CacheSettings
+            {
+                DefaultCacheDuration = TimeSpan.MaxValue
+            };
+
+            var mockCacheOptions = new Mock<IOptions<CacheSettings>>();
+
+            mockCacheOptions.Setup(ap => ap.Value).Returns(settings);
+
+            return mockCacheOptions.Object;
+        }
 
         public static IMapper GeMapper()
         {
