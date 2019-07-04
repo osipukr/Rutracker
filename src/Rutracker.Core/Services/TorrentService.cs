@@ -29,7 +29,7 @@ namespace Rutracker.Core.Services
 
             var torrents = await _torrentRepository.ListAsync(specification);
 
-            Guard.Against.NullTorrents(torrents);
+            Guard.Against.Null(nameof(torrents), torrents);
 
             return torrents;
         }
@@ -41,7 +41,7 @@ namespace Rutracker.Core.Services
             var specification = new TorrentWithForumAndFilesSpecification(id);
             var torrent = await _torrentRepository.GetAsync(specification);
 
-            Guard.Against.NullTorrent(id, torrent);
+            Guard.Against.Null(nameof(torrent), torrent);
 
             return torrent;
         }
@@ -65,7 +65,7 @@ namespace Rutracker.Core.Services
 
             var forums = await _torrentRepository.GetPopularForumsAsync(count);
 
-            Guard.Against.NullTorrentForums(forums);
+            Guard.Against.Null(nameof(forums), forums);
 
             return forums;
         }

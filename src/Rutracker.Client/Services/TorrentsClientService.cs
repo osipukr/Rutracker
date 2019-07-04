@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Rutracker.Client.Constants;
 using Rutracker.Client.Interfaces;
-using Rutracker.Client.Response;
 using Rutracker.Shared.ViewModels.Shared;
 using Rutracker.Shared.ViewModels.Torrent;
 using Rutracker.Shared.ViewModels.Torrents;
@@ -20,25 +19,49 @@ namespace Rutracker.Client.Services
         public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
         {
             var requestUri = string.Format(ApiUris.TorrentsIndex, page, pageSize);
-            var response = await _httpClient.PostJsonAsync<OkResponse<TorrentsIndexViewModel>>(requestUri, filter);
+            var result = default(TorrentsIndexViewModel);
 
-            return response.Value;
+            try
+            {
+                result = await _httpClient.PostJsonAsync<TorrentsIndexViewModel>(requestUri, filter);
+            }
+            catch
+            {
+            }
+
+            return result;
         }
 
         public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id)
         {
             var requestUri = string.Format(ApiUris.TorrentIndex, id);
-            var response = await _httpClient.GetJsonAsync<OkResponse<TorrentIndexViewModel>>(requestUri);
+            var result = default(TorrentIndexViewModel);
 
-            return response.Value;
+            try
+            {
+                result = await _httpClient.GetJsonAsync<TorrentIndexViewModel>(requestUri);
+            }
+            catch
+            {
+            }
+
+            return result;
         }
 
         public async Task<FacetViewModel> GetTitlesAsync(int count)
         {
             var requestUri = string.Format(ApiUris.Titles, count);
-            var response = await _httpClient.GetJsonAsync<OkResponse<FacetViewModel>>(requestUri);
+            var result = default(FacetViewModel);
 
-            return response.Value;
+            try
+            {
+                result = await _httpClient.GetJsonAsync<FacetViewModel>(requestUri);
+            }
+            catch
+            {
+            }
+
+            return result;
         }
     }
 }

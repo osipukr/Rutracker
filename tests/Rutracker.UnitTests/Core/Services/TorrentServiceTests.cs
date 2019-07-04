@@ -77,7 +77,7 @@ namespace Rutracker.UnitTests.Core.Services
         public async Task Service_GetTorrentsOnPageAsync_NegativeNumber_Should_Return_GenericException()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<GenericException>(async () =>
+            await Assert.ThrowsAsync<TorrentException>(async () =>
                 await _torrentService.GetTorrentsOnPageAsync(-10, -10, null, null, null, null));
         }
 
@@ -85,16 +85,14 @@ namespace Rutracker.UnitTests.Core.Services
         public async Task Service_GetTorrentDetailsAsync_NegativePageNumber_Should_Return_GenericException()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<GenericException>(async () =>
-                await _torrentService.GetTorrentDetailsAsync(-10));
+            await Assert.ThrowsAsync<TorrentException>(async () => await _torrentService.GetTorrentDetailsAsync(-10));
         }
 
         [Fact(DisplayName = "GetPopularForumsAsync() with negative count number should return GenericException")]
         public async Task Service_GetPopularForumsAsync_NegativeNumber_Should_Return_GenericException()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<GenericException>(async () =>
-                await _torrentService.GetPopularForumsAsync(-10));
+            await Assert.ThrowsAsync<TorrentException>(async () => await _torrentService.GetPopularForumsAsync(-10));
         }
     }
 }

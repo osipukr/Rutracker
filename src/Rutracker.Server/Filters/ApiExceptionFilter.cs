@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Rutracker.Core.Exceptions;
-using Rutracker.Server.Response;
 
 namespace Rutracker.Server.Filters
 {
@@ -11,31 +10,28 @@ namespace Rutracker.Server.Filters
     {
         public Task OnExceptionAsync(ExceptionContext context)
         {
-            IActionResult result;
+            ObjectResult result;
 
-            if (context.Exception is GenericException exception)
+            if (context.Exception is TorrentException exception)
             {
-                var message = exception.Message;
-                var statusCode = exception.ExceptionEvent switch
+                result = new ObjectResult(exception.Message)
                 {
-                    ExceptionEvent.NotFound => StatusCodes.Status404NotFound,
-                    ExceptionEvent.NotValidParameters => StatusCodes.Status400BadRequest
+                    StatusCode = exception.ExceptionEvent switch
+                    {
+                        ExceptionEvent.NotFound => StatusCodes.Status404NotFound,
+                        ExceptionEvent.NotValidParameters => StatusCodes.Status400BadRequest
+                    }
                 };
-
-                var response = new BadRequestResponse(message, statusCode);
-
-                result = new OkObjectResult(response);
             }
             else
             {
-                var response = new BadRequestResponse(context.Exception.Message,
-                    StatusCodes.Status500InternalServerError);
-
-                result = new BadRequestObjectResult(response);
+                result = new ObjectResult(context.Exception.Message)
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
             }
 
             context.Result = result;
-            context.ExceptionHandled = true;
 
             return Task.CompletedTask;
         }
