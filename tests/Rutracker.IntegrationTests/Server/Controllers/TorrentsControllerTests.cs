@@ -25,7 +25,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
 
             // Act
             var result = await _client.PostJsonAsync<TorrentsIndexViewModel>(
-                $"/api/torrents/pagination/?page={page}&pageSize={pageSize}", null);
+                $"/api/torrents/pagination/{page}/{pageSize}", null);
 
             // Assert
             Assert.NotNull(result);
@@ -43,7 +43,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             const long expectedId = 5;
 
             // Act
-            var result = await _client.GetJsonAsync<TorrentIndexViewModel>($"/api/torrents/?id={expectedId}");
+            var result = await _client.GetJsonAsync<TorrentIndexViewModel>($"/api/torrents/{expectedId}");
 
             // Assert
             Assert.NotNull(result);
@@ -58,7 +58,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             const int expectedCount = 5;
 
             // Act
-            var result = await _client.GetJsonAsync<FacetViewModel<string>>($"/api/torrents/titles/?count={expectedCount}");
+            var result = await _client.GetJsonAsync<FacetViewModel<string>>($"/api/torrents/titles/{expectedCount}");
 
             // Assert
             Assert.NotNull(result);
@@ -70,17 +70,17 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         public async Task Controller_GetTorrentsIndexAsync_NegativeNumber_Should_Return_HttpRequestException()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<HttpRequestException>(async () => 
-                await _client.PostJsonAsync<TorrentsIndexViewModel>(
-                    $"/api/torrents/pagination/?page=-10&pageSize=-10", null));
+            await Assert.ThrowsAsync<HttpRequestException>(async () =>
+                await _client.PostJsonAsync<TorrentsIndexViewModel>("/api/torrents/pagination/-10/-10",
+                    null));
         }
 
         [Fact(DisplayName = "GetTorrentIndexAsync() with negative number should return HttpRequestException")]
         public async Task Controller_GetTorrentIndexAsync_NegativeNumber_Should_Return_HttpRequestException()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<HttpRequestException>(async () => 
-                await _client.GetJsonAsync<TorrentIndexViewModel>($"/api/torrents/?id=-10"));
+            await Assert.ThrowsAsync<HttpRequestException>(async () =>
+                await _client.GetJsonAsync<TorrentIndexViewModel>("/api/torrents/-10"));
         }
 
         [Fact(DisplayName = "GetTitlesAsync() with negative number should return HttpRequestException")]
@@ -88,7 +88,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         {
             // Act & Assert
             await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.GetJsonAsync<FacetViewModel<string>>($"/api/torrents/titles/?count=-10"));
+                await _client.GetJsonAsync<FacetViewModel<string>>("/api/torrents/titles/-10"));
         }
     }
 }

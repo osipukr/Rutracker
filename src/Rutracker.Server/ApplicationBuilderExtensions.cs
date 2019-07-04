@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Rutracker.Infrastructure.Data;
 using Rutracker.Infrastructure.Data.Extensions;
+using Rutracker.Server.Controllers;
+using Rutracker.Server.Extensions;
 
 namespace Rutracker.Server
 {
@@ -23,6 +25,27 @@ namespace Rutracker.Server
         /// </summary>
         public static IApplicationBuilder UseDeveloperErrorPages(this IApplicationBuilder app) =>
             app.UseDeveloperExceptionPage();
+
+        public static IApplicationBuilder UseCustomEndpoints(this IApplicationBuilder app) =>
+            app.UseEndpoints(endpoints =>
+            {
+                var controllerName = typeof(TorrentsController).ControllerName();
+
+                endpoints.MapFallbackToController("api/torrents/pagination/{page}/{pageSize}",
+                    nameof(TorrentsController.Pagination),
+                    controllerName);
+
+                endpoints.MapFallbackToController("api/torrents/{id}",
+                    nameof(TorrentsController.Get),
+                    controllerName);
+
+                endpoints.MapFallbackToController("api/torrents/titles/{count}",
+                    nameof(TorrentsController.Titles),
+                    controllerName);
+
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
+            });
 
         public static IApplicationBuilder SeedDatabase(this IApplicationBuilder app)
         {
