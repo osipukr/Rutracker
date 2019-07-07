@@ -4,12 +4,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using AutoMapper;
+using Rutracker.Server.Extensions;
 
 namespace Rutracker.Server
 {
     public class Startup
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfigurationRoot _configuration;
         private readonly IWebHostEnvironment _environment;
 
         public Startup(IWebHostEnvironment environment)
@@ -42,15 +43,18 @@ namespace Rutracker.Server
         {
             if (_environment.IsDevelopment())
             {
-                app.UseDeveloperErrorPages()
+                app
+                    .UseDeveloperErrorPages()
                     .UseDebugging();
             }
 
-            app.UseResponseCaching()
+            app
+                .UseResponseCaching()
                 .UseResponseCompression()
+                .UseCustomMvc()
                 .UseClientSideBlazorFiles<Client.Startup>()
                 .UseRouting()
-                .UseCustomEndpoints()
+                .UseEndpoints(endpoints => endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html"))
                 .SeedDatabase();
         }
     }

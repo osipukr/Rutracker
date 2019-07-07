@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.Extensions.DependencyInjection;
 using Rutracker.Infrastructure.Data;
 using Rutracker.Infrastructure.Data.Extensions;
 using Rutracker.Server.Controllers;
-using Rutracker.Server.Extensions;
 
-namespace Rutracker.Server
+namespace Rutracker.Server.Extensions
 {
     public static class ApplicationBuilderExtensions
     {
@@ -26,26 +26,29 @@ namespace Rutracker.Server
         public static IApplicationBuilder UseDeveloperErrorPages(this IApplicationBuilder app) =>
             app.UseDeveloperExceptionPage();
 
-        public static IApplicationBuilder UseCustomEndpoints(this IApplicationBuilder app) =>
-            app.UseEndpoints(endpoints =>
-            {
-                var controllerName = typeof(TorrentsController).ControllerName();
+        public static IApplicationBuilder UseCustomMvc(
+            this IApplicationBuilder app) =>
+            app.UseMvc(
+                routes =>
+                {
+                    routes.MapRoute(
+                        name: "api-pagination",
+                        template: "api/torrents/pagination/{page}/{pageSize}",
+                        defaults: new { controller = "Torrents", action = nameof(TorrentsController.Pagination) },
+                        constraints: new { page = new IntRouteConstraint(), pageSize = new IntRouteConstraint() });
 
-                endpoints.MapFallbackToController("api/torrents/pagination/{page}/{pageSize}",
-                    nameof(TorrentsController.Pagination),
-                    controllerName);
+                    routes.MapRoute(
+                        name: "api-get",
+                        template: "api/torrents/{id}",
+                        defaults: new { controller = "Torrents", action = nameof(TorrentsController.Get) },
+                        constraints: new { id = new LongRouteConstraint() });
 
-                endpoints.MapFallbackToController("api/torrents/{id}",
-                    nameof(TorrentsController.Get),
-                    controllerName);
-
-                endpoints.MapFallbackToController("api/torrents/titles/{count}",
-                    nameof(TorrentsController.Titles),
-                    controllerName);
-
-                endpoints.MapDefaultControllerRoute();
-                endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
-            });
+                    routes.MapRoute(
+                        name: "api-titles",
+                        template: "api/torrents/titles/{count}",
+                        defaults: new { controller = "Torrents", action = nameof(TorrentsController.Titles) },
+                        constraints: new { count = new IntRouteConstraint() });
+                });
 
         public static IApplicationBuilder SeedDatabase(this IApplicationBuilder app)
         {

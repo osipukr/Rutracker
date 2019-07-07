@@ -15,7 +15,7 @@ using Rutracker.Server.Interfaces;
 using Rutracker.Server.Services;
 using Rutracker.Server.Settings;
 
-namespace Rutracker.Server
+namespace Rutracker.Server.Extensions
 {
     public static class ServiceCollectionExtensions
     {
@@ -31,7 +31,7 @@ namespace Rutracker.Server
         /// </summary>
         public static IServiceCollection AddCustomOptions(
             this IServiceCollection services,
-            IConfiguration configuration) =>
+            IConfigurationRoot configuration) =>
             services
                 // Adds IOptions<CacheSettings> to the services container.
                 .Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)));
@@ -41,7 +41,7 @@ namespace Rutracker.Server
         /// </summary>
         public static IServiceCollection AddCustomResponseCompression(
             this IServiceCollection services,
-            IConfiguration configuration) =>
+            IConfigurationRoot configuration) =>
             services
                 .AddResponseCompression(
                     options =>
@@ -72,6 +72,7 @@ namespace Rutracker.Server
 
                     // Returns a 406 Not Acceptable if the MIME type in the Accept HTTP header is not valid.
                     options.ReturnHttpNotAcceptable = true;
+                    options.EnableEndpointRouting = false;
                 });
 
         /// <summary>
@@ -93,7 +94,7 @@ namespace Rutracker.Server
         ///     Adds project Database Context.
         /// </summary>
         public static IServiceCollection AddDatabaseContext(this IServiceCollection services,
-            IConfiguration configuration) =>
+            IConfigurationRoot configuration) =>
             services
                 .AddDbContext<TorrentContext>(options =>
                 {
