@@ -6,11 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rutracker.Infrastructure.Data;
 using Rutracker.Infrastructure.Data.Extensions;
+using Rutracker.Server;
 
 namespace Rutracker.IntegrationTests.Server
 {
-    public class ServerFactory<TStartup> : WebApplicationFactory<TStartup> 
-        where TStartup : class
+    public class ServerFactory : WebApplicationFactory<Startup> 
     {
         protected override IHostBuilder CreateHostBuilder() =>
             Host.CreateDefaultBuilder(null)
@@ -34,7 +34,7 @@ namespace Rutracker.IntegrationTests.Server
                 })
                 .ConfigureWebHostDefaults(builder =>
                 {
-                    builder.UseStartup<TStartup>();
+                    builder.UseStartup<Startup>();
                 });
     }
 }

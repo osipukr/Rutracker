@@ -51,10 +51,13 @@ namespace Rutracker.Server
             app
                 .UseResponseCaching()
                 .UseResponseCompression()
-                .UseCustomMvc()
                 .UseClientSideBlazorFiles<Client.Startup>()
                 .UseRouting()
-                .UseEndpoints(endpoints => endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html"))
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapDefaultControllerRoute();
+                    endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
+                })
                 .SeedDatabase();
         }
     }

@@ -72,7 +72,6 @@ namespace Rutracker.Server.Extensions
 
                     // Returns a 406 Not Acceptable if the MIME type in the Accept HTTP header is not valid.
                     options.ReturnHttpNotAcceptable = true;
-                    options.EnableEndpointRouting = false;
                 });
 
         /// <summary>
