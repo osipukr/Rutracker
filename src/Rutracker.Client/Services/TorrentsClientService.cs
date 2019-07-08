@@ -27,6 +27,7 @@ namespace Rutracker.Client.Services
             }
             catch
             {
+                // ignored
             }
 
             return result;
@@ -43,6 +44,7 @@ namespace Rutracker.Client.Services
             }
             catch
             {
+                // ignored
             }
 
             return result;
@@ -59,6 +61,7 @@ namespace Rutracker.Client.Services
             }
             catch
             {
+                // ignored
             }
 
             return result;

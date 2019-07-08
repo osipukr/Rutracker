@@ -4,13 +4,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using AutoMapper;
-using Rutracker.Server.Filters;
+using Rutracker.Server.Extensions;
 
 namespace Rutracker.Server
 {
     public class Startup
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfigurationRoot _configuration;
         private readonly IWebHostEnvironment _environment;
 
         public Startup(IWebHostEnvironment environment)
@@ -32,7 +32,8 @@ namespace Rutracker.Server
                 .AddCustomOptions(_configuration)
                 .AddCustomResponseCompression(_configuration)
                 .AddAutoMapper(typeof(Startup))
-                .AddMvc(options => options.Filters.Add<ApiExceptionFilter>())
+                .AddMvc()
+                .AddCustomMvcOptions()
                 .AddNewtonsoftJson()
                 .Services
                 .AddRepositories()
@@ -42,11 +43,13 @@ namespace Rutracker.Server
         {
             if (_environment.IsDevelopment())
             {
-                app.UseDeveloperErrorPages()
+                app
+                    .UseDeveloperErrorPages()
                     .UseDebugging();
             }
 
-            app.UseResponseCaching()
+            app
+                .UseResponseCaching()
                 .UseResponseCompression()
                 .UseClientSideBlazorFiles<Client.Startup>()
                 .UseRouting()

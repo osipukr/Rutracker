@@ -1,7 +1,6 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Rutracker.Server;
 using Rutracker.Shared.ViewModels.Shared;
 using Rutracker.Shared.ViewModels.Torrent;
 using Rutracker.Shared.ViewModels.Torrents;
@@ -9,13 +8,13 @@ using Xunit;
 
 namespace Rutracker.IntegrationTests.Server.Controllers
 {
-    public class TorrentsControllerTests : IClassFixture<ServerFactory<Startup>>
+    public class TorrentsControllerTests : IClassFixture<ServerFactory>
     {
         private readonly HttpClient _client;
 
-        public TorrentsControllerTests(ServerFactory<Startup> factory) => _client = factory.CreateClient();
+        public TorrentsControllerTests(ServerFactory factory) => _client = factory.CreateClient();
 
-        [Fact(DisplayName = "GetTorrentsIndexAsync(page,pageSize,filter) should return torrents index page")]
+        [Fact(DisplayName = "GetTorrentsIndexAsync() should return torrents index page")]
         public async Task Controller_GetTorrentsIndexAsync_Should_Return_Torrents_Page()
         {
             // Arrange
@@ -36,7 +35,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             Assert.Equal(expectedCount, result.TorrentItems.Length);
         }
 
-        [Fact(DisplayName = "GetTorrentIndexAsync(id) should return torrent details page")]
+        [Fact(DisplayName = "GetTorrentIndexAsync() should return torrent details page")]
         public async Task Controller_GetTorrentIndexAsync_Should_Return_Torrent_Details_Page()
         {
             // Arrange
@@ -51,14 +50,15 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             Assert.Equal(expectedId, result.TorrentDetailsItem.Id);
         }
 
-        [Fact(DisplayName = "GetTitlesAsync(count) should return forum titles list")]
+        [Fact(DisplayName = "GetTitlesAsync() should return forum titles list")]
         public async Task Controller_GetTitlesAsync_Should_Return_Forum_Title_Facets()
         {
             // Arrange
             const int expectedCount = 5;
 
             // Act
-            var result = await _client.GetJsonAsync<FacetViewModel<string>>($"/api/torrents/titles/?count={expectedCount}");
+            var result =
+                await _client.GetJsonAsync<FacetViewModel<string>>($"/api/torrents/titles/?count={expectedCount}");
 
             // Assert
             Assert.NotNull(result);
@@ -70,17 +70,17 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         public async Task Controller_GetTorrentsIndexAsync_NegativeNumber_Should_Return_HttpRequestException()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<HttpRequestException>(async () => 
-                await _client.PostJsonAsync<TorrentsIndexViewModel>(
-                    $"/api/torrents/pagination/?page=-10&pageSize=-10", null));
+            await Assert.ThrowsAsync<HttpRequestException>(async () =>
+                await _client.PostJsonAsync<TorrentsIndexViewModel>("/api/torrents/pagination/?page=-10&pageSize=-10",
+                    null));
         }
 
         [Fact(DisplayName = "GetTorrentIndexAsync() with negative number should return HttpRequestException")]
         public async Task Controller_GetTorrentIndexAsync_NegativeNumber_Should_Return_HttpRequestException()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<HttpRequestException>(async () => 
-                await _client.GetJsonAsync<TorrentIndexViewModel>($"/api/torrents/?id=-10"));
+            await Assert.ThrowsAsync<HttpRequestException>(async () =>
+                await _client.GetJsonAsync<TorrentIndexViewModel>("/api/torrents/?id=-10"));
         }
 
         [Fact(DisplayName = "GetTitlesAsync() with negative number should return HttpRequestException")]
@@ -88,7 +88,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         {
             // Act & Assert
             await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.GetJsonAsync<FacetViewModel<string>>($"/api/torrents/titles/?count=-10"));
+                await _client.GetJsonAsync<FacetViewModel<string>>("/api/torrents/titles/?count=-10"));
         }
     }
 }

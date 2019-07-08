@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rutracker.Infrastructure.Data;
 using Rutracker.Infrastructure.Data.Extensions;
 
-namespace Rutracker.Server
+namespace Rutracker.Server.Extensions
 {
     public static class ApplicationBuilderExtensions
     {
