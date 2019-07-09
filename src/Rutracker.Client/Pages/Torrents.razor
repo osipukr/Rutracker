@@ -11,7 +11,7 @@
     <div class="col-lg-9">
         @if (SearchTask.IsCompleted && Model != null)
         {
-            <TorrentsList Items="@Model.TorrentItems" />
+            <TorrentList Items="@Model.TorrentItems" />
             <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonClick" />
         }
         else
@@ -28,7 +28,7 @@
     private Task<TorrentsIndexViewModel> SearchTask { get; set; }
 
     private int Page { get; set; }
-    private int PageSize { get; set; }
+    private int PageSize { get; set; } = ClientSettings.ItemsPerPageCount;
 
     private const string QuearyTemplate = "/torrents?search={0}&page={1}";
 
@@ -50,12 +50,6 @@
                && pageParamId > 1
                ? pageParamId
                : 1;
-
-        PageSize = ClientConstants.ItemsPerPageCount;
-
-        FilterModel.Search = QueryHelpers.ParseQuery(uriQuery).TryGetValue("search", out var searchParam)
-            ? searchParam.FirstOrDefault()
-            : null;
 
         await LoadTorrentsIndexAsync();
         StateHasChanged();

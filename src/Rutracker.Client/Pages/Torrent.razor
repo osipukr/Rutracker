@@ -76,31 +76,7 @@ else
             </div>
         </div>
 
-        @if (torrent.Files == null || torrent.Files.Length == 0)
-        {
-
-        }
-        else
-        {
-            <div class="card mb-2 shadow-sm">
-                <div class="card-body">
-                    <div class="@(_collapseFiles ? null : "mb-2")">
-                        <span class="badge badge-primary">Files</span> -
-                        <button class="btn btn-primary btn-sm" @onclick="@ToggleButtonClick">Show / Hide</button>
-                    </div>
-
-                    <ul class="list-group list-group-horizontal flex-wrap justify-content-around align-items-center @CollapseCssClass">
-                        @foreach (var file in torrent.Files)
-                        {
-                            <li class="list-group-item list-group-item-action m-1 w-auto rounded">
-                                <p class="m-0" title="@file.Name"><span class="badge badge-primary">Name:</span> @file.Name</p>
-                                <p class="m-0" title="@file.Size"><span class="badge badge-primary">Size:</span> @file.Size bytes</p>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </div>
-        }
+        <FileList Items="@torrent.Files" />
 
         <div class="card mb-3 shadow-sm">
             <div class="card-body">@((MarkupString)torrent.Content)</div>
@@ -113,15 +89,8 @@ else
     [Parameter] protected long Id { get; set; }
 
     private TorrentIndexViewModel Model { get; set; }
-    private bool _collapseFiles = true;
 
-    private string CollapseCssClass => _collapseFiles ? "collapse" : null;
-
-    protected override async Task OnInitAsync() => await LoadTorrentIndexAsync();
-
-    private async Task LoadTorrentIndexAsync() => Model = await Client.GetTorrentIndexAsync(Id);
-
-    private void ToggleButtonClick() => _collapseFiles = !_collapseFiles;
+    protected override async Task OnInitAsync() => Model = await Client.GetTorrentIndexAsync(Id);
 
     private void BackToButtonClick() => UriHelper.NavigateTo("/torrents");
 }

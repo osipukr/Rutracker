@@ -69,11 +69,9 @@ else
     [Parameter] protected PaginationViewModel Model { get; set; }
     [Parameter] protected Action<int> PageChanged { get; set; }
 
-    private int MaxPages { get; set; }
+    private int MaxPages { get; set; } = ClientSettings.PaginationButtonCount;
     private int StartIndex { get; set; }
     private int FinishIndex { get; set; }
-
-    protected override void OnInit() => MaxPages = ClientConstants.PaginationButtonCount;
 
     protected override void OnParametersSet()
     {
