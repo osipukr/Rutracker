@@ -16,55 +16,27 @@ namespace Rutracker.Client.Services
         {
         }
 
-        public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
+        public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page,
+            int pageSize,
+            FiltrationViewModel filter)
         {
             var requestUri = string.Format(ApiUris.TorrentsIndex, page, pageSize);
-            var result = default(TorrentsIndexViewModel);
 
-            try
-            {
-                result = await _httpClient.PostJsonAsync<TorrentsIndexViewModel>(requestUri, filter);
-            }
-            catch
-            {
-                // ignored
-            }
-
-            return result;
+            return await _httpClient.PostJsonAsync<TorrentsIndexViewModel>(requestUri, filter);
         }
 
         public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id)
         {
             var requestUri = string.Format(ApiUris.TorrentIndex, id);
-            var result = default(TorrentIndexViewModel);
 
-            try
-            {
-                result = await _httpClient.GetJsonAsync<TorrentIndexViewModel>(requestUri);
-            }
-            catch
-            {
-                // ignored
-            }
-
-            return result;
+            return await _httpClient.GetJsonAsync<TorrentIndexViewModel>(requestUri);
         }
 
         public async Task<FacetViewModel<string>> GetTitlesAsync(int count)
         {
             var requestUri = string.Format(ApiUris.Titles, count);
-            var result = default(FacetViewModel<string>);
 
-            try
-            {
-                result = await _httpClient.GetJsonAsync<FacetViewModel<string>>(requestUri);
-            }
-            catch
-            {
-                // ignored
-            }
-
-            return result;
+            return await _httpClient.GetJsonAsync<FacetViewModel<string>>(requestUri);
         }
     }
 }
