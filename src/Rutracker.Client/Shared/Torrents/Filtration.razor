@@ -1,4 +1,5 @@
 ﻿@inject ITorrentsClientService Client
+@inject ViewSettings ViewSettings
 
 <EditForm Model="@Model" OnValidSubmit="@ApplyButtonClick">
     <DataAnnotationsValidator />
@@ -104,10 +105,14 @@
     [Parameter] protected Action ChangedHandler { get; set; }
     [Parameter] protected Task<TorrentsIndexViewModel> SearchTask { get; set; }
 
-    private int TitleCount { get; set; } = ClientSettings.ForumTitlesCount;
+    private int TitleCount { get; set; }
     private FacetViewModel<string> TitleFacet { get; set; }
 
-    protected override async Task OnInitAsync() => TitleFacet = await Client.GetTitlesAsync(TitleCount);
+    protected override async Task OnInitAsync()
+    {
+        TitleCount = ViewSettings.ForumTitlesCount;
+        TitleFacet = await Client.GetTitlesAsync(TitleCount);
+    }
 
     private void ResetFiltrationModel()
     {

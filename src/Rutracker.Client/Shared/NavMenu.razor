@@ -1,6 +1,6 @@
 ﻿<nav class="navbar navbar-expand-sm fixed-top navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/">@Brand</a>
+        <a class="navbar-brand" href="/">Rutracker</a>
 
         <button class="navbar-toggler" @onclick="@ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
@@ -24,8 +24,6 @@
 
 @code
 {
-    private const string Brand = ClientSettings.ServiceName;
-
     private bool _collapseNavMenu = true;
     private string NavMenuCssClass => _collapseNavMenu ? "collapse" : null;
 

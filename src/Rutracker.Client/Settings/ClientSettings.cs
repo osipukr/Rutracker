@@ -1,10 +1,8 @@
 ﻿namespace Rutracker.Client.Settings
 {
-    public static class ClientSettings
+    public class ClientSettings
     {
-        public const string ServiceName = "Rutracker";
-        public const int ItemsPerPageCount = 10;
-        public const int ForumTitlesCount = 5;
-        public const int PaginationButtonCount = 5;
+        public ApiUriSettings ApiUriSettings { get; set; }
+        public ViewSettings ViewSettings { get; set; }
     }
 }

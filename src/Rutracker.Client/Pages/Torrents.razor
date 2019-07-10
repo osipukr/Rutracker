@@ -2,6 +2,7 @@
 @implements IDisposable
 @inject ITorrentsClientService Client
 @inject IUriHelper UriHelper
+@inject ViewSettings ViewSettings
 
 <div class="row">
     <div class="col-lg-3 pb-3">
@@ -28,9 +29,9 @@
     private Task<TorrentsIndexViewModel> SearchTask { get; set; }
 
     private int Page { get; set; }
-    private int PageSize { get; set; } = ClientSettings.ItemsPerPageCount;
+    private int PageSize { get; set; }
 
-    private const string QuearyTemplate = "/torrents?search={0}&page={1}";
+    private const string QueryTemplate = "/torrents?search={0}&page={1}";
 
     protected override async Task OnInitAsync()
     {
@@ -50,6 +51,8 @@
                && pageParamId > 1
                ? pageParamId
                : 1;
+        
+        PageSize = ViewSettings.ItemsPerPageCount;
 
         await LoadTorrentsIndexAsync();
         StateHasChanged();
@@ -64,9 +67,9 @@
         Model = await SearchTask;
     }
 
-    private void PageButtonClick(int page) => UriHelper.NavigateTo(string.Format(QuearyTemplate, FilterModel.Search, page));
+    private void PageButtonClick(int page) => UriHelper.NavigateTo(string.Format(QueryTemplate, FilterModel.Search, page));
 
-    private void FilterApplyButtonClick() => UriHelper.NavigateTo(string.Format(QuearyTemplate, FilterModel.Search, 1));
+    private void FilterApplyButtonClick() => UriHelper.NavigateTo(string.Format(QueryTemplate, FilterModel.Search, 1));
 
     public void Dispose() => UriHelper.OnLocationChanged -= OnLocationChanges;
 }

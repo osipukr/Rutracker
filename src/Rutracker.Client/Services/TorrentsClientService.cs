@@ -11,28 +11,31 @@ namespace Rutracker.Client.Services
 {
     public class TorrentsClientService : BaseClientService, ITorrentsClientService
     {
-        public TorrentsClientService(HttpClient client)
+        private readonly ApiUriSettings _apiUriSettings;
+
+        public TorrentsClientService(HttpClient client, ApiUriSettings apiUriSettings)
             : base(client)
         {
+            _apiUriSettings = apiUriSettings;
         }
 
         public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
         {
-            var requestUri = string.Format(ApiUriSettings.TorrentsIndex, page, pageSize);
+            var requestUri = string.Format(_apiUriSettings.TorrentsIndex, page, pageSize);
 
             return await _httpClient.PostJsonAsync<TorrentsIndexViewModel>(requestUri, filter);
         }
 
         public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id)
         {
-            var requestUri = string.Format(ApiUriSettings.TorrentIndex, id);
+            var requestUri = string.Format(_apiUriSettings.TorrentIndex, id);
 
             return await _httpClient.GetJsonAsync<TorrentIndexViewModel>(requestUri);
         }
 
         public async Task<FacetViewModel<string>> GetTitlesAsync(int count)
         {
-            var requestUri = string.Format(ApiUriSettings.Titles, count);
+            var requestUri = string.Format(_apiUriSettings.Titles, count);
 
             return await _httpClient.GetJsonAsync<FacetViewModel<string>>(requestUri);
         }
