@@ -1,4 +1,6 @@
-﻿@if (Model == null)
+﻿@inject ViewSettings ViewSettings
+
+@if (Model == null)
 {
 
 }
@@ -69,11 +71,8 @@ else
     [Parameter] protected PaginationViewModel Model { get; set; }
     [Parameter] protected Action<int> PageChanged { get; set; }
 
-    private int MaxPages { get; set; }
     private int StartIndex { get; set; }
     private int FinishIndex { get; set; }
-
-    protected override void OnInit() => MaxPages = ClientConstants.PaginationButtonCount;
 
     protected override void OnParametersSet()
     {
@@ -82,17 +81,18 @@ else
             return;
         }
 
-        var before = (int)Math.Floor(MaxPages / 2.0);
-        var after = (int)Math.Ceiling(MaxPages / 2.0) - 1;
+        var buttonCount = ViewSettings.PaginationButtonCount;
+        var before = (int)Math.Floor(buttonCount / 2.0);
+        var after = (int)Math.Ceiling(buttonCount / 2.0) - 1;
 
         if (Model.CurrentPage <= before)
         {
             StartIndex = 1;
-            FinishIndex = Math.Min(MaxPages, Model.TotalPages);
+            FinishIndex = Math.Min(buttonCount, Model.TotalPages);
         }
         else if (Model.CurrentPage + after >= Model.TotalPages)
         {
-            StartIndex = Math.Max(Model.TotalPages - MaxPages + 1, 1);
+            StartIndex = Math.Max(Model.TotalPages - buttonCount + 1, 1);
             FinishIndex = Model.TotalPages;
         }
         else

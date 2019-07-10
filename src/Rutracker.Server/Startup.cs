@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using AutoMapper;
+using Boilerplate.AspNetCore;
 using Rutracker.Server.Extensions;
 
 namespace Rutracker.Server
@@ -19,7 +20,7 @@ namespace Rutracker.Server
 
             _configuration = new ConfigurationBuilder()
                .SetBasePath(_environment.ContentRootPath)
-               .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+               .AddJsonFile("appsettings.json")
                .AddJsonFile($"appsettings.{_environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
                .AddEnvironmentVariables()
                .Build();
@@ -32,25 +33,20 @@ namespace Rutracker.Server
                 .AddCustomOptions(_configuration)
                 .AddCustomResponseCompression(_configuration)
                 .AddAutoMapper(typeof(Startup))
-                .AddMvc()
-                .AddCustomMvcOptions()
-                .AddNewtonsoftJson()
-                .Services
+                .AddControllersWithMvcOptions()
                 .AddRepositories()
                 .AddServices();
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder application)
         {
-            if (_environment.IsDevelopment())
-            {
-                app
-                    .UseDeveloperErrorPages()
-                    .UseDebugging();
-            }
-
-            app
+            application
                 .UseResponseCaching()
                 .UseResponseCompression()
+                .UseIf(
+                    _environment.IsDevelopment(),
+                    x => x
+                        .UseDeveloperErrorPages()
+                        .UseDebugging())
                 .UseClientSideBlazorFiles<Client.Startup>()
                 .UseRouting()
                 .UseEndpoints(endpoints =>

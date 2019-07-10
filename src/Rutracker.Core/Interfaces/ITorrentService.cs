@@ -11,8 +11,8 @@ namespace Rutracker.Core.Interfaces
 
         Task<Torrent> GetTorrentDetailsAsync(long id);
 
-        Task<int> GetTorrentsCountAsync(string search,
-            IEnumerable<string> selectedTitleIds, long? sizeFrom, long? sizeTo);
+        Task<int> GetTorrentsCountAsync(string search, IEnumerable<string> selectedTitleIds, long? sizeFrom,
+            long? sizeTo);
 
         Task<IReadOnlyList<(long Id, string Value, int Count)>> GetPopularForumsAsync(int count);
     }

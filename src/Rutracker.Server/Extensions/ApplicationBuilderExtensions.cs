@@ -24,6 +24,9 @@ namespace Rutracker.Server.Extensions
         public static IApplicationBuilder UseDeveloperErrorPages(this IApplicationBuilder app) =>
             app.UseDeveloperExceptionPage();
 
+        /// <summary>
+        ///     Filling the database with initial values ​​if it is empty.
+        /// </summary>
         public static IApplicationBuilder SeedDatabase(this IApplicationBuilder app)
         {
             using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())

@@ -59,9 +59,12 @@ namespace Rutracker.Server.Extensions
                     options.Level = CompressionLevel.Optimal;
                 });
 
-        public static IMvcBuilder AddCustomMvcOptions(
-            this IMvcBuilder builder) =>
-            builder.AddMvcOptions(
+        /// <summary>
+        ///     Adds controllers with custom mvc options.
+        /// </summary>
+        public static IServiceCollection AddControllersWithMvcOptions(
+            this IServiceCollection services) =>
+            services.AddControllers(
                 options =>
                 {
                     options.Filters.Add<ApiExceptionFilter>();
@@ -72,7 +75,8 @@ namespace Rutracker.Server.Extensions
 
                     // Returns a 406 Not Acceptable if the MIME type in the Accept HTTP header is not valid.
                     options.ReturnHttpNotAcceptable = true;
-                });
+                })
+                .Services;
 
         /// <summary>
         ///     Adds project repositories.

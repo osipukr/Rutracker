@@ -13,7 +13,7 @@ namespace Rutracker.Server.Controllers
         public TorrentsController(ITorrentViewModelService torrentViewModelService) =>
             _torrentViewModelService = torrentViewModelService;
 
-        [Route("pagination")]
+        [HttpPost("pagination")]
         public async Task<IActionResult> Pagination(int page, int pageSize, [FromBody] FiltrationViewModel filter)
         {
             var result = await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, filter);
@@ -21,7 +21,7 @@ namespace Rutracker.Server.Controllers
             return Ok(result);
         }
 
-        [Route("")]
+        [HttpGet]
         public async Task<IActionResult> Get(long id)
         {
             var result = await _torrentViewModelService.GetTorrentIndexAsync(id);
@@ -29,7 +29,7 @@ namespace Rutracker.Server.Controllers
             return Ok(result);
         }
 
-        [Route("titles")]
+        [HttpGet("titles")]
         public async Task<IActionResult> Titles(int count)
         {
             var result = await _torrentViewModelService.GetTitleFacetAsync(count);

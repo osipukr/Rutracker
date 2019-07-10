@@ -1,0 +1,13 @@
+{
+  "ApiUriSettings": {
+    "Titles": "api/torrents/titles/?count={0}",
+    "TorrentIndex": "api/torrents/?id={0}",
+    "TorrentsIndex": "api/torrents/pagination/?page={0}&pageSize={1}"
+
+  },
+  "ViewSettings": {
+    "ForumTitlesCount": 5,
+    "ItemsPerPageCount": 10,
+    "PaginationButtonCount": 5
+  }
+}
