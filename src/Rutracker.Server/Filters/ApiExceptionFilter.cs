@@ -10,28 +10,23 @@ namespace Rutracker.Server.Filters
     {
         public Task OnExceptionAsync(ExceptionContext context)
         {
-            ObjectResult result;
+            var message = "Something went wrong on the server...";
+            var statusCode = StatusCodes.Status500InternalServerError;
 
             if (context.Exception is TorrentException exception)
             {
-                result = new ObjectResult(exception.Message)
+                message = exception.Message;
+                statusCode = exception.ExceptionEvent switch
                 {
-                    StatusCode = exception.ExceptionEvent switch
-                    {
-                        ExceptionEvent.NotFound => StatusCodes.Status404NotFound,
-                        ExceptionEvent.NotValidParameters => StatusCodes.Status400BadRequest
-                    }
-                };
-            }
-            else
-            {
-                result = new ObjectResult(string.Empty)
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError
+                    ExceptionEvent.NotFound => StatusCodes.Status404NotFound,
+                    ExceptionEvent.NotValidParameters => StatusCodes.Status400BadRequest
                 };
             }
 
-            context.Result = result;
+            context.Result = new ObjectResult(message)
+            {
+                StatusCode = statusCode
+            };
 
             return Task.CompletedTask;
         }

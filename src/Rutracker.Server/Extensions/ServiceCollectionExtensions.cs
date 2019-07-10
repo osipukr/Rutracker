@@ -67,7 +67,7 @@ namespace Rutracker.Server.Extensions
             builder.AddMvcOptions(
                 options =>
                 {
-                    options.Filters.Add<ApiExceptionFilter>();
+                    options.Filters.Add(new ApiExceptionFilter());
 
                     // Remove string and stream output formatters. These are not useful for an API serving JSON or XML.
                     options.OutputFormatters.RemoveType<StreamOutputFormatter>();

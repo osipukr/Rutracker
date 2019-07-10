@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <EmbeddedResource Update="Resources\ViewModels\FiltrationViewModelResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>FiltrationViewModelResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
