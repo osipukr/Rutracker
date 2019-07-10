@@ -31,7 +31,7 @@ namespace Rutracker.Server.Extensions
         /// </summary>
         public static IServiceCollection AddCustomOptions(
             this IServiceCollection services,
-            IConfigurationRoot configuration) =>
+            IConfiguration configuration) =>
             services
                 // Adds IOptions<CacheSettings> to the services container.
                 .Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)));
@@ -41,7 +41,7 @@ namespace Rutracker.Server.Extensions
         /// </summary>
         public static IServiceCollection AddCustomResponseCompression(
             this IServiceCollection services,
-            IConfigurationRoot configuration) =>
+            IConfiguration configuration) =>
             services
                 .AddResponseCompression(
                     options =>
@@ -60,11 +60,11 @@ namespace Rutracker.Server.Extensions
                 });
 
         /// <summary>
-        ///     Adds controllers with custom mvc options.
+        ///     Adds custom mvc options.
         /// </summary>
-        public static IServiceCollection AddControllersWithMvcOptions(
-            this IServiceCollection services) =>
-            services.AddControllers(
+        public static IMvcBuilder AddCustomMvcOptions(
+            this IMvcBuilder builder) =>
+            builder.AddMvcOptions(
                 options =>
                 {
                     options.Filters.Add<ApiExceptionFilter>();
@@ -75,8 +75,7 @@ namespace Rutracker.Server.Extensions
 
                     // Returns a 406 Not Acceptable if the MIME type in the Accept HTTP header is not valid.
                     options.ReturnHttpNotAcceptable = true;
-                })
-                .Services;
+                });
 
         /// <summary>
         ///     Adds project repositories.
@@ -97,7 +96,7 @@ namespace Rutracker.Server.Extensions
         ///     Adds project Database Context.
         /// </summary>
         public static IServiceCollection AddDatabaseContext(this IServiceCollection services,
-            IConfigurationRoot configuration) =>
+            IConfiguration configuration) =>
             services
                 .AddDbContext<TorrentContext>(options =>
                 {
