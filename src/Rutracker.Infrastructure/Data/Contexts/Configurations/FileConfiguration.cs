@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Rutracker.Core.Entities;
 
-namespace Rutracker.Infrastructure.Data.Configurations
+namespace Rutracker.Infrastructure.Data.Contexts.Configurations
 {
     public class FileConfiguration : IEntityTypeConfiguration<File>
     {

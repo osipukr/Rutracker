@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Rutracker.Infrastructure.Data;
-using Rutracker.Infrastructure.Data.Extensions;
+using Rutracker.Infrastructure.Data.Contexts;
+using Rutracker.Infrastructure.Extensions;
 using Rutracker.Server;
 
 namespace Rutracker.IntegrationTests.Server

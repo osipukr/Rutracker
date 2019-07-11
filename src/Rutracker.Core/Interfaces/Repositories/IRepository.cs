@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Rutracker.Core.Entities;
+using Rutracker.Core.Interfaces.Specifications;
 
-namespace Rutracker.Core.Interfaces
+namespace Rutracker.Core.Interfaces.Repositories
 {
     public interface IRepository<TEntity, TPrimaryKey> 
         where TEntity : BaseEntity<TPrimaryKey>

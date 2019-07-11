@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Rutracker.Core.Entities;
-using Rutracker.Infrastructure.Data.Configurations;
+using Rutracker.Infrastructure.Data.Contexts.Configurations;
 
-namespace Rutracker.Infrastructure.Data
+namespace Rutracker.Infrastructure.Data.Contexts
 {
     public class TorrentContext : DbContext
     {

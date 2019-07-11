@@ -4,9 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Rutracker.Core.Entities;
-using Rutracker.Core.Interfaces;
+using Rutracker.Core.Interfaces.Repositories;
+using Rutracker.Infrastructure.Data.Contexts;
 
-namespace Rutracker.Infrastructure.Data
+namespace Rutracker.Infrastructure.Data.Repositories
 {
     public class TorrentRepository : Repository<Torrent, long>, ITorrentRepository
     {

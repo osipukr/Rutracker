@@ -24,12 +24,13 @@ namespace Rutracker.IntegrationTests.Server.Controllers
 
             // Act
             var result = await _client.PostJsonAsync<TorrentsIndexViewModel>(
-                $"/api/torrents/pagination/?page={page}&pageSize={pageSize}", null);
+                $"api/torrents/pagination/?page={page}&pageSize={pageSize}", null);
 
             // Assert
             Assert.NotNull(result);
             Assert.NotNull(result.TorrentItems);
             Assert.NotNull(result.PaginationModel);
+
             Assert.Equal(page, result.PaginationModel.CurrentPage);
             Assert.Equal(pageSize, result.PaginationModel.PageSize);
             Assert.Equal(expectedCount, result.TorrentItems.Length);
@@ -42,11 +43,12 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             const long expectedId = 5;
 
             // Act
-            var result = await _client.GetJsonAsync<TorrentIndexViewModel>($"/api/torrents/?id={expectedId}");
+            var result = await _client.GetJsonAsync<TorrentIndexViewModel>($"api/torrents/?id={expectedId}");
 
             // Assert
             Assert.NotNull(result);
             Assert.NotNull(result.TorrentDetailsItem);
+
             Assert.Equal(expectedId, result.TorrentDetailsItem.Id);
         }
 
@@ -58,11 +60,12 @@ namespace Rutracker.IntegrationTests.Server.Controllers
 
             // Act
             var result =
-                await _client.GetJsonAsync<FacetViewModel<string>>($"/api/torrents/titles/?count={expectedCount}");
+                await _client.GetJsonAsync<FacetViewModel<string>>($"api/torrents/titles/?count={expectedCount}");
 
             // Assert
             Assert.NotNull(result);
             Assert.NotNull(result.FacetItems);
+
             Assert.Equal(expectedCount, result.FacetItems.Length);
         }
 
@@ -71,7 +74,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         {
             // Act & Assert
             await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.PostJsonAsync<TorrentsIndexViewModel>("/api/torrents/pagination/?page=-10&pageSize=-10",
+                await _client.PostJsonAsync<TorrentsIndexViewModel>("api/torrents/pagination/?page=-10&pageSize=-10",
                     null));
         }
 
@@ -80,7 +83,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         {
             // Act & Assert
             await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.GetJsonAsync<TorrentIndexViewModel>("/api/torrents/?id=-10"));
+                await _client.GetJsonAsync<TorrentIndexViewModel>("api/torrents/?id=-10"));
         }
 
         [Fact(DisplayName = "GetTitlesAsync() with negative number should return HttpRequestException")]
@@ -88,7 +91,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         {
             // Act & Assert
             await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.GetJsonAsync<FacetViewModel<string>>("/api/torrents/titles/?count=-10"));
+                await _client.GetJsonAsync<FacetViewModel<string>>("api/torrents/titles/?count=-10"));
         }
     }
 }

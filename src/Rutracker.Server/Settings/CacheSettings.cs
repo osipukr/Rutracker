@@ -4,6 +4,6 @@ namespace Rutracker.Server.Settings
 {
     public class CacheSettings
     {
-        public TimeSpan DefaultCacheDuration { get; set; }
+        public TimeSpan CacheDuration { get; set; }
     }
 }

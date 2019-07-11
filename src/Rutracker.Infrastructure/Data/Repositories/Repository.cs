@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Rutracker.Core.Entities;
-using Rutracker.Core.Interfaces;
-using Rutracker.Infrastructure.Data.Extensions;
+using Rutracker.Core.Interfaces.Repositories;
+using Rutracker.Core.Interfaces.Specifications;
+using Rutracker.Infrastructure.Data.Contexts;
+using Rutracker.Infrastructure.Extensions;
 
-namespace Rutracker.Infrastructure.Data
+namespace Rutracker.Infrastructure.Data.Repositories
 {
-    public abstract class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TPrimaryKey>
+    public class Repository<TEntity, TPrimaryKey> : BaseRepository, IRepository<TEntity, TPrimaryKey>
         where TEntity : BaseEntity<TPrimaryKey>
         where TPrimaryKey : IEquatable<TPrimaryKey>
     {
-        protected readonly TorrentContext _context;
         protected readonly DbSet<TEntity> _dbSet;
 
-        protected Repository(TorrentContext context)
+        public Repository(TorrentContext context)
+            : base(context)
         {
-            _context = context;
             _dbSet = _context.Set<TEntity>();
         }
 
@@ -27,13 +28,13 @@ namespace Rutracker.Infrastructure.Data
         public virtual async Task<TEntity> GetAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
             await _dbSet.ApplySpecification(specification).SingleOrDefaultAsync();
 
-        public virtual async Task<IReadOnlyList<TEntity>> ListAsync() => 
+        public virtual async Task<IReadOnlyList<TEntity>> ListAsync() =>
             await _dbSet.ToArrayAsync();
 
         public virtual async Task<IReadOnlyList<TEntity>> ListAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
             await _dbSet.ApplySpecification(specification).ToArrayAsync();
 
-        public virtual async Task<int> CountAsync() => 
+        public virtual async Task<int> CountAsync() =>
             await _dbSet.CountAsync();
 
         public virtual async Task<int> CountAsync(ISpecification<TEntity, TPrimaryKey> specification) =>

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using Rutracker.Core.Interfaces;
+using Rutracker.Core.Interfaces.Services;
 using Rutracker.Server.Extensions;
 using Rutracker.Server.Interfaces;
 using Rutracker.Server.Settings;
@@ -31,29 +31,32 @@ namespace Rutracker.Server.Services
             _cache = cache;
             _cacheEntryOptions = new MemoryCacheEntryOptions
             {
-                SlidingExpiration = cacheOptions.Value?.DefaultCacheDuration
+                SlidingExpiration = cacheOptions.Value?.CacheDuration
             };
         }
 
         public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
         {
             var cacheKey = $"torrents-{page}-{pageSize}-{filter?.GetHashCode()}";
+            var callback = TorrentsIndexCallbackAsync(page, pageSize, filter);
 
-            return await _cache.GetOrCreateAsync(cacheKey, () => TorrentsIndexCallbackAsync(page, pageSize, filter), _cacheEntryOptions);
+            return await _cache.GetOrCreateAsync(cacheKey, () => callback, _cacheEntryOptions);
         }
 
         public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id)
         {
             var cacheKey = $"torrent-{id}";
+            var callback = TorrentIndexCallbackAsync(id);
 
-            return await _cache.GetOrCreateAsync(cacheKey, () => TorrentIndexCallbackAsync(id), _cacheEntryOptions);
+            return await _cache.GetOrCreateAsync(cacheKey, () => callback, _cacheEntryOptions);
         }
 
         public async Task<FacetViewModel<string>> GetTitleFacetAsync(int count)
         {
             var cacheKey = $"titles-{count}";
+            var callback = TitleFacetCallbackAsync(count);
 
-            return await _cache.GetOrCreateAsync(cacheKey, () => TitleFacetCallbackAsync(count), _cacheEntryOptions);
+            return await _cache.GetOrCreateAsync(cacheKey, () => callback, _cacheEntryOptions);
         }
 
         #region Cache entry callback functions

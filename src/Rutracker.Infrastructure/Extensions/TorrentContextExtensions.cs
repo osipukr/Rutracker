@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Rutracker.Core.Entities;
+using Rutracker.Infrastructure.Data.Contexts;
 
-namespace Rutracker.Infrastructure.Data.Extensions
+namespace Rutracker.Infrastructure.Extensions
 {
     public static class TorrentContextExtensions
     {

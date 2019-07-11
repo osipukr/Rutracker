@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Rutracker.Core.Interfaces;
+using Rutracker.Core.Interfaces.Repositories;
 using Rutracker.Core.Specifications;
-using Rutracker.Infrastructure.Data;
+using Rutracker.Infrastructure.Data.Repositories;
 using Rutracker.UnitTests.Setup;
 using Xunit;
 

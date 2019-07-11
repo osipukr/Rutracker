@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Rutracker.Core.Entities;
 
-namespace Rutracker.Core.Interfaces
+namespace Rutracker.Core.Interfaces.Repositories
 {
     public interface ITorrentRepository : IRepository<Torrent, long>
     {

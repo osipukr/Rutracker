@@ -1,34 +1,33 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Ardalis.GuardClauses;
 
 namespace Rutracker.Core.Extensions
 {
     public static class ExpressionExtensions
     {
-        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> exp,
-            Expression<Func<T, bool>> expTwo)
+        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> expression,
+            Expression<Func<T, bool>> otherExpression)
         {
-            if (expTwo == null)
-            {
-                throw new ArgumentNullException(nameof(expTwo));
-            }
+            Guard.Against.Null(otherExpression, nameof(otherExpression));
 
-            var visit = ApplyVisit(exp, expTwo);
+            var visit = ApplyVisit(expression, otherExpression);
 
-            return Expression.Lambda<Func<T, bool>>(Expression.AndAlso(visit, expTwo.Body), expTwo.Parameters);
+            return Expression.Lambda<Func<T, bool>>(Expression.AndAlso(visit,
+                    otherExpression.Body),
+                otherExpression.Parameters);
         }
 
-        public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> exp,
-            Expression<Func<T, bool>> expTwo)
+        public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> expression,
+            Expression<Func<T, bool>> otherExpression)
         {
-            if (expTwo == null)
-            {
-                throw new ArgumentNullException(nameof(expTwo));
-            }
+            Guard.Against.Null(otherExpression, nameof(otherExpression));
 
-            var visit = ApplyVisit(exp, expTwo);
+            var visit = ApplyVisit(expression, otherExpression);
 
-            return Expression.Lambda<Func<T, bool>>(Expression.OrElse(visit, expTwo.Body), expTwo.Parameters);
+            return Expression.Lambda<Func<T, bool>>(Expression.OrElse(visit,
+                    otherExpression.Body),
+                otherExpression.Parameters);
         }
 
         private static Expression ApplyVisit<T>(Expression<Func<T, bool>> fromExpression,
@@ -37,10 +36,7 @@ namespace Rutracker.Core.Extensions
             var visit = new SwapVisitor(fromExpression.Parameters[0],
                 toExpression.Parameters[0]).Visit(fromExpression.Body);
 
-            if (visit == null)
-            {
-                throw new ArgumentException(string.Empty, nameof(visit));
-            }
+            Guard.Against.Null(visit, nameof(visit));
 
             return visit;
         }

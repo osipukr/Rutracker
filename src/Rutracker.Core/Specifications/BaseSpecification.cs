@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Rutracker.Core.Entities;
 using Rutracker.Core.Extensions;
-using Rutracker.Core.Interfaces;
+using Rutracker.Core.Interfaces.Specifications;
 
 namespace Rutracker.Core.Specifications
 {
@@ -26,9 +26,11 @@ namespace Rutracker.Core.Specifications
             Includes = new List<Expression<Func<TEntity, object>>>();
         }
 
-        protected void AddInclude(Expression<Func<TEntity, object>> includeExpression) => Includes.Add(includeExpression);
+        protected void AddInclude(Expression<Func<TEntity, object>> includeExpression) =>
+            Includes.Add(includeExpression);
 
-        protected void ApplyOrderBy(Expression<Func<TEntity, object>> orderByExpression) => OrderBy = orderByExpression;
+        protected void ApplyOrderBy(Expression<Func<TEntity, object>> orderByExpression) => 
+            OrderBy = orderByExpression;
 
         protected void ApplyOrderByDescending(Expression<Func<TEntity, object>> orderByDescendingExpression) =>
             OrderByDescending = orderByDescendingExpression;
@@ -40,8 +42,10 @@ namespace Rutracker.Core.Specifications
             IsPagingEnabled = true;
         }
 
-        protected void ApplyAndCriteria(Expression<Func<TEntity, bool>> expression) => Criteria = Criteria.And(expression);
+        protected void ApplyAndCriteria(Expression<Func<TEntity, bool>> andExpression) =>
+            Criteria = Criteria.And(andExpression);
 
-        protected void ApplyOrCriteria(Expression<Func<TEntity, bool>> expression) => Criteria = Criteria.Or(expression);
+        protected void ApplyOrCriteria(Expression<Func<TEntity, bool>> orExpression) =>
+            Criteria = Criteria.Or(orExpression);
     }
 }

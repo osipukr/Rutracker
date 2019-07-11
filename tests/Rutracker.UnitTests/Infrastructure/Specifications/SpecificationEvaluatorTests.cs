@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rutracker.Core.Entities;
-using Rutracker.Core.Interfaces;
+using Rutracker.Core.Interfaces.Specifications;
 using Rutracker.Core.Specifications;
-using Rutracker.Infrastructure.Data;
+using Rutracker.Infrastructure.Data.Specifications;
 using Rutracker.UnitTests.Setup;
 using Xunit;
 
@@ -11,8 +11,7 @@ namespace Rutracker.UnitTests.Infrastructure.Specifications
 {
     public class SpecificationEvaluatorTests
     {
-        [Theory(DisplayName =
-            "Apply(query,spec) should return the correct number of items after applying the specification")]
+        [Theory(DisplayName = "Apply(query,spec) should return the correct number of items after applying the specification")]
         [MemberData(nameof(EvaluatorTestCases))]
         public void Evaluator_Should_Correctly_Apply_The_Specification(ISpecification<Torrent, long> specification,
             int expectedCount)
