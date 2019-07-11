@@ -1,23 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Rutracker.Shared.Resources.ViewModels;
 
 namespace Rutracker.Shared.ViewModels.Shared
 {
     public class FiltrationViewModel
     {
-        [Display(Name = "Search")]
-        [StringLength(50, ErrorMessage = "The string must be less than 50 characters.")]
+        [StringLength(maximumLength: 50,
+            ErrorMessageResourceName = nameof(FiltrationViewModelResource.SearchError),
+            ErrorMessageResourceType = typeof(FiltrationViewModelResource))]
         public string Search { get; set; }
 
-        [Display(Name = "Size From")]
-        [Range(0, long.MaxValue, ErrorMessage = "Size From must be greater than 0.")]
+        [Range(minimum: 0.0,
+            maximum: long.MaxValue,
+            ErrorMessageResourceName = nameof(FiltrationViewModelResource.SizeFromError),
+            ErrorMessageResourceType = typeof(FiltrationViewModelResource))]
         public long? SizeFrom { get; set; }
 
-        [Display(Name = "Size To")]
-        [Range(0, long.MaxValue, ErrorMessage = "Size To must be greater than 0.")]
+        [Range(minimum: 0.0,
+            maximum: long.MaxValue,
+            ErrorMessageResourceName = nameof(FiltrationViewModelResource.SizeToError),
+            ErrorMessageResourceType = typeof(FiltrationViewModelResource))]
         public long? SizeTo { get; set; }
 
-        [Display(Name = "Forum titles")]
         public IEnumerable<string> SelectedTitleIds { get; set; }
     }
 }
