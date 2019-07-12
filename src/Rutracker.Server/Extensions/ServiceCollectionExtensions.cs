@@ -13,7 +13,7 @@ using Rutracker.Core.Services;
 using Rutracker.Infrastructure.Data.Contexts;
 using Rutracker.Infrastructure.Data.Repositories;
 using Rutracker.Server.Filters;
-using Rutracker.Server.Interfaces;
+using Rutracker.Server.Interfaces.Services;
 using Rutracker.Server.Services;
 using Rutracker.Server.Settings;
 
@@ -50,11 +50,10 @@ namespace Rutracker.Server.Extensions
                     {
                         options.EnableForHttps = true;
 
-                        var responseCompressionSettings = configuration.GetSection(nameof(ResponseCompressionSettings))
+                        var compressionSettings = configuration.GetSection(nameof(ResponseCompressionSettings))
                             .Get<ResponseCompressionSettings>();
 
-                        options.MimeTypes =
-                            ResponseCompressionDefaults.MimeTypes.Concat(responseCompressionSettings.MimeTypes);
+                        options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(compressionSettings.MimeTypes);
                     })
                 .Configure<GzipCompressionProviderOptions>(options =>
                 {
@@ -69,7 +68,8 @@ namespace Rutracker.Server.Extensions
             builder.AddMvcOptions(
                 options =>
                 {
-                    options.Filters.Add(new ApiExceptionFilter());
+                    options.Filters.Add(new ControllerExceptionFilterAttribute());
+                    options.Filters.Add(new ModelValidatorFilterAttribute());
 
                     // Remove string and stream output formatters. These are not useful for an API serving JSON or XML.
                     options.OutputFormatters.RemoveType<StreamOutputFormatter>();

@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Rutracker.Server.Interfaces;
+using Rutracker.Server.Interfaces.Controllers;
+using Rutracker.Server.Interfaces.Services;
 using Rutracker.Shared.ViewModels.Shared;
 
 namespace Rutracker.Server.Controllers
 {
     [Route("api/[controller]")]
-    public class TorrentsController : ControllerBase
+    public class TorrentsController : ControllerBase, ITorrentsController
     {
         private readonly ITorrentViewModelService _torrentViewModelService;
 
@@ -14,7 +16,10 @@ namespace Rutracker.Server.Controllers
             _torrentViewModelService = torrentViewModelService;
 
         [HttpPost("pagination")]
-        public async Task<IActionResult> Pagination(int page, int pageSize, [FromBody] FiltrationViewModel filter)
+        public async Task<IActionResult> Pagination(
+            [Range(1, int.MaxValue)] int page,
+            [Range(1, 100)] int pageSize,
+            FiltrationViewModel filter)
         {
             var result = await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, filter);
 
@@ -22,7 +27,7 @@ namespace Rutracker.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(long id)
+        public async Task<IActionResult> Get([Range(1, long.MaxValue)] long id)
         {
             var result = await _torrentViewModelService.GetTorrentIndexAsync(id);
 
@@ -30,7 +35,7 @@ namespace Rutracker.Server.Controllers
         }
 
         [HttpGet("titles")]
-        public async Task<IActionResult> Titles(int count)
+        public async Task<IActionResult> Titles([Range(1, int.MaxValue)] int count)
         {
             var result = await _torrentViewModelService.GetTitleFacetAsync(count);
 

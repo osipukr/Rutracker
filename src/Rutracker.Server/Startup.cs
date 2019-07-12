@@ -47,7 +47,7 @@ namespace Rutracker.Server
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {
-                    endpoints.MapDefaultControllerRoute();
+                    endpoints.MapControllers();
                     endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
                 })
                 .SeedDatabase();

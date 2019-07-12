@@ -22,11 +22,13 @@ namespace Rutracker.Core.Services
             long? sizeFrom,
             long? sizeTo)
         {
-            Guard.Against.OutOfRange(nameof(page), page, 1, int.MaxValue);
-            Guard.Against.OutOfRange(nameof(pageSize) ,pageSize, 1, int.MaxValue);
-
-            var specification = new TorrentsFilterPaginatedSpecification((page - 1) * pageSize, pageSize, search,
-                selectedTitleIds, sizeFrom, sizeTo);
+            var specification = new TorrentsFilterPaginatedSpecification(
+                (page - 1) * pageSize,
+                pageSize,
+                search,
+                selectedTitleIds,
+                sizeFrom,
+                sizeTo);
 
             var torrents = await _torrentRepository.ListAsync(specification);
 
@@ -37,8 +39,6 @@ namespace Rutracker.Core.Services
 
         public async Task<Torrent> GetTorrentDetailsAsync(long id)
         {
-            Guard.Against.OutOfRange(nameof(id), id, 1, long.MaxValue);
-
             var specification = new TorrentWithForumAndFilesSpecification(id);
             var torrent = await _torrentRepository.GetAsync(specification);
 
@@ -62,8 +62,6 @@ namespace Rutracker.Core.Services
 
         public async Task<IReadOnlyList<(long Id, string Value, int Count)>> GetPopularForumsAsync(int count)
         {
-            Guard.Against.OutOfRange(nameof(count), count, 1, int.MaxValue);
-
             var forums = await _torrentRepository.GetPopularForumsAsync(count);
 
             Guard.Against.Null(nameof(forums), forums);

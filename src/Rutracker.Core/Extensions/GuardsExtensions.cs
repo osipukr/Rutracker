@@ -5,20 +5,21 @@ namespace Rutracker.Core.Extensions
 {
     public static class GuardsExtensions
     {
-        public static void Null<T>(this IGuardClause guardClause, string param, T input)
+        public static void Null<T>(this IGuardClause guardClause, string paramName, T input)
             where T : class
         {
             if (input == null)
             {
-                throw new TorrentException($"{param} not found.", ExceptionEvent.NotFound);
+                throw new TorrentException($"{paramName} not found.", ExceptionEvent.NotFound);
             }
         }
 
-        public static void OutOfRange(this IGuardClause guardClause, string param, long input, long rangeFrom, long rangeTo)
+        public static void OutOfRange(this IGuardClause guardClause, string paramName, long input, long rangeFrom, long rangeTo)
         {
             if (input < rangeFrom || input > rangeTo)
             {
-                throw new TorrentException($"The {param} is out of range.", ExceptionEvent.NotValidParameters);
+                throw new TorrentException($"The {paramName} is out of range ({rangeFrom}-{rangeTo}).",
+                    ExceptionEvent.NotValidParameters);
             }
         }
     }

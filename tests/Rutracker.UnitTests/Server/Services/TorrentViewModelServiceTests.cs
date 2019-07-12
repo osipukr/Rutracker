@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Rutracker.Server.Interfaces;
+using Rutracker.Server.Interfaces.Services;
 using Rutracker.Server.Services;
 using Rutracker.UnitTests.Setup;
 using Xunit;

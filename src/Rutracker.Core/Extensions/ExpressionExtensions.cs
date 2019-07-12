@@ -6,35 +6,30 @@ namespace Rutracker.Core.Extensions
 {
     public static class ExpressionExtensions
     {
-        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> expression,
-            Expression<Func<T, bool>> otherExpression)
+        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)
         {
-            Guard.Against.Null(otherExpression, nameof(otherExpression));
-
-            var visit = ApplyVisit(expression, otherExpression);
+            var visit = ApplyVisit(left, right);
 
             return Expression.Lambda<Func<T, bool>>(Expression.AndAlso(visit,
-                    otherExpression.Body),
-                otherExpression.Parameters);
+                    right.Body),
+                right.Parameters);
         }
 
-        public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> expression,
-            Expression<Func<T, bool>> otherExpression)
+        public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)
         {
-            Guard.Against.Null(otherExpression, nameof(otherExpression));
-
-            var visit = ApplyVisit(expression, otherExpression);
+            var visit = ApplyVisit(left, right);
 
             return Expression.Lambda<Func<T, bool>>(Expression.OrElse(visit,
-                    otherExpression.Body),
-                otherExpression.Parameters);
+                    right.Body),
+                right.Parameters);
         }
 
-        private static Expression ApplyVisit<T>(Expression<Func<T, bool>> fromExpression,
-            Expression<Func<T, bool>> toExpression)
+        private static Expression ApplyVisit<T>(Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)
         {
-            var visit = new SwapVisitor(fromExpression.Parameters[0],
-                toExpression.Parameters[0]).Visit(fromExpression.Body);
+            Guard.Against.Null(left, nameof(left));
+            Guard.Against.Null(right, nameof(right));
+
+            var visit = new SwapVisitor(left.Parameters[0], right.Parameters[0]).Visit(left.Body);
 
             Guard.Against.Null(visit, nameof(visit));
 

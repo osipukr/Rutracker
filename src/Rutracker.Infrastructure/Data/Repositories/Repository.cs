@@ -10,15 +10,16 @@ using Rutracker.Infrastructure.Extensions;
 
 namespace Rutracker.Infrastructure.Data.Repositories
 {
-    public class Repository<TEntity, TPrimaryKey> : BaseRepository, IRepository<TEntity, TPrimaryKey>
+    public abstract class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TPrimaryKey>
         where TEntity : BaseEntity<TPrimaryKey>
         where TPrimaryKey : IEquatable<TPrimaryKey>
     {
+        protected readonly TorrentContext _context;
         protected readonly DbSet<TEntity> _dbSet;
 
-        public Repository(TorrentContext context)
-            : base(context)
+        protected Repository(TorrentContext context)
         {
+            _context = context;
             _dbSet = _context.Set<TEntity>();
         }
 
@@ -29,10 +30,10 @@ namespace Rutracker.Infrastructure.Data.Repositories
             await _dbSet.ApplySpecification(specification).SingleOrDefaultAsync();
 
         public virtual async Task<IReadOnlyList<TEntity>> ListAsync() =>
-            await _dbSet.ToArrayAsync();
+            await _dbSet.ToListAsync();
 
         public virtual async Task<IReadOnlyList<TEntity>> ListAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
-            await _dbSet.ApplySpecification(specification).ToArrayAsync();
+            await _dbSet.ApplySpecification(specification).ToListAsync();
 
         public virtual async Task<int> CountAsync() =>
             await _dbSet.CountAsync();

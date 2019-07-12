@@ -6,7 +6,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Rutracker.Core.Interfaces.Services;
 using Rutracker.Server.Extensions;
-using Rutracker.Server.Interfaces;
+using Rutracker.Server.Interfaces.Services;
 using Rutracker.Server.Settings;
 using Rutracker.Shared.ViewModels.Shared;
 using Rutracker.Shared.ViewModels.Torrent;
@@ -65,11 +65,17 @@ namespace Rutracker.Server.Services
             int pageSize,
             FiltrationViewModel filter)
         {
-            var torrents = await _torrentService.GetTorrentsOnPageAsync(page, pageSize, filter?.Search,
-                filter?.SelectedTitleIds, filter?.SizeFrom, filter?.SizeTo);
+            var torrents = await _torrentService.GetTorrentsOnPageAsync(page,
+                pageSize,
+                filter?.Search,
+                filter?.SelectedTitleIds,
+                filter?.SizeFrom,
+                filter?.SizeTo);
 
-            var totalItems = await _torrentService.GetTorrentsCountAsync(filter?.Search, filter?.SelectedTitleIds,
-                filter?.SizeFrom, filter?.SizeTo);
+            var totalItems = await _torrentService.GetTorrentsCountAsync(filter?.Search,
+                filter?.SelectedTitleIds,
+                filter?.SizeFrom,
+                filter?.SizeTo);
 
             var torrentsResult = _mapper.Map<TorrentItemViewModel[]>(torrents);
             var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
