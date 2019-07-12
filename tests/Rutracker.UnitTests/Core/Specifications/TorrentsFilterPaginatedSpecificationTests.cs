@@ -7,9 +7,9 @@ namespace Rutracker.UnitTests.Core.Specifications
 {
     public class TorrentsFilterPaginatedSpecificationTests
     {
-        [Theory(DisplayName = "TorrentsFilterPaginatedSpecification(params) check the pagination criteria")]
+        [Theory(DisplayName = "TorrentsFilterPaginatedSpecification() check the pagination criteria")]
         [MemberData(nameof(FilterPaginatedSpecificationTestCases))]
-        public void Specification_FilterPaginated_Should_Return_Apply_Filer(int skip, int take,
+        public void TorrentsFilterPaginatedSpecification_ValidParameters_ReturnsValidSpecification(int skip, int take,
             string search,
             IEnumerable<string> titles,
             long? sizeFrom,

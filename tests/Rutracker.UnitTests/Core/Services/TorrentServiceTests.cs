@@ -18,7 +18,7 @@ namespace Rutracker.UnitTests.Core.Services
         }
 
         [Fact(DisplayName = "GetAllTorrentsOnPageAsync() should return the torrents list on page")]
-        public async Task Service_GetTorrentsOnPageAsync_Should_Return_Torrents_List()
+        public async Task GetTorrentsOnPageAsync_1_10_ReturnsValidTorrentsList()
         {
             // Arrange
             const int expectedCount = 10;
@@ -31,8 +31,8 @@ namespace Rutracker.UnitTests.Core.Services
             Assert.Equal(expectedCount, torrents.Count);
         }
 
-        [Fact(DisplayName = "GetTorrentDetailsAsync(id) should return the torrent with id")]
-        public async Task Service_GetTorrentDetailsAsync_Should_Return_Torrent_Details()
+        [Fact(DisplayName = "GetTorrentDetailsAsync() should return the torrent with id")]
+        public async Task GetTorrentDetailsAsync_5_ReturnsValidTorrent()
         {
             // Arrange
             const long expectedId = 5;
@@ -46,7 +46,7 @@ namespace Rutracker.UnitTests.Core.Services
         }
 
         [Fact(DisplayName = "GetTorrentsCountAsync() should return the number of torrents")]
-        public async Task Service_GetTorrentsCountAsync_Should_Return_Torrents_Count()
+        public async Task GetTorrentsCountAsync_Null_ReturnsAllTorrentsCount()
         {
             // Arrange
             const int expectedCount = 9;
@@ -58,8 +58,8 @@ namespace Rutracker.UnitTests.Core.Services
             Assert.Equal(expectedCount, count);
         }
 
-        [Fact(DisplayName = "GetPopularForumsAsync(count) should return the torrent forum titles")]
-        public async Task Service_GetPopularForumsAsync_Should_Return_TorrentForum_Titles()
+        [Fact(DisplayName = "GetPopularForumsAsync() should return the torrent forum titles")]
+        public async Task GetPopularForumsAsync_10_ReturnsValidForumTitles()
         {
             // Arrange
             const int expectedCount = 10;

@@ -14,8 +14,8 @@ namespace Rutracker.IntegrationTests.Server.Controllers
 
         public TorrentsControllerTests(ServerFactory factory) => _client = factory.CreateClient();
 
-        [Fact(DisplayName = "GetTorrentsIndexAsync() should return torrents index page")]
-        public async Task Controller_GetTorrentsIndexAsync_Should_Return_Torrents_Page()
+        [Fact(DisplayName = "Pagination() should return torrents index page")]
+        public async Task Pagination_ValidParameters_ReturnsStatus200OK()
         {
             // Arrange
             const int page = 1;
@@ -36,8 +36,8 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             Assert.Equal(expectedCount, result.TorrentItems.Length);
         }
 
-        [Fact(DisplayName = "GetTorrentIndexAsync() should return torrent details page")]
-        public async Task Controller_GetTorrentIndexAsync_Should_Return_Torrent_Details_Page()
+        [Fact(DisplayName = "Get() should return torrent details page")]
+        public async Task Get_ValidParameters_ReturnsStatus200OK()
         {
             // Arrange
             const long expectedId = 5;
@@ -52,8 +52,8 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             Assert.Equal(expectedId, result.TorrentDetailsItem.Id);
         }
 
-        [Fact(DisplayName = "GetTitlesAsync() should return forum titles list")]
-        public async Task Controller_GetTitlesAsync_Should_Return_Forum_Title_Facets()
+        [Fact(DisplayName = "Titles() should return forum titles list")]
+        public async Task Titles_ValidParameters_ReturnsStatus200OK()
         {
             // Arrange
             const int expectedCount = 5;
@@ -69,8 +69,8 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             Assert.Equal(expectedCount, result.FacetItems.Length);
         }
 
-        [Fact(DisplayName = "GetTorrentsIndexAsync() with negative number should return HttpRequestException")]
-        public async Task Controller_GetTorrentsIndexAsync_NegativeNumber_Should_Return_HttpRequestException()
+        [Fact(DisplayName = "Pagination() with negative number should return HttpRequestException")]
+        public async Task Pagination_NegativeNumbers_ReturnsStatus400BadRequest()
         {
             // Act & Assert
             await Assert.ThrowsAsync<HttpRequestException>(async () =>
@@ -78,16 +78,16 @@ namespace Rutracker.IntegrationTests.Server.Controllers
                     null));
         }
 
-        [Fact(DisplayName = "GetTorrentIndexAsync() with negative number should return HttpRequestException")]
-        public async Task Controller_GetTorrentIndexAsync_NegativeNumber_Should_Return_HttpRequestException()
+        [Fact(DisplayName = "Get() with negative number should return HttpRequestException")]
+        public async Task Get_NegativeNumber_ReturnsStatus400BadRequest()
         {
             // Act & Assert
             await Assert.ThrowsAsync<HttpRequestException>(async () =>
                 await _client.GetJsonAsync<TorrentIndexViewModel>("api/torrents/?id=-10"));
         }
 
-        [Fact(DisplayName = "GetTitlesAsync() with negative number should return HttpRequestException")]
-        public async Task Controller_GetTitlesAsync_NegativeNumber_Should_Return_HttpRequestException()
+        [Fact(DisplayName = "Titles() with negative number should return HttpRequestException")]
+        public async Task Titles_NegativeNumber_ReturnsStatus400BadRequest()
         {
             // Act & Assert
             await Assert.ThrowsAsync<HttpRequestException>(async () =>

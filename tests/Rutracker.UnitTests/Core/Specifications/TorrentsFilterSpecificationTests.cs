@@ -7,9 +7,9 @@ namespace Rutracker.UnitTests.Core.Specifications
 {
     public class TorrentsFilterSpecificationTests
     {
-        [Theory(DisplayName = "TorrentsFilterSpecification(params) check the search criteria")]
+        [Theory(DisplayName = "TorrentsFilterSpecification() check the search criteria")]
         [MemberData(nameof(FilterSpecificationTestCases))]
-        public void Specification_Filter_Should_Return_Apply_Filter(string search,
+        public void TorrentsFilterSpecification_ValidParameters_ReturnsValidSpecification(string search,
             IEnumerable<string> titles,
             long? sizeFrom,
             long? sizeTo)

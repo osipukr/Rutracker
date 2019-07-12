@@ -10,7 +10,7 @@ namespace Rutracker.UnitTests.Core.Extensions
     public class ExpressionExtensionsTests
     {
         [Fact(DisplayName = "And() should apply && between the two expression")]
-        public void Expression_And_Should_Apply_And_Operator_Between_Two_Expression()
+        public void And_TwoValidExpressions_ReturnsCombinedExpression()
         {
             // Arrange
             const int expectedCount = 2;
@@ -28,7 +28,7 @@ namespace Rutracker.UnitTests.Core.Extensions
         }
 
         [Fact(DisplayName = "Or() should apply || between the two expression")]
-        public void Expression_Or_Should_Apply_Or_Operator_Between_Two_Expression()
+        public void Or_TwoValidExpressions_ReturnsCombinedExpression()
         {
             // Arrange
             const int expectedCount = 4;
@@ -45,8 +45,8 @@ namespace Rutracker.UnitTests.Core.Extensions
             Assert.Equal(expectedCount, data.Where(expression).Count());
         }
 
-        [Fact(DisplayName = "And(null) should return ArgumentNullException")]
-        public void Expression_And_Null_Should_Return_ArgumentNullException()
+        [Fact(DisplayName = "And() should return ArgumentNullException")]
+        public void And_NullExpression_ReturnsArgumentNullException()
         {
             // Arrange
             Expression<Func<string, bool>> left = x => string.IsNullOrEmpty(x);
@@ -55,8 +55,8 @@ namespace Rutracker.UnitTests.Core.Extensions
             Assert.Throws<ArgumentNullException>(() => left.And(null));
         }
 
-        [Fact(DisplayName = "Or(null) should return ArgumentNullException")]
-        public void Expression_Or_Null_Should_Return_ArgumentNullException()
+        [Fact(DisplayName = "Or() should return ArgumentNullException")]
+        public void Or_NullExpression_ReturnsArgumentNullException()
         {
             // Arrange
             Expression<Func<string, bool>> left = x => string.IsNullOrEmpty(x);

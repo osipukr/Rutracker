@@ -20,8 +20,8 @@ namespace Rutracker.UnitTests.Server.Services
             _torrentViewModelService = new TorrentViewModelService(service, mapper, cache, options);
         }
 
-        [Fact(DisplayName = "GetTorrentsIndexAsync(page,size,filter) should return the torrents page")]
-        public async Task ViewService_GetTorrentsIndexAsync_Should_Return_Torrents_Page()
+        [Fact(DisplayName = "GetTorrentsIndexAsync() should return the torrents page")]
+        public async Task GetTorrentsIndexAsync_1_10_Null_ReturnsValidTorrentsIndexPage()
         {
             // Arrange
             const int page = 1;
@@ -36,8 +36,8 @@ namespace Rutracker.UnitTests.Server.Services
             Assert.Equal(pageSize, result.TorrentItems.Length);
         }
 
-        [Fact(DisplayName = "GetTorrentIndexAsync(id) should return a torrent page for a specific id")]
-        public async Task ViewService_GetTorrentIndexAsync_Should_Return_Torrent_Page()
+        [Fact(DisplayName = "GetTorrentIndexAsync() should return a torrent page for a specific id")]
+        public async Task GetTorrentIndexAsync_5_ReturnsValidTorrentIndexPage()
         {
             // Arrange
             const long expectedId = 5;
@@ -51,8 +51,8 @@ namespace Rutracker.UnitTests.Server.Services
             Assert.Equal(expectedId, result.TorrentDetailsItem.Id);
         }
 
-        [Fact(DisplayName = "GetTitlesAsync(count) should return a count of forum titles")]
-        public async Task ViewService_GetTitlesAsync_Should_Return_ForumTitle_Facet()
+        [Fact(DisplayName = "GetTitleFacetAsync() should return a count of forum titles")]
+        public async Task GetTitleFacetAsync_5_ReturnsValidTitleFacet()
         {
             // Arrange
             const int expectedCount = 5;

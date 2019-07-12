@@ -5,11 +5,11 @@ namespace Rutracker.UnitTests.Core.Specifications
 {
     public class TorrentWithForumAndFilesSpecificationTests
     {
-        [Theory(DisplayName = "TorrentWithForumAndFilesSpecification(id) check the criteria for linking entities")]
+        [Theory(DisplayName = "TorrentWithForumAndFilesSpecification() check the criteria for linking entities")]
         [InlineData(1)]
         [InlineData(5)]
         [InlineData(10)]
-        public void Specification_ForumWithFiles_Should_Return_Related_Entity(long id)
+        public void TorrentWithForumAndFilesSpecification_2_ReturnsValidSpecification(long id)
         {
             // Arrange
             const int expectedIncludeCount = 2;
