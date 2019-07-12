@@ -19,7 +19,7 @@ namespace Rutracker.Server.Controllers
         public async Task<IActionResult> Pagination(
             [Range(1, int.MaxValue)] int page,
             [Range(1, 100)] int pageSize,
-            FiltrationViewModel filter)
+            [FromBody] FiltrationViewModel filter)
         {
             var result = await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, filter);
 

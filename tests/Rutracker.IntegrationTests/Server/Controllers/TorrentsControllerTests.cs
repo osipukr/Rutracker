@@ -21,10 +21,11 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             const int page = 1;
             const int pageSize = 5;
             const int expectedCount = 5;
+            var filter = new FiltrationViewModel();
 
             // Act
             var result = await _client.PostJsonAsync<TorrentsIndexViewModel>(
-                $"api/torrents/pagination/?page={page}&pageSize={pageSize}", null);
+                $"api/torrents/pagination/?page={page}&pageSize={pageSize}", filter);
 
             // Assert
             Assert.NotNull(result);
