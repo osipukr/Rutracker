@@ -24,14 +24,14 @@
 
 @code
 {
-    private TorrentsIndexViewModel Model { get; set; }
-    private FiltrationViewModel FilterModel { get; set; } = new FiltrationViewModel();
-    private Task<TorrentsIndexViewModel> SearchTask { get; set; }
+    TorrentsIndexViewModel Model { get; set; }
+    FiltrationViewModel FilterModel { get; set; } = new FiltrationViewModel();
+    Task<TorrentsIndexViewModel> SearchTask { get; set; }
 
-    private int Page { get; set; }
-    private int PageSize { get; set; }
+    int Page { get; set; }
+    int PageSize { get; set; }
 
-    private const string QueryTemplate = "/torrents?search={0}&page={1}";
+    const string QueryTemplate = "/torrents?search={0}&page={1}";
 
     protected override async Task OnInitAsync()
     {
@@ -40,9 +40,9 @@
         UriHelper.OnLocationChanged += OnLocationChanges;
     }
 
-    private async void OnLocationChanges(object sender, LocationChangedEventArgs args) => await RefreshTypesAsync();
+    async void OnLocationChanges(object sender, LocationChangedEventArgs args) => await RefreshTypesAsync();
 
-    private async Task RefreshTypesAsync()
+    async Task RefreshTypesAsync()
     {
         var uriQuery = new Uri(UriHelper.GetAbsoluteUri()).Query;
 
@@ -58,7 +58,7 @@
         StateHasChanged();
     }
 
-    private async Task LoadTorrentsIndexAsync()
+    async Task LoadTorrentsIndexAsync()
     {
         SearchTask = null;
         StateHasChanged();
@@ -67,9 +67,9 @@
         Model = await SearchTask;
     }
 
-    private void PageButtonClick(int page) => UriHelper.NavigateTo(string.Format(QueryTemplate, FilterModel.Search, page));
+    void PageButtonClick(int page) => UriHelper.NavigateTo(string.Format(QueryTemplate, FilterModel.Search, page));
 
-    private void FilterApplyButtonClick() => UriHelper.NavigateTo(string.Format(QueryTemplate, FilterModel.Search, 1));
+    void FilterApplyButtonClick() => UriHelper.NavigateTo(string.Format(QueryTemplate, FilterModel.Search, 1));
 
     public void Dispose() => UriHelper.OnLocationChanged -= OnLocationChanges;
 }

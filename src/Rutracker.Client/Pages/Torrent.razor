@@ -86,11 +86,11 @@ else
 
 @code
 {
-    [Parameter] protected long Id { get; set; }
+    [Parameter] long Id { get; set; }
 
-    private TorrentIndexViewModel Model { get; set; }
+    TorrentIndexViewModel Model { get; set; }
 
     protected override async Task OnInitAsync() => Model = await Client.GetTorrentIndexAsync(Id);
 
-    private void BackToButtonClick() => UriHelper.NavigateTo("/torrents");
+    void BackToButtonClick() => UriHelper.NavigateTo("/torrents");
 }

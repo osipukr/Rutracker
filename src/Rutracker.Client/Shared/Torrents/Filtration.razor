@@ -101,12 +101,12 @@
 
 @code
 {
-    [Parameter] protected FiltrationViewModel Model { get; set; }
-    [Parameter] protected Action ChangedHandler { get; set; }
-    [Parameter] protected Task<TorrentsIndexViewModel> SearchTask { get; set; }
+    [Parameter] FiltrationViewModel Model { get; set; }
+    [Parameter] EventCallback ChangedHandler { get; set; }
+    [Parameter] Task<TorrentsIndexViewModel> SearchTask { get; set; }
 
-    private int TitleCount { get; set; }
-    private FacetViewModel<string> TitleFacet { get; set; }
+    int TitleCount { get; set; }
+    FacetViewModel<string> TitleFacet { get; set; }
 
     protected override async Task OnInitAsync()
     {
@@ -114,7 +114,7 @@
         TitleFacet = await Client.GetTitlesAsync(TitleCount);
     }
 
-    private void ResetFiltrationModel()
+    void ResetFiltrationModel()
     {
         Model.Search = null;
         Model.SelectedTitleIds = null;
@@ -127,14 +127,14 @@
         }
     }
 
-    private void ApplyButtonClick()
+    void ApplyButtonClick()
     {
         Model.SelectedTitleIds = TitleFacet.FacetItems.Where(x => x.IsSelected).Select(x => x.Id);
 
-        ChangedHandler?.Invoke();
+        ChangedHandler.InvokeAsync(EventArgs.Empty);
     }
 
-    private void ResetButtonClick()
+    void ResetButtonClick()
     {
         ResetFiltrationModel();
         ApplyButtonClick();
