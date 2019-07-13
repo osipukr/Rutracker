@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Rutracker.Core.Entities;
@@ -51,48 +52,33 @@ namespace Rutracker.Infrastructure.Extensions
         private const int TorrentMaxCount = 200;
         private const int FileMaxCount = 500;
 
-        private static IEnumerable<Forum> GetPreconfiguredForums()
-        {
-            for (var i = 1; i <= ForumMaxCount; i++)
+        private static IEnumerable<Forum> GetPreconfiguredForums() =>
+            Enumerable.Range(1, ForumMaxCount).Select(x => new Forum
             {
-                yield return new Forum
-                {
-                    Id = i,
-                    Title = Guid.NewGuid().ToString()
-                };
-            }
-        }
+                Id = x,
+                Title = Guid.NewGuid().ToString()
+            });
 
-        private static IEnumerable<Torrent> GetPreconfiguredTorrents()
-        {
-            for (var i = 1; i <= TorrentMaxCount; i++)
+        private static IEnumerable<Torrent> GetPreconfiguredTorrents() =>
+            Enumerable.Range(1, TorrentMaxCount).Select(x => new Torrent
             {
-                yield return new Torrent
-                {
-                    Id = i,
-                    Date = DateTime.Now,
-                    Size = Random.Next(1, int.MaxValue),
-                    Title = Guid.NewGuid().ToString(),
-                    Hash = Guid.NewGuid().ToString(),
-                    Content = Guid.NewGuid().ToString(),
-                    TrackerId = Random.Next(1, int.MaxValue),
-                    ForumId = Random.Next(1, ForumMaxCount)
-                };
-            }
-        }
+                Id = x,
+                Date = DateTime.Now,
+                Size = Random.Next(1, int.MaxValue),
+                Title = Guid.NewGuid().ToString(),
+                Hash = Guid.NewGuid().ToString(),
+                Content = Guid.NewGuid().ToString(),
+                TrackerId = Random.Next(1, int.MaxValue),
+                ForumId = Random.Next(1, ForumMaxCount)
+            });
 
-        private static IEnumerable<File> GetPreconfiguredFiles()
-        {
-            for (var i = 1; i <= FileMaxCount; i++)
+        private static IEnumerable<File> GetPreconfiguredFiles() =>
+            Enumerable.Range(1, FileMaxCount).Select(x => new File
             {
-                yield return new File
-                {
-                    Name = Guid.NewGuid().ToString(),
-                    Size = Random.Next(1, int.MaxValue),
-                    TorrentId = Random.Next(1, TorrentMaxCount)
-                };
-            }
-        }
+                Name = Guid.NewGuid().ToString(),
+                Size = Random.Next(1, int.MaxValue),
+                TorrentId = Random.Next(1, TorrentMaxCount)
+            });
 
         #endregion
     }

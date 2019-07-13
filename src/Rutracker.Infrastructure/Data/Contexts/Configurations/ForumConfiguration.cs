@@ -8,7 +8,6 @@ namespace Rutracker.Infrastructure.Data.Contexts.Configurations
     {
         public void Configure(EntityTypeBuilder<Forum> builder)
         {
-            builder.ToTable("Forums");
             builder.Property(t => t.Id).ValueGeneratedNever().IsRequired();
 
             builder.HasMany(f => f.Torrents)

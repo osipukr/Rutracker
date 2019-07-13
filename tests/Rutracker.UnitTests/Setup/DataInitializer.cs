@@ -5,7 +5,7 @@ namespace Rutracker.UnitTests.Setup
 {
     public static class DataInitializer
     {
-        public static IEnumerable<Forum> GetForums() =>
+        public static IEnumerable<Forum> GetTestForums() =>
             new[]
             {
                 new Forum { Id = 1, Title = "Forum Title 1" },
@@ -15,7 +15,7 @@ namespace Rutracker.UnitTests.Setup
                 new Forum { Id = 5, Title = "Forum Title 5" }
             };
 
-        public static IEnumerable<Torrent> GeTorrents() =>
+        public static IEnumerable<Torrent> GeTestTorrents() =>
             new[]
             {
                 new Torrent { Id = 1, Title = "Torrent Titles 1", ForumId = 1, Size = 100 },
@@ -29,7 +29,7 @@ namespace Rutracker.UnitTests.Setup
                 new Torrent { Id = 9, Title = "Torrent Titles 123456789", ForumId = 5, Size = 100000 }
             };
 
-        public static IEnumerable<File> GetFiles() =>
+        public static IEnumerable<File> GetTestFiles() =>
             new[]
             {
                 new File { Id = 1, Size = 100, TorrentId = 1 },

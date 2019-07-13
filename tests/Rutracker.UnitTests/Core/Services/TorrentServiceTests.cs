@@ -17,8 +17,8 @@ namespace Rutracker.UnitTests.Core.Services
             _torrentService = new TorrentService(repository);
         }
 
-        [Fact(DisplayName = "GetAllTorrentsOnPageAsync() should return the torrents list on page")]
-        public async Task GetTorrentsOnPageAsync_1_10_ReturnsValidTorrentsList()
+        [Fact(DisplayName = "GetAllTorrentsOnPageAsync() with valid parameters should return the torrents list")]
+        public async Task GetTorrentsOnPageAsync_1_10_ReturnsValidTorrents()
         {
             // Arrange
             const int expectedCount = 10;
@@ -31,7 +31,7 @@ namespace Rutracker.UnitTests.Core.Services
             Assert.Equal(expectedCount, torrents.Count);
         }
 
-        [Fact(DisplayName = "GetTorrentDetailsAsync() should return the torrent with id")]
+        [Fact(DisplayName = "GetTorrentDetailsAsync() with valid parameter should return the torrent with id")]
         public async Task GetTorrentDetailsAsync_5_ReturnsValidTorrent()
         {
             // Arrange
@@ -45,8 +45,8 @@ namespace Rutracker.UnitTests.Core.Services
             Assert.Equal(expectedId, torrent.Id);
         }
 
-        [Fact(DisplayName = "GetTorrentsCountAsync() should return the number of torrents")]
-        public async Task GetTorrentsCountAsync_Null_ReturnsAllTorrentsCount()
+        [Fact(DisplayName = "GetTorrentsCountAsync() with valid parameters should return the number of torrents")]
+        public async Task GetTorrentsCountAsync_Nulls_ReturnsValidCount()
         {
             // Arrange
             const int expectedCount = 9;
@@ -58,7 +58,7 @@ namespace Rutracker.UnitTests.Core.Services
             Assert.Equal(expectedCount, count);
         }
 
-        [Fact(DisplayName = "GetPopularForumsAsync() should return the torrent forum titles")]
+        [Fact(DisplayName = "GetPopularForumsAsync() with valid parameters should return the torrent forum titles")]
         public async Task GetPopularForumsAsync_10_ReturnsValidForumTitles()
         {
             // Arrange

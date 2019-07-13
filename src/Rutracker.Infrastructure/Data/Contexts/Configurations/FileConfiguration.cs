@@ -8,7 +8,6 @@ namespace Rutracker.Infrastructure.Data.Contexts.Configurations
     {
         public void Configure(EntityTypeBuilder<File> builder)
         {
-            builder.ToTable("Files");
             builder.Property(f => f.Id).ValueGeneratedOnAdd().IsRequired();
 
             builder.HasOne(f => f.Torrent)
