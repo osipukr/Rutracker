@@ -1,11 +1,109 @@
 ﻿@inherits LayoutComponentBase
+@inject IUriHelper uriHelper
 
-<header>
-    <NavMenu />
-</header>
+<MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">
+    <MatDrawer @bind-Opened="@_navMenuOpened">
+        <header class="drawer-header">
+            <div class="drawer-logo">
+                <img alt="Rutracker Blazor" class="logo-img" src="images/blazorboilerplate-dark.svg" title="Rutracker Blazor">
+                <a class="brand" href="/">Rutracker Blazor</a>
+            </div>
+        </header>
+        <NavMenu />
+    </MatDrawer>
+    <MatDrawerContent>
+        <MatAppBarContainer>
+            <MatAppBar Fixed="true">
+                <MatAppBarRow>
+                    <MatAppBarSection>
+                        <MatAppBarTitle>
 
-<main role="main">
-    <div class="container py-3">
-        @Body
-    </div>
-</main>
+                        </MatAppBarTitle>
+                        <div class="hidden-mdc-down">
+                            @*<nav>
+                                <ul>
+                                    <li>*@
+                            <MatTooltip Tooltip="Toggle Navigation">
+                                <MatIconButton Class="navToggle" Icon="menu" ToggleIcon="menu" OnClick="@((e) => NavToggle())" RefBack="@context"></MatIconButton>
+                            </MatTooltip>
+                            @*</li>
+                                <li>*@
+                            <MatTooltip Tooltip="Minify Navigation">
+                                <MatIconButton Class="navToggle" Icon="format_indent_decrease" ToggleIcon="format_indent_increase" OnClick="@((e) => NavMinify())" RefBack="@context"></MatIconButton>
+                            </MatTooltip>
+                            @*</li>
+                                <li>
+                                    <MatTooltip Tooltip="Lock Navigation" >
+                                        <MatIconButton Class="navToggle" Icon="lock" ToggleIcon="radio_button_unchecked" OnClick="@((e) => NavLock())" RefBack="@context"></MatIconButton>
+                                    </MatTooltip>
+                                    </li>*@
+                            @*</ul>
+                                </nav>*@
+                        </div>
+                    </MatAppBarSection>
+                    <MatAppBarSection Align="@MatAppBarSectionAlign.End">
+                        <MatTooltip Tooltip="Github Repository">
+                            <MatIconButton Link="https://github.com/enkodellc/blazorboilerplate" RefBack="@context"><i class="fa fa-github" aria-hidden="true"></i></MatIconButton>
+                        </MatTooltip>
+                    </MatAppBarSection>
+                </MatAppBarRow>
+            </MatAppBar>
+            <MatAppBarContent>
+                <BreadcrumbControl RootLinkTitle="Home"></BreadcrumbControl>
+                <section class="container-fluid">
+                    @Body
+                </section>
+            </MatAppBarContent>
+        </MatAppBarContainer>
+    </MatDrawerContent>
+</MatDrawerContainer>
+
+@functions {
+    bool _navMenuOpened = true;
+    bool _navMinified = false;
+    public string bbDrawerClass = "";
+
+    void NavToggle()
+    {
+        _navMenuOpened = !_navMenuOpened;
+
+        if (_navMenuOpened)
+        {
+            bbDrawerClass = "full";
+        }
+        else
+        {
+            bbDrawerClass = "closed";
+        }
+
+        this.StateHasChanged();
+    }
+
+    void NavLock()
+    {
+        //Todo Lock Nav
+    }
+
+    void NavMinify()
+    {
+        _navMinified = !_navMinified;
+
+        if (!_navMenuOpened)
+        {
+            _navMinified = true;
+        }
+
+        if (_navMinified)
+        {
+            bbDrawerClass = "mini";
+            _navMenuOpened = true;
+        }
+        else if (_navMenuOpened)
+        {
+            bbDrawerClass = "full";
+        }
+
+        _navMenuOpened = true;
+        this.StateHasChanged();
+    }
+}

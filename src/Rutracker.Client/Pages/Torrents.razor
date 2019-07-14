@@ -10,14 +10,13 @@
     </div>
 
     <div class="col-lg-9">
-        @if (SearchTask.IsCompleted && Model != null)
+        @if (Model != null)
         {
             <TorrentList Items="@Model.TorrentItems" />
             <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonClick" />
         }
         else
         {
-            <LoadSpinner />
         }
     </div>
 </div>
@@ -51,7 +50,7 @@
                && pageParamId > 1
                ? pageParamId
                : 1;
-        
+
         PageSize = ViewSettings.ItemsPerPageCount;
 
         await LoadTorrentsIndexAsync();

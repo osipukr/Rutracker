@@ -4,99 +4,80 @@
 <EditForm Model="@Model" OnValidSubmit="@ApplyButtonClick">
     <DataAnnotationsValidator />
 
-    <FilterCard Class="filter-card no-select" Title="Search">
-        <div class="form-row">
-            <div class="input-group">
-                <InputSearch @bind-Value="@Model.Search"
-                             Class="form-control w-100"
-                             Placeholder="Search" />
+    <MatAccordion Multi="true">
+        <MatExpansionPanel>
+            <MatExpansionPanelSummary>
+                <MatExpansionPanelHeader>Search</MatExpansionPanelHeader>
+            </MatExpansionPanelSummary>
+            <MatExpansionPanelDetails>
+                <InputSearch @bind-Value="@Model.Search" Placeholder="Search" />
 
                 <ValidationMessage For="@(() => Model.Search)" />
-            </div>
-        </div>
-    </FilterCard>
+            </MatExpansionPanelDetails>
+        </MatExpansionPanel>
 
-    <FilterCard Class="filter-card no-select" Title="Range size">
-        <div class="form-row">
-            <div class="col-md-6 col-6">
-                <label class="w-100">
-                    Min size
-                    <InputNumber @bind-Value="@Model.SizeFrom" Class="form-control" />
-                </label>
-            </div>
-            <div class="col-md-6 col-6 text-right">
-                <label class="w-100">
-                    Max size
-                    <InputNumber @bind-Value="@Model.SizeTo" Class="form-control" />
-                </label>
-            </div>
+        <MatExpansionPanel>
+            <MatExpansionPanelSummary>
+                <MatExpansionPanelHeader>Size range</MatExpansionPanelHeader>
+            </MatExpansionPanelSummary>
+            <MatExpansionPanelDetails>
+                <InputNumber @bind-Value="@Model.SizeFrom" Class="form-control" />
+                <InputNumber @bind-Value="@Model.SizeTo" Class="form-control" />
 
-            <ValidationMessage For="@(() => Model.SizeFrom)" />
-            <ValidationMessage For="@(() => Model.SizeTo)" />
-        </div>
-    </FilterCard>
+                <ValidationMessage For="@(() => Model.SizeFrom)" />
+                <ValidationMessage For="@(() => Model.SizeTo)" />
+            </MatExpansionPanelDetails>
+        </MatExpansionPanel>
 
-    <FilterCard Class="filter-card no-select" Title="Forum titles category">
-        @if (TitleFacet == null || TitleFacet.FacetItems == null)
-        {
-            <LoadSpinner />
-        }
-        else
-        {
-            foreach (var facet in TitleFacet.FacetItems)
-            {
-                <div class="custom-control custom-checkbox title-facet">
-                    <span class="float-right badge badge-primary">@facet.Count</span>
-
-                    <InputCheckbox @bind-Value="@facet.IsSelected"
-                                   Class="custom-control-input d-none"
-                                   Id="@facet.Id" />
-
-                    <label class="custom-control-label h-100"
-                           for="@facet.Id"
-                           title="@facet.Value">
-                        @facet.Value
-                    </label>
-                </div>
-            }
-        }
-    </FilterCard>
-
-    <div class="card filter-card no-select">
-        <div class="card-footer border-top-0">
-            <div class="row">
-                @if (SearchTask.IsCompleted && TitleFacet != null && TitleFacet.FacetItems != null)
+        <MatExpansionPanel>
+            <MatExpansionPanelSummary>
+                <MatExpansionPanelHeader>Forum titles category</MatExpansionPanelHeader>
+            </MatExpansionPanelSummary>
+            <MatExpansionPanelDetails>
+                @if (TitleFacet == null || TitleFacet.FacetItems == null)
                 {
-                    <div class="col-6">
-                        <button class="btn btn-outline-primary w-100" type="submit">Apply</button>
-                    </div>
-
-                    <div class="col-6">
-                        <button class="btn btn-outline-primary w-100"
-                                @onclick="@ResetButtonClick"
-                                type="reset">
-                            All
-                        </button>
-                    </div>
+                    <LoadSpinner />
                 }
                 else
                 {
-                    <div class="col-6">
-                        <button class="btn btn-outline-primary w-100 h-100 d-flex justify-content-center align-items-center" type="button" disabled>
-                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            <span class="sr-only">Loading...</span>
-                        </button>
-                    </div>
-
-                    <div class="col-6">
-                        <button class="btn btn-outline-primary w-100" type="button" disabled>
-                            All
-                        </button>
-                    </div>
+                    foreach (var facet in TitleFacet.FacetItems)
+                    {
+                        <InputCheckbox @bind-Value="@facet.IsSelected" Id="@facet.Id" />
+                    }
                 }
-            </div>
+            </MatExpansionPanelDetails>
+        </MatExpansionPanel>
+    </MatAccordion>
+
+    @if (SearchTask.IsCompleted && TitleFacet != null && TitleFacet.FacetItems != null)
+    {
+        <div class="col-6">
+            <button class="btn btn-outline-primary w-100" type="submit">Apply</button>
         </div>
-    </div>
+
+        <div class="col-6">
+            <button class="btn btn-outline-primary w-100"
+                    @onclick="@ResetButtonClick"
+                    type="reset">
+                All
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="col-6">
+            <button class="btn btn-outline-primary w-100 h-100 d-flex justify-content-center align-items-center" type="button" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span class="sr-only">Loading...</span>
+            </button>
+        </div>
+
+        <div class="col-6">
+            <button class="btn btn-outline-primary w-100" type="button" disabled>
+                All
+            </button>
+        </div>
+    }
 </EditForm>
 
 @code

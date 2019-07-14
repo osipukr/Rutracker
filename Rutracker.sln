@@ -17,9 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Infrastructure", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{ADC26DC7-A8C7-4483-8F3F-3A5F055D2419}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rutracker.UnitTests", "tests\Rutracker.UnitTests\Rutracker.UnitTests.csproj", "{1C5472FE-59DB-42E2-B83B-11BDB9D9B9BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.UnitTests", "tests\Rutracker.UnitTests\Rutracker.UnitTests.csproj", "{1C5472FE-59DB-42E2-B83B-11BDB9D9B9BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rutracker.IntegrationTests", "tests\Rutracker.IntegrationTests\Rutracker.IntegrationTests.csproj", "{9B2A1AF5-C56D-4428-8484-4B03483CBB60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.IntegrationTests", "tests\Rutracker.IntegrationTests\Rutracker.IntegrationTests.csproj", "{9B2A1AF5-C56D-4428-8484-4B03483CBB60}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
