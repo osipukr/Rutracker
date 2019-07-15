@@ -1,21 +1,13 @@
-<div class="triangle-container">
-    <div class="triangles">
-    </div>
+<div class="loading-container mat-elevation-z10">
+    @ChildContent
+
+    @if (ShowLoader)
+    {
+        <MatProgressBar Indeterminate="true" Reversed="true" Class="mt-3"></MatProgressBar>
+    }
 </div>
 
-@if (ShowLogoBox)
-{
-    <div class="loading-container">
-        <img src="images/blazorboilerplate.svg" style="width:100px;" /><br />
-        @ChildContent
-    </div>
-}
-
-
 @code {
-    [Parameter]
-    private bool ShowLogoBox { get; set; }
-
-    [Parameter]
-    private RenderFragment ChildContent { get; set; }
+    [Parameter] bool ShowLoader { get; set; } = true;
+    [Parameter] RenderFragment ChildContent { get; set; }
 }

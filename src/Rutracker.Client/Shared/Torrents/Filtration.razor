@@ -1,29 +1,38 @@
 ﻿@inject ITorrentsClientService Client
+@inject IMatToaster MatToaster
 @inject ViewSettings ViewSettings
 
 <EditForm Model="@Model" OnValidSubmit="@ApplyButtonClick">
     <DataAnnotationsValidator />
 
+    <MatTextField @bind-Value="@Model.Search"
+                  Class="mb-3"
+                  Label="Search"
+                  Icon="search"
+                  IconTrailing="true"
+                  FullWidth="true">
+    </MatTextField>
+
     <MatAccordion Multi="true">
-        <MatExpansionPanel>
-            <MatExpansionPanelSummary>
-                <MatExpansionPanelHeader>Search</MatExpansionPanelHeader>
-            </MatExpansionPanelSummary>
-            <MatExpansionPanelDetails>
-                <InputSearch @bind-Value="@Model.Search" Placeholder="Search" />
-
-                <ValidationMessage For="@(() => Model.Search)" />
-            </MatExpansionPanelDetails>
-        </MatExpansionPanel>
-
         <MatExpansionPanel>
             <MatExpansionPanelSummary>
                 <MatExpansionPanelHeader>Size range</MatExpansionPanelHeader>
             </MatExpansionPanelSummary>
             <MatExpansionPanelDetails>
-                <InputNumber @bind-Value="@Model.SizeFrom" Class="form-control" />
-                <InputNumber @bind-Value="@Model.SizeTo" Class="form-control" />
-
+                <MatNumericUpDownField Label="From"
+                                       @bind-Value=@SizeFrom
+                                       Icon="border_color"
+                                       Outlined="true"
+                                       DecimalPlaces=0
+                                       Minimum=null Maximum=null>
+                </MatNumericUpDownField>
+                <MatNumericUpDownField Label="To"
+                                       @bind-Value=@SizeTo
+                                       Icon="border_color"
+                                       Outlined="true"
+                                       DecimalPlaces=0
+                                       Minimum=null Maximum=null>
+                </MatNumericUpDownField>
                 <ValidationMessage For="@(() => Model.SizeFrom)" />
                 <ValidationMessage For="@(() => Model.SizeTo)" />
             </MatExpansionPanelDetails>
@@ -34,57 +43,53 @@
                 <MatExpansionPanelHeader>Forum titles category</MatExpansionPanelHeader>
             </MatExpansionPanelSummary>
             <MatExpansionPanelDetails>
-                @if (TitleFacet == null || TitleFacet.FacetItems == null)
-                {
-                    <LoadSpinner />
-                }
-                else
+                @if (TitleFacet != null && TitleFacet.FacetItems != null)
                 {
                     foreach (var facet in TitleFacet.FacetItems)
                     {
-                        <InputCheckbox @bind-Value="@facet.IsSelected" Id="@facet.Id" />
+                        <MatCheckbox @bind-Checked="@facet.IsSelected">
+                            <span>@facet.Value - (Count: @facet.Count)</span>
+                        </MatCheckbox>
+                        <br />
                     }
                 }
             </MatExpansionPanelDetails>
         </MatExpansionPanel>
     </MatAccordion>
 
-    @if (SearchTask.IsCompleted && TitleFacet != null && TitleFacet.FacetItems != null)
-    {
-        <div class="col-6">
-            <button class="btn btn-outline-primary w-100" type="submit">Apply</button>
+    <div class="mat-layout-grid mat-layout-grid-align-right">
+        <div class="mat-layout-grid-inner">
+            <div class="mat-layout-grid-cell" style="grid-column-end: none">
+                <MatButton Raised="true"
+                           Type="reset"
+                           OnClick="@(_ => ResetButtonClick())">
+                    All
+                </MatButton>
+                <MatButton Raised="true"
+                           Type="submit">
+                    Apply
+                </MatButton>
+            </div>
         </div>
-
-        <div class="col-6">
-            <button class="btn btn-outline-primary w-100"
-                    @onclick="@ResetButtonClick"
-                    type="reset">
-                All
-            </button>
-        </div>
-    }
-    else
-    {
-        <div class="col-6">
-            <button class="btn btn-outline-primary w-100 h-100 d-flex justify-content-center align-items-center" type="button" disabled>
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                <span class="sr-only">Loading...</span>
-            </button>
-        </div>
-
-        <div class="col-6">
-            <button class="btn btn-outline-primary w-100" type="button" disabled>
-                All
-            </button>
-        </div>
-    }
+    </div>
 </EditForm>
 
-@code
+@functions
 {
     [Parameter] FiltrationViewModel Model { get; set; }
     [Parameter] EventCallback ChangedHandler { get; set; }
-    [Parameter] Task<TorrentsIndexViewModel> SearchTask { get; set; }
+
+    decimal? SizeFrom
+    {
+        get => Model.SizeFrom;
+        set => Model.SizeFrom = (long?)value;
+    }
+
+    decimal? SizeTo
+    {
+        get => Model.SizeTo;
+        set => Model.SizeTo = (long?)value;
+    }
 
     int TitleCount { get; set; }
     FacetViewModel<string> TitleFacet { get; set; }
@@ -92,7 +97,15 @@
     protected override async Task OnInitAsync()
     {
         TitleCount = ViewSettings.ForumTitlesCount;
-        TitleFacet = await Client.GetTitlesAsync(TitleCount);
+
+        try
+        {
+            TitleFacet = await Client.GetTitlesAsync(TitleCount);
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Titles Load Failed");
+        }
     }
 
     void ResetFiltrationModel()
@@ -102,6 +115,11 @@
         Model.SizeFrom = null;
         Model.SizeTo = null;
 
+        if (TitleFacet == null || TitleFacet.FacetItems == null)
+        {
+            return;
+        }
+
         foreach (var facet in TitleFacet.FacetItems)
         {
             facet.IsSelected = false;
@@ -110,7 +128,7 @@
 
     void ApplyButtonClick()
     {
-        Model.SelectedTitleIds = TitleFacet.FacetItems.Where(x => x.IsSelected).Select(x => x.Id);
+        Model.SelectedTitleIds = TitleFacet?.FacetItems?.Where(x => x.IsSelected).Select(x => x.Id);
 
         ChangedHandler.InvokeAsync(EventArgs.Empty);
     }

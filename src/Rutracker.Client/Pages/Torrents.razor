@@ -1,36 +1,32 @@
-﻿@page "/torrents"
+﻿@page "/"
+@page "/torrents"
+
 @implements IDisposable
-@inject ITorrentsClientService Client
 @inject IUriHelper UriHelper
+@inject ITorrentsClientService Client
+@inject IMatToaster MatToaster
 @inject ViewSettings ViewSettings
 
-<div class="row">
-    <div class="col-lg-3 pb-3">
-        <Filtration Model="@FilterModel" ChangedHandler="@FilterApplyButtonClick" SearchTask="@SearchTask" />
-    </div>
+@if (Model == null)
+{
+    <LoadingBackground>
+        <span>Loading page model, please wait...</span>
+    </LoadingBackground>
+}
+else
+{
+    <Filtration Model="@FilterModel" ChangedHandler="@FilterApplyButtonClick" />
+    <TorrentList Items="@Model.TorrentItems" PageSize="@PageSize" />
+    <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonClick" />
+}
 
-    <div class="col-lg-9">
-        @if (Model != null)
-        {
-            <TorrentList Items="@Model.TorrentItems" />
-            <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonClick" />
-        }
-        else
-        {
-        }
-    </div>
-</div>
-
-@code
+@functions
 {
     TorrentsIndexViewModel Model { get; set; }
     FiltrationViewModel FilterModel { get; set; } = new FiltrationViewModel();
-    Task<TorrentsIndexViewModel> SearchTask { get; set; }
 
     int Page { get; set; }
-    int PageSize { get; set; }
-
-    const string QueryTemplate = "/torrents?search={0}&page={1}";
+    int PageSize => ViewSettings.ItemsPerPageCount;
 
     protected override async Task OnInitAsync()
     {
@@ -45,13 +41,14 @@
     {
         var uriQuery = new Uri(UriHelper.GetAbsoluteUri()).Query;
 
+        FilterModel.Search = QueryHelpers.ParseQuery(uriQuery).TryGetValue("search", out var searchParam)
+                ? searchParam.First()
+                : null;
+
         Page = QueryHelpers.ParseQuery(uriQuery).TryGetValue("page", out var pageParam)
-               && int.TryParse(pageParam.FirstOrDefault(), out var pageParamId)
-               && pageParamId > 1
+               && int.TryParse(pageParam.First(), out var pageParamId)
                ? pageParamId
                : 1;
-
-        PageSize = ViewSettings.ItemsPerPageCount;
 
         await LoadTorrentsIndexAsync();
         StateHasChanged();
@@ -59,16 +56,26 @@
 
     async Task LoadTorrentsIndexAsync()
     {
-        SearchTask = null;
-        StateHasChanged();
+        try
+        {
+            if (Model != null)
+            {
+                Model.TorrentItems = null;
+                Model.PaginationModel = null;
+                StateHasChanged();
+            }
 
-        SearchTask = Client.GetTorrentsIndexAsync(Page, PageSize, FilterModel);
-        Model = await SearchTask;
+            Model = await Client.GetTorrentsIndexAsync(Page, PageSize, FilterModel);
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Danger, "Model Load Failed");
+        }
     }
 
-    void PageButtonClick(int page) => UriHelper.NavigateTo(string.Format(QueryTemplate, FilterModel.Search, page));
+    void PageButtonClick(int page) => UriHelper.NavigateTo($"/torrents?search={FilterModel.Search}&page={page}");
 
-    void FilterApplyButtonClick() => UriHelper.NavigateTo(string.Format(QueryTemplate, FilterModel.Search, 1));
+    void FilterApplyButtonClick() => UriHelper.NavigateTo($"/torrents?search={FilterModel.Search}");
 
     public void Dispose() => UriHelper.OnLocationChanged -= OnLocationChanges;
 }

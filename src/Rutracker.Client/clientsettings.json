@@ -6,6 +6,7 @@
 
   },
   "ViewSettings": {
+    "ServiceName": "Rutracker - Blazor",
     "ForumTitlesCount": 5,
     "ItemsPerPageCount": 10,
     "PaginationButtonCount": 5

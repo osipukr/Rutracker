@@ -1,10 +1,6 @@
 ﻿@inject ViewSettings ViewSettings
 
-@if (Model == null)
-{
-
-}
-else
+@if (Model != null)
 {
     <nav class="d-flex flex-column align-items-center">
         @if (Model.TotalItems > 0)

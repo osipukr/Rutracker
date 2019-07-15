@@ -5,20 +5,20 @@
     <meta name="viewport" content="width=device-width" />
     <title>Rutracker</title>
     <base href="/" />
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet" />
 </head>
 <body>
-<app>
-    <div class="triangle-container">
-        <div class="triangles">
+    <app>
+        <div class="triangle-container">
+            <div class="triangles"></div>
         </div>
-    </div>
-    <div class="loading-container">
-        <img src="images/blazorboilerplate.svg" alt="Loading" title="Loading" /><br />
-        Loading...
-    </div>
-</app>
+
+        <div class="loading-container mat-elevation-z10">
+            <span>Loading application, please wait...</span>
+        </div>
+    </app>
 
     <script src="_framework/blazor.webassembly.js"></script>
 </body>
