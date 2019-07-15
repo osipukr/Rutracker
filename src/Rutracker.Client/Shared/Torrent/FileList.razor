@@ -24,10 +24,10 @@ else
 }
 
 @code {
-    [Parameter] protected FileItemViewModel[] Items { get; set; }
+    [Parameter] FileItemViewModel[] Items { get; set; }
 
-    private bool _collapseFiles = true;
-    private string FilesCollapseCssClass => _collapseFiles ? "collapse" : null;
+    bool _collapseFiles = true;
+    string FilesCollapseCssClass => _collapseFiles ? "collapse" : null;
 
-    private void ToggleFiles() => _collapseFiles = !_collapseFiles;
+    void ToggleFiles() => _collapseFiles = !_collapseFiles;
 }

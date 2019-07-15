@@ -2,9 +2,9 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Rutracker.Core.Entities;
-using Rutracker.Core.Interfaces;
+using Rutracker.Core.Interfaces.Specifications;
 
-namespace Rutracker.Infrastructure.Data
+namespace Rutracker.Infrastructure.Data.Specifications
 {
     public static class SpecificationEvaluator<TEntity, TPrimaryKey>
         where TEntity : BaseEntity<TPrimaryKey>
@@ -36,7 +36,8 @@ namespace Rutracker.Infrastructure.Data
 
             if (specification.IsPagingEnabled)
             {
-                query = query.Skip(specification.Skip).Take(specification.Take);
+                query = query.Skip(specification.Skip)
+                             .Take(specification.Take);
             }
 
             return query;

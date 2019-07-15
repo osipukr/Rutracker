@@ -1,46 +1,37 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Ardalis.GuardClauses;
 
 namespace Rutracker.Core.Extensions
 {
     public static class ExpressionExtensions
     {
-        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> exp,
-            Expression<Func<T, bool>> expTwo)
+        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)
         {
-            if (expTwo == null)
-            {
-                throw new ArgumentNullException(nameof(expTwo));
-            }
+            var visit = ApplyVisit(left, right);
 
-            var visit = ApplyVisit(exp, expTwo);
-
-            return Expression.Lambda<Func<T, bool>>(Expression.AndAlso(visit, expTwo.Body), expTwo.Parameters);
+            return Expression.Lambda<Func<T, bool>>(Expression.AndAlso(visit,
+                    right.Body),
+                right.Parameters);
         }
 
-        public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> exp,
-            Expression<Func<T, bool>> expTwo)
+        public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)
         {
-            if (expTwo == null)
-            {
-                throw new ArgumentNullException(nameof(expTwo));
-            }
+            var visit = ApplyVisit(left, right);
 
-            var visit = ApplyVisit(exp, expTwo);
-
-            return Expression.Lambda<Func<T, bool>>(Expression.OrElse(visit, expTwo.Body), expTwo.Parameters);
+            return Expression.Lambda<Func<T, bool>>(Expression.OrElse(visit,
+                    right.Body),
+                right.Parameters);
         }
 
-        private static Expression ApplyVisit<T>(Expression<Func<T, bool>> fromExpression,
-            Expression<Func<T, bool>> toExpression)
+        private static Expression ApplyVisit<T>(Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)
         {
-            var visit = new SwapVisitor(fromExpression.Parameters[0],
-                toExpression.Parameters[0]).Visit(fromExpression.Body);
+            Guard.Against.Null(left, nameof(left));
+            Guard.Against.Null(right, nameof(right));
 
-            if (visit == null)
-            {
-                throw new ArgumentException(string.Empty, nameof(visit));
-            }
+            var visit = new SwapVisitor(left.Parameters[0], right.Parameters[0]).Visit(left.Body);
+
+            Guard.Against.Null(visit, nameof(visit));
 
             return visit;
         }

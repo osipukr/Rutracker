@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using Ardalis.GuardClauses;
 using Rutracker.Core.Entities;
-using Rutracker.Core.Interfaces;
+using Rutracker.Core.Interfaces.Specifications;
+using Rutracker.Infrastructure.Data.Specifications;
 
-namespace Rutracker.Infrastructure.Data.Extensions
+namespace Rutracker.Infrastructure.Extensions
 {
     public static class RepositoryExtensions
     {
@@ -12,15 +14,8 @@ namespace Rutracker.Infrastructure.Data.Extensions
             where TEntity : BaseEntity<TPrimaryKey>
             where TPrimaryKey : IEquatable<TPrimaryKey>
         {
-            if (query == null)
-            {
-                throw new ArgumentNullException(nameof(query));
-            }
-
-            if (specification == null)
-            {
-                throw new ArgumentNullException(nameof(specification));
-            }
+            Guard.Against.Null(query, nameof(query));
+            Guard.Against.Null(specification, nameof(specification));
 
             return SpecificationEvaluator<TEntity, TPrimaryKey>.Apply(query, specification);
         }

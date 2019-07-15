@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Rutracker.Core.Entities;
 
-namespace Rutracker.Core.Interfaces
+namespace Rutracker.Core.Interfaces.Specifications
 {
     public interface ISpecification<TEntity, TPrimaryKey>
         where TEntity : BaseEntity<TPrimaryKey>

@@ -10,8 +10,10 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Rutracker.Core.Entities;
 using Rutracker.Core.Exceptions;
-using Rutracker.Core.Interfaces;
-using Rutracker.Infrastructure.Data;
+using Rutracker.Core.Interfaces.Repositories;
+using Rutracker.Core.Interfaces.Services;
+using Rutracker.Core.Interfaces.Specifications;
+using Rutracker.Infrastructure.Data.Contexts;
 using Rutracker.Server.Settings;
 using Rutracker.Shared.ViewModels.Torrent;
 using Rutracker.Shared.ViewModels.Torrents;
@@ -26,9 +28,9 @@ namespace Rutracker.UnitTests.Setup
             var options = new DbContextOptionsBuilder<TorrentContext>().Options;
             var mockContext = new DbContextMock<TorrentContext>(options);
 
-            mockContext.CreateDbSetMock(x => x.Forums, DataInitializer.GetForums());
-            mockContext.CreateDbSetMock(x => x.Torrents, DataInitializer.GeTorrents());
-            mockContext.CreateDbSetMock(x => x.Files, DataInitializer.GetFiles());
+            mockContext.CreateDbSetMock(x => x.Forums, DataInitializer.GetTestForums());
+            mockContext.CreateDbSetMock(x => x.Torrents, DataInitializer.GeTestTorrents());
+            mockContext.CreateDbSetMock(x => x.Files, DataInitializer.GetTestFiles());
 
             return mockContext.Object;
         }
@@ -37,7 +39,7 @@ namespace Rutracker.UnitTests.Setup
         {
             var mockTorrentRepository = new Mock<ITorrentRepository>();
 
-            var torrents = (IReadOnlyList<Torrent>)DataInitializer.GeTorrents();
+            var torrents = (IReadOnlyList<Torrent>)DataInitializer.GeTestTorrents();
 
             mockTorrentRepository.Setup(x => x.GetAsync(It.IsAny<ISpecification<Torrent, long>>()))
                 .Returns<ISpecification<Torrent, long>>(x =>
@@ -63,7 +65,7 @@ namespace Rutracker.UnitTests.Setup
         {
             var mockTorrentService = new Mock<ITorrentService>();
 
-            var torrents = DataInitializer.GeTorrents();
+            var torrents = DataInitializer.GeTestTorrents();
 
             // default setup
             mockTorrentService.Setup(x =>
@@ -106,14 +108,12 @@ namespace Rutracker.UnitTests.Setup
 
         public static IOptions<CacheSettings> GetCacheOptions()
         {
-            var settings = new CacheSettings
-            {
-                DefaultCacheDuration = TimeSpan.MaxValue
-            };
-
             var mockCacheOptions = new Mock<IOptions<CacheSettings>>();
 
-            mockCacheOptions.Setup(ap => ap.Value).Returns(settings);
+            mockCacheOptions.Setup(x => x.Value).Returns(new CacheSettings
+            {
+                CacheDuration = TimeSpan.MaxValue
+            });
 
             return mockCacheOptions.Object;
         }

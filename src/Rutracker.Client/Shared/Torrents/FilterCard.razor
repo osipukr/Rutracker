@@ -13,13 +13,13 @@
 
 @code
 {
-    [Parameter] protected string Class { get; set; }
-    [Parameter] protected string Title { get; set; }
-    [Parameter] protected bool Collapse { get; set; }
-    [Parameter] protected RenderFragment ChildContent { get; set; }
+    [Parameter] string Class { get; set; }
+    [Parameter] string Title { get; set; }
+    [Parameter] bool Collapse { get; set; }
+    [Parameter] RenderFragment ChildContent { get; set; }
 
-    private string CollapseCssClass => Collapse ? "collapse" : null;
-    private string ArrowCssClass => Collapse ? "oi oi-arrow-bottom" : "oi oi-arrow-top";
+    string CollapseCssClass => Collapse ? "collapse" : null;
+    string ArrowCssClass => Collapse ? "oi oi-arrow-bottom" : "oi oi-arrow-top";
 
-    private void ToggleButtonClick() => Collapse = !Collapse;
+    void ToggleButtonClick() => Collapse = !Collapse;
 }

@@ -6,9 +6,23 @@ using Rutracker.Core.Exceptions;
 
 namespace Rutracker.Server.Filters
 {
-    public class ApiExceptionFilter : IAsyncExceptionFilter
+    public class ControllerExceptionFilterAttribute : ExceptionFilterAttribute
     {
-        public Task OnExceptionAsync(ExceptionContext context)
+        public override void OnException(ExceptionContext context)
+        {
+            ExceptionHandler(context);
+
+            base.OnException(context);
+        }
+
+        public override Task OnExceptionAsync(ExceptionContext context)
+        {
+            ExceptionHandler(context);
+
+            return base.OnExceptionAsync(context);
+        }
+
+        private static void ExceptionHandler(ExceptionContext context)
         {
             var message = "Something went wrong on the server...";
             var statusCode = StatusCodes.Status500InternalServerError;
@@ -27,8 +41,6 @@ namespace Rutracker.Server.Filters
             {
                 StatusCode = statusCode
             };
-
-            return Task.CompletedTask;
         }
     }
 }

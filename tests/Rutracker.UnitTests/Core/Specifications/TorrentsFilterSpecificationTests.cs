@@ -7,9 +7,18 @@ namespace Rutracker.UnitTests.Core.Specifications
 {
     public class TorrentsFilterSpecificationTests
     {
-        [Theory(DisplayName = "TorrentsFilterSpecification(params) check the search criteria")]
+        public static IEnumerable<object[]> FilterSpecificationTestCases =>
+            new[]
+            {
+                new object[] { null, null, null, null },
+                new object[] { "search", Enumerable.Empty<string>(), long.MinValue, long.MinValue },
+                new object[] { null, new [] { "10", "20" }, null, null }
+            };
+
+        [Theory(DisplayName = "TorrentsFilterSpecification() with valid parameters should return valid specification")]
         [MemberData(nameof(FilterSpecificationTestCases))]
-        public void Specification_Filter_Should_Return_Apply_Filter(string search,
+        public void TorrentsFilterSpecification_ValidParameters_ReturnsValidSpecification(
+            string search,
             IEnumerable<string> titles,
             long? sizeFrom,
             long? sizeTo)
@@ -20,13 +29,5 @@ namespace Rutracker.UnitTests.Core.Specifications
             // Assert
             Assert.NotNull(specification.Criteria);
         }
-
-        public static IEnumerable<object[]> FilterSpecificationTestCases =>
-            new[]
-            {
-                new object[] { null, null, null, null },
-                new object[] { "search", Enumerable.Empty<string>(), long.MinValue, long.MinValue },
-                new object[] { null, new [] { "10", "20" }, null, null }
-            };
     }
 }

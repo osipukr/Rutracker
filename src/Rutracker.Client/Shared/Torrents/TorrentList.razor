@@ -35,7 +35,7 @@
 
 @code
 {
-    [Parameter] protected TorrentItemViewModel[] Items { get; set; }
+    [Parameter] TorrentItemViewModel[] Items { get; set; }
 
-    private static string TorrentDetailsUri(long id) => $"/torrent/{id}";
+    static string TorrentDetailsUri(long id) => $"/torrent/{id}";
 }

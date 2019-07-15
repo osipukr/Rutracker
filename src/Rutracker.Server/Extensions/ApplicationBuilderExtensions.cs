@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Rutracker.Infrastructure.Data;
-using Rutracker.Infrastructure.Data.Extensions;
+using Rutracker.Infrastructure.Data.Contexts;
+using Rutracker.Infrastructure.Extensions;
 
 namespace Rutracker.Server.Extensions
 {
