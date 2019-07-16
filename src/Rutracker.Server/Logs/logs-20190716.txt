@@ -1,0 +1,668 @@
+2019-07-16 13:14:12.975 +03:00 [Information] Microsoft.EntityFrameworkCore.Infrastructure: Entity Framework Core 2.2.4-servicing-10062 initialized 'TorrentContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: NoTracking 
+2019-07-16 13:14:13.579 +03:00 [Information] Microsoft.EntityFrameworkCore.Database.Command: Executed DbCommand (98ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE') SELECT 1 ELSE SELECT 0
+2019-07-16 13:14:13.669 +03:00 [Information] Microsoft.Hosting.Lifetime: Now listening on: http://localhost:60744
+2019-07-16 13:14:13.671 +03:00 [Information] Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2019-07-16 13:14:13.673 +03:00 [Information] Microsoft.Hosting.Lifetime: Hosting environment: Development
+2019-07-16 13:14:13.676 +03:00 [Information] Microsoft.Hosting.Lifetime: Content root path: D:\Projects\RutrackerBlazor\src\Rutracker.Server
+2019-07-16 13:14:14.747 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/  
+2019-07-16 13:14:14.768 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:14.818 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executing endpoint 'Fallback {*path:nonfile}'
+2019-07-16 13:14:14.836 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /index.html was not modified
+2019-07-16 13:14:14.842 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executed endpoint 'Fallback {*path:nonfile}'
+2019-07-16 13:14:14.853 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:14.899 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 133.5612ms 304 text/html
+2019-07-16 13:14:14.981 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/css/site.css  
+2019-07-16 13:14:14.982 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/blazor.webassembly.js  
+2019-07-16 13:14:14.986 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:14.989 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:14.991 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/css/bootstrap/bootstrap.min.css  
+2019-07-16 13:14:14.994 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /css/site.css was not modified
+2019-07-16 13:14:15.017 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /_framework/blazor.webassembly.js was not modified
+2019-07-16 13:14:15.019 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.033 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.034 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.051 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /css/bootstrap/bootstrap.min.css was not modified
+2019-07-16 13:14:15.058 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 70.90440000000001ms 304 text/css
+2019-07-16 13:14:15.062 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 64.15270000000001ms 304 application/javascript
+2019-07-16 13:14:15.068 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.108 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 93.9453ms 304 text/css
+2019-07-16 13:14:15.111 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/css/open-iconic/font/css/open-iconic-bootstrap.min.css  
+2019-07-16 13:14:15.114 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.121 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /css/open-iconic/font/css/open-iconic-bootstrap.min.css was not modified
+2019-07-16 13:14:15.126 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.129 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 47.1755ms 304 text/css
+2019-07-16 13:14:15.199 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/blazor.boot.json  
+2019-07-16 13:14:15.208 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.257 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/blazor.boot.json'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\blazor.boot.json'
+2019-07-16 13:14:15.265 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.279 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 88.93050000000001ms 200 application/json
+2019-07-16 13:14:15.282 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/wasm/mono.js  
+2019-07-16 13:14:15.285 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.288 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /_framework/wasm/mono.js was not modified
+2019-07-16 13:14:15.292 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.296 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 12.583ms 304 application/javascript
+2019-07-16 13:14:15.320 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/wasm/mono.wasm  
+2019-07-16 13:14:15.323 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.326 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /_framework/wasm/mono.wasm was not modified
+2019-07-16 13:14:15.329 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.333 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 10.466000000000001ms 304 application/wasm
+2019-07-16 13:14:15.468 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Rutracker.Client.dll  
+2019-07-16 13:14:15.475 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.AspNetCore.Authorization.dll  
+2019-07-16 13:14:15.477 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.AspNetCore.Components.dll  
+2019-07-16 13:14:15.479 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.495 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.500 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.500 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.AspNetCore.Authorization.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.AspNetCore.Authorization.dll'
+2019-07-16 13:14:15.503 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.519 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.AspNetCore.Metadata.dll  
+2019-07-16 13:14:15.521 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 54.1437ms 200 application/octet-stream
+2019-07-16 13:14:15.525 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.AspNetCore.Blazor.dll  
+2019-07-16 13:14:15.527 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.531 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.AspNetCore.Components.Browser.dll  
+2019-07-16 13:14:15.534 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.539 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.550 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Rutracker.Client.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Rutracker.Client.dll'
+2019-07-16 13:14:15.565 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.AspNetCore.Components.Browser.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.AspNetCore.Components.Browser.dll'
+2019-07-16 13:14:15.594 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.618 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.AspNetCore.Blazor.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.AspNetCore.Blazor.dll'
+2019-07-16 13:14:15.654 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.660 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 146.22ms 200 application/octet-stream
+2019-07-16 13:14:15.663 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.671 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.AspNetCore.Metadata.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.AspNetCore.Metadata.dll'
+2019-07-16 13:14:15.679 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 134.7798ms 200 application/octet-stream
+2019-07-16 13:14:15.685 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.AspNetCore.WebUtilities.dll  
+2019-07-16 13:14:15.691 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 165.2169ms 200 application/octet-stream
+2019-07-16 13:14:15.695 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.696 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.AspNetCore.Components.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.AspNetCore.Components.dll'
+2019-07-16 13:14:15.714 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.724 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 189.6765ms 200 application/octet-stream
+2019-07-16 13:14:15.729 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.Extensions.DependencyInjection.Abstractions.dll  
+2019-07-16 13:14:15.731 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.Extensions.DependencyInjection.dll  
+2019-07-16 13:14:15.733 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.737 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.741 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.749 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.AspNetCore.WebUtilities.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.AspNetCore.WebUtilities.dll'
+2019-07-16 13:14:15.754 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 281.1884ms 200 application/octet-stream
+2019-07-16 13:14:15.757 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.760 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.Extensions.Logging.Abstractions.dll  
+2019-07-16 13:14:15.763 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.Extensions.DependencyInjection.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.Extensions.DependencyInjection.dll'
+2019-07-16 13:14:15.764 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.Extensions.DependencyInjection.Abstractions.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.Extensions.DependencyInjection.Abstractions.dll'
+2019-07-16 13:14:15.766 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.768 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.773 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.774 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 42.569700000000005ms 200 application/octet-stream
+2019-07-16 13:14:15.778 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 73.5476ms 200 application/octet-stream
+2019-07-16 13:14:15.783 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.Extensions.Options.dll  
+2019-07-16 13:14:15.791 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 90.1215ms 200 application/octet-stream
+2019-07-16 13:14:15.796 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.800 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.Extensions.Logging.Abstractions.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.Extensions.Logging.Abstractions.dll'
+2019-07-16 13:14:15.803 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.Extensions.Options.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.Extensions.Options.dll'
+2019-07-16 13:14:15.808 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.813 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.JSInterop.dll  
+2019-07-16 13:14:15.817 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 57.175000000000004ms 200 application/octet-stream
+2019-07-16 13:14:15.819 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.824 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.828 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 44.6302ms 200 application/octet-stream
+2019-07-16 13:14:15.829 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.Net.Http.Headers.dll  
+2019-07-16 13:14:15.834 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.Extensions.Primitives.dll  
+2019-07-16 13:14:15.835 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.838 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.840 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Mono.WebAssembly.Interop.dll  
+2019-07-16 13:14:15.842 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Mono.Security.dll  
+2019-07-16 13:14:15.845 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/mscorlib.dll  
+2019-07-16 13:14:15.848 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.852 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.854 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.858 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.Net.Http.Headers.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.Net.Http.Headers.dll'
+2019-07-16 13:14:15.862 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.Extensions.Primitives.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.Extensions.Primitives.dll'
+2019-07-16 13:14:15.867 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Mono.WebAssembly.Interop.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Mono.WebAssembly.Interop.dll'
+2019-07-16 13:14:15.870 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.879 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.887 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.893 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 49.8181ms 200 application/octet-stream
+2019-07-16 13:14:15.897 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.JSInterop.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.JSInterop.dll'
+2019-07-16 13:14:15.901 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Newtonsoft.Json.dll  
+2019-07-16 13:14:15.904 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.925 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.936 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 108.0373ms 200 application/octet-stream
+2019-07-16 13:14:15.940 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Mono.Security.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Mono.Security.dll'
+2019-07-16 13:14:15.944 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 86.81280000000001ms 200 application/octet-stream
+2019-07-16 13:14:15.947 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:15.969 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Rutracker.Shared.dll  
+2019-07-16 13:14:15.973 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 111.6756ms 200 application/octet-stream
+2019-07-16 13:14:15.982 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.989 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Buffers.dll  
+2019-07-16 13:14:15.992 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.ComponentModel.Annotations.dll  
+2019-07-16 13:14:15.995 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:15.999 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.003 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Buffers.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Buffers.dll'
+2019-07-16 13:14:16.008 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 169.11880000000002ms 200 application/octet-stream
+2019-07-16 13:14:16.010 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.ComponentModel.Annotations.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.ComponentModel.Annotations.dll'
+2019-07-16 13:14:16.015 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.017 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.020 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 32.5903ms 200 application/octet-stream
+2019-07-16 13:14:16.032 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Rutracker.Shared.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Rutracker.Shared.dll'
+2019-07-16 13:14:16.035 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 32.879400000000004ms 200 application/octet-stream
+2019-07-16 13:14:16.047 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.062 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Core.dll  
+2019-07-16 13:14:16.068 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.070 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 116.46090000000001ms 200 application/octet-stream
+2019-07-16 13:14:16.079 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Data.dll  
+2019-07-16 13:14:16.086 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.089 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.dll  
+2019-07-16 13:14:16.142 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.227 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Memory.dll  
+2019-07-16 13:14:16.258 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Newtonsoft.Json.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Newtonsoft.Json.dll'
+2019-07-16 13:14:16.282 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.288 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.298 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 394.7243ms 200 application/octet-stream
+2019-07-16 13:14:16.315 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Core.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Core.dll'
+2019-07-16 13:14:16.319 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.327 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Data.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Data.dll'
+2019-07-16 13:14:16.331 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 282.27320000000003ms 200 application/octet-stream
+2019-07-16 13:14:16.341 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Net.Http.dll  
+2019-07-16 13:14:16.344 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.347 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.353 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 279.98810000000003ms 200 application/octet-stream
+2019-07-16 13:14:16.356 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Memory.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Memory.dll'
+2019-07-16 13:14:16.362 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Numerics.dll  
+2019-07-16 13:14:16.364 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.366 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.370 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 239.3929ms 200 application/octet-stream
+2019-07-16 13:14:16.384 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Numerics.Vectors.dll  
+2019-07-16 13:14:16.386 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Runtime.CompilerServices.Unsafe.dll  
+2019-07-16 13:14:16.391 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Numerics.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Numerics.dll'
+2019-07-16 13:14:16.392 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.395 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.399 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.402 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 45.200300000000006ms 200 application/octet-stream
+2019-07-16 13:14:16.416 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Runtime.CompilerServices.Unsafe.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Runtime.CompilerServices.Unsafe.dll'
+2019-07-16 13:14:16.419 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Net.Http.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Net.Http.dll'
+2019-07-16 13:14:16.427 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.441 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.444 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 46.765ms 200 application/octet-stream
+2019-07-16 13:14:16.450 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 115.26270000000001ms 200 application/octet-stream
+2019-07-16 13:14:16.450 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Numerics.Vectors.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Numerics.Vectors.dll'
+2019-07-16 13:14:16.453 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Runtime.Serialization.dll  
+2019-07-16 13:14:16.460 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.462 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.469 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 92.9899ms 200 application/octet-stream
+2019-07-16 13:14:16.471 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Runtime.Serialization.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Runtime.Serialization.dll'
+2019-07-16 13:14:16.481 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.dll'
+2019-07-16 13:14:16.483 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.483 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Text.Encodings.Web.dll  
+2019-07-16 13:14:16.488 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.491 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.491 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 32.951100000000004ms 200 application/octet-stream
+2019-07-16 13:14:16.494 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 406.6659ms 200 application/octet-stream
+2019-07-16 13:14:16.500 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Text.Json.dll  
+2019-07-16 13:14:16.503 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.506 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Text.Encodings.Web.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Text.Encodings.Web.dll'
+2019-07-16 13:14:16.513 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.515 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/mscorlib.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\mscorlib.dll'
+2019-07-16 13:14:16.517 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.519 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 33.4097ms 200 application/octet-stream
+2019-07-16 13:14:16.524 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 681.2083ms 200 application/octet-stream
+2019-07-16 13:14:16.525 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Threading.Tasks.Extensions.dll  
+2019-07-16 13:14:16.529 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.545 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Threading.Tasks.Extensions.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Threading.Tasks.Extensions.dll'
+2019-07-16 13:14:16.558 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.561 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Xml.dll  
+2019-07-16 13:14:16.562 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Xml.Linq.dll  
+2019-07-16 13:14:16.565 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 38.0602ms 200 application/octet-stream
+2019-07-16 13:14:16.566 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.568 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.578 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Text.Json.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Text.Json.dll'
+2019-07-16 13:14:16.581 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Xml.Linq.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Xml.Linq.dll'
+2019-07-16 13:14:16.581 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.583 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.585 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 86.7236ms 200 application/octet-stream
+2019-07-16 13:14:16.587 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Rutracker.Shared.pdb  
+2019-07-16 13:14:16.598 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 34.14ms 200 application/octet-stream
+2019-07-16 13:14:16.598 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.613 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Rutracker.Client.pdb  
+2019-07-16 13:14:16.616 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Rutracker.Shared.pdb'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Rutracker.Shared.pdb'
+2019-07-16 13:14:16.617 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:16.627 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Rutracker.Client.pdb'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Rutracker.Client.pdb'
+2019-07-16 13:14:16.628 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.636 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 47.8543ms 200 application/octet-stream
+2019-07-16 13:14:16.642 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.645 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 41.609300000000005ms 200 application/octet-stream
+2019-07-16 13:14:16.681 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Xml.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Xml.dll'
+2019-07-16 13:14:16.687 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:16.712 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 139.9812ms 200 application/octet-stream
+2019-07-16 13:14:17.702 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/css/open-iconic/font/fonts/open-iconic.woff  
+2019-07-16 13:14:17.706 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:17.709 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /css/open-iconic/font/fonts/open-iconic.woff was not modified
+2019-07-16 13:14:17.713 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:17.718 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 15.2836ms 304 application/font-woff
+2019-07-16 13:14:42.435 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/css/bootstrap/bootstrap.min.css  
+2019-07-16 13:14:42.442 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/css/site.css  
+2019-07-16 13:14:42.444 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:42.447 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:42.481 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /css/bootstrap/bootstrap.min.css was not modified
+2019-07-16 13:14:42.511 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:42.521 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 78.9788ms 304 text/css
+2019-07-16 13:14:42.522 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /css/site.css was not modified
+2019-07-16 13:14:42.524 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/css/open-iconic/font/css/open-iconic-bootstrap.min.css  
+2019-07-16 13:14:42.526 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:42.527 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:42.530 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 93.7436ms 304 text/css
+2019-07-16 13:14:42.534 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /css/open-iconic/font/css/open-iconic-bootstrap.min.css was not modified
+2019-07-16 13:14:42.543 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:42.548 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 30.648200000000003ms 304 text/css
+2019-07-16 13:14:42.636 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/css/bootstrap/bootstrap.min.css.map  
+2019-07-16 13:14:42.638 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:42.641 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /css/bootstrap/bootstrap.min.css.map was not modified
+2019-07-16 13:14:42.643 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:42.646 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 9.748800000000001ms 304 text/plain
+2019-07-16 13:14:43.258 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 POST http://localhost:60744/api/torrents/pagination/?page=1&pageSize=10 application/json; charset=utf-8 69
+2019-07-16 13:14:43.264 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executing endpoint 'Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server)'
+2019-07-16 13:14:43.286 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/api/torrents/titles/?count=5  
+2019-07-16 13:14:43.290 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:14:43.295 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executing endpoint 'Rutracker.Server.Controllers.TorrentsController.Titles (Rutracker.Server)'
+2019-07-16 13:14:43.336 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Route matched with {action = "Pagination", controller = "Torrents"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Pagination(Int32, Int32, Rutracker.Shared.ViewModels.Shared.FiltrationViewModel) on controller Rutracker.Server.Controllers.TorrentsController (Rutracker.Server).
+2019-07-16 13:14:43.346 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Route matched with {action = "Titles", controller = "Torrents"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Titles(Int32) on controller Rutracker.Server.Controllers.TorrentsController (Rutracker.Server).
+2019-07-16 13:14:43.363 +03:00 [Information] Microsoft.EntityFrameworkCore.Infrastructure: Entity Framework Core 2.2.4-servicing-10062 initialized 'TorrentContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: NoTracking 
+2019-07-16 13:14:43.367 +03:00 [Information] Microsoft.EntityFrameworkCore.Infrastructure: Entity Framework Core 2.2.4-servicing-10062 initialized 'TorrentContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: NoTracking 
+2019-07-16 13:14:43.721 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executing action method Rutracker.Server.Controllers.TorrentsController.Titles (Rutracker.Server) - Validation state: Valid
+2019-07-16 13:14:43.752 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executing action method Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server) - Validation state: Valid
+2019-07-16 13:14:44.382 +03:00 [Information] Microsoft.EntityFrameworkCore.Database.Command: Executed DbCommand (64ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT [t].[Key], [t].[Count], [f].[Title]
+FROM (
+    SELECT TOP(@__p_0) [x].[ForumId] AS [Key], COUNT(*) AS [Count]
+    FROM [Torrents] AS [x]
+    GROUP BY [x].[ForumId]
+    ORDER BY [Count] DESC
+) AS [t]
+INNER JOIN [Forums] AS [f] ON [t].[Key] = [f].[Id]
+2019-07-16 13:14:44.439 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executed action method Rutracker.Server.Controllers.TorrentsController.Titles (Rutracker.Server), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 707.9296ms.
+2019-07-16 13:14:44.458 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor: Executing ObjectResult, writing value of type 'Rutracker.Shared.ViewModels.Shared.FacetViewModel`1[[System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2019-07-16 13:14:44.502 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executed action Rutracker.Server.Controllers.TorrentsController.Titles (Rutracker.Server) in 1129.1444000000001ms
+2019-07-16 13:14:44.512 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executed endpoint 'Rutracker.Server.Controllers.TorrentsController.Titles (Rutracker.Server)'
+2019-07-16 13:14:44.518 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:14:44.520 +03:00 [Information] Microsoft.EntityFrameworkCore.Database.Command: Executed DbCommand (495ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT [x].[Id], [x].[Content], [x].[Date], [x].[DupConfidence], [x].[DupTitle], [x].[DupTorrentId], [x].[ForumId], [x].[Hash], [x].[IsDeleted], [x].[Size], [x].[Title], [x].[TrackerId]
+FROM [Torrents] AS [x]
+ORDER BY [x].[Date]
+OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+2019-07-16 13:14:44.576 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 1276.2155ms 200 application/json; charset=utf-8
+2019-07-16 13:14:44.677 +03:00 [Information] Microsoft.EntityFrameworkCore.Database.Command: Executed DbCommand (59ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Torrents] AS [x]
+2019-07-16 13:14:44.713 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executed action method Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 955.0372000000001ms.
+2019-07-16 13:14:44.716 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor: Executing ObjectResult, writing value of type 'Rutracker.Shared.ViewModels.Torrents.TorrentsIndexViewModel'.
+2019-07-16 13:14:44.759 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executed action Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server) in 1407.7676000000001ms
+2019-07-16 13:14:44.766 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executed endpoint 'Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server)'
+2019-07-16 13:14:44.773 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 1511.6395ms 200 application/json; charset=utf-8
+2019-07-16 13:22:23.583 +03:00 [Information] Microsoft.EntityFrameworkCore.Infrastructure: Entity Framework Core 2.2.4-servicing-10062 initialized 'TorrentContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: NoTracking 
+2019-07-16 13:22:24.003 +03:00 [Information] Microsoft.EntityFrameworkCore.Database.Command: Executed DbCommand (81ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE') SELECT 1 ELSE SELECT 0
+2019-07-16 13:22:24.086 +03:00 [Information] Microsoft.Hosting.Lifetime: Now listening on: http://localhost:60744
+2019-07-16 13:22:24.088 +03:00 [Information] Microsoft.Hosting.Lifetime: Application started. Press Ctrl+C to shut down.
+2019-07-16 13:22:24.090 +03:00 [Information] Microsoft.Hosting.Lifetime: Hosting environment: Development
+2019-07-16 13:22:24.092 +03:00 [Information] Microsoft.Hosting.Lifetime: Content root path: D:\Projects\RutrackerBlazor\src\Rutracker.Server
+2019-07-16 13:22:24.752 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/  
+2019-07-16 13:22:24.771 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:24.828 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executing endpoint 'Fallback {*path:nonfile}'
+2019-07-16 13:22:24.851 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /index.html was not modified
+2019-07-16 13:22:24.854 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executed endpoint 'Fallback {*path:nonfile}'
+2019-07-16 13:22:24.862 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:24.893 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 143.2432ms 304 text/html
+2019-07-16 13:22:24.933 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/blazor.webassembly.js  
+2019-07-16 13:22:24.935 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:24.939 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/css/site.css  
+2019-07-16 13:22:24.942 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /_framework/blazor.webassembly.js was not modified
+2019-07-16 13:22:24.944 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:24.946 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:24.949 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /css/site.css was not modified
+2019-07-16 13:22:24.952 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 17.4737ms 304 application/javascript
+2019-07-16 13:22:24.954 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:24.957 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 19.0515ms 304 text/css
+2019-07-16 13:22:24.962 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/css/open-iconic/font/css/open-iconic-bootstrap.min.css  
+2019-07-16 13:22:24.966 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/css/bootstrap/bootstrap.min.css  
+2019-07-16 13:22:24.967 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:24.969 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:24.972 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /css/bootstrap/bootstrap.min.css was not modified
+2019-07-16 13:22:24.973 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /css/open-iconic/font/css/open-iconic-bootstrap.min.css was not modified
+2019-07-16 13:22:24.975 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:24.977 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:24.981 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 17.1548ms 304 text/css
+2019-07-16 13:22:24.985 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 18.8883ms 304 text/css
+2019-07-16 13:22:25.024 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/blazor.boot.json  
+2019-07-16 13:22:25.025 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.068 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/blazor.boot.json'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\blazor.boot.json'
+2019-07-16 13:22:25.074 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.080 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 54.5107ms 200 application/json
+2019-07-16 13:22:25.090 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/wasm/mono.js  
+2019-07-16 13:22:25.095 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.098 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /_framework/wasm/mono.js was not modified
+2019-07-16 13:22:25.104 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.108 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 17.2103ms 304 application/javascript
+2019-07-16 13:22:25.137 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/wasm/mono.wasm  
+2019-07-16 13:22:25.140 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.143 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /_framework/wasm/mono.wasm was not modified
+2019-07-16 13:22:25.146 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.153 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 12.5778ms 304 application/wasm
+2019-07-16 13:22:25.284 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Rutracker.Client.dll  
+2019-07-16 13:22:25.287 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.AspNetCore.Authorization.dll  
+2019-07-16 13:22:25.288 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.290 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.293 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.AspNetCore.Components.Browser.dll  
+2019-07-16 13:22:25.301 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.AspNetCore.Blazor.dll  
+2019-07-16 13:22:25.304 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.307 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.313 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.AspNetCore.Blazor.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.AspNetCore.Blazor.dll'
+2019-07-16 13:22:25.317 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.320 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 36.6206ms 200 application/octet-stream
+2019-07-16 13:22:25.330 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Rutracker.Client.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Rutracker.Client.dll'
+2019-07-16 13:22:25.333 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.AspNetCore.Authorization.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.AspNetCore.Authorization.dll'
+2019-07-16 13:22:25.336 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.AspNetCore.Components.Browser.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.AspNetCore.Components.Browser.dll'
+2019-07-16 13:22:25.341 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.343 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.346 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.348 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 63.2043ms 200 application/octet-stream
+2019-07-16 13:22:25.351 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 57.405100000000004ms 200 application/octet-stream
+2019-07-16 13:22:25.355 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 70.9615ms 200 application/octet-stream
+2019-07-16 13:22:25.360 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.AspNetCore.Components.dll  
+2019-07-16 13:22:25.366 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.402 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.AspNetCore.WebUtilities.dll  
+2019-07-16 13:22:25.423 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.Extensions.DependencyInjection.Abstractions.dll  
+2019-07-16 13:22:25.425 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.AspNetCore.Metadata.dll  
+2019-07-16 13:22:25.428 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.435 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.440 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.Extensions.Logging.Abstractions.dll  
+2019-07-16 13:22:25.442 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.446 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.451 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.Extensions.DependencyInjection.dll  
+2019-07-16 13:22:25.458 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.Extensions.DependencyInjection.Abstractions.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.Extensions.DependencyInjection.Abstractions.dll'
+2019-07-16 13:22:25.460 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.AspNetCore.Metadata.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.AspNetCore.Metadata.dll'
+2019-07-16 13:22:25.463 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.465 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.468 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.Extensions.Logging.Abstractions.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.Extensions.Logging.Abstractions.dll'
+2019-07-16 13:22:25.471 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.473 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 73.021ms 200 application/octet-stream
+2019-07-16 13:22:25.475 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.479 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 73.16040000000001ms 200 application/octet-stream
+2019-07-16 13:22:25.486 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.AspNetCore.Components.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.AspNetCore.Components.dll'
+2019-07-16 13:22:25.502 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 53.8783ms 200 application/octet-stream
+2019-07-16 13:22:25.503 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.505 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.Extensions.DependencyInjection.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.Extensions.DependencyInjection.dll'
+2019-07-16 13:22:25.508 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 148.9049ms 200 application/octet-stream
+2019-07-16 13:22:25.516 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.AspNetCore.WebUtilities.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.AspNetCore.WebUtilities.dll'
+2019-07-16 13:22:25.519 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.521 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.Extensions.Options.dll  
+2019-07-16 13:22:25.524 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.525 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.Extensions.Primitives.dll  
+2019-07-16 13:22:25.530 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.530 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 131.8273ms 200 application/octet-stream
+2019-07-16 13:22:25.533 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.JSInterop.dll  
+2019-07-16 13:22:25.536 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.541 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.542 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.Extensions.Options.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.Extensions.Options.dll'
+2019-07-16 13:22:25.545 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Microsoft.Net.Http.Headers.dll  
+2019-07-16 13:22:25.548 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 120.06200000000001ms 200 application/octet-stream
+2019-07-16 13:22:25.550 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.552 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.556 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.JSInterop.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.JSInterop.dll'
+2019-07-16 13:22:25.557 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 34.402100000000004ms 200 application/octet-stream
+2019-07-16 13:22:25.559 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.582 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.Extensions.Primitives.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.Extensions.Primitives.dll'
+2019-07-16 13:22:25.585 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Mono.WebAssembly.Interop.dll  
+2019-07-16 13:22:25.585 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 52.8218ms 200 application/octet-stream
+2019-07-16 13:22:25.587 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Microsoft.Net.Http.Headers.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Microsoft.Net.Http.Headers.dll'
+2019-07-16 13:22:25.593 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.596 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.599 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Mono.Security.dll  
+2019-07-16 13:22:25.604 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 77.19800000000001ms 200 application/octet-stream
+2019-07-16 13:22:25.608 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.609 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Mono.WebAssembly.Interop.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Mono.WebAssembly.Interop.dll'
+2019-07-16 13:22:25.611 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/mscorlib.dll  
+2019-07-16 13:22:25.618 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 68.0729ms 200 application/octet-stream
+2019-07-16 13:22:25.622 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.623 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.625 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Rutracker.Shared.dll  
+2019-07-16 13:22:25.627 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 63.3241ms 200 application/octet-stream
+2019-07-16 13:22:25.629 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.633 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.655 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.ComponentModel.Annotations.dll  
+2019-07-16 13:22:25.659 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.668 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Rutracker.Shared.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Rutracker.Shared.dll'
+2019-07-16 13:22:25.679 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.690 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.ComponentModel.Annotations.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.ComponentModel.Annotations.dll'
+2019-07-16 13:22:25.692 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 68.47070000000001ms 200 application/octet-stream
+2019-07-16 13:22:25.709 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Mono.Security.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Mono.Security.dll'
+2019-07-16 13:22:25.710 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.713 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.716 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 80.4051ms 200 application/octet-stream
+2019-07-16 13:22:25.721 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 165.4256ms 200 application/octet-stream
+2019-07-16 13:22:25.724 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Core.dll  
+2019-07-16 13:22:25.726 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Newtonsoft.Json.dll  
+2019-07-16 13:22:25.731 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.736 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.737 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Buffers.dll  
+2019-07-16 13:22:25.742 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.748 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.dll  
+2019-07-16 13:22:25.749 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Data.dll  
+2019-07-16 13:22:25.755 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.759 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.886 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Buffers.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Buffers.dll'
+2019-07-16 13:22:25.893 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Core.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Core.dll'
+2019-07-16 13:22:25.908 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Data.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Data.dll'
+2019-07-16 13:22:25.916 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.936 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.941 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.943 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 188.8965ms 200 application/octet-stream
+2019-07-16 13:22:25.947 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 222.25930000000002ms 200 application/octet-stream
+2019-07-16 13:22:25.953 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 194.9549ms 200 application/octet-stream
+2019-07-16 13:22:25.957 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.dll'
+2019-07-16 13:22:25.960 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Newtonsoft.Json.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Newtonsoft.Json.dll'
+2019-07-16 13:22:25.962 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.970 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 222.1851ms 200 application/octet-stream
+2019-07-16 13:22:25.974 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:25.977 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Memory.dll  
+2019-07-16 13:22:25.979 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Numerics.dll  
+2019-07-16 13:22:25.983 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 253.7896ms 200 application/octet-stream
+2019-07-16 13:22:25.984 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.987 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.992 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Net.Http.dll  
+2019-07-16 13:22:25.997 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:25.997 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Numerics.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Numerics.dll'
+2019-07-16 13:22:26.001 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.004 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 27.692ms 200 application/octet-stream
+2019-07-16 13:22:26.011 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Memory.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Memory.dll'
+2019-07-16 13:22:26.019 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Net.Http.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Net.Http.dll'
+2019-07-16 13:22:26.022 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.029 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 52.4091ms 200 application/octet-stream
+2019-07-16 13:22:26.039 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.040 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Runtime.Serialization.dll  
+2019-07-16 13:22:26.044 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:26.046 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 53.4604ms 200 application/octet-stream
+2019-07-16 13:22:26.042 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Numerics.Vectors.dll  
+2019-07-16 13:22:26.057 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:26.058 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Runtime.Serialization.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Runtime.Serialization.dll'
+2019-07-16 13:22:26.069 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.080 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Runtime.CompilerServices.Unsafe.dll  
+2019-07-16 13:22:26.083 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 45.8393ms 200 application/octet-stream
+2019-07-16 13:22:26.086 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:26.084 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Numerics.Vectors.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Numerics.Vectors.dll'
+2019-07-16 13:22:26.089 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Text.Encodings.Web.dll  
+2019-07-16 13:22:26.091 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.093 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:26.095 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 55.3367ms 200 application/octet-stream
+2019-07-16 13:22:26.105 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Runtime.CompilerServices.Unsafe.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Runtime.CompilerServices.Unsafe.dll'
+2019-07-16 13:22:26.112 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.110 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Text.Json.dll  
+2019-07-16 13:22:26.119 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 45.3462ms 200 application/octet-stream
+2019-07-16 13:22:26.121 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:26.130 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Text.Encodings.Web.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Text.Encodings.Web.dll'
+2019-07-16 13:22:26.144 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.164 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 60.638200000000005ms 200 application/octet-stream
+2019-07-16 13:22:26.168 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Threading.Tasks.Extensions.dll  
+2019-07-16 13:22:26.171 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Xml.dll  
+2019-07-16 13:22:26.172 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:26.178 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:26.187 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Threading.Tasks.Extensions.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Threading.Tasks.Extensions.dll'
+2019-07-16 13:22:26.196 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Text.Json.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Text.Json.dll'
+2019-07-16 13:22:26.201 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.207 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.209 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 55.825ms 200 application/octet-stream
+2019-07-16 13:22:26.211 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 105.80170000000001ms 200 application/octet-stream
+2019-07-16 13:22:26.226 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Rutracker.Client.pdb  
+2019-07-16 13:22:26.249 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/System.Xml.Linq.dll  
+2019-07-16 13:22:26.253 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/_framework/_bin/Rutracker.Shared.pdb  
+2019-07-16 13:22:26.258 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:26.260 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:26.266 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:26.272 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Xml.Linq.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Xml.Linq.dll'
+2019-07-16 13:22:26.273 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Rutracker.Shared.pdb'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Rutracker.Shared.pdb'
+2019-07-16 13:22:26.278 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/Rutracker.Client.pdb'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\Rutracker.Client.pdb'
+2019-07-16 13:22:26.279 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.287 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.291 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.293 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 68.0463ms 200 application/octet-stream
+2019-07-16 13:22:26.303 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 68.0263ms 200 application/octet-stream
+2019-07-16 13:22:26.306 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 81.165ms 200 application/octet-stream
+2019-07-16 13:22:26.340 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/css/bootstrap/bootstrap.min.css  
+2019-07-16 13:22:26.345 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/css/site.css  
+2019-07-16 13:22:26.346 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/css/open-iconic/font/css/open-iconic-bootstrap.min.css  
+2019-07-16 13:22:26.353 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:26.360 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:26.362 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:26.369 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /css/site.css was not modified
+2019-07-16 13:22:26.373 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /css/open-iconic/font/css/open-iconic-bootstrap.min.css was not modified
+2019-07-16 13:22:26.376 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /css/bootstrap/bootstrap.min.css was not modified
+2019-07-16 13:22:26.380 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.384 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.386 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.388 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 51.381800000000005ms 304 text/css
+2019-07-16 13:22:26.393 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 77.04860000000001ms 304 text/css
+2019-07-16 13:22:26.397 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 57.912800000000004ms 304 text/css
+2019-07-16 13:22:26.470 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/System.Xml.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\System.Xml.dll'
+2019-07-16 13:22:26.473 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.484 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 311.1267ms 200 application/octet-stream
+2019-07-16 13:22:26.490 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: Sending file. Request path: '/_framework/_bin/mscorlib.dll'. Physical path: 'D:\Projects\RutrackerBlazor\src\Rutracker.Client\bin\Debug\netstandard2.0\dist\_framework\_bin\mscorlib.dll'
+2019-07-16 13:22:26.495 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.501 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 885.4866000000001ms 200 application/octet-stream
+2019-07-16 13:22:26.597 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/css/bootstrap/bootstrap.min.css.map  
+2019-07-16 13:22:26.614 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:26.624 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /css/bootstrap/bootstrap.min.css.map was not modified
+2019-07-16 13:22:26.630 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:26.654 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 42.0263ms 304 text/plain
+2019-07-16 13:22:27.591 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/css/open-iconic/font/fonts/open-iconic.woff  
+2019-07-16 13:22:27.595 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:27.598 +03:00 [Information] Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware: The file /css/open-iconic/font/fonts/open-iconic.woff was not modified
+2019-07-16 13:22:27.603 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:27.618 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 15.569500000000001ms 304 application/font-woff
+2019-07-16 13:22:29.369 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 POST http://localhost:60744/api/torrents/pagination/?page=1&pageSize=10 application/json; charset=utf-8 69
+2019-07-16 13:22:29.374 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executing endpoint 'Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server)'
+2019-07-16 13:22:29.391 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 GET http://localhost:60744/api/torrents/titles/?count=5  
+2019-07-16 13:22:29.393 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: No cached response available for this request.
+2019-07-16 13:22:29.396 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executing endpoint 'Rutracker.Server.Controllers.TorrentsController.Titles (Rutracker.Server)'
+2019-07-16 13:22:29.425 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Route matched with {action = "Pagination", controller = "Torrents"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Pagination(Int32, Int32, Rutracker.Shared.ViewModels.Shared.FiltrationViewModel) on controller Rutracker.Server.Controllers.TorrentsController (Rutracker.Server).
+2019-07-16 13:22:29.424 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Route matched with {action = "Titles", controller = "Torrents"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Titles(Int32) on controller Rutracker.Server.Controllers.TorrentsController (Rutracker.Server).
+2019-07-16 13:22:29.452 +03:00 [Information] Microsoft.EntityFrameworkCore.Infrastructure: Entity Framework Core 2.2.4-servicing-10062 initialized 'TorrentContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: NoTracking 
+2019-07-16 13:22:29.454 +03:00 [Information] Microsoft.EntityFrameworkCore.Infrastructure: Entity Framework Core 2.2.4-servicing-10062 initialized 'TorrentContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: NoTracking 
+2019-07-16 13:22:29.798 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executing action method Rutracker.Server.Controllers.TorrentsController.Titles (Rutracker.Server) - Validation state: Valid
+2019-07-16 13:22:29.842 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executing action method Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server) - Validation state: Valid
+2019-07-16 13:22:30.442 +03:00 [Information] Microsoft.EntityFrameworkCore.Database.Command: Executed DbCommand (104ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT [t].[Key], [t].[Count], [f].[Title]
+FROM (
+    SELECT TOP(@__p_0) [x].[ForumId] AS [Key], COUNT(*) AS [Count]
+    FROM [Torrents] AS [x]
+    GROUP BY [x].[ForumId]
+    ORDER BY [Count] DESC
+) AS [t]
+INNER JOIN [Forums] AS [f] ON [t].[Key] = [f].[Id]
+2019-07-16 13:22:30.530 +03:00 [Information] Microsoft.EntityFrameworkCore.Database.Command: Executed DbCommand (406ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT [x].[Id], [x].[Content], [x].[Date], [x].[DupConfidence], [x].[DupTitle], [x].[DupTorrentId], [x].[ForumId], [x].[Hash], [x].[IsDeleted], [x].[Size], [x].[Title], [x].[TrackerId]
+FROM [Torrents] AS [x]
+ORDER BY [x].[Date]
+OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+2019-07-16 13:22:30.530 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executed action method Rutracker.Server.Controllers.TorrentsController.Titles (Rutracker.Server), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 714.8132ms.
+2019-07-16 13:22:30.545 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor: Executing ObjectResult, writing value of type 'Rutracker.Shared.ViewModels.Shared.FacetViewModel`1[[System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2019-07-16 13:22:30.567 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executed action Rutracker.Server.Controllers.TorrentsController.Titles (Rutracker.Server) in 1135.2472ms
+2019-07-16 13:22:30.571 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executed endpoint 'Rutracker.Server.Controllers.TorrentsController.Titles (Rutracker.Server)'
+2019-07-16 13:22:30.637 +03:00 [Information] Microsoft.AspNetCore.ResponseCaching.ResponseCachingMiddleware: The response could not be cached for this request.
+2019-07-16 13:22:30.646 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 1250.1014ms 200 application/json; charset=utf-8
+2019-07-16 13:22:30.663 +03:00 [Information] Microsoft.EntityFrameworkCore.Database.Command: Executed DbCommand (77ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Torrents] AS [x]
+2019-07-16 13:22:30.714 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executed action method Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 870.0088000000001ms.
+2019-07-16 13:22:30.717 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor: Executing ObjectResult, writing value of type 'Rutracker.Shared.ViewModels.Torrents.TorrentsIndexViewModel'.
+2019-07-16 13:22:30.728 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executed action Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server) in 1301.2216ms
+2019-07-16 13:22:30.730 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executed endpoint 'Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server)'
+2019-07-16 13:22:30.734 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 1364.0364ms 200 application/json; charset=utf-8
+2019-07-16 13:22:39.972 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 POST http://localhost:60744/api/torrents/pagination/?page=2&pageSize=10 application/json; charset=utf-8 69
+2019-07-16 13:22:39.976 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executing endpoint 'Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server)'
+2019-07-16 13:22:39.978 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Route matched with {action = "Pagination", controller = "Torrents"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Pagination(Int32, Int32, Rutracker.Shared.ViewModels.Shared.FiltrationViewModel) on controller Rutracker.Server.Controllers.TorrentsController (Rutracker.Server).
+2019-07-16 13:22:40.027 +03:00 [Information] Microsoft.EntityFrameworkCore.Infrastructure: Entity Framework Core 2.2.4-servicing-10062 initialized 'TorrentContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: NoTracking 
+2019-07-16 13:22:40.052 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executing action method Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server) - Validation state: Valid
+2019-07-16 13:22:40.242 +03:00 [Information] Microsoft.EntityFrameworkCore.Database.Command: Executed DbCommand (173ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT [x].[Id], [x].[Content], [x].[Date], [x].[DupConfidence], [x].[DupTitle], [x].[DupTorrentId], [x].[ForumId], [x].[Hash], [x].[IsDeleted], [x].[Size], [x].[Title], [x].[TrackerId]
+FROM [Torrents] AS [x]
+ORDER BY [x].[Date]
+OFFSET @__p_0 ROWS FETCH NEXT @__p_0 ROWS ONLY
+2019-07-16 13:22:40.296 +03:00 [Information] Microsoft.EntityFrameworkCore.Database.Command: Executed DbCommand (36ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Torrents] AS [x]
+2019-07-16 13:22:40.300 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executed action method Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 245.81300000000002ms.
+2019-07-16 13:22:40.302 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor: Executing ObjectResult, writing value of type 'Rutracker.Shared.ViewModels.Torrents.TorrentsIndexViewModel'.
+2019-07-16 13:22:40.305 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executed action Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server) in 324.90270000000004ms
+2019-07-16 13:22:40.309 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executed endpoint 'Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server)'
+2019-07-16 13:22:40.314 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 339.18580000000003ms 200 application/json; charset=utf-8
+2019-07-16 13:22:44.271 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 POST http://localhost:60744/api/torrents/pagination/?page=3&pageSize=10 application/json; charset=utf-8 69
+2019-07-16 13:22:44.274 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executing endpoint 'Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server)'
+2019-07-16 13:22:44.276 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Route matched with {action = "Pagination", controller = "Torrents"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Pagination(Int32, Int32, Rutracker.Shared.ViewModels.Shared.FiltrationViewModel) on controller Rutracker.Server.Controllers.TorrentsController (Rutracker.Server).
+2019-07-16 13:22:44.279 +03:00 [Information] Microsoft.EntityFrameworkCore.Infrastructure: Entity Framework Core 2.2.4-servicing-10062 initialized 'TorrentContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: NoTracking 
+2019-07-16 13:22:44.307 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executing action method Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server) - Validation state: Valid
+2019-07-16 13:22:44.489 +03:00 [Information] Microsoft.EntityFrameworkCore.Database.Command: Executed DbCommand (176ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT [x].[Id], [x].[Content], [x].[Date], [x].[DupConfidence], [x].[DupTitle], [x].[DupTorrentId], [x].[ForumId], [x].[Hash], [x].[IsDeleted], [x].[Size], [x].[Title], [x].[TrackerId]
+FROM [Torrents] AS [x]
+ORDER BY [x].[Date]
+OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+2019-07-16 13:22:44.544 +03:00 [Information] Microsoft.EntityFrameworkCore.Database.Command: Executed DbCommand (36ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Torrents] AS [x]
+2019-07-16 13:22:44.546 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executed action method Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 237.25490000000002ms.
+2019-07-16 13:22:44.547 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor: Executing ObjectResult, writing value of type 'Rutracker.Shared.ViewModels.Torrents.TorrentsIndexViewModel'.
+2019-07-16 13:22:44.551 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executed action Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server) in 272.41380000000004ms
+2019-07-16 13:22:44.553 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executed endpoint 'Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server)'
+2019-07-16 13:22:44.557 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 286.7368ms 200 application/json; charset=utf-8
+2019-07-16 13:22:56.840 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 POST http://localhost:60744/api/torrents/pagination/?page=2&pageSize=10 application/json; charset=utf-8 69
+2019-07-16 13:22:56.842 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executing endpoint 'Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server)'
+2019-07-16 13:22:56.846 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Route matched with {action = "Pagination", controller = "Torrents"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Pagination(Int32, Int32, Rutracker.Shared.ViewModels.Shared.FiltrationViewModel) on controller Rutracker.Server.Controllers.TorrentsController (Rutracker.Server).
+2019-07-16 13:22:56.858 +03:00 [Information] Microsoft.EntityFrameworkCore.Infrastructure: Entity Framework Core 2.2.4-servicing-10062 initialized 'TorrentContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: NoTracking 
+2019-07-16 13:22:56.887 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executing action method Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server) - Validation state: Valid
+2019-07-16 13:22:57.091 +03:00 [Information] Microsoft.EntityFrameworkCore.Database.Command: Executed DbCommand (190ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT [x].[Id], [x].[Content], [x].[Date], [x].[DupConfidence], [x].[DupTitle], [x].[DupTorrentId], [x].[ForumId], [x].[Hash], [x].[IsDeleted], [x].[Size], [x].[Title], [x].[TrackerId]
+FROM [Torrents] AS [x]
+ORDER BY [x].[Date]
+OFFSET @__p_0 ROWS FETCH NEXT @__p_0 ROWS ONLY
+2019-07-16 13:22:57.145 +03:00 [Information] Microsoft.EntityFrameworkCore.Database.Command: Executed DbCommand (38ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Torrents] AS [x]
+2019-07-16 13:22:57.148 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executed action method Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 259.32640000000004ms.
+2019-07-16 13:22:57.151 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor: Executing ObjectResult, writing value of type 'Rutracker.Shared.ViewModels.Torrents.TorrentsIndexViewModel'.
+2019-07-16 13:22:57.154 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executed action Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server) in 306.65930000000003ms
+2019-07-16 13:22:57.156 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executed endpoint 'Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server)'
+2019-07-16 13:22:57.158 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 319.8919ms 200 application/json; charset=utf-8
+2019-07-16 13:22:57.578 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request starting HTTP/1.1 POST http://localhost:60744/api/torrents/pagination/?page=1&pageSize=10 application/json; charset=utf-8 69
+2019-07-16 13:22:57.581 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executing endpoint 'Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server)'
+2019-07-16 13:22:57.583 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Route matched with {action = "Pagination", controller = "Torrents"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Pagination(Int32, Int32, Rutracker.Shared.ViewModels.Shared.FiltrationViewModel) on controller Rutracker.Server.Controllers.TorrentsController (Rutracker.Server).
+2019-07-16 13:22:57.590 +03:00 [Information] Microsoft.EntityFrameworkCore.Infrastructure: Entity Framework Core 2.2.4-servicing-10062 initialized 'TorrentContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: NoTracking 
+2019-07-16 13:22:57.615 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executing action method Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server) - Validation state: Valid
+2019-07-16 13:22:57.844 +03:00 [Information] Microsoft.EntityFrameworkCore.Database.Command: Executed DbCommand (224ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT [x].[Id], [x].[Content], [x].[Date], [x].[DupConfidence], [x].[DupTitle], [x].[DupTorrentId], [x].[ForumId], [x].[Hash], [x].[IsDeleted], [x].[Size], [x].[Title], [x].[TrackerId]
+FROM [Torrents] AS [x]
+ORDER BY [x].[Date]
+OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+2019-07-16 13:22:57.902 +03:00 [Information] Microsoft.EntityFrameworkCore.Database.Command: Executed DbCommand (35ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Torrents] AS [x]
+2019-07-16 13:22:57.904 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executed action method Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 288.0436ms.
+2019-07-16 13:22:57.906 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor: Executing ObjectResult, writing value of type 'Rutracker.Shared.ViewModels.Torrents.TorrentsIndexViewModel'.
+2019-07-16 13:22:57.910 +03:00 [Information] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker: Executed action Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server) in 323.7265ms
+2019-07-16 13:22:57.913 +03:00 [Information] Microsoft.AspNetCore.Routing.EndpointMiddleware: Executed endpoint 'Rutracker.Server.Controllers.TorrentsController.Pagination (Rutracker.Server)'
+2019-07-16 13:22:57.922 +03:00 [Information] Microsoft.AspNetCore.Hosting.Diagnostics: Request finished in 337.1823ms 200 application/json; charset=utf-8

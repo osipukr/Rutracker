@@ -23,15 +23,17 @@ namespace Rutracker.Server.Filters
 
         private static void ActionHandler(ActionExecutingContext context)
         {
-            if (!context.ModelState.IsValid)
+            if (context.ModelState.IsValid)
             {
-                var error = context.ModelState.Values
-                    .SelectMany(x => x.Errors)
-                    .FirstOrDefault()
-                    ?.ErrorMessage;
-
-                throw new TorrentException(error, ExceptionEvent.NotValidParameters);
+                return;
             }
+
+            var error = context.ModelState.Values
+                .SelectMany(x => x.Errors)
+                .First()
+                .ErrorMessage;
+
+            throw new TorrentException(error, ExceptionEvent.NotValidParameters);
         }
     }
 }
