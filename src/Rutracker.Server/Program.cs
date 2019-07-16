@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using NetEscapades.Extensions.Logging.RollingFile;
+using Rutracker.Server.Settings;
 
 namespace Rutracker.Server
 {
@@ -13,14 +14,10 @@ namespace Rutracker.Server
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(builder =>
                 {
-                    builder.ConfigureLogging(configure => configure.AddFile(options =>
+                    builder.ConfigureLogging((context, configure) =>
                     {
-                        options.FileName = "logs-";
-                        options.LogDirectory = "Logs";
-                        options.FileSizeLimit = 20 * 1024 * 1024;
-                        options.Extension = "txt";
-                        options.Periodicity = PeriodicityOptions.Daily;
-                    }));
+                        configure.AddFile(context.Configuration.GetSection(nameof(FileLoggingSettings)).Bind);
+                    });
                     builder.UseStartup<Startup>();
                 });
     }
