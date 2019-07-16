@@ -28,12 +28,9 @@ namespace Rutracker.Server.Filters
                 return;
             }
 
-            var error = context.ModelState.Values
-                .SelectMany(x => x.Errors)
-                .First()
-                .ErrorMessage;
+            var message = context.ModelState.Values.SelectMany(x => x.Errors).First().ErrorMessage;
 
-            throw new TorrentException(error, ExceptionEvent.NotValidParameters);
+            throw new TorrentException(message, ExceptionEvent.NotValidParameters);
         }
     }
 }
