@@ -10,5 +10,13 @@
     "ForumTitlesCount": 5,
     "ItemsPerPageCount": 10,
     "PaginationButtonCount": 5
+  },
+  "MatToasterSettings": {
+    "Position": "BottomRight",
+    "PreventDuplicates": true,
+    "NewestOnTop": true,
+    "ShowCloseButton": true,
+    "MaximumOpacity": 100,
+    "VisibleStateDuration": 3000 
   }
 }

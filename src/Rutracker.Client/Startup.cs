@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Rutracker.Client.Interfaces;
 using Rutracker.Client.Services;
-using Toolbelt.Blazor.Extensions.DependencyInjection;
+using Rutracker.Client.Settings;
 
 namespace Rutracker.Client
 {
@@ -18,24 +18,25 @@ namespace Rutracker.Client
             services.AddSingleton(clientSettings.ViewSettings);
             services.AddSingleton<ITorrentsClientService, TorrentsClientService>();
 
-            services.AddLoadingBar();
-            services.AddMatToaster(config =>
-            {
-                config.Position = MatToastPosition.BottomRight;
-                config.PreventDuplicates = true;
-                config.NewestOnTop = true;
-                config.ShowCloseButton = true;
-                config.MaximumOpacity = 100;
-                config.VisibleStateDuration = 3000;
-            });
+            AddMatToaster(services, clientSettings.MatToasterSettings);
         }
 
         public void Configure(IComponentsApplicationBuilder app)
         {
             WebAssemblyHttpMessageHandler.DefaultCredentials = FetchCredentialsOption.Include;
 
-            app.UseLoadingBar();
             app.AddComponent<App>("app");
         }
+
+        private static void AddMatToaster(IServiceCollection services, MatToasterSettings settings) =>
+            services.AddMatToaster(config =>
+            {
+                config.Position = settings.Position;
+                config.PreventDuplicates = settings.PreventDuplicates;
+                config.NewestOnTop = settings.NewestOnTop;
+                config.ShowCloseButton = settings.ShowCloseButton;
+                config.MaximumOpacity = settings.MaximumOpacity;
+                config.VisibleStateDuration = settings.VisibleStateDuration;
+            });
     }
 }
