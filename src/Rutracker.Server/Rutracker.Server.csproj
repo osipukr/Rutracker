@@ -11,6 +11,7 @@
     <PackageReference Include="Boilerplate.AspNetCore" Version="3.0.0" />
     <PackageReference Include="CodeKicker.BBCode-NETStandard" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Server" Version="3.0.0-preview6.19307.2" />
+    <PackageReference Include="NetEscapades.Extensions.Logging.RollingFile" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,6 +19,10 @@
     <ProjectReference Include="..\Rutracker.Core\Rutracker.Core.csproj" />
     <ProjectReference Include="..\Rutracker.Infrastructure\Rutracker.Infrastructure.csproj" />
     <ProjectReference Include="..\Rutracker.Shared\Rutracker.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Logs\" />
   </ItemGroup>
 
 </Project>

@@ -68,8 +68,8 @@ namespace Rutracker.Server.Extensions
             builder.AddMvcOptions(
                 options =>
                 {
-                    options.Filters.Add(new ControllerExceptionFilterAttribute());
-                    options.Filters.Add(new ModelValidatorFilterAttribute());
+                    options.Filters.Add<ControllerExceptionFilterAttribute>();
+                    options.Filters.Add<ModelValidatorFilterAttribute>();
 
                     // Remove string and stream output formatters. These are not useful for an API serving JSON or XML.
                     options.OutputFormatters.RemoveType<StreamOutputFormatter>();
