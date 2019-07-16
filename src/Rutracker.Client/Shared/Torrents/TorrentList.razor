@@ -14,32 +14,27 @@ else if (Items.Length == 0)
 }
 else
 {
-    <MatTable Items="@Items"
-              Class="mat-elevation-z10 mt-3"
-              PageSize="@PageSize"
-              ShowPaging="false"
-              LoadInitialData="false">
-        <MatTableHeader>
-            <th>Register at</th>
-            <th>Size (bytes)</th>
-            <th>Title</th>
-        </MatTableHeader>
-        <MatTableRow Context="torrent">
-            <td title="@torrent.Date.ToShortDateString()">
-                @torrent.Date.ToShortDateString()
-            </td>
-
-            <td title="@torrent.Size">
-                @torrent.Size
-            </td>
-
-            <td title="@torrent.Title">
-                <a href="@TorrentDetailsUri(torrent.Id)">
-                    @torrent.Title
-                </a>
-            </td>
-        </MatTableRow>
-    </MatTable>
+    <div class="mat-layout-grid">
+        <div class="mat-layout-grid-inner">
+            @foreach (var torrent in Items)
+            {
+                <div class="mat-layout-grid-cell">
+                    <MatRipple class="mat-ripple no-select mat-elevation-z10" 
+                               Color="@MatRippleColor.Secondary">
+                        <MatCard>
+                            <p>
+                                <MatIcon Icon="date_range"></MatIcon>
+                                <span>@torrent.Date</span>
+                            </p>
+                            <p>@torrent.Title</p>
+                            <p>@torrent.Size</p>
+                            <p>@torrent.Id</p>
+                        </MatCard>
+                    </MatRipple>
+                </div>
+            }
+        </div>
+    </div>
 }
 
 @functions

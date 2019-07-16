@@ -78,10 +78,6 @@ app {
     padding: 20px 30px;
 }
 
-.flex-1 {
-    flex: 1;
-}
-
 hr {
     clear: both;
 }
@@ -106,6 +102,20 @@ hr {
 
 .no-select {
     user-select: none;
+}
+
+.filter-btn {
+    width: 100px;
+}
+
+.mat-ripple {
+    height: 300px;
+}
+
+.mdc-card {
+    width: 100%;
+    height: 100%;
+    padding: 15px;
 }
 
 /* Extra small devices (portrait phones, less than 576px) */
