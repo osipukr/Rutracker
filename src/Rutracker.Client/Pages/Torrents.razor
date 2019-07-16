@@ -15,29 +15,28 @@
 }
 else
 {
-    <Filtration Model="@FilterModel" ChangedHandler="@FilterApplyButtonClick" />
-    <TorrentList Items="@Model.TorrentItems" PageSize="@PageSize" />
-    <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonClick" />
+    <Filtration Model="@FilterModel" FilterChanged="@FilterChanged" Search="@SearchTask" />
+    <TorrentList Items="@Model.TorrentItems" Search="@SearchTask" />
+    <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonChanged" Search="@SearchTask" />
 }
 
 @functions
 {
     TorrentsIndexViewModel Model { get; set; }
     FiltrationViewModel FilterModel { get; set; } = new FiltrationViewModel();
+    Task<TorrentsIndexViewModel> SearchTask { get; set; }
 
     int Page { get; set; }
     int PageSize => ViewSettings.ItemsPerPageCount;
 
     protected override async Task OnInitAsync()
     {
-        await RefreshTypesAsync();
-
-        UriHelper.OnLocationChanged += OnLocationChanges;
+        await RefreshParametersAsync();
+        UriHelper.OnLocationChanged += async (sender, args) => await  OnLocationChanges(sender, args);
     }
 
-    async void OnLocationChanges(object sender, LocationChangedEventArgs args) => await RefreshTypesAsync();
-
-    async Task RefreshTypesAsync()
+    async Task OnLocationChanges(object sender, LocationChangedEventArgs args) => await RefreshParametersAsync();
+    async Task RefreshParametersAsync()
     {
         var uriQuery = new Uri(UriHelper.GetAbsoluteUri()).Query;
 
@@ -60,12 +59,12 @@ else
         {
             if (Model != null)
             {
-                Model.TorrentItems = null;
-                Model.PaginationModel = null;
+                SearchTask = null;
                 StateHasChanged();
             }
 
-            Model = await Client.GetTorrentsIndexAsync(Page, PageSize, FilterModel);
+            SearchTask = Client.GetTorrentsIndexAsync(Page, PageSize, FilterModel);
+            Model = await SearchTask;
         }
         catch (Exception ex)
         {
@@ -73,9 +72,8 @@ else
         }
     }
 
-    void PageButtonClick(int page) => UriHelper.NavigateTo($"/torrents?search={FilterModel.Search}&page={page}");
+    void PageButtonChanged(int page) => UriHelper.NavigateTo($"/torrents?search={FilterModel.Search}&page={page}");
+    void FilterChanged() => UriHelper.NavigateTo($"/torrents?search={FilterModel.Search}");
 
-    void FilterApplyButtonClick() => UriHelper.NavigateTo($"/torrents?search={FilterModel.Search}");
-
-    public void Dispose() => UriHelper.OnLocationChanged -= OnLocationChanges;
+    public void Dispose() => UriHelper.OnLocationChanged -= async (sender, args) => await  OnLocationChanges(sender, args);
 }

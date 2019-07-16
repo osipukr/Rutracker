@@ -1,114 +1,122 @@
-﻿@inject ITorrentsClientService Client
+﻿@typeparam TSearch
+
+@inject ITorrentsClientService Client
 @inject IMatToaster MatToaster
 @inject ViewSettings ViewSettings
 
-<EditForm Model="@Model" OnValidSubmit="@OnValidSubmitClicked">
-    <DataAnnotationsValidator />
+<div class="mat-layout-grid px-0">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+            <EditForm Model="@Model" OnValidSubmit="@OnValidSubmitClicked">
+                <DataAnnotationsValidator />
 
-    <div class="mat-layout-grid p-0 px-4 mb-3">
-        <div class="mat-layout-grid-inner">
-            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                <MatTextField @bind-Value="@Model.Search"
-                              Label="Search"
-                              Icon="search"
-                              IconTrailing="true"
-                              FullWidth="true">
-                </MatTextField>
-            </div>
-            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                <ValidationMessage For="@(() => Model.Search)" />
-            </div>
-        </div>
-    </div>
+                <div class="mat-layout-grid-inner pt-0 pb-3">
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <MatTextField @bind-Value="@Model.Search"
+                                           Label="Search"
+                                           Icon="search"
+                                           IconTrailing="true"
+                                           FullWidth="true">
+                        </MatTextField>
+                    </div>
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <ValidationMessage For="@(() => Model.Search)" />
+                    </div>
+                </div>
 
-    <MatAccordion Multi="true">
-        <MatExpansionPanel>
-            <MatExpansionPanelSummary Class="no-select">
-                <MatExpansionPanelHeader>Size range</MatExpansionPanelHeader>
-            </MatExpansionPanelSummary>
-            <MatExpansionPanelDetails>
-                <div class="mat-layout-grid p-0">
+                <MatAccordion Multi="true">
+                    <MatExpansionPanel>
+                        <MatExpansionPanelSummary Class="no-select">
+                            <MatExpansionPanelHeader>Size range</MatExpansionPanelHeader>
+                        </MatExpansionPanelSummary>
+                        <MatExpansionPanelDetails>
+                            <div class="mat-layout-grid-inner py-0">
+                                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                                    <MatNumericUpDownField Label="From"
+                                                           @bind-Value=@SizeFrom
+                                                           Icon="border_color"
+                                                           Outlined="true"
+                                                           FullWidth="true"
+                                                           DecimalPlaces=0
+                                                           Minimum=null Maximum=null>
+                                    </MatNumericUpDownField>
+                                </div>
+
+                                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                                    <MatNumericUpDownField Label="To"
+                                                           @bind-Value=@SizeTo
+                                                           Icon="border_color"
+                                                           Outlined="true"
+                                                           FullWidth="true"
+                                                           DecimalPlaces=0
+                                                           Minimum=null Maximum=null>
+                                    </MatNumericUpDownField>
+                                </div>
+
+                                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                                    <ValidationMessage For="@(() => Model.SizeFrom)" />
+                                </div>
+
+                                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                                    <ValidationMessage For="@(() => Model.SizeTo)" />
+                                </div>
+                            </div>
+                        </MatExpansionPanelDetails>
+                    </MatExpansionPanel>
+
+                    <MatExpansionPanel>
+                        <MatExpansionPanelSummary Class="no-select">
+                            <MatExpansionPanelHeader>Forum titles category</MatExpansionPanelHeader>
+                        </MatExpansionPanelSummary>
+                        <MatExpansionPanelDetails>
+                            @if (TitleFacet != null && TitleFacet.FacetItems != null)
+                            {
+                                <div class="mat-layout-grid-inner p-0 pt-3">
+                                    @foreach (var facet in TitleFacet.FacetItems)
+                                    {
+                                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                                            <MatCheckbox @bind-Checked="@facet.IsSelected">
+                                                <span>@facet.Value - (Count: @facet.Count)</span>
+                                            </MatCheckbox>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </MatExpansionPanelDetails>
+                    </MatExpansionPanel>
+                </MatAccordion>
+
+                <div class="mat-layout-grid mat-layout-grid-align-right px-0 pb-0 pt-3">
                     <div class="mat-layout-grid-inner">
-                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-                            <MatNumericUpDownField Label="From"
-                                                   @bind-Value=@SizeFrom
-                                                   Icon="border_color"
-                                                   Outlined="true"
-                                                   FullWidth="true"
-                                                   DecimalPlaces=0
-                                                   Minimum=null Maximum=null>
-                            </MatNumericUpDownField>
-                        </div>
-                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-                            <MatNumericUpDownField Label="To"
-                                                   @bind-Value=@SizeTo
-                                                   Icon="border_color"
-                                                   Outlined="true"
-                                                   FullWidth="true"
-                                                   DecimalPlaces=0
-                                                   Minimum=null Maximum=null>
-                            </MatNumericUpDownField>
-                        </div>
+                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12" style="grid-column-end: none">
+                            <MatButton Disabled="@(!Search.IsCompleted)"
+                                       OnClick="@ResetButtonClicked"
+                                       Outlined="true"
+                                       Type="reset"
+                                       Class="filter-btn">
+                                All
+                            </MatButton>
 
-                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-                            <ValidationMessage For="@(() => Model.SizeFrom)" />
-                        </div>
-                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-                            <ValidationMessage For="@(() => Model.SizeTo)" />
+                            <MatButton Disabled="@(!Search.IsCompleted)"
+                                       OnClick="@OnSubmitClicked"
+                                       Raised="true"
+                                       Type="submit"
+                                       Class="filter-btn">
+                                Apply
+                            </MatButton>
                         </div>
                     </div>
                 </div>
-            </MatExpansionPanelDetails>
-        </MatExpansionPanel>
-
-        <MatExpansionPanel>
-            <MatExpansionPanelSummary Class="no-select">
-                <MatExpansionPanelHeader>Forum titles category</MatExpansionPanelHeader>
-            </MatExpansionPanelSummary>
-            <MatExpansionPanelDetails>
-                @if (TitleFacet != null && TitleFacet.FacetItems != null)
-                {
-                    <div class="mat-layout-grid p-0">
-                        <div class="mat-layout-grid-inner">
-                            @foreach (var facet in TitleFacet.FacetItems)
-                            {
-                                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                                    <MatCheckbox @bind-Checked="@facet.IsSelected">
-                                        <span>@facet.Value - (Count: @facet.Count)</span>
-                                    </MatCheckbox>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                }
-            </MatExpansionPanelDetails>
-        </MatExpansionPanel>
-    </MatAccordion>
-
-    <div class="mat-layout-grid mat-layout-grid-align-right p-0 py-3">
-        <div class="mat-layout-grid-inner">
-            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12" style="grid-column-end: none">
-                <MatButton OnClick="@ResetButtonClicked"
-                           Outlined="true"
-                           Type="reset"
-                           Class="filter-btn">
-                    All
-                </MatButton>
-                <MatButton OnClick="@OnSubmitClicked"
-                           Raised="true"
-                           Type="submit"
-                           Class="filter-btn">
-                    Apply
-                </MatButton>
-            </div>
+            </EditForm>
         </div>
     </div>
-</EditForm>
+</div>
 
 @functions
 {
     [Parameter] FiltrationViewModel Model { get; set; }
-    [Parameter] EventCallback ChangedHandler { get; set; }
+    [Parameter] EventCallback FilterChanged { get; set; }
+    [Parameter] Task<TSearch> Search { get; set; }
 
     decimal? SizeFrom = null;
     decimal? SizeTo = null;
@@ -118,9 +126,11 @@
 
     protected override async Task OnInitAsync()
     {
-        TitleCount = ViewSettings.ForumTitlesCount;
+        LoadDefaultForumCount();
         await LoadTitleFacetsAsync();
     }
+
+    void LoadDefaultForumCount() => TitleCount = ViewSettings.ForumTitlesCount;
 
     async Task LoadTitleFacetsAsync()
     {
@@ -165,5 +175,5 @@
         OnValidSubmitClicked();
     }
 
-    void OnValidSubmitClicked() => ChangedHandler.InvokeAsync(EventArgs.Empty);
+    void OnValidSubmitClicked() => FilterChanged.InvokeAsync(EventArgs.Empty);
 }

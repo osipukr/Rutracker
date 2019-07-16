@@ -1,6 +1,8 @@
-﻿@inject ViewSettings ViewSettings
+﻿@typeparam TSearch
 
-@if (Items == null)
+@inject ViewSettings ViewSettings
+
+@if (!Search.IsCompleted)
 {
     <LoadingBackground>
         <span>Loading torrents, please wait...</span>
@@ -14,21 +16,18 @@ else if (Items.Length == 0)
 }
 else
 {
-    <div class="mat-layout-grid">
+    <div class="mat-layout-grid px-0">
         <div class="mat-layout-grid-inner">
             @foreach (var torrent in Items)
             {
                 <div class="mat-layout-grid-cell">
-                    <MatRipple class="mat-ripple no-select mat-elevation-z10" 
-                               Color="@MatRippleColor.Secondary">
+                    <MatRipple class="mat-ripple no-select mat-elevation-z10" Color="@MatRippleColor.Secondary">
                         <MatCard>
-                            <p>
-                                <MatIcon Icon="date_range"></MatIcon>
-                                <span>@torrent.Date</span>
-                            </p>
-                            <p>@torrent.Title</p>
-                            <p>@torrent.Size</p>
-                            <p>@torrent.Id</p>
+                            <p><MatIcon Icon="date_range"></MatIcon><span>@torrent.Date</span></p>
+
+                            <p>Title: @torrent.Title</p>
+                            <p>Size: @torrent.Size</p>
+                            <p>Id: @torrent.Id</p>
                         </MatCard>
                     </MatRipple>
                 </div>
@@ -40,7 +39,7 @@ else
 @functions
 {
     [Parameter] TorrentItemViewModel[] Items { get; set; }
-    [Parameter] int PageSize { get; set; }
+    [Parameter] Task<TSearch> Search { get; set; }
 
     static string TorrentDetailsUri(long id) => $"/torrent/{id}";
 }

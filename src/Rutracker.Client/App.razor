@@ -1,19 +1,23 @@
-﻿<MatThemeProvider Theme="@theme">
+﻿<MatToastContainer />
+<MatThemeProvider Theme="@Theme">
     <Router AppAssembly="typeof(Program).Assembly">
         <NotFoundContent>
-            <LoadingBackground>
-                <h1>We lost this page</h1>
+            <div class="triangle-container">
+                <div class="triangles"></div>
+            </div>
+
+            <LoadingBackground ShowLoader="false" Style="margin-top: 40vh;">
+                <h1>We lost this page ;(</h1>
                 <p>We searched high and low but couldn't find what you're looking for.</p>
                 <MatButton Link="/" Raised="true">Return Home</MatButton>
             </LoadingBackground>
         </NotFoundContent>
     </Router>
-    <MatToastContainer />
 </MatThemeProvider>
 
 @functions
 {
-    MatTheme theme = new MatTheme()
+    MatTheme Theme => new MatTheme()
     {
         Primary = MatThemeColors.Purple._900.Value,
         Secondary = MatThemeColors.Purple._900.Value

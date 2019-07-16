@@ -1,8 +1,8 @@
 ﻿body {
     font-family: HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-    width: 100vw;
     height: 100vh;
     position: relative;
+    overflow-x: hidden;
 }
 
 app {
@@ -17,14 +17,13 @@ app {
 }
 
 ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px #000000;
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     background-color: #e1e1e1;
-    -ms-border-radius: 2px;
     border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb {
-    -ms-border-radius: 2px;
     border-radius: 2px;
     background-image: linear-gradient(to bottom, rgba(17,17,17,1) 0,rgba(76,76,76,1) 23%,rgba(76,76,76,1) 23%,rgba(71,71,71,1) 72%,rgba(17,17,17,1) 99%);
 }
@@ -50,10 +49,10 @@ app {
     height: 100%;
     bottom: 0;
     left: 0;
-    mix-blend-mode: hard-light;
     position: fixed;
     right: 0;
     top: 0;
+    mix-blend-mode: hard-light;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -74,7 +73,6 @@ app {
 
 /* page */
 .container-fluid {
-    min-height: 350px;
     padding: 20px 30px;
 }
 
@@ -118,14 +116,20 @@ hr {
     padding: 15px;
 }
 
-/* Extra small devices (portrait phones, less than 576px) */
+.pagination-btn {
+    font-size: smaller;
+}
+
+label {
+    margin-bottom: 0;
+}
+
 @media (max-width: 596.98px) {
     .logo-img {
         height: 38px;
     }
 }
 
-/* Small devices (landscape phones, less than 768px)*/
 @media (max-width: 767.98px) {
     .brand {
         display: none;
