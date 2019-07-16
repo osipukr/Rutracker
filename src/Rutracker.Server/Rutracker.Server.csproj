@@ -21,4 +21,8 @@
     <ProjectReference Include="..\Rutracker.Shared\Rutracker.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logs\" />
+  </ItemGroup>
+
 </Project>
