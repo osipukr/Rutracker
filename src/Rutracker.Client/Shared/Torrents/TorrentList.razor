@@ -1,5 +1,6 @@
 ﻿@typeparam TSearch
 
+@inject IUriHelper UriHelper
 @inject ViewSettings ViewSettings
 
 @if (!Search.IsCompleted)
@@ -8,7 +9,7 @@
         <span>Loading torrents, please wait...</span>
     </LoadingBackground>
 }
-else if (Items.Length == 0)
+else if (Items == null || Items.Length == 0)
 {
     <LoadingBackground ShowLoader="false">
         <span>Sorry, but torrent list is empty...</span>
@@ -21,14 +22,27 @@ else
             @foreach (var torrent in Items)
             {
                 <div class="mat-layout-grid-cell">
-                    <MatRipple class="mat-ripple no-select mat-elevation-z10" Color="@MatRippleColor.Secondary">
-                        <MatCard>
-                            <p><MatIcon Icon="date_range"></MatIcon><span>@torrent.Date</span></p>
+                    <MatRipple class="no-select mat-elevation-z10" Color="@MatRippleColor.Secondary">
+                        <MatList TwoLine="true">
+                            <MatListItem Href="@UriHelper.ToAbsoluteUri($"torrents/{torrent.Id}").AbsoluteUri">
+                                <MatIcon Icon="@MatIconNames.Date_range"></MatIcon>
+                                <span>@torrent.Date.ToShortDateString()</span>
+                            </MatListItem>
 
-                            <p>Title: @torrent.Title</p>
-                            <p>Size: @torrent.Size</p>
-                            <p>Id: @torrent.Id</p>
-                        </MatCard>
+                            <MatListItem>
+                                <MatListItemText>
+                                    <MatListItemPrimaryText>Size (bytes)</MatListItemPrimaryText>
+                                    <MatListItemSecondaryText>@torrent.Size</MatListItemSecondaryText>
+                                </MatListItemText>
+                            </MatListItem>
+
+                            <MatListItem>
+                                <MatListItemText>
+                                    <MatListItemPrimaryText>Title</MatListItemPrimaryText>
+                                    <MatListItemSecondaryText>@torrent.Title</MatListItemSecondaryText>
+                                </MatListItemText>
+                            </MatListItem>
+                        </MatList>
                     </MatRipple>
                 </div>
             }
@@ -40,6 +54,4 @@ else
 {
     [Parameter] TorrentItemViewModel[] Items { get; set; }
     [Parameter] Task<TSearch> Search { get; set; }
-
-    static string TorrentDetailsUri(long id) => $"/torrent/{id}";
 }

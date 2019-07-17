@@ -14,8 +14,9 @@
     "Position": "BottomRight",
     "PreventDuplicates": true,
     "NewestOnTop": true,
+    "ShowProgressBar": false,
     "ShowCloseButton": true,
     "MaximumOpacity": 100,
-    "VisibleStateDuration": 3000 
+    "VisibleStateDuration": 3000
   }
 }

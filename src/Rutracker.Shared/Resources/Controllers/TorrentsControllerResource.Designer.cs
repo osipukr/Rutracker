@@ -42,22 +42,22 @@
         public static global::System.Globalization.CultureInfo Culture { get; set; }
 
         /// <summary>
-        ///   Looks up a localized string similar to The {0} is out of range ({1}-{2})..
+        ///   Looks up a localized string similar to The {0} cannot be negative.
         /// </summary>
         public static string PageError => ResourceManager.GetString("PageError", Culture);
 
         /// <summary>
-        ///   Looks up a localized string similar to The {0} is out of range ({1}-{2})..
+        ///   Looks up a localized string similar to The {0} is out of range ({1} - {2}).
         /// </summary>
         public static string PageSizeError => ResourceManager.GetString("PageSizeError", Culture);
 
         /// <summary>
-        ///   Looks up a localized string similar to The {0} is out of range ({1}-{2})..
+        ///   Looks up a localized string similar to The {0} cannot be negative.
         /// </summary>
         public static string TitlesCountError => ResourceManager.GetString("TitlesCountError", Culture);
 
         /// <summary>
-        ///   Looks up a localized string similar to The {0} is out of range ({1}-{2})..
+        ///   Looks up a localized string similar to The {0} cannot be negative.
         /// </summary>
         public static string TorrentIdError => ResourceManager.GetString("TorrentIdError", Culture);
     }

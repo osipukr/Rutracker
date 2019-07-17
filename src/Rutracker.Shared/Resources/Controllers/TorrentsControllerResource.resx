@@ -118,15 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PageError" xml:space="preserve">
-    <value>The {0} is out of range ({1}-{2}).</value>
+    <value>The {0} cannot be negative</value>
   </data>
   <data name="PageSizeError" xml:space="preserve">
-    <value>The {0} is out of range ({1}-{2}).</value>
+    <value>The {0} is out of range ({1} - {2})</value>
   </data>
   <data name="TitlesCountError" xml:space="preserve">
-    <value>The {0} is out of range ({1}-{2}).</value>
+    <value>The {0} cannot be negative</value>
   </data>
   <data name="TorrentIdError" xml:space="preserve">
-    <value>The {0} is out of range ({1}-{2}).</value>
+    <value>The {0} cannot be negative</value>
   </data>
 </root>

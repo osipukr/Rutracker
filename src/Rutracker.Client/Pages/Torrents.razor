@@ -7,24 +7,36 @@
 @inject IMatToaster MatToaster
 @inject ViewSettings ViewSettings
 
-@if (!SearchTask.IsCompleted)
+@if (Model == null)
 {
-    <LoadingBackground>
-        <span>Loading page model, please wait...</span>
-    </LoadingBackground>
-}
-else if (Model == null)
-{
-    <LoadingBackground ShowLoader="false">
-        <p>Failed to load page model</p>
-        <MatButton Raised="true" OnClick="@LoadTorrentsIndexAsync">Try again</MatButton>
-    </LoadingBackground>
+    if (SearchTask.IsFaulted)
+    {
+        <LoadingBackground ShowLoader="false">
+            <p>Failed to load page model</p>
+            <MatButton Raised="true" OnClick="@LoadTorrentsIndexAsync">Try again</MatButton>
+            <MatButton Raised="true" Link="@UriHelper.ToAbsoluteUri("/").AbsoluteUri">Return Home</MatButton>
+        </LoadingBackground>
+    }
+    else
+    {
+        <LoadingBackground>
+            <span>Loading page model, please wait...</span>
+        </LoadingBackground>
+    }
 }
 else
 {
-    <Filtration Model="@FilterModel" FilterChanged="@FilterChanged" Search="@SearchTask" />
+    if (FilterModel != null)
+    {
+        <Filtration Model="@FilterModel" FilterChanged="@FilterChanged" Search="@SearchTask" />
+    }
+
     <TorrentList Items="@Model.TorrentItems" Search="@SearchTask" />
-    <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonChanged" Search="@SearchTask" />
+
+    if (Model.PaginationModel != null)
+    {
+        <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonChanged" Search="@SearchTask" />
+    }
 }
 
 @functions

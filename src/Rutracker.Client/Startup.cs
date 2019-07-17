@@ -34,6 +34,7 @@ namespace Rutracker.Client
                 config.Position = settings.Position;
                 config.PreventDuplicates = settings.PreventDuplicates;
                 config.NewestOnTop = settings.NewestOnTop;
+                config.ShowProgressBar = settings.ShowProgressBar;
                 config.ShowCloseButton = settings.ShowCloseButton;
                 config.MaximumOpacity = settings.MaximumOpacity;
                 config.VisibleStateDuration = settings.VisibleStateDuration;

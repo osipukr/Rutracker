@@ -13,10 +13,10 @@
                 <div class="mat-layout-grid-inner pt-0 pb-3">
                     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
                         <MatTextField @bind-Value="@Model.Search"
-                                           Label="Search"
-                                           Icon="search"
-                                           IconTrailing="true"
-                                           FullWidth="true">
+                                      Label="Search"
+                                      Icon="@MatIconNames.Search"
+                                      IconTrailing="true"
+                                      FullWidth="true">
                         </MatTextField>
                     </div>
                     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
@@ -32,16 +32,16 @@
                         <MatExpansionPanelDetails>
                             <div class="mat-layout-grid-inner py-0">
                                 <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-                                    <MatNumeric Label="From" 
-                                                Value="@Model.SizeFrom" 
-                                                ValueChanged="@(x => Model.SizeFrom = x)">
+                                    <MatNumeric Label="From"
+                                                Value="@Model.SizeFrom"
+                                                ValueChanged="@SizeFromValueChanged">
                                     </MatNumeric>
                                 </div>
 
                                 <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-                                    <MatNumeric Label="To" 
-                                                Value="@Model.SizeTo" 
-                                                ValueChanged="@(x => Model.SizeTo = x)">
+                                    <MatNumeric Label="To"
+                                                Value="@Model.SizeTo"
+                                                ValueChanged="@SizeToValueChanged">
                                     </MatNumeric>
                                 </div>
 
@@ -125,6 +125,9 @@
             MatToaster.Add(ex.Message, MatToastType.Warning, "Titles Load Failed");
         }
     }
+
+    void SizeFromValueChanged(long? value) => Model.SizeFrom = value;
+    void SizeToValueChanged(long? value) => Model.SizeTo = value;
 
     void ResetFiltration()
     {

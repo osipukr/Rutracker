@@ -15,17 +15,11 @@ namespace Rutracker.Client.Services
         protected async Task<TResult> GetJsonAsync<TResult>(string url)
         {
             using var response = await _httpClient.GetAsync(url);
-
-            if (response == null)
-            {
-                throw new ArgumentNullException(nameof(response));
-            }
-
-            var result = await response.Content.ReadAsStringAsync();
+            var result = await ReadContentAsync(response);
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception(result);
+                throw new Exception(ReadStringError(result));
             }
 
             return DeserializeJson<TResult>(result);
@@ -39,20 +33,38 @@ namespace Rutracker.Client.Services
                 "application/json");
 
             using var response = await _httpClient.PostAsync(url, content);
+            var result = await ReadContentAsync(response);
 
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception(ReadStringError(result));
+            }
+
+            return DeserializeJson<TResult>(result);
+        }
+
+        private static async Task<string> ReadContentAsync(HttpResponseMessage response)
+        {
             if (response == null)
             {
                 throw new ArgumentNullException(nameof(response));
             }
 
-            var result = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync();
 
-            if (!response.IsSuccessStatusCode)
+            if (content == null)
             {
-                throw new Exception(result);
+                throw new ArgumentNullException(nameof(content));
             }
 
-            return DeserializeJson<TResult>(result);
+            return content;
+        }
+
+        private static string ReadStringError(string value)
+        {
+            var length = value.Length;
+
+            return length > 1 ? value.Substring(1, length - 2) : value;
         }
 
         private static TResult DeserializeJson<TResult>(string json) => JsonConvert.DeserializeObject<TResult>(json);

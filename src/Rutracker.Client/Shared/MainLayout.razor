@@ -5,8 +5,8 @@
     <MatAppBar Fixed="true">
         <MatAppBarRow>
             <MatAppBarSection Align="@MatAppBarSectionAlign.Start">
-                <img alt="@brandName" class="logo-img" src="img/brand-dark.svg" title="@brandName">
-                <MatAppBarTitle>@brandName</MatAppBarTitle>
+                <img alt="@BrandName" class="logo-img" src="img/brand-dark.svg" title="@BrandName">
+                <MatAppBarTitle>@BrandName</MatAppBarTitle>
             </MatAppBarSection>
             <MatAppBarSection Align="@MatAppBarSectionAlign.End">
                 <MatTooltip Tooltip="Github Repository">
@@ -19,12 +19,10 @@
         </MatAppBarRow>
     </MatAppBar>
     <MatAppBarContent>
-        <section class="container-fluid">
-            @Body
-        </section>
+        <section class="container-fluid">@Body</section>
     </MatAppBarContent>
 </MatAppBarContainer>
 
 @functions {
-    string brandName => ViewSettings.ServiceName;
+    string BrandName => ViewSettings.ServiceName;
 }
