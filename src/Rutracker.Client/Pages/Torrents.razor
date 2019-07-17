@@ -7,10 +7,17 @@
 @inject IMatToaster MatToaster
 @inject ViewSettings ViewSettings
 
-@if (Model == null)
+@if (!SearchTask.IsCompleted)
 {
     <LoadingBackground>
         <span>Loading page model, please wait...</span>
+    </LoadingBackground>
+}
+else if (Model == null)
+{
+    <LoadingBackground ShowLoader="false">
+        <p>Failed to load page model</p>
+        <MatButton Raised="true" OnClick="@LoadTorrentsIndexAsync">Try again</MatButton>
     </LoadingBackground>
 }
 else
@@ -32,7 +39,7 @@ else
     protected override async Task OnInitAsync()
     {
         await RefreshParametersAsync();
-        UriHelper.OnLocationChanged += async (sender, args) => await  OnLocationChanges(sender, args);
+        UriHelper.OnLocationChanged += async (sender, args) => await OnLocationChanges(sender, args);
     }
 
     async Task OnLocationChanges(object sender, LocationChangedEventArgs args) => await RefreshParametersAsync();
@@ -45,9 +52,9 @@ else
                 : null;
 
         Page = QueryHelpers.ParseQuery(uriQuery).TryGetValue("page", out var pageParam)
-               && int.TryParse(pageParam.First(), out var pageParamId)
-               ? pageParamId
-               : 1;
+                && int.TryParse(pageParam.First(), out var pageParamId)
+                ? pageParamId
+                : 1;
 
         await LoadTorrentsIndexAsync();
         StateHasChanged();
@@ -75,5 +82,5 @@ else
     void PageButtonChanged(int page) => UriHelper.NavigateTo($"/torrents?search={FilterModel.Search}&page={page}");
     void FilterChanged() => UriHelper.NavigateTo($"/torrents?search={FilterModel.Search}");
 
-    public void Dispose() => UriHelper.OnLocationChanged -= async (sender, args) => await  OnLocationChanges(sender, args);
+    public void Dispose() => UriHelper.OnLocationChanged -= async (sender, args) => await OnLocationChanges(sender, args);
 }

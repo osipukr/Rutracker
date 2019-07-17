@@ -1,96 +1,114 @@
-﻿@page "/torrent/{id:long}"
+﻿@page "/torrents/{id:long}"
+
 @inject ITorrentsClientService Client
 @inject IUriHelper UriHelper
+@inject IMatToaster MatToaster
 
-@if (Model == null)
+@if (!SearchTask.IsCompleted)
 {
-    <LoadSpinner />
+    <LoadingBackground>
+        <span>Loading page model, please wait...</span>
+    </LoadingBackground>
+}
+else if (Model == null)
+{
+    <LoadingBackground ShowLoader="false">
+        <p>Torrent with id @Id not found</p>
+        <MatButton Link="/" Raised="true">Return to full torrents list</MatButton>
+    </LoadingBackground>
 }
 else
 {
+    var torrent = Model.TorrentDetailsItem;
+
     <div class="card text-center mb-3">
         <div class="card-body">
-            <button class="btn btn-outline-primary" @onclick="@BackToButtonClick">
+            <button class="btn btn-outline-primary" @onclick="@BackToButtonClicked">
                 Back to full torrents list
             </button>
         </div>
     </div>
 
-    @if (Model.TorrentDetailsItem == null)
-    {
-        <h1 class="text-center">Torrent not found ;(</h1>
-    }
-    else
-    {
-        var torrent = Model.TorrentDetailsItem;
-
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <span class="badge badge-primary">Id</span> - @torrent.Id
-            </div>
+    <div class="card mb-2 shadow-sm">
+        <div class="card-body">
+            <span class="badge badge-primary">Id</span> - @torrent.Id
         </div>
+    </div>
 
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <span class="badge badge-primary">Title</span> - @torrent.Title
-            </div>
+    <div class="card mb-2 shadow-sm">
+        <div class="card-body">
+            <span class="badge badge-primary">Title</span> - @torrent.Title
         </div>
+    </div>
 
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <span class="badge badge-primary">Size</span> - @torrent.Size bytes
-            </div>
+    <div class="card mb-2 shadow-sm">
+        <div class="card-body">
+            <span class="badge badge-primary">Size</span> - @torrent.Size bytes
         </div>
+    </div>
 
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <span class="badge badge-primary">Date</span> - @torrent.Date.ToLongDateString()
-            </div>
+    <div class="card mb-2 shadow-sm">
+        <div class="card-body">
+            <span class="badge badge-primary">Date</span> - @torrent.Date.ToLongDateString()
         </div>
+    </div>
 
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <span class="badge badge-primary">Hash</span> - @torrent.Hash
-            </div>
+    <div class="card mb-2 shadow-sm">
+        <div class="card-body">
+            <span class="badge badge-primary">Hash</span> - @torrent.Hash
         </div>
+    </div>
 
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <span class="badge badge-primary mb-2">Forum</span>
+    <div class="card mb-2 shadow-sm">
+        <div class="card-body">
+            <span class="badge badge-primary mb-2">Forum</span>
 
-                <ul class="list-group">
-                    <li class="list-group-item mb-1 rounded">
-                        <p class="m-0"><span class="badge badge-primary">Id:</span> @torrent.Forum.Id</p>
-                    </li>
+            <ul class="list-group">
+                <li class="list-group-item mb-1 rounded">
+                    <p class="m-0"><span class="badge badge-primary">Id:</span> @torrent.Forum.Id</p>
+                </li>
 
-                    <li class="list-group-item rounded">
-                        <p class="m-0"><span class="badge badge-primary">Title:</span> @torrent.Forum.Title</p>
-                    </li>
-                </ul>
-            </div>
+                <li class="list-group-item rounded">
+                    <p class="m-0"><span class="badge badge-primary">Title:</span> @torrent.Forum.Title</p>
+                </li>
+            </ul>
         </div>
+    </div>
 
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <span class="badge badge-primary">Is deleted</span> - @(torrent.IsDeleted ? "Yes" : "No")
-            </div>
+    <div class="card mb-2 shadow-sm">
+        <div class="card-body">
+            <span class="badge badge-primary">Is deleted</span> - @(torrent.IsDeleted ? "Yes" : "No")
         </div>
+    </div>
 
-        <FileList Items="@torrent.Files" />
+    <FileList Items="@torrent.Files" />
 
-        <div class="card mb-3 shadow-sm">
-            <div class="card-body">@((MarkupString)torrent.Content)</div>
-        </div>
-    }
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">@((MarkupString)torrent.Content)</div>
+    </div>
 }
 
-@code
+@functions
 {
     [Parameter] long Id { get; set; }
 
     TorrentIndexViewModel Model { get; set; }
+    Task<TorrentIndexViewModel> SearchTask { get; set; }
 
-    protected override async Task OnInitAsync() => Model = await Client.GetTorrentIndexAsync(Id);
+    protected override async Task OnInitAsync() => await LoadTorrentIndexAsync();
 
-    void BackToButtonClick() => UriHelper.NavigateTo("/torrents");
+    async Task LoadTorrentIndexAsync()
+    {
+        try
+        {
+            SearchTask = Client.GetTorrentIndexAsync(Id);
+            Model = await SearchTask;
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Danger, "Model Load Failed");
+        }
+    }
+
+    void BackToButtonClicked() => UriHelper.NavigateTo("/torrents");
 }
