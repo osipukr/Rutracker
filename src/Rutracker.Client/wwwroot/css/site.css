@@ -1,17 +1,9 @@
 ﻿body {
     font-family: HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
     height: 100vh;
-    position: relative;
     overflow-x: hidden;
 }
 
-app {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-}
-
-/** scroll bar */
 ::-webkit-scrollbar {
     width: 9px;
 }
@@ -32,24 +24,23 @@ app {
     font-size: 30px;
 }
 
-/* Loading page */
 .triangle-container {
     background-color: #5D2E8F;
-    left: calc(-50vw + 50%);
     position: fixed;
-    right: calc(-50vw + 50%);
     top: 0;
     bottom: 0;
+    right: calc(-50vw + 50%);
+    left: calc(-50vw + 50%);
     z-index: -1;
 }
 
 .triangles {
-    background: url("../img/background.svg") center center;
+    background: url("../img/background.svg")center center;
     background-size: cover;
     height: 100%;
+    position: fixed;
     bottom: 0;
     left: 0;
-    position: fixed;
     right: 0;
     top: 0;
     mix-blend-mode: hard-light;
@@ -66,31 +57,9 @@ app {
     margin: 25px auto;
 }
 
-.logo-img {
-    height: 100%;
-}
-
-
-/* page */
 .container-fluid {
     padding: 20px 30px;
 }
-
-hr {
-    clear: both;
-}
-
-/* misc */
-.contrib-card {
-    padding: 20px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-    .contrib-card img {
-        height: 50px;
-        width: 50px;
-    }
 
 .validation-message {
     margin-top: 10px;
@@ -140,15 +109,7 @@ label {
 }
 
 @media (max-width: 767.98px) {
-    .brand {
-        display: none;
-    }
-
     .mdc-top-app-bar__title {
         padding-left: 0 !important;
-    }
-
-    .loading-container {
-        padding: 10px;
     }
 }

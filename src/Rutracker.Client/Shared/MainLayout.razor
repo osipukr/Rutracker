@@ -5,7 +5,7 @@
     <MatAppBar Fixed="true">
         <MatAppBarRow>
             <MatAppBarSection Align="@MatAppBarSectionAlign.Start">
-                <img alt="@BrandName" class="logo-img" src="img/brand-dark.svg" title="@BrandName">
+                <img alt="@BrandName" class="h-100" src="img/brand.svg" title="@BrandName">
                 <MatAppBarTitle>@BrandName</MatAppBarTitle>
             </MatAppBarSection>
             <MatAppBarSection Align="@MatAppBarSectionAlign.End">
@@ -23,6 +23,6 @@
     </MatAppBarContent>
 </MatAppBarContainer>
 
-@functions {
+@code {
     string BrandName => ViewSettings.ServiceName;
 }
