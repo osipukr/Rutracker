@@ -8,8 +8,7 @@
   "ViewSettings": {
     "ServiceName": "Rutracker - Blazor",
     "ForumTitlesCount": 5,
-    "ItemsPerPageCount": 6,
-    "PaginationButtonCount": 5
+    "ItemsPerPageCount": 6
   },
   "MatToasterSettings": {
     "Position": "BottomRight",

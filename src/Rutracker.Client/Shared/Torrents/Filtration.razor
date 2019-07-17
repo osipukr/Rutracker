@@ -32,25 +32,17 @@
                         <MatExpansionPanelDetails>
                             <div class="mat-layout-grid-inner py-0">
                                 <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-                                    <MatNumericUpDownField Label="From"
-                                                           @bind-Value=@SizeFrom
-                                                           Icon="border_color"
-                                                           Outlined="true"
-                                                           FullWidth="true"
-                                                           DecimalPlaces=0
-                                                           Minimum=null Maximum=null>
-                                    </MatNumericUpDownField>
+                                    <MatNumeric Label="From" 
+                                                Value="@Model.SizeFrom" 
+                                                ValueChanged="@(x => Model.SizeFrom = x)">
+                                    </MatNumeric>
                                 </div>
 
                                 <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-                                    <MatNumericUpDownField Label="To"
-                                                           @bind-Value=@SizeTo
-                                                           Icon="border_color"
-                                                           Outlined="true"
-                                                           FullWidth="true"
-                                                           DecimalPlaces=0
-                                                           Minimum=null Maximum=null>
-                                    </MatNumericUpDownField>
+                                    <MatNumeric Label="To" 
+                                                Value="@Model.SizeTo" 
+                                                ValueChanged="@(x => Model.SizeTo = x)">
+                                    </MatNumeric>
                                 </div>
 
                                 <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
@@ -100,7 +92,6 @@
                             <MatButton Disabled="@(!Search.IsCompleted)"
                                        OnClick="@OnSubmitClicked"
                                        Raised="true"
-                                       Type="submit"
                                        Class="filter-btn">
                                 Apply
                             </MatButton>
@@ -118,19 +109,10 @@
     [Parameter] EventCallback FilterChanged { get; set; }
     [Parameter] Task<TSearch> Search { get; set; }
 
-    decimal? SizeFrom = null;
-    decimal? SizeTo = null;
-
-    int TitleCount { get; set; }
+    int TitleCount => ViewSettings.ForumTitlesCount;
     FacetViewModel<string> TitleFacet { get; set; }
 
-    protected override async Task OnInitAsync()
-    {
-        LoadDefaultForumCount();
-        await LoadTitleFacetsAsync();
-    }
-
-    void LoadDefaultForumCount() => TitleCount = ViewSettings.ForumTitlesCount;
+    protected override async Task OnInitAsync() => await LoadTitleFacetsAsync();
 
     async Task LoadTitleFacetsAsync()
     {
@@ -144,14 +126,12 @@
         }
     }
 
-    void ResetFiltrationModel()
+    void ResetFiltration()
     {
         Model.Search = null;
         Model.SizeFrom = null;
         Model.SizeTo = null;
         Model.SelectedTitleIds = null;
-        SizeFrom = null;
-        SizeTo = null;
 
         if (TitleFacet != null && TitleFacet.FacetItems != null)
         {
@@ -162,16 +142,11 @@
         }
     }
 
-    void OnSubmitClicked()
-    {
-        Model.SizeFrom = (long?)SizeFrom;
-        Model.SizeTo = (long?)SizeTo;
-        Model.SelectedTitleIds = TitleFacet?.FacetItems?.Where(x => x.IsSelected).Select(x => x.Id);
-    }
+    void OnSubmitClicked() => Model.SelectedTitleIds = TitleFacet?.FacetItems?.Where(x => x.IsSelected).Select(x => x.Id);
 
     void ResetButtonClicked()
     {
-        ResetFiltrationModel();
+        ResetFiltration();
         OnValidSubmitClicked();
     }
 
