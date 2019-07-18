@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Rutracker.Server.Interfaces.Controllers;
 using Rutracker.Server.Interfaces.Services;
 using Rutracker.Shared.Resources.Controllers;
@@ -9,6 +10,9 @@ using Rutracker.Shared.ViewModels.Shared;
 namespace Rutracker.Server.Controllers
 {
     [Route("api/[controller]")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public class TorrentsController : ControllerBase, ITorrentsController
     {
         private readonly ITorrentViewModelService _torrentViewModelService;

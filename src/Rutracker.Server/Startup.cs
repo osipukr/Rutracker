@@ -26,6 +26,7 @@ namespace Rutracker.Server
                 .AddCaching()
                 .AddCustomOptions(_configuration)
                 .AddCustomResponseCompression(_configuration)
+                .AddSwagger()
                 .AddAutoMapper(typeof(Startup))
                 .AddControllers()
                 .AddCustomMvcOptions()
@@ -43,6 +44,12 @@ namespace Rutracker.Server
                     x => x
                         .UseDeveloperErrorPages()
                         .UseDebugging())
+                .UseSwagger()
+                .UseSwaggerUI(options =>
+                {
+                    options.DocumentTitle = "Rutracker - API Endpoints";
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                })
                 .UseClientSideBlazorFiles<Client.Startup>()
                 .UseRouting()
                 .UseEndpoints(endpoints =>

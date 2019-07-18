@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using Rutracker.Core.Interfaces.Repositories;
 using Rutracker.Core.Interfaces.Services;
 using Rutracker.Core.Services;
@@ -58,6 +59,22 @@ namespace Rutracker.Server.Extensions
                 .Configure<GzipCompressionProviderOptions>(options =>
                 {
                     options.Level = CompressionLevel.Optimal;
+                });
+
+        /// <summary>
+        ///     Adds and configure Swagger middleware.
+        /// </summary>
+        public static IServiceCollection AddSwagger(
+            this IServiceCollection services) =>
+            services
+                .AddSwaggerGen(options =>
+                {
+                    options.SwaggerDoc("v1", new OpenApiInfo
+                    {
+                        Version = "v1",
+                        Title = "Rutracker API",
+                        Description = "The current version of the API"
+                    });
                 });
 
         /// <summary>
