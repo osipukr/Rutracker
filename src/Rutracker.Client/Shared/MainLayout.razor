@@ -1,11 +1,28 @@
 ﻿@inherits LayoutComponentBase
+@inject ViewSettings ViewSettings
 
-<header>
-    <NavMenu />
-</header>
+<MatAppBarContainer>
+    <MatAppBar Fixed="true">
+        <MatAppBarRow>
+            <MatAppBarSection Align="@MatAppBarSectionAlign.Start">
+                <img alt="@BrandName" class="h-100" src="img/brand.svg" title="@BrandName">
+                <MatAppBarTitle>@BrandName</MatAppBarTitle>
+            </MatAppBarSection>
+            <MatAppBarSection Align="@MatAppBarSectionAlign.End">
+                <MatTooltip Tooltip="Github Repository">
+                    <MatIconButton Link="https://github.com/osipukr/Rutracker-Blazor"
+                                   RefBack="@context">
+                        <i class="fa fa-github" aria-hidden="true"></i>
+                    </MatIconButton>
+                </MatTooltip>
+            </MatAppBarSection>
+        </MatAppBarRow>
+    </MatAppBar>
+    <MatAppBarContent>
+        <section class="container-fluid">@Body</section>
+    </MatAppBarContent>
+</MatAppBarContainer>
 
-<main role="main">
-    <div class="container py-3">
-        @Body
-    </div>
-</main>
+@code {
+    string BrandName => ViewSettings.ServiceName;
+}

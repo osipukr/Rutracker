@@ -1,0 +1,20 @@
+<MatNumericUpDownField Label="@Label"
+                       @bind-Value=@DecimalValue
+                       Icon="@MatIconNames.Border_color"
+                       Outlined="true"
+                       FullWidth="true"
+                       DecimalPlaces=0
+                       Minimum=null Maximum=null>
+</MatNumericUpDownField>
+
+@code {
+    [Parameter] string Label { get; set; }
+    [Parameter] long? Value { get; set; }
+    [Parameter] EventCallback<long?> ValueChanged { get; set; }
+
+    decimal? DecimalValue
+    {
+        get => Value;
+        set => ValueChanged.InvokeAsync(Value = (long?)value);
+    }
+}

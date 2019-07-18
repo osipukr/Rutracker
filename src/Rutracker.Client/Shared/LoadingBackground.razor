@@ -1,0 +1,14 @@
+<div class="loading-container mat-elevation-z10" style="@Style">
+    @ChildContent
+
+    @if (ShowLoader)
+    {
+        <MatProgressBar Indeterminate="true" Reversed="true" Class="mt-3"></MatProgressBar>
+    }
+</div>
+
+@code {
+    [Parameter] bool ShowLoader { get; set; } = true;
+    [Parameter] string Style { get; set; }
+    [Parameter] RenderFragment ChildContent { get; set; }
+}

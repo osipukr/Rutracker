@@ -6,8 +6,17 @@
 
   },
   "ViewSettings": {
+    "ServiceName": "Rutracker - Blazor",
     "ForumTitlesCount": 5,
-    "ItemsPerPageCount": 10,
-    "PaginationButtonCount": 5
+    "ItemsPerPageCount": 6
+  },
+  "MatToasterSettings": {
+    "Position": "BottomRight",
+    "PreventDuplicates": true,
+    "NewestOnTop": true,
+    "ShowProgressBar": false,
+    "ShowCloseButton": true,
+    "MaximumOpacity": 100,
+    "VisibleStateDuration": 3000
   }
 }

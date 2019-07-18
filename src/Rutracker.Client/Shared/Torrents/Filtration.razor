@@ -1,142 +1,157 @@
-﻿@inject ITorrentsClientService Client
+﻿@typeparam TSearch
+
+@inject ITorrentsClientService Client
+@inject IMatToaster MatToaster
 @inject ViewSettings ViewSettings
 
-<EditForm Model="@Model" OnValidSubmit="@ApplyButtonClick">
-    <DataAnnotationsValidator />
+<div class="mat-layout-grid px-0">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+            <EditForm Model="@Model" OnValidSubmit="@OnValidSubmitClicked">
+                <DataAnnotationsValidator />
 
-    <FilterCard Class="filter-card no-select" Title="Search">
-        <div class="form-row">
-            <div class="input-group">
-                <InputSearch @bind-Value="@Model.Search"
-                             Class="form-control w-100"
-                             Placeholder="Search" />
-
-                <ValidationMessage For="@(() => Model.Search)" />
-            </div>
-        </div>
-    </FilterCard>
-
-    <FilterCard Class="filter-card no-select" Title="Range size">
-        <div class="form-row">
-            <div class="col-md-6 col-6">
-                <label class="w-100">
-                    Min size
-                    <InputNumber @bind-Value="@Model.SizeFrom" Class="form-control" />
-                </label>
-            </div>
-            <div class="col-md-6 col-6 text-right">
-                <label class="w-100">
-                    Max size
-                    <InputNumber @bind-Value="@Model.SizeTo" Class="form-control" />
-                </label>
-            </div>
-
-            <ValidationMessage For="@(() => Model.SizeFrom)" />
-            <ValidationMessage For="@(() => Model.SizeTo)" />
-        </div>
-    </FilterCard>
-
-    <FilterCard Class="filter-card no-select" Title="Forum titles category">
-        @if (TitleFacet == null || TitleFacet.FacetItems == null)
-        {
-            <LoadSpinner />
-        }
-        else
-        {
-            foreach (var facet in TitleFacet.FacetItems)
-            {
-                <div class="custom-control custom-checkbox title-facet">
-                    <span class="float-right badge badge-primary">@facet.Count</span>
-
-                    <InputCheckbox @bind-Value="@facet.IsSelected"
-                                   Class="custom-control-input d-none"
-                                   Id="@facet.Id" />
-
-                    <label class="custom-control-label h-100"
-                           for="@facet.Id"
-                           title="@facet.Value">
-                        @facet.Value
-                    </label>
+                <div class="mat-layout-grid-inner pt-0 pb-3">
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <MatTextField @bind-Value="@Model.Search"
+                                      Label="Search"
+                                      Icon="@MatIconNames.Search"
+                                      IconTrailing="true"
+                                      FullWidth="true">
+                        </MatTextField>
+                    </div>
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <ValidationMessage For="@(() => Model.Search)" />
+                    </div>
                 </div>
-            }
-        }
-    </FilterCard>
 
-    <div class="card filter-card no-select">
-        <div class="card-footer border-top-0">
-            <div class="row">
-                @if (SearchTask.IsCompleted && TitleFacet != null && TitleFacet.FacetItems != null)
-                {
-                    <div class="col-6">
-                        <button class="btn btn-outline-primary w-100" type="submit">Apply</button>
-                    </div>
+                <MatAccordion Multi="true">
+                    <MatExpansionPanel>
+                        <MatExpansionPanelSummary Class="no-select">
+                            <MatExpansionPanelHeader>Size range</MatExpansionPanelHeader>
+                        </MatExpansionPanelSummary>
+                        <MatExpansionPanelDetails>
+                            <div class="mat-layout-grid-inner py-0">
+                                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                                    <MatNumeric Label="From"
+                                                Value="@Model.SizeFrom"
+                                                ValueChanged="@SizeFromValueChanged">
+                                    </MatNumeric>
+                                </div>
 
-                    <div class="col-6">
-                        <button class="btn btn-outline-primary w-100"
-                                @onclick="@ResetButtonClick"
-                                type="reset">
-                            All
-                        </button>
-                    </div>
-                }
-                else
-                {
-                    <div class="col-6">
-                        <button class="btn btn-outline-primary w-100 h-100 d-flex justify-content-center align-items-center" type="button" disabled>
-                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            <span class="sr-only">Loading...</span>
-                        </button>
-                    </div>
+                                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                                    <MatNumeric Label="To"
+                                                Value="@Model.SizeTo"
+                                                ValueChanged="@SizeToValueChanged">
+                                    </MatNumeric>
+                                </div>
 
-                    <div class="col-6">
-                        <button class="btn btn-outline-primary w-100" type="button" disabled>
-                            All
-                        </button>
+                                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                                    <ValidationMessage For="@(() => Model.SizeFrom)" />
+                                </div>
+
+                                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                                    <ValidationMessage For="@(() => Model.SizeTo)" />
+                                </div>
+                            </div>
+                        </MatExpansionPanelDetails>
+                    </MatExpansionPanel>
+
+                    <MatExpansionPanel>
+                        <MatExpansionPanelSummary Class="no-select">
+                            <MatExpansionPanelHeader>Forum titles category</MatExpansionPanelHeader>
+                        </MatExpansionPanelSummary>
+                        <MatExpansionPanelDetails>
+                            @if (TitleFacet != null && TitleFacet.FacetItems != null)
+                            {
+                                <div class="mat-layout-grid-inner p-0 pt-3">
+                                    @foreach (var facet in TitleFacet.FacetItems)
+                                    {
+                                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                                            <MatCheckbox @bind-Checked="@facet.IsSelected">
+                                                <span>@facet.Value - (Count: @facet.Count)</span>
+                                            </MatCheckbox>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </MatExpansionPanelDetails>
+                    </MatExpansionPanel>
+                </MatAccordion>
+
+                <div class="mat-layout-grid mat-layout-grid-align-right px-0 pb-0 pt-3">
+                    <div class="mat-layout-grid-inner">
+                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12" style="grid-column-end: none">
+                            <MatButton Disabled="@(!Search.IsCompleted)"
+                                       OnClick="@ResetButtonClicked"
+                                       Outlined="true"
+                                       Type="reset"
+                                       Class="filter-btn">
+                                All
+                            </MatButton>
+
+                            <MatButton Disabled="@(!Search.IsCompleted)"
+                                       OnClick="@OnSubmitClicked"
+                                       Raised="true"
+                                       Class="filter-btn">
+                                Apply
+                            </MatButton>
+                        </div>
                     </div>
-                }
-            </div>
+                </div>
+            </EditForm>
         </div>
     </div>
-</EditForm>
+</div>
 
 @code
 {
     [Parameter] FiltrationViewModel Model { get; set; }
-    [Parameter] EventCallback ChangedHandler { get; set; }
-    [Parameter] Task<TorrentsIndexViewModel> SearchTask { get; set; }
+    [Parameter] EventCallback FilterChanged { get; set; }
+    [Parameter] Task<TSearch> Search { get; set; }
 
-    int TitleCount { get; set; }
+    int TitleCount => ViewSettings.ForumTitlesCount;
     FacetViewModel<string> TitleFacet { get; set; }
 
-    protected override async Task OnInitAsync()
-    {
-        TitleCount = ViewSettings.ForumTitlesCount;
-        TitleFacet = await Client.GetTitlesAsync(TitleCount);
-    }
+    protected override async Task OnInitAsync() => await LoadTitleFacetsAsync();
 
-    void ResetFiltrationModel()
+    async Task LoadTitleFacetsAsync()
     {
-        Model.Search = null;
-        Model.SelectedTitleIds = null;
-        Model.SizeFrom = null;
-        Model.SizeTo = null;
-
-        foreach (var facet in TitleFacet.FacetItems)
+        try
         {
-            facet.IsSelected = false;
+            TitleFacet = await Client.GetTitlesAsync(TitleCount);
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Titles Load Failed");
         }
     }
 
-    void ApplyButtonClick()
-    {
-        Model.SelectedTitleIds = TitleFacet.FacetItems.Where(x => x.IsSelected).Select(x => x.Id);
+    void SizeFromValueChanged(long? value) => Model.SizeFrom = value;
+    void SizeToValueChanged(long? value) => Model.SizeTo = value;
 
-        ChangedHandler.InvokeAsync(EventArgs.Empty);
+    void ResetFiltration()
+    {
+        Model.Search = null;
+        Model.SizeFrom = null;
+        Model.SizeTo = null;
+        Model.SelectedTitleIds = null;
+
+        if (TitleFacet != null && TitleFacet.FacetItems != null)
+        {
+            foreach (var facet in TitleFacet.FacetItems)
+            {
+                facet.IsSelected = false;
+            }
+        }
     }
 
-    void ResetButtonClick()
+    void OnSubmitClicked() => Model.SelectedTitleIds = TitleFacet?.FacetItems?.Where(x => x.IsSelected).Select(x => x.Id);
+
+    void ResetButtonClicked()
     {
-        ResetFiltrationModel();
-        ApplyButtonClick();
+        ResetFiltration();
+        OnValidSubmitClicked();
     }
+
+    void OnValidSubmitClicked() => FilterChanged.InvokeAsync(EventArgs.Empty);
 }

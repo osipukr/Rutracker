@@ -4,5 +4,6 @@
     {
         public ApiUriSettings ApiUriSettings { get; set; }
         public ViewSettings ViewSettings { get; set; }
+        public MatToasterSettings MatToasterSettings { get; set; }
     }
 }

@@ -1,26 +1,43 @@
-﻿@page "/torrents"
+﻿@page "/"
+@page "/torrents"
+
 @implements IDisposable
-@inject ITorrentsClientService Client
 @inject IUriHelper UriHelper
+@inject ITorrentsClientService Client
+@inject IMatToaster MatToaster
 @inject ViewSettings ViewSettings
 
-<div class="row">
-    <div class="col-lg-3 pb-3">
-        <Filtration Model="@FilterModel" ChangedHandler="@FilterApplyButtonClick" SearchTask="@SearchTask" />
-    </div>
+@if (Model == null)
+{
+    if (SearchTask.IsFaulted)
+    {
+        <LoadingBackground ShowLoader="false">
+            <p>Failed to load page model</p>
+            <MatButton Raised="true" OnClick="@LoadTorrentsIndexAsync">Try again</MatButton>
+            <MatButton Raised="true" Link="@UriHelper.ToAbsoluteUri("/").AbsoluteUri">Return Home</MatButton>
+        </LoadingBackground>
+    }
+    else
+    {
+        <LoadingBackground>
+            <span>Loading page model, please wait...</span>
+        </LoadingBackground>
+    }
+}
+else
+{
+    if (FilterModel != null)
+    {
+        <Filtration Model="@FilterModel" FilterChanged="@FilterChanged" Search="@SearchTask" />
+    }
 
-    <div class="col-lg-9">
-        @if (SearchTask.IsCompleted && Model != null)
-        {
-            <TorrentList Items="@Model.TorrentItems" />
-            <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonClick" />
-        }
-        else
-        {
-            <LoadSpinner />
-        }
-    </div>
-</div>
+    <TorrentList Items="@Model.TorrentItems" Search="@SearchTask" />
+
+    if (Model.PaginationModel != null)
+    {
+        <Pagination Model="@Model.PaginationModel" PageChanged="@PageButtonChanged" Search="@SearchTask" />
+    }
+}
 
 @code
 {
@@ -29,30 +46,27 @@
     Task<TorrentsIndexViewModel> SearchTask { get; set; }
 
     int Page { get; set; }
-    int PageSize { get; set; }
-
-    const string QueryTemplate = "/torrents?search={0}&page={1}";
+    int PageSize => ViewSettings.ItemsPerPageCount;
 
     protected override async Task OnInitAsync()
     {
-        await RefreshTypesAsync();
-
-        UriHelper.OnLocationChanged += OnLocationChanges;
+        await RefreshParametersAsync();
+        UriHelper.OnLocationChanged += async (sender, args) => await OnLocationChanges(sender, args);
     }
 
-    async void OnLocationChanges(object sender, LocationChangedEventArgs args) => await RefreshTypesAsync();
-
-    async Task RefreshTypesAsync()
+    async Task OnLocationChanges(object sender, LocationChangedEventArgs args) => await RefreshParametersAsync();
+    async Task RefreshParametersAsync()
     {
         var uriQuery = new Uri(UriHelper.GetAbsoluteUri()).Query;
 
+        FilterModel.Search = QueryHelpers.ParseQuery(uriQuery).TryGetValue("search", out var searchParam)
+                ? searchParam.First()
+                : null;
+
         Page = QueryHelpers.ParseQuery(uriQuery).TryGetValue("page", out var pageParam)
-               && int.TryParse(pageParam.FirstOrDefault(), out var pageParamId)
-               && pageParamId > 1
-               ? pageParamId
-               : 1;
-        
-        PageSize = ViewSettings.ItemsPerPageCount;
+                && int.TryParse(pageParam.First(), out var pageParamId)
+                ? pageParamId
+                : 1;
 
         await LoadTorrentsIndexAsync();
         StateHasChanged();
@@ -60,16 +74,25 @@
 
     async Task LoadTorrentsIndexAsync()
     {
-        SearchTask = null;
-        StateHasChanged();
+        try
+        {
+            if (Model != null)
+            {
+                SearchTask = null;
+                StateHasChanged();
+            }
 
-        SearchTask = Client.GetTorrentsIndexAsync(Page, PageSize, FilterModel);
-        Model = await SearchTask;
+            SearchTask = Client.GetTorrentsIndexAsync(Page, PageSize, FilterModel);
+            Model = await SearchTask;
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Danger, "Model Load Failed");
+        }
     }
 
-    void PageButtonClick(int page) => UriHelper.NavigateTo(string.Format(QueryTemplate, FilterModel.Search, page));
+    void PageButtonChanged(int page) => UriHelper.NavigateTo($"/torrents?search={FilterModel.Search}&page={page}");
+    void FilterChanged() => UriHelper.NavigateTo($"/torrents?search={FilterModel.Search}");
 
-    void FilterApplyButtonClick() => UriHelper.NavigateTo(string.Format(QueryTemplate, FilterModel.Search, 1));
-
-    public void Dispose() => UriHelper.OnLocationChanged -= OnLocationChanges;
+    public void Dispose() => UriHelper.OnLocationChanged -= async (sender, args) => await OnLocationChanges(sender, args);
 }

@@ -1,87 +1,41 @@
-﻿@page "/torrent/{id:long}"
+﻿@page "/torrents/{id:long}"
+
 @inject ITorrentsClientService Client
 @inject IUriHelper UriHelper
+@inject IMatToaster MatToaster
 
-@if (Model == null)
+@if (!SearchTask.IsCompleted)
 {
-    <LoadSpinner />
+    <LoadingBackground>
+        <span>Loading page model, please wait...</span>
+    </LoadingBackground>
+}
+else if (Model == null || Model.TorrentDetailsItem == null)
+{
+    <LoadingBackground ShowLoader="false">
+        <p>Torrent with id @Id not found</p>
+        <MatButton Link="@UriHelper.ToAbsoluteUri("/").AbsoluteUri" Raised="true">
+            Return to full torrents list
+        </MatButton>
+    </LoadingBackground>
 }
 else
 {
-    <div class="card text-center mb-3">
-        <div class="card-body">
-            <button class="btn btn-outline-primary" @onclick="@BackToButtonClick">
-                Back to full torrents list
-            </button>
+    <div class="mat-layout-grid px-0 pb-5">
+        <div class="mat-layout-grid-inner">
+            <div class="mat-layout-grid-cell"></div>
+            <div class="mat-layout-grid-cell"></div>
+            <div class="mat-layout-grid-cell">
+                <MatButton Link="@UriHelper.ToAbsoluteUri("/torrents").AbsoluteUri"
+                           Raised="true"
+                           Class="w-100 mat-elevation-z10">
+                    Back
+                </MatButton>
+            </div>
         </div>
     </div>
 
-    @if (Model.TorrentDetailsItem == null)
-    {
-        <h1 class="text-center">Torrent not found ;(</h1>
-    }
-    else
-    {
-        var torrent = Model.TorrentDetailsItem;
-
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <span class="badge badge-primary">Id</span> - @torrent.Id
-            </div>
-        </div>
-
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <span class="badge badge-primary">Title</span> - @torrent.Title
-            </div>
-        </div>
-
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <span class="badge badge-primary">Size</span> - @torrent.Size bytes
-            </div>
-        </div>
-
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <span class="badge badge-primary">Date</span> - @torrent.Date.ToLongDateString()
-            </div>
-        </div>
-
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <span class="badge badge-primary">Hash</span> - @torrent.Hash
-            </div>
-        </div>
-
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <span class="badge badge-primary mb-2">Forum</span>
-
-                <ul class="list-group">
-                    <li class="list-group-item mb-1 rounded">
-                        <p class="m-0"><span class="badge badge-primary">Id:</span> @torrent.Forum.Id</p>
-                    </li>
-
-                    <li class="list-group-item rounded">
-                        <p class="m-0"><span class="badge badge-primary">Title:</span> @torrent.Forum.Title</p>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <span class="badge badge-primary">Is deleted</span> - @(torrent.IsDeleted ? "Yes" : "No")
-            </div>
-        </div>
-
-        <FileList Items="@torrent.Files" />
-
-        <div class="card mb-3 shadow-sm">
-            <div class="card-body">@((MarkupString)torrent.Content)</div>
-        </div>
-    }
+    <TorrentDetails Model="@Model.TorrentDetailsItem"></TorrentDetails>
 }
 
 @code
@@ -89,8 +43,22 @@ else
     [Parameter] long Id { get; set; }
 
     TorrentIndexViewModel Model { get; set; }
+    Task<TorrentIndexViewModel> SearchTask { get; set; }
 
-    protected override async Task OnInitAsync() => Model = await Client.GetTorrentIndexAsync(Id);
+    protected override async Task OnInitAsync() => await LoadTorrentIndexAsync();
 
-    void BackToButtonClick() => UriHelper.NavigateTo("/torrents");
+    async Task LoadTorrentIndexAsync()
+    {
+        try
+        {
+            SearchTask = Client.GetTorrentIndexAsync(Id);
+            Model = await SearchTask;
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Danger, "Model Load Failed");
+        }
+    }
+
+    void BackToButtonClicked() => UriHelper.NavigateTo("/torrents");
 }

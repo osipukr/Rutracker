@@ -1,0 +1,127 @@
+<MatTabGroup>
+    <MatTab>
+        <LabelContent>
+            <MatIcon Icon="@MatIconNames.Description"></MatIcon>
+            <p class="m-0">Description</p>
+        </LabelContent>
+
+        <ChildContent>
+            <MatList TwoLine="true">
+                <MatListItem>
+                    <MatListItemText>
+                        <MatListItemPrimaryText>Id</MatListItemPrimaryText>
+                        <MatListItemSecondaryText>@Model.Id</MatListItemSecondaryText>
+                    </MatListItemText>
+                </MatListItem>
+
+                <MatListItem>
+                    <MatListItemText>
+                        <MatListItemPrimaryText>Title</MatListItemPrimaryText>
+                        <MatListItemSecondaryText>@Model.Title</MatListItemSecondaryText>
+                    </MatListItemText>
+                </MatListItem>
+
+                <MatListItem>
+                    <MatListItemText>
+                        <MatListItemPrimaryText>Size (bytes)</MatListItemPrimaryText>
+                        <MatListItemSecondaryText>@Model.Size</MatListItemSecondaryText>
+                    </MatListItemText>
+                </MatListItem>
+
+                <MatListItem>
+                    <MatListItemText>
+                        <MatListItemPrimaryText>Date</MatListItemPrimaryText>
+                        <MatListItemSecondaryText>@Model.Date.ToLongDateString()</MatListItemSecondaryText>
+                    </MatListItemText>
+                </MatListItem>
+
+                <MatListItem>
+                    <MatListItemText>
+                        <MatListItemPrimaryText>Hash</MatListItemPrimaryText>
+                        <MatListItemSecondaryText>@Model.Hash</MatListItemSecondaryText>
+                    </MatListItemText>
+                </MatListItem>
+
+                <MatListItem>
+                    <MatListItemText>
+                        <MatListItemPrimaryText>Is deleted</MatListItemPrimaryText>
+                        <MatListItemSecondaryText>@Model.IsDeleted</MatListItemSecondaryText>
+                    </MatListItemText>
+                </MatListItem>
+            </MatList>
+        </ChildContent>
+    </MatTab>
+
+    @if (Model.Forum != null)
+    {
+        <MatTab>
+            <LabelContent>
+                <MatIcon Icon="@MatIconNames.Forum"></MatIcon>
+                <p class="m-0">Forum</p>
+            </LabelContent>
+
+            <ChildContent>
+                <MatList TwoLine="true">
+                    <MatListItem>
+                        <MatListItemText>
+                            <MatListItemPrimaryText>Id</MatListItemPrimaryText>
+                            <MatListItemSecondaryText>@Model.Forum.Id</MatListItemSecondaryText>
+                        </MatListItemText>
+                    </MatListItem>
+
+                    <MatListItem>
+                        <MatListItemText>
+                            <MatListItemPrimaryText>Title</MatListItemPrimaryText>
+                            <MatListItemSecondaryText>@Model.Forum.Title</MatListItemSecondaryText>
+                        </MatListItemText>
+                    </MatListItem>
+                </MatList>
+            </ChildContent>
+        </MatTab>
+    }
+
+    @if (Model.Files != null)
+    {
+        <MatTab>
+            <LabelContent>
+                <MatIcon Icon="@MatIconNames.Folder_open"></MatIcon>
+                <p class="m-0">Files</p>
+            </LabelContent>
+
+            <ChildContent>
+                <MatTable Items="@Model.Files.AsEnumerable()"
+                          Class="mt-2 mat-elevation-z10"
+                          DebounceMilliseconds="150"
+                          FilterByColumnName="@nameof(FileItemViewModel.Name)"
+                          SearchTermFieldLabel="Name"
+                          SearchTermFieldPlaceHolder="Input the name">
+                    <MatTableHeader>
+                        <th style="padding: 12px 12px 12px 24px;">Id</th>
+                        <th style="padding: 12px 12px 12px 24px;">Name</th>
+                        <th style="padding: 12px 12px 12px 24px;">Size (bytes)</th>
+                    </MatTableHeader>
+                    <MatTableRow>
+                        <td style="border: 1px solid rgba(0, 0, 0, 0.1); padding: 12px 12px 12px 24px;">@context.Id</td>
+                        <td style="border: 1px solid rgba(0, 0, 0, 0.1); padding: 12px 12px 12px 24px;">@context.Name</td>
+                        <td style="border: 1px solid rgba(0, 0, 0, 0.1); padding: 12px 12px 12px 24px;">@context.Size</td>
+                    </MatTableRow>
+                </MatTable>
+            </ChildContent>
+        </MatTab>
+    }
+
+    <MatTab>
+        <LabelContent>
+            <MatIcon Icon="@MatIconNames.Comment"></MatIcon>
+            <p class="m-0">Content</p>
+        </LabelContent>
+
+        <ChildContent>
+            @((MarkupString)Model.Content)
+        </ChildContent>
+    </MatTab>
+</MatTabGroup>
+
+@code {
+    [Parameter] TorrentDetailsItemViewModel Model { get; set; }
+}
