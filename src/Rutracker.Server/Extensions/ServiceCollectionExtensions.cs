@@ -1,5 +1,8 @@
-﻿using System.IO.Compression;
+﻿using System;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -69,11 +72,16 @@ namespace Rutracker.Server.Extensions
             services
                 .AddSwaggerGen(options =>
                 {
+                    // Add the XML comment file for this assembly, so it's contents can be displayed.
+                    var file = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                    var filePath = Path.Combine(AppContext.BaseDirectory, file);
+                    options.IncludeXmlComments(filePath, includeControllerXmlComments: true);
+
                     options.SwaggerDoc("v1", new OpenApiInfo
                     {
-                        Version = "v1",
                         Title = "Rutracker API",
-                        Description = "The current version of the API"
+                        Description = "The current version of the API",
+                        Version = "v1"
                     });
                 });
 
