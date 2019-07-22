@@ -14,8 +14,7 @@
                                       Label="Search"
                                       Icon="@MatIconNames.Search"
                                       IconTrailing="true"
-                                      FullWidth="true">
-                        </MatTextField>
+                                      FullWidth="true" />
                     </div>
 
                     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
@@ -28,6 +27,7 @@
                         <MatExpansionPanelSummary Class="no-select">
                             <MatExpansionPanelHeader>Size range</MatExpansionPanelHeader>
                         </MatExpansionPanelSummary>
+
                         <MatExpansionPanelDetails>
                             <div class="mat-layout-grid-inner py-0">
                                 <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
@@ -53,6 +53,7 @@
                         <MatExpansionPanelSummary Class="no-select">
                             <MatExpansionPanelHeader>Forum titles category</MatExpansionPanelHeader>
                         </MatExpansionPanelSummary>
+
                         <MatExpansionPanelDetails>
                             @if (TitleFacet != null && TitleFacet.FacetItems != null)
                             {
@@ -78,16 +79,14 @@
                                        OnClick="@ResetButtonClicked"
                                        Outlined="true"
                                        Type="reset"
-                                       Class="filter-btn">
-                                All
-                            </MatButton>
+                                       Class="filter-btn"
+                                       Label="All" />
 
                             <MatButton Disabled="@AppState.SearchInProgress"
                                        OnClick="@OnSubmitClicked"
                                        Raised="true"
-                                       Class="filter-btn">
-                                Apply
-                            </MatButton>
+                                       Class="filter-btn"
+                                       Label="Apply" />
                         </div>
                     </div>
                 </div>
@@ -110,7 +109,7 @@
     {
         try
         {
-            TitleFacet = await AppState.GetTitlesAsync(TitleCount);
+            TitleFacet = await AppState.GetTitleFacetAsync(TitleCount);
         }
         catch (Exception ex)
         {

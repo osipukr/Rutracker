@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Rutracker.Client.Interfaces;
 using Rutracker.Client.Settings;
+using Rutracker.Shared.Interfaces;
 using Rutracker.Shared.ViewModels.Shared;
 using Rutracker.Shared.ViewModels.Torrent;
 using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Client.Services
 {
-    public class AppStateService : BaseClientService, ITorrentsClientService
+    public class AppStateService : BaseClientService, ITorrentViewModelService
     {
         private readonly ApiUriSettings _apiUris;
 
@@ -58,7 +58,7 @@ namespace Rutracker.Client.Services
             }
         }
 
-        public async Task<FacetViewModel<string>> GetTitlesAsync(int count)
+        public async Task<FacetViewModel<string>> GetTitleFacetAsync(int count)
         {
             var requestUri = string.Format(_apiUris.Titles, count);
 

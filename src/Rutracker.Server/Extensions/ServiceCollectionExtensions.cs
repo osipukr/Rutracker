@@ -17,9 +17,9 @@ using Rutracker.Core.Services;
 using Rutracker.Infrastructure.Data.Contexts;
 using Rutracker.Infrastructure.Data.Repositories;
 using Rutracker.Server.Filters;
-using Rutracker.Server.Interfaces.Services;
 using Rutracker.Server.Services;
 using Rutracker.Server.Settings;
+using Rutracker.Shared.Interfaces;
 
 namespace Rutracker.Server.Extensions
 {
@@ -36,8 +36,7 @@ namespace Rutracker.Server.Extensions
         ///     Configures the settings by binding the contents of the appsettings.json file.
         /// </summary>
         public static IServiceCollection AddCustomOptions(
-            this IServiceCollection services,
-            IConfiguration configuration) =>
+            this IServiceCollection services, IConfiguration configuration) =>
             services
                 // Adds IOptions<CacheSettings> to the services container.
                 .Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)));
@@ -46,8 +45,7 @@ namespace Rutracker.Server.Extensions
         ///     Adds response compression to enable GZIP compression of responses.
         /// </summary>
         public static IServiceCollection AddCustomResponseCompression(
-            this IServiceCollection services,
-            IConfiguration configuration) =>
+            this IServiceCollection services, IConfiguration configuration) =>
             services
                 .AddResponseCompression(
                     options =>
@@ -67,8 +65,7 @@ namespace Rutracker.Server.Extensions
         /// <summary>
         ///     Adds and configure Swagger middleware.
         /// </summary>
-        public static IServiceCollection AddSwagger(
-            this IServiceCollection services) =>
+        public static IServiceCollection AddSwagger(this IServiceCollection services) =>
             services
                 .AddSwaggerGen(options =>
                 {
@@ -88,21 +85,19 @@ namespace Rutracker.Server.Extensions
         /// <summary>
         ///     Adds custom mvc options.
         /// </summary>
-        public static IMvcBuilder AddCustomMvcOptions(
-            this IMvcBuilder builder) =>
-            builder.AddMvcOptions(
-                    options =>
-                    {
-                        options.Filters.Add<ControllerExceptionFilterAttribute>();
-                        options.Filters.Add<ModelValidatorFilterAttribute>();
+        public static IMvcBuilder AddCustomMvcOptions(this IMvcBuilder builder) =>
+            builder.AddMvcOptions(options =>
+                {
+                    options.Filters.Add<ControllerExceptionFilterAttribute>();
+                    options.Filters.Add<ModelValidatorFilterAttribute>();
 
-                        // Remove string and stream output formatters. These are not useful for an API serving JSON or XML.
-                        options.OutputFormatters.RemoveType<StreamOutputFormatter>();
-                        options.OutputFormatters.RemoveType<StringOutputFormatter>();
+                    // Remove string and stream output formatters. These are not useful for an API serving JSON or XML.
+                    options.OutputFormatters.RemoveType<StreamOutputFormatter>();
+                    options.OutputFormatters.RemoveType<StringOutputFormatter>();
 
-                        // Returns a 406 Not Acceptable if the MIME type in the Accept HTTP header is not valid.
-                        options.ReturnHttpNotAcceptable = true;
-                    })
+                    // Returns a 406 Not Acceptable if the MIME type in the Accept HTTP header is not valid.
+                    options.ReturnHttpNotAcceptable = true;
+                })
                 .ConfigureApiBehaviorOptions(options =>
                 {
                     options.SuppressModelStateInvalidFilter = true;
@@ -126,8 +121,8 @@ namespace Rutracker.Server.Extensions
         /// <summary>
         ///     Adds project Database Context.
         /// </summary>
-        public static IServiceCollection AddDatabaseContext(this IServiceCollection services,
-            IConfiguration configuration) =>
+        public static IServiceCollection AddDatabaseContext(
+            this IServiceCollection services, IConfiguration configuration) =>
             services
                 .AddDbContext<TorrentContext>(options =>
                 {

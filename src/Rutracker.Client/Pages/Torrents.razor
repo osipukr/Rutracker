@@ -21,7 +21,8 @@ else
 {
     <LoadingBackground ShowLoader="false">
         <p>Failed to load page model</p>
-        <MatButton Raised="true" OnClick="@RetryLoad">Try again</MatButton>
+
+        <MatButton Raised="true" OnClick="@RetryLoad" Label="Try again" />
     </LoadingBackground>
 }
 
@@ -38,7 +39,7 @@ else
     {
         try
         {
-            Model = await AppState.GetTorrentsIndexAsync(page, ViewSettings.ItemsPerPageCount, filter);
+            Model = await AppState.GetTorrentsIndexAsync(page, PageSize, filter);
         }
         catch (Exception ex)
         {

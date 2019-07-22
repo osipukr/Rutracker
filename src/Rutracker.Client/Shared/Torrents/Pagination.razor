@@ -1,5 +1,4 @@
 ﻿@inject AppStateService AppState
-@inject ViewSettings ViewSettings
 
 @if (Model != null)
 {
@@ -17,29 +16,25 @@
                                 <MatTooltip Tooltip="First page" Wrap="true">
                                     <MatIconButton Icon="@MatIconNames.First_page"
                                                    Disabled="@(AppState.SearchInProgress || Model.CurrentPage == 1)"
-                                                   OnClick="@(_ => PageChangeClicked(1))">
-                                    </MatIconButton>
+                                                   OnClick="@(_ => PageChangeClicked(1))" />
                                 </MatTooltip>
 
                                 <MatTooltip Tooltip="Previous page" Wrap="true">
                                     <MatIconButton Icon="@MatIconNames.Navigate_before"
                                                    Disabled="@(AppState.SearchInProgress || !Model.HasPrevious)"
-                                                   OnClick="@(_ => PageChangeClicked(Model.CurrentPage - 1))">
-                                    </MatIconButton>
+                                                   OnClick="@(_ => PageChangeClicked(Model.CurrentPage - 1))" />
                                 </MatTooltip>
 
                                 <MatTooltip Tooltip="Next page" Wrap="true">
                                     <MatIconButton Icon="@MatIconNames.Navigate_next"
                                                    Disabled="@(AppState.SearchInProgress || !Model.HasNext)"
-                                                   OnClick="@(_ => PageChangeClicked(Model.CurrentPage + 1))">
-                                    </MatIconButton>
+                                                   OnClick="@(_ => PageChangeClicked(Model.CurrentPage + 1))" />
                                 </MatTooltip>
 
                                 <MatTooltip Tooltip="Last page" Wrap="true">
                                     <MatIconButton Icon="@MatIconNames.Last_page"
                                                    Disabled="@(AppState.SearchInProgress || Model.CurrentPage == Model.TotalPages)"
-                                                   OnClick="@(_ => PageChangeClicked(Model.TotalPages))">
-                                    </MatIconButton>
+                                                   OnClick="@(_ => PageChangeClicked(Model.TotalPages))" />
                                 </MatTooltip>
                             </div>
                         </div>

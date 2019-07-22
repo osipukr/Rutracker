@@ -1,6 +1,5 @@
 ﻿@inject IUriHelper UriHelper
 @inject AppStateService AppState
-@inject ViewSettings ViewSettings
 
 @if (AppState.SearchInProgress)
 {
@@ -24,7 +23,8 @@ else
                     <MatRipple class="no-select mat-elevation-z10" Color="@MatRippleColor.Secondary">
                         <MatList TwoLine="true">
                             <MatListItem Href="@UriHelper.ToAbsoluteUri($"torrents/{torrent.Id}").AbsoluteUri">
-                                <MatIcon Icon="@MatIconNames.Date_range"></MatIcon>
+                                <MatIcon Icon="@MatIconNames.Date_range" />
+
                                 <span>@torrent.Date.ToShortDateString()</span>
                             </MatListItem>
 
