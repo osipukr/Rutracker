@@ -14,10 +14,7 @@ else if (Model == null || Model.TorrentDetailsItem == null)
 {
     <LoadingBackground ShowLoader="false">
         <p>Torrent with id @Id not found</p>
-
-        <MatButton Link="@UriHelper.ToAbsoluteUri("/").AbsoluteUri" 
-                   Raised="true" 
-                   Label="Return to full torrents list" />
+        <MatButton OnClick="@BackToButtonClicked" Raised="true" Label="Return to full torrents list" />
     </LoadingBackground>
 }
 else
@@ -27,7 +24,7 @@ else
             <div class="mat-layout-grid-cell"></div>
             <div class="mat-layout-grid-cell"></div>
             <div class="mat-layout-grid-cell">
-                <MatButton Link="@UriHelper.ToAbsoluteUri("/torrents").AbsoluteUri"
+                <MatButton OnClick="@BackToButtonClicked"
                            Raised="true"
                            Class="w-100 mat-elevation-z10"
                            Label="Back" />

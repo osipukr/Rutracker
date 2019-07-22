@@ -29,9 +29,9 @@ namespace Rutracker.Client.Services
 
             try
             {
-                var requestUri = string.Format(_apiUris.TorrentsIndex, page, pageSize);
+                var url = string.Format(_apiUris.TorrentsIndex, page.ToString(), pageSize.ToString());
 
-                return await PostJsonAsync<TorrentsIndexViewModel>(requestUri, filter);
+                return await PostJsonAsync<TorrentsIndexViewModel>(url, filter);
             }
             finally
             {
@@ -47,9 +47,9 @@ namespace Rutracker.Client.Services
 
             try
             {
-                var requestUri = string.Format(_apiUris.TorrentIndex, id);
+                var url = string.Format(_apiUris.TorrentIndex, id.ToString());
 
-                return await GetJsonAsync<TorrentIndexViewModel>(requestUri);
+                return await GetJsonAsync<TorrentIndexViewModel>(url);
             }
             finally
             {
@@ -60,9 +60,9 @@ namespace Rutracker.Client.Services
 
         public async Task<FacetViewModel<string>> GetTitleFacetAsync(int count)
         {
-            var requestUri = string.Format(_apiUris.Titles, count);
+            var url = string.Format(_apiUris.Titles, count.ToString());
 
-            return await GetJsonAsync<FacetViewModel<string>>(requestUri);
+            return await GetJsonAsync<FacetViewModel<string>>(url);
         }
 
         private void NotifyStateChanged() => OnChange?.Invoke();
