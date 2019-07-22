@@ -15,56 +15,26 @@ namespace Rutracker.Client.Services
         protected async Task<TResult> GetJsonAsync<TResult>(string url)
         {
             using var response = await _httpClient.GetAsync(url);
-            var result = await ReadContentAsync(response);
+            var json = await response.Content.ReadAsStringAsync();
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception(ReadStringError(result));
-            }
-
-            return DeserializeJson<TResult>(result);
+            return response.IsSuccessStatusCode
+                ? DeserializeJson<TResult>(json)
+                : throw new Exception(message: DeserializeJson<string>(json));
         }
 
         protected async Task<TResult> PostJsonAsync<TResult>(string url, object jsonObject)
         {
             using var content = new StringContent(
-                JsonConvert.SerializeObject(jsonObject),
-                Encoding.UTF8,
-                "application/json");
+                content: JsonConvert.SerializeObject(jsonObject),
+                encoding: Encoding.UTF8,
+                mediaType: "application/json");
 
             using var response = await _httpClient.PostAsync(url, content);
-            var result = await ReadContentAsync(response);
+            var json = await response.Content.ReadAsStringAsync();
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception(ReadStringError(result));
-            }
-
-            return DeserializeJson<TResult>(result);
-        }
-
-        private static async Task<string> ReadContentAsync(HttpResponseMessage response)
-        {
-            if (response == null)
-            {
-                throw new ArgumentNullException(nameof(response));
-            }
-
-            var content = await response.Content.ReadAsStringAsync();
-
-            if (content == null)
-            {
-                throw new ArgumentNullException(nameof(content));
-            }
-
-            return content;
-        }
-
-        private static string ReadStringError(string value)
-        {
-            var length = value.Length;
-
-            return length > 1 ? value.Substring(1, length - 2) : value;
+            return response.IsSuccessStatusCode
+                ? DeserializeJson<TResult>(json)
+                : throw new Exception(message: DeserializeJson<string>(json));
         }
 
         private static TResult DeserializeJson<TResult>(string json) => JsonConvert.DeserializeObject<TResult>(json);

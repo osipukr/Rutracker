@@ -1,9 +1,8 @@
-﻿@typeparam TSearch
-
-@inject IUriHelper UriHelper
+﻿@inject IUriHelper UriHelper
+@inject AppStateService AppState
 @inject ViewSettings ViewSettings
 
-@if (!Search.IsCompleted)
+@if (AppState.SearchInProgress)
 {
     <LoadingBackground>
         <span>Loading torrents, please wait...</span>
@@ -53,5 +52,4 @@ else
 @code
 {
     [Parameter] TorrentItemViewModel[] Items { get; set; }
-    [Parameter] Task<TSearch> Search { get; set; }
 }

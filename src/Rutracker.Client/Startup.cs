@@ -2,7 +2,6 @@ using MatBlazor;
 using Microsoft.AspNetCore.Blazor.Http;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Rutracker.Client.Interfaces;
 using Rutracker.Client.Services;
 using Rutracker.Client.Settings;
 
@@ -16,7 +15,7 @@ namespace Rutracker.Client
 
             services.AddSingleton(clientSettings.ApiUriSettings);
             services.AddSingleton(clientSettings.ViewSettings);
-            services.AddSingleton<ITorrentsClientService, TorrentsClientService>();
+            services.AddSingleton<AppStateService>();
 
             AddMatToaster(services, clientSettings.MatToasterSettings);
         }

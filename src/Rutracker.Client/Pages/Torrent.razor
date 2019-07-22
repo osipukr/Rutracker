@@ -1,10 +1,10 @@
 ﻿@page "/torrents/{id:long}"
 
-@inject ITorrentsClientService Client
 @inject IUriHelper UriHelper
 @inject IMatToaster MatToaster
+@inject AppStateService AppState
 
-@if (!SearchTask.IsCompleted)
+@if (AppState.SearchInProgress)
 {
     <LoadingBackground>
         <span>Loading page model, please wait...</span>
@@ -43,7 +43,6 @@ else
     [Parameter] long Id { get; set; }
 
     TorrentIndexViewModel Model { get; set; }
-    Task<TorrentIndexViewModel> SearchTask { get; set; }
 
     protected override async Task OnInitAsync() => await LoadTorrentIndexAsync();
 
@@ -51,12 +50,11 @@ else
     {
         try
         {
-            SearchTask = Client.GetTorrentIndexAsync(Id);
-            Model = await SearchTask;
+            Model = await AppState.GetTorrentIndexAsync(Id);
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Danger, "Model Load Failed");
+            MatToaster.Add(ex.Message, MatToastType.Danger, "Model Load Failed", MatIconNames.Warning);
         }
     }
 
