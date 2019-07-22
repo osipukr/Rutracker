@@ -91,17 +91,21 @@ namespace Rutracker.Server.Extensions
         public static IMvcBuilder AddCustomMvcOptions(
             this IMvcBuilder builder) =>
             builder.AddMvcOptions(
-                options =>
+                    options =>
+                    {
+                        options.Filters.Add<ControllerExceptionFilterAttribute>();
+                        options.Filters.Add<ModelValidatorFilterAttribute>();
+
+                        // Remove string and stream output formatters. These are not useful for an API serving JSON or XML.
+                        options.OutputFormatters.RemoveType<StreamOutputFormatter>();
+                        options.OutputFormatters.RemoveType<StringOutputFormatter>();
+
+                        // Returns a 406 Not Acceptable if the MIME type in the Accept HTTP header is not valid.
+                        options.ReturnHttpNotAcceptable = true;
+                    })
+                .ConfigureApiBehaviorOptions(options =>
                 {
-                    options.Filters.Add<ControllerExceptionFilterAttribute>();
-                    options.Filters.Add<ModelValidatorFilterAttribute>();
-
-                    // Remove string and stream output formatters. These are not useful for an API serving JSON or XML.
-                    options.OutputFormatters.RemoveType<StreamOutputFormatter>();
-                    options.OutputFormatters.RemoveType<StringOutputFormatter>();
-
-                    // Returns a 406 Not Acceptable if the MIME type in the Accept HTTP header is not valid.
-                    options.ReturnHttpNotAcceptable = true;
+                    options.SuppressModelStateInvalidFilter = true;
                 });
 
         /// <summary>

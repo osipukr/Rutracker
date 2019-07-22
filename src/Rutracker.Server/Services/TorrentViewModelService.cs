@@ -37,32 +37,31 @@ namespace Rutracker.Server.Services
 
         public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
         {
-            var cacheKey = $"torrents-{page}-{pageSize}-{filter?.GetHashCode()}";
+            var key = $"torrents-{page}-{pageSize}-{filter?.GetHashCode()}";
             var callback = TorrentsIndexCallbackAsync(page, pageSize, filter);
 
-            return await _cache.GetOrCreateAsync(cacheKey, () => callback, _cacheEntryOptions);
+            return await _cache.GetOrCreateAsync(key, () => callback, _cacheEntryOptions);
         }
 
         public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id)
         {
-            var cacheKey = $"torrent-{id}";
+            var key = $"torrent-{id}";
             var callback = TorrentIndexCallbackAsync(id);
 
-            return await _cache.GetOrCreateAsync(cacheKey, () => callback, _cacheEntryOptions);
+            return await _cache.GetOrCreateAsync(key, () => callback, _cacheEntryOptions);
         }
 
         public async Task<FacetViewModel<string>> GetTitleFacetAsync(int count)
         {
-            var cacheKey = $"titles-{count}";
+            var key = $"titles-{count}";
             var callback = TitleFacetCallbackAsync(count);
 
-            return await _cache.GetOrCreateAsync(cacheKey, () => callback, _cacheEntryOptions);
+            return await _cache.GetOrCreateAsync(key, () => callback, _cacheEntryOptions);
         }
 
         #region Cache entry callback functions
 
-        private async Task<TorrentsIndexViewModel> TorrentsIndexCallbackAsync(int page, int pageSize,
-            FiltrationViewModel filter)
+        private async Task<TorrentsIndexViewModel> TorrentsIndexCallbackAsync(int page, int pageSize, FiltrationViewModel filter)
         {
             var torrentsSource = await _torrentService.GetTorrentsOnPageAsync(page, pageSize,
                 filter?.Search,
@@ -87,9 +86,7 @@ namespace Rutracker.Server.Services
                     CurrentPage = page,
                     TotalItems = totalItemsCount,
                     PageSize = pageSize,
-                    TotalPages = totalPages,
-                    HasPrevious = page > 1 && totalPages > 1,
-                    HasNext = page < totalPages
+                    TotalPages = totalPages
                 }
             };
         }
