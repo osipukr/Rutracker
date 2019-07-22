@@ -12,9 +12,7 @@ namespace Rutracker.Core.Interfaces.Repositories
     {
         Task<TEntity> GetAsync(TPrimaryKey id);
         Task<TEntity> GetAsync(ISpecification<TEntity, TPrimaryKey> specification);
-        Task<IReadOnlyList<TEntity>> ListAsync();
         Task<IReadOnlyList<TEntity>> ListAsync(ISpecification<TEntity, TPrimaryKey> specification);
-        Task<int> CountAsync();
         Task<int> CountAsync(ISpecification<TEntity, TPrimaryKey> specification);
     }
 }

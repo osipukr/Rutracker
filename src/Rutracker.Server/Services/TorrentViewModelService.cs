@@ -75,18 +75,15 @@ namespace Rutracker.Server.Services
                 filter?.SizeFrom,
                 filter?.SizeTo);
 
-            var torrentsResult = _mapper.Map<TorrentItemViewModel[]>(torrentsSource);
-            var totalPages = (int)Math.Ceiling(totalItemsCount / (double)pageSize);
-
             return new TorrentsIndexViewModel
             {
-                TorrentItems = torrentsResult,
+                TorrentItems = _mapper.Map<TorrentItemViewModel[]>(torrentsSource),
                 PaginationModel = new PaginationViewModel
                 {
                     CurrentPage = page,
                     TotalItems = totalItemsCount,
                     PageSize = pageSize,
-                    TotalPages = totalPages
+                    TotalPages = (int)Math.Ceiling(totalItemsCount / (double)pageSize)
                 }
             };
         }
@@ -94,11 +91,10 @@ namespace Rutracker.Server.Services
         private async Task<TorrentIndexViewModel> TorrentIndexCallbackAsync(long id)
         {
             var torrentsSource = await _torrentService.GetTorrentDetailsAsync(id);
-            var torrentResult = _mapper.Map<TorrentDetailsItemViewModel>(torrentsSource);
 
             return new TorrentIndexViewModel
             {
-                TorrentDetailsItem = torrentResult
+                TorrentDetailsItem = _mapper.Map<TorrentDetailsItemViewModel>(torrentsSource)
             };
         }
 

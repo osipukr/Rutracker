@@ -3,45 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Rutracker.Core.Entities;
-using Rutracker.Infrastructure.Data.Contexts;
 
-namespace Rutracker.Infrastructure.Extensions
+namespace Rutracker.Infrastructure.Data.Contexts
 {
-    public static class TorrentContextExtensions
+    public class TorrentContextSeed
     {
-        public static async Task SeedAsync(this TorrentContext context)
+        public static async Task SeedAsync(TorrentContext context, ILoggerFactory loggerFactory)
         {
             try
             {
                 if (!await context.Forums.AnyAsync())
                 {
-                    var files = GetPreconfiguredForums();
-
-                    await context.Forums.AddRangeAsync(files);
+                    await context.Forums.AddRangeAsync(GetPreconfiguredForums());
                     await context.SaveChangesAsync();
                 }
 
                 if (!await context.Torrents.AnyAsync())
                 {
-                    var torrents = GetPreconfiguredTorrents();
-
-                    await context.Torrents.AddRangeAsync(torrents);
+                    await context.Torrents.AddRangeAsync(GetPreconfiguredTorrents());
                     await context.SaveChangesAsync();
                 }
 
                 if (!await context.Files.AnyAsync())
                 {
-                    var files = GetPreconfiguredFiles();
-
-                    await context.Files.AddRangeAsync(files);
+                    await context.Files.AddRangeAsync(GetPreconfiguredFiles());
                     await context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
             {
-                // logger
-                Console.WriteLine(ex.Message);
+                loggerFactory.CreateLogger<TorrentContextSeed>().LogError(ex.Message);
             }
         }
 

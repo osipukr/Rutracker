@@ -1,16 +1,16 @@
 @typeparam T
 @inherits InputNumber<T>
 
-    <div class="@Class mat-numericUpDownField mdc-text-field _mdc-text-field--upgraded mdc-text-field--with-leading-icon mdc-text-field--with-trailing-icon mdc-text-field--fullwidth mdc-text-field--fullwidth-with-leading-icon mdc-ripple-upgraded">
-        <i class="material-icons mdc-text-field__icon" tabindex="0" role="button">border_color</i>
+<div class="@Class mat-numericUpDownField mdc-text-field _mdc-text-field--upgraded mdc-text-field--with-leading-icon mdc-text-field--with-trailing-icon mdc-text-field--fullwidth mdc-text-field--fullwidth-with-leading-icon mdc-ripple-upgraded">
+    <i class="material-icons mdc-text-field__icon" tabindex="0" role="button">border_color</i>
 
-        <InputNumber @bind-Value="@CurrentValue" Class="mdc-text-field__input pr-3" Id="@Id"></InputNumber>
+    <InputNumber @bind-Value="@CurrentValue" Class="mdc-text-field__input pr-3" Id="@Id"></InputNumber>
 
-        <label class="mdc-floating-label" for="@Id">@Label</label>
-        <div class="mdc-line-ripple"></div>
-    </div>
+    <label class="mdc-floating-label" for="@Id">@Label</label>
+    <div class="mdc-line-ripple"></div>
+</div>
 
-@functions
+@code
 {
     [Parameter] string Label { get; set; }
 }

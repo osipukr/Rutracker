@@ -48,20 +48,6 @@ namespace Rutracker.UnitTests.Infrastructure.Repositories
             Assert.Equal(expectedId, torrent.Id);
         }
 
-        [Fact(DisplayName = "ListAsync() should return valid torrents")]
-        public async Task ListAsync__ReturnsValidTorrents()
-        {
-            // Arrange
-            const int expectedCount = 9;
-
-            // Act
-            var torrents = await _torrentRepository.ListAsync();
-
-            // Assert
-            Assert.NotNull(torrents);
-            Assert.Equal(expectedCount, torrents.Count);
-        }
-
         [Fact(DisplayName = "ListAsync() should return all items based on the specification")]
         public async Task ListAsync_0_5_NullsBySpecification_ReturnsValidTorrentsBySpecification()
         {
@@ -79,19 +65,6 @@ namespace Rutracker.UnitTests.Infrastructure.Repositories
             // Assert
             Assert.NotNull(torrents);
             Assert.Equal(expectedCount, torrents.Count);
-        }
-
-        [Fact(DisplayName = "CountAsync() should return the number of items")]
-        public async Task CountAsync_9_ReturnsValidCount()
-        {
-            // Arrange
-            const int expectedCount = 9;
-
-            // Act
-            var count = await _torrentRepository.CountAsync();
-
-            // Assert
-            Assert.Equal(expectedCount, count);
         }
 
         [Fact(DisplayName = "CountAsync() with valid parameters should return the number of items")]

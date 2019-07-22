@@ -89,7 +89,7 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             Assert.Contains(StatusCodes.Status400BadRequest.ToString(), exception.Message);
         }
 
-        [Fact(DisplayName = "Get() with an invalid parameter should return 404NotFound status")]
+        [Fact(DisplayName = "Get() with an invalid parameter should return 400BadRequest status")]
         public async Task Get_1000_ReturnsStatus400BadRequest()
         {
             // Act & Assert
