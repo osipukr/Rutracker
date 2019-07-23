@@ -10,18 +10,14 @@ namespace Rutracker.Core.Extensions
         {
             var visit = ApplyVisit(left, right);
 
-            return Expression.Lambda<Func<T, bool>>(Expression.AndAlso(visit,
-                    right.Body),
-                right.Parameters);
+            return Expression.Lambda<Func<T, bool>>(Expression.AndAlso(visit, right.Body), right.Parameters);
         }
 
         public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)
         {
             var visit = ApplyVisit(left, right);
 
-            return Expression.Lambda<Func<T, bool>>(Expression.OrElse(visit,
-                    right.Body),
-                right.Parameters);
+            return Expression.Lambda<Func<T, bool>>(Expression.OrElse(visit, right.Body), right.Parameters);
         }
 
         private static Expression ApplyVisit<T>(Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)

@@ -10,8 +10,7 @@
             </MatAppBarSection>
             <MatAppBarSection Align="@MatAppBarSectionAlign.End">
                 <MatTooltip Tooltip="Github Repository">
-                    <MatIconButton Link="https://github.com/osipukr/Rutracker-Blazor"
-                                   RefBack="@context">
+                    <MatIconButton Link="https://github.com/osipukr/Rutracker-Blazor" RefBack="@context">
                         <i class="fa fa-github" aria-hidden="true"></i>
                     </MatIconButton>
                 </MatTooltip>
@@ -23,6 +22,7 @@
     </MatAppBarContent>
 </MatAppBarContainer>
 
-@code {
+@code 
+{
     string BrandName => ViewSettings.ServiceName;
 }

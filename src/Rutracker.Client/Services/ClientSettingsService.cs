@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
-using Rutracker.Client.Settings;
 
 namespace Rutracker.Client.Services
 {

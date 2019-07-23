@@ -3,11 +3,12 @@
 
     @if (ShowLoader)
     {
-        <MatProgressBar Indeterminate="true" Reversed="true" Class="mt-3"></MatProgressBar>
+        <MatProgressBar Indeterminate="true" Reversed="true" Class="mt-3" />
     }
 </div>
 
-@code {
+@code
+{
     [Parameter] bool ShowLoader { get; set; } = true;
     [Parameter] string Style { get; set; }
     [Parameter] RenderFragment ChildContent { get; set; }

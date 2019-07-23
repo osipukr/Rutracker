@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Rutracker.Server.Interfaces.Services;
 using Rutracker.Server.Services;
+using Rutracker.Shared.Interfaces;
 using Rutracker.UnitTests.Setup;
 using Xunit;
 

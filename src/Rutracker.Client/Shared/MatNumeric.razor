@@ -1,20 +1,16 @@
-<MatNumericUpDownField Label="@Label"
-                       @bind-Value=@DecimalValue
-                       Icon="@MatIconNames.Border_color"
-                       Outlined="true"
-                       FullWidth="true"
-                       DecimalPlaces=0
-                       Minimum=null Maximum=null>
-</MatNumericUpDownField>
+@typeparam T
+@inherits InputNumber<T>
 
-@code {
+<div class="@Class mat-numericUpDownField mdc-text-field _mdc-text-field--upgraded mdc-text-field--with-leading-icon mdc-text-field--with-trailing-icon mdc-text-field--fullwidth mdc-text-field--fullwidth-with-leading-icon mdc-ripple-upgraded">
+    <i class="material-icons mdc-text-field__icon" tabindex="0" role="button">border_color</i>
+
+    <InputNumber @bind-Value="@CurrentValue" Class="mdc-text-field__input pr-3" Id="@Id" />
+
+    <label class="mdc-floating-label" for="@Id">@Label</label>
+    <div class="mdc-line-ripple"></div>
+</div>
+
+@code
+{
     [Parameter] string Label { get; set; }
-    [Parameter] long? Value { get; set; }
-    [Parameter] EventCallback<long?> ValueChanged { get; set; }
-
-    decimal? DecimalValue
-    {
-        get => Value;
-        set => ValueChanged.InvokeAsync(Value = (long?)value);
-    }
 }

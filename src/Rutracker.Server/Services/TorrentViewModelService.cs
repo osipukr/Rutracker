@@ -6,8 +6,8 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Rutracker.Core.Interfaces.Services;
 using Rutracker.Server.Extensions;
-using Rutracker.Server.Interfaces.Services;
 using Rutracker.Server.Settings;
+using Rutracker.Shared.Interfaces;
 using Rutracker.Shared.ViewModels.Shared;
 using Rutracker.Shared.ViewModels.Torrent;
 using Rutracker.Shared.ViewModels.Torrents;
@@ -37,32 +37,31 @@ namespace Rutracker.Server.Services
 
         public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
         {
-            var cacheKey = $"torrents-{page}-{pageSize}-{filter?.GetHashCode()}";
+            var key = $"torrents-{page}-{pageSize}-{filter?.GetHashCode()}";
             var callback = TorrentsIndexCallbackAsync(page, pageSize, filter);
 
-            return await _cache.GetOrCreateAsync(cacheKey, () => callback, _cacheEntryOptions);
+            return await _cache.GetOrCreateAsync(key, () => callback, _cacheEntryOptions);
         }
 
         public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id)
         {
-            var cacheKey = $"torrent-{id}";
+            var key = $"torrent-{id}";
             var callback = TorrentIndexCallbackAsync(id);
 
-            return await _cache.GetOrCreateAsync(cacheKey, () => callback, _cacheEntryOptions);
+            return await _cache.GetOrCreateAsync(key, () => callback, _cacheEntryOptions);
         }
 
         public async Task<FacetViewModel<string>> GetTitleFacetAsync(int count)
         {
-            var cacheKey = $"titles-{count}";
+            var key = $"titles-{count}";
             var callback = TitleFacetCallbackAsync(count);
 
-            return await _cache.GetOrCreateAsync(cacheKey, () => callback, _cacheEntryOptions);
+            return await _cache.GetOrCreateAsync(key, () => callback, _cacheEntryOptions);
         }
 
         #region Cache entry callback functions
 
-        private async Task<TorrentsIndexViewModel> TorrentsIndexCallbackAsync(int page, int pageSize,
-            FiltrationViewModel filter)
+        private async Task<TorrentsIndexViewModel> TorrentsIndexCallbackAsync(int page, int pageSize, FiltrationViewModel filter)
         {
             var torrentsSource = await _torrentService.GetTorrentsOnPageAsync(page, pageSize,
                 filter?.Search,
@@ -76,20 +75,15 @@ namespace Rutracker.Server.Services
                 filter?.SizeFrom,
                 filter?.SizeTo);
 
-            var torrentsResult = _mapper.Map<TorrentItemViewModel[]>(torrentsSource);
-            var totalPages = (int)Math.Ceiling(totalItemsCount / (double)pageSize);
-
             return new TorrentsIndexViewModel
             {
-                TorrentItems = torrentsResult,
+                TorrentItems = _mapper.Map<TorrentItemViewModel[]>(torrentsSource),
                 PaginationModel = new PaginationViewModel
                 {
                     CurrentPage = page,
                     TotalItems = totalItemsCount,
                     PageSize = pageSize,
-                    TotalPages = totalPages,
-                    HasPrevious = page > 1 && totalPages > 1,
-                    HasNext = page < totalPages
+                    TotalPages = (int)Math.Ceiling(totalItemsCount / (double)pageSize)
                 }
             };
         }
@@ -97,11 +91,10 @@ namespace Rutracker.Server.Services
         private async Task<TorrentIndexViewModel> TorrentIndexCallbackAsync(long id)
         {
             var torrentsSource = await _torrentService.GetTorrentDetailsAsync(id);
-            var torrentResult = _mapper.Map<TorrentDetailsItemViewModel>(torrentsSource);
 
             return new TorrentIndexViewModel
             {
-                TorrentDetailsItem = torrentResult
+                TorrentDetailsItem = _mapper.Map<TorrentDetailsItemViewModel>(torrentsSource)
             };
         }
 

@@ -15,13 +15,15 @@ namespace Rutracker.Core.Services
 
         public TorrentService(ITorrentRepository torrentRepository) => _torrentRepository = torrentRepository;
 
-        public async Task<IReadOnlyList<Torrent>> GetTorrentsOnPageAsync(int page,
-            int pageSize,
+        public async Task<IReadOnlyList<Torrent>> GetTorrentsOnPageAsync(int page, int pageSize,
             string search,
             IEnumerable<string> selectedTitleIds,
             long? sizeFrom,
             long? sizeTo)
         {
+            Guard.Against.OutOfRange(nameof(page), page, rangeFrom: 1, rangeTo: int.MaxValue);
+            Guard.Against.OutOfRange(nameof(pageSize), pageSize, rangeFrom: 1, rangeTo: 100);
+
             var specification = new TorrentsFilterPaginatedSpecification(
                 (page - 1) * pageSize,
                 pageSize,
@@ -39,6 +41,8 @@ namespace Rutracker.Core.Services
 
         public async Task<Torrent> GetTorrentDetailsAsync(long id)
         {
+            Guard.Against.OutOfRange(nameof(id), id, rangeFrom: 1, rangeTo: long.MaxValue);
+
             var specification = new TorrentWithForumAndFilesSpecification(id);
             var torrent = await _torrentRepository.GetAsync(specification);
 
@@ -55,13 +59,15 @@ namespace Rutracker.Core.Services
             var specification = new TorrentsFilterSpecification(search, selectedTitleIds, sizeFrom, sizeTo);
             var count = await _torrentRepository.CountAsync(specification);
 
-            Guard.Against.OutOfRange(nameof(count), count, 0, int.MaxValue);
+            Guard.Against.OutOfRange(nameof(count), count, rangeFrom: 0, rangeTo: int.MaxValue);
 
             return count;
         }
 
         public async Task<IReadOnlyList<(long Id, string Value, int Count)>> GetPopularForumsAsync(int count)
         {
+            Guard.Against.OutOfRange(nameof(count), count, rangeFrom: 1, rangeTo: 100);
+
             var forums = await _torrentRepository.GetPopularForumsAsync(count);
 
             Guard.Against.Null(nameof(forums), forums);

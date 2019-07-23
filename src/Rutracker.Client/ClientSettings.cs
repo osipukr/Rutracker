@@ -1,4 +1,6 @@
-﻿namespace Rutracker.Client.Settings
+﻿using Rutracker.Client.Settings;
+
+namespace Rutracker.Client
 {
     public class ClientSettings
     {
