@@ -19,7 +19,7 @@ namespace Rutracker.Client.Services
 
             return response.IsSuccessStatusCode
                 ? DeserializeJson<TResult>(json)
-                : throw new Exception(message: DeserializeJson<string>(json));
+                : throw new Exception(message: DeserializeJsonError(json));
         }
 
         protected async Task<TResult> PostJsonAsync<TResult>(string url, object jsonObject)
@@ -34,9 +34,10 @@ namespace Rutracker.Client.Services
 
             return response.IsSuccessStatusCode
                 ? DeserializeJson<TResult>(json)
-                : throw new Exception(message: DeserializeJson<string>(json));
+                : throw new Exception(message: DeserializeJsonError(json));
         }
 
         private static TResult DeserializeJson<TResult>(string json) => JsonConvert.DeserializeObject<TResult>(json);
+        private static string DeserializeJsonError(string json) => DeserializeJson<string>(json);
     }
 }
