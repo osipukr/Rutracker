@@ -1,7 +1,5 @@
-﻿@typeparam TSearch
-
-@inject ITorrentsClientService Client
-@inject IMatToaster MatToaster
+﻿@inject IMatToaster MatToaster
+@inject AppStateService AppState
 @inject ViewSettings ViewSettings
 
 <div class="mat-layout-grid px-0">
@@ -16,9 +14,9 @@
                                       Label="Search"
                                       Icon="@MatIconNames.Search"
                                       IconTrailing="true"
-                                      FullWidth="true">
-                        </MatTextField>
+                                      FullWidth="true" />
                     </div>
+
                     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
                         <ValidationMessage For="@(() => Model.Search)" />
                     </div>
@@ -29,20 +27,15 @@
                         <MatExpansionPanelSummary Class="no-select">
                             <MatExpansionPanelHeader>Size range</MatExpansionPanelHeader>
                         </MatExpansionPanelSummary>
+
                         <MatExpansionPanelDetails>
                             <div class="mat-layout-grid-inner py-0">
                                 <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-                                    <MatNumeric Label="From"
-                                                Value="@Model.SizeFrom"
-                                                ValueChanged="@SizeFromValueChanged">
-                                    </MatNumeric>
+                                    <MatNumeric Label="From" @bind-Value="@Model.SizeFrom" />
                                 </div>
 
                                 <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-                                    <MatNumeric Label="To"
-                                                Value="@Model.SizeTo"
-                                                ValueChanged="@SizeToValueChanged">
-                                    </MatNumeric>
+                                    <MatNumeric Label="To" @bind-Value="@Model.SizeTo" />
                                 </div>
 
                                 <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
@@ -60,6 +53,7 @@
                         <MatExpansionPanelSummary Class="no-select">
                             <MatExpansionPanelHeader>Forum titles category</MatExpansionPanelHeader>
                         </MatExpansionPanelSummary>
+
                         <MatExpansionPanelDetails>
                             @if (TitleFacet != null && TitleFacet.FacetItems != null)
                             {
@@ -81,20 +75,18 @@
                 <div class="mat-layout-grid mat-layout-grid-align-right px-0 pb-0 pt-3">
                     <div class="mat-layout-grid-inner">
                         <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12" style="grid-column-end: none">
-                            <MatButton Disabled="@(!Search.IsCompleted)"
+                            <MatButton Disabled="@AppState.SearchInProgress"
                                        OnClick="@ResetButtonClicked"
                                        Outlined="true"
                                        Type="reset"
-                                       Class="filter-btn">
-                                All
-                            </MatButton>
+                                       Class="filter-btn"
+                                       Label="All" />
 
-                            <MatButton Disabled="@(!Search.IsCompleted)"
+                            <MatButton Disabled="@AppState.SearchInProgress"
                                        OnClick="@OnSubmitClicked"
                                        Raised="true"
-                                       Class="filter-btn">
-                                Apply
-                            </MatButton>
+                                       Class="filter-btn"
+                                       Label="Apply" />
                         </div>
                     </div>
                 </div>
@@ -106,8 +98,7 @@
 @code
 {
     [Parameter] FiltrationViewModel Model { get; set; }
-    [Parameter] EventCallback FilterChanged { get; set; }
-    [Parameter] Task<TSearch> Search { get; set; }
+    [Parameter] EventCallback<FiltrationViewModel> FilterChanged { get; set; }
 
     int TitleCount => ViewSettings.ForumTitlesCount;
     FacetViewModel<string> TitleFacet { get; set; }
@@ -118,16 +109,13 @@
     {
         try
         {
-            TitleFacet = await Client.GetTitlesAsync(TitleCount);
+            TitleFacet = await AppState.GetTitleFacetAsync(TitleCount);
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Titles Load Failed");
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Titles Load Failed", MatIconNames.Warning);
         }
     }
-
-    void SizeFromValueChanged(long? value) => Model.SizeFrom = value;
-    void SizeToValueChanged(long? value) => Model.SizeTo = value;
 
     void ResetFiltration()
     {
@@ -153,5 +141,5 @@
         OnValidSubmitClicked();
     }
 
-    void OnValidSubmitClicked() => FilterChanged.InvokeAsync(EventArgs.Empty);
+    void OnValidSubmitClicked() => FilterChanged.InvokeAsync(Model);
 }

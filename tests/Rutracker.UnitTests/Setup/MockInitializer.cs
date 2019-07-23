@@ -38,7 +38,6 @@ namespace Rutracker.UnitTests.Setup
         public static ITorrentRepository GetTorrentRepository()
         {
             var mockTorrentRepository = new Mock<ITorrentRepository>();
-
             var torrents = (IReadOnlyList<Torrent>)DataInitializer.GeTestTorrents();
 
             mockTorrentRepository.Setup(x => x.GetAsync(It.IsAny<ISpecification<Torrent, long>>()))
@@ -55,8 +54,7 @@ namespace Rutracker.UnitTests.Setup
 
             mockTorrentRepository.Setup(x => x.GetPopularForumsAsync(It.IsAny<int>()))
                 .Returns<int>(x =>
-                    Task.FromResult(
-                        (IReadOnlyList<(long, string, int)>)new (long, string, int)[x]));
+                    Task.FromResult((IReadOnlyList<(long, string, int)>)new (long, string, int)[x]));
 
             return mockTorrentRepository.Object;
         }
@@ -64,7 +62,6 @@ namespace Rutracker.UnitTests.Setup
         public static ITorrentService GeTorrentService()
         {
             var mockTorrentService = new Mock<ITorrentService>();
-
             var torrents = DataInitializer.GeTestTorrents();
 
             // default setup
@@ -83,8 +80,7 @@ namespace Rutracker.UnitTests.Setup
 
             mockTorrentService.Setup(x => x.GetPopularForumsAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive)))
                 .Returns<int>(x =>
-                    Task.FromResult(
-                        (IReadOnlyList<(long, string, int)>)new (long, string, int)[x]));
+                    Task.FromResult((IReadOnlyList<(long, string, int)>)new (long, string, int)[x]));
 
 
             // exception setup

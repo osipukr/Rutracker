@@ -10,7 +10,7 @@ namespace Rutracker.Core.Extensions
         {
             if (input == null)
             {
-                throw new TorrentException($"{paramName} not found.", ExceptionEvent.NotFound);
+                throw new TorrentException($"The {paramName} not found.", ExceptionEvent.NotFound);
             }
         }
 
@@ -18,8 +18,7 @@ namespace Rutracker.Core.Extensions
         {
             if (input < rangeFrom || input > rangeTo)
             {
-                throw new TorrentException($"The {paramName} is out of range ({rangeFrom}-{rangeTo}).",
-                    ExceptionEvent.NotValidParameters);
+                throw new TorrentException($"The {paramName} is out of range ({rangeFrom} - {rangeTo}).", ExceptionEvent.NotValidParameters);
             }
         }
     }

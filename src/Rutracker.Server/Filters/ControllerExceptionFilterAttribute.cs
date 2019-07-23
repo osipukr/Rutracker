@@ -48,7 +48,7 @@ namespace Rutracker.Server.Filters
                 StatusCode = statusCode
             };
 
-            _logger.LogError(context.Exception, context.ActionDescriptor.ToString());
+            _logger.LogError(context.Exception, message: context.ActionDescriptor.ToString());
         }
     }
 }

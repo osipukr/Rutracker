@@ -6,7 +6,7 @@ using Rutracker.Server.Settings;
 
 namespace Rutracker.Server
 {
-    public class Program
+    public sealed class Program
     {
         public static void Main(string[] args) => CreateHostBuilder(args).Build().Run();
 
@@ -18,6 +18,7 @@ namespace Rutracker.Server
                     {
                         configure.AddFile(context.Configuration.GetSection(nameof(FileLoggingSettings)).Bind);
                     });
+
                     builder.UseStartup<Startup>();
                 });
     }

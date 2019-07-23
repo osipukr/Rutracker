@@ -6,19 +6,17 @@ namespace Rutracker.Shared.ViewModels.Shared
 {
     public class FiltrationViewModel
     {
-        [StringLength(maximumLength: 50,
+        [StringLength(maximumLength: 100,
             ErrorMessageResourceName = nameof(FiltrationViewModelResource.SearchError),
             ErrorMessageResourceType = typeof(FiltrationViewModelResource))]
         public string Search { get; set; }
 
-        [Range(minimum: 0.0,
-            maximum: long.MaxValue,
+        [Range(minimum: 0, maximum: long.MaxValue,
             ErrorMessageResourceName = nameof(FiltrationViewModelResource.SizeFromError),
             ErrorMessageResourceType = typeof(FiltrationViewModelResource))]
         public long? SizeFrom { get; set; }
 
-        [Range(minimum: 0.0,
-            maximum: long.MaxValue,
+        [Range(minimum: 0, maximum: long.MaxValue,
             ErrorMessageResourceName = nameof(FiltrationViewModelResource.SizeToError),
             ErrorMessageResourceType = typeof(FiltrationViewModelResource))]
         public long? SizeTo { get; set; }

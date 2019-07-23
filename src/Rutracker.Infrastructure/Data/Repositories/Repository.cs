@@ -29,14 +29,8 @@ namespace Rutracker.Infrastructure.Data.Repositories
         public virtual async Task<TEntity> GetAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
             await _dbSet.ApplySpecification(specification).SingleOrDefaultAsync();
 
-        public virtual async Task<IReadOnlyList<TEntity>> ListAsync() =>
-            await _dbSet.ToListAsync();
-
         public virtual async Task<IReadOnlyList<TEntity>> ListAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
             await _dbSet.ApplySpecification(specification).ToListAsync();
-
-        public virtual async Task<int> CountAsync() =>
-            await _dbSet.CountAsync();
 
         public virtual async Task<int> CountAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
             await _dbSet.ApplySpecification(specification).CountAsync();

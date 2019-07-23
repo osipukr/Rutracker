@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Rutracker.Infrastructure.Data.Contexts;
-using Rutracker.Infrastructure.Extensions;
 using Rutracker.Server;
 
 namespace Rutracker.IntegrationTests.Server
@@ -26,10 +26,11 @@ namespace Rutracker.IntegrationTests.Server
 
                     using var scope = services.BuildServiceProvider().CreateScope();
                     var context = scope.ServiceProvider.GetRequiredService<TorrentContext>();
+                    var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
 
                     if (context.Database.EnsureCreated())
                     {
-                        context.SeedAsync().Wait();
+                        TorrentContextSeed.SeedAsync(context, loggerFactory).Wait();
                     }
                 })
                 .ConfigureWebHostDefaults(builder =>

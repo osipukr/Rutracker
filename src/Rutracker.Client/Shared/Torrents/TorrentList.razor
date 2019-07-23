@@ -1,9 +1,7 @@
-﻿@typeparam TSearch
+﻿@inject IUriHelper UriHelper
+@inject AppStateService AppState
 
-@inject IUriHelper UriHelper
-@inject ViewSettings ViewSettings
-
-@if (!Search.IsCompleted)
+@if (AppState.SearchInProgress)
 {
     <LoadingBackground>
         <span>Loading torrents, please wait...</span>
@@ -25,7 +23,7 @@ else
                     <MatRipple class="no-select mat-elevation-z10" Color="@MatRippleColor.Secondary">
                         <MatList TwoLine="true">
                             <MatListItem Href="@UriHelper.ToAbsoluteUri($"torrents/{torrent.Id}").AbsoluteUri">
-                                <MatIcon Icon="@MatIconNames.Date_range"></MatIcon>
+                                <MatIcon Icon="@MatIconNames.Date_range" />
                                 <span>@torrent.Date.ToShortDateString()</span>
                             </MatListItem>
 
@@ -53,5 +51,4 @@ else
 @code
 {
     [Parameter] TorrentItemViewModel[] Items { get; set; }
-    [Parameter] Task<TSearch> Search { get; set; }
 }

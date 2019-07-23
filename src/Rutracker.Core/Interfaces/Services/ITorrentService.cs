@@ -6,8 +6,7 @@ namespace Rutracker.Core.Interfaces.Services
 {
     public interface ITorrentService
     {
-        Task<IReadOnlyList<Torrent>> GetTorrentsOnPageAsync(int page,
-            int pageSize,
+        Task<IReadOnlyList<Torrent>> GetTorrentsOnPageAsync(int page, int pageSize,
             string search,
             IEnumerable<string> selectedTitleIds,
             long? sizeFrom,

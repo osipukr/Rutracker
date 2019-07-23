@@ -1,7 +1,7 @@
 <MatTabGroup>
     <MatTab>
         <LabelContent>
-            <MatIcon Icon="@MatIconNames.Description"></MatIcon>
+            <MatIcon Icon="@MatIconNames.Description" />
             <p class="m-0">Description</p>
         </LabelContent>
 
@@ -56,7 +56,7 @@
     {
         <MatTab>
             <LabelContent>
-                <MatIcon Icon="@MatIconNames.Forum"></MatIcon>
+                <MatIcon Icon="@MatIconNames.Forum" />
                 <p class="m-0">Forum</p>
             </LabelContent>
 
@@ -84,7 +84,7 @@
     {
         <MatTab>
             <LabelContent>
-                <MatIcon Icon="@MatIconNames.Folder_open"></MatIcon>
+                <MatIcon Icon="@MatIconNames.Folder_open" />
                 <p class="m-0">Files</p>
             </LabelContent>
 
@@ -100,6 +100,7 @@
                         <th style="padding: 12px 12px 12px 24px;">Name</th>
                         <th style="padding: 12px 12px 12px 24px;">Size (bytes)</th>
                     </MatTableHeader>
+
                     <MatTableRow>
                         <td style="border: 1px solid rgba(0, 0, 0, 0.1); padding: 12px 12px 12px 24px;">@context.Id</td>
                         <td style="border: 1px solid rgba(0, 0, 0, 0.1); padding: 12px 12px 12px 24px;">@context.Name</td>
@@ -112,16 +113,15 @@
 
     <MatTab>
         <LabelContent>
-            <MatIcon Icon="@MatIconNames.Comment"></MatIcon>
+            <MatIcon Icon="@MatIconNames.Comment" />
             <p class="m-0">Content</p>
         </LabelContent>
 
-        <ChildContent>
-            @((MarkupString)Model.Content)
-        </ChildContent>
+        <ChildContent>@((MarkupString)Model.Content)</ChildContent>
     </MatTab>
 </MatTabGroup>
 
-@code {
+@code
+{
     [Parameter] TorrentDetailsItemViewModel Model { get; set; }
 }
