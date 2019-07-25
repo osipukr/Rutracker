@@ -1,8 +1,8 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-disco AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0-buster AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0-disco AS build
 WORKDIR /src
 COPY ["src/Rutracker.Server/Rutracker.Server.csproj", "src/Rutracker.Server/"]
 COPY ["src/Rutracker.Core/Rutracker.Core.csproj", "src/Rutracker.Core/"]
