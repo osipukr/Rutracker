@@ -2,7 +2,7 @@
 {
     public enum ExceptionEvent
     {
-        NotFound,
-        NotValidParameters
+        NotFound = 1,
+        NotValidParameters = 2
     }
 }

@@ -39,7 +39,8 @@ namespace Rutracker.Server.Filters
                 statusCode = exception.ExceptionEvent switch
                 {
                     ExceptionEvent.NotFound => StatusCodes.Status404NotFound,
-                    ExceptionEvent.NotValidParameters => StatusCodes.Status400BadRequest
+                    ExceptionEvent.NotValidParameters => StatusCodes.Status400BadRequest,
+                    _ => StatusCodes.Status500InternalServerError
                 };
             }
 
