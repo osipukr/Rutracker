@@ -23,6 +23,7 @@
     <EmbeddedResource Include="clientsettings.json" />
   </ItemGroup>
 
+  <!-- Comment it out if you are not running through Docker -->
   <Target Name="FixBlazorConfigForDocker" AfterTargets="GenerateBlazorMetadataFile">
     <WriteLinesToFile File="$(BlazorMetadataFilePath)" Lines="BlazorASPNETCoreHosted.Client.csproj" Overwrite="true" Encoding="Unicode"/>
     <WriteLinesToFile File="$(BlazorMetadataFilePath)" Lines="$(OutDir)$(AssemblyName).dll" Overwrite="false" Encoding="Unicode"/>
