@@ -102,6 +102,11 @@ label {
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+div.mdc-tab-scroller__scroll-content {
+    flex: auto;
+    flex-wrap: wrap;
+}
+
 @media (max-width: 596.98px) {
     .logo-img {
         height: 38px;

@@ -80,7 +80,7 @@
         </MatTab>
     }
 
-    @if (Model.Files != null)
+    @if (Model.Files != null && Model.Files.Length != 0)
     {
         <MatTab>
             <LabelContent>
@@ -89,7 +89,7 @@
             </LabelContent>
 
             <ChildContent>
-                <MatTable Items="@Model.Files.AsEnumerable()"
+                <MatTable Items="@GetFiles()"
                           Class="mt-2 mat-elevation-z10"
                           DebounceMilliseconds="150"
                           FilterByColumnName="@nameof(FileItemViewModel.Name)"
@@ -124,4 +124,6 @@
 @code
 {
     [Parameter] TorrentDetailsItemViewModel Model { get; set; }
+
+    IEnumerable<FileItemViewModel> GetFiles() => Model.Files.AsEnumerable();
 }
