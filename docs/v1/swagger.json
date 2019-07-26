@@ -1,0 +1,450 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Rutracker API",
+    "description": "The current version of the API",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/Torrents/pagination": {
+      "post": {
+        "tags": [
+          "Torrents"
+        ],
+        "summary": "Get all items on the page with information for pagination.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Number of items per page.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FiltrationViewModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FiltrationViewModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FiltrationViewModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TorrentsIndexViewModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TorrentsIndexViewModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the parameters are not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "If the item is null.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Torrents": {
+      "get": {
+        "tags": [
+          "Torrents"
+        ],
+        "summary": "Get information about the item.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "ID of the element.",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TorrentIndexViewModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TorrentIndexViewModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the parameters are not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "If the item is null.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Torrents/titles": {
+      "get": {
+        "tags": [
+          "Torrents"
+        ],
+        "summary": "Get information about the facet for the title.",
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "description": "Number of elements.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringFacetViewModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringFacetViewModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the parameters are not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "If the item is null.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FiltrationViewModel": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "sizeFrom": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "sizeTo": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "selectedTitleIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "TorrentItemViewModel": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PaginationViewModel": {
+        "type": "object",
+        "properties": {
+          "currentPage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPrevious": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "hasNext": {
+            "type": "boolean",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TorrentsIndexViewModel": {
+        "type": "object",
+        "properties": {
+          "torrentItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TorrentItemViewModel"
+            }
+          },
+          "paginationModel": {
+            "$ref": "#/components/schemas/PaginationViewModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ForumItemViewModel": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FileItemViewModel": {
+        "type": "object",
+        "properties": {
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TorrentDetailsItemViewModel": {
+        "type": "object",
+        "properties": {
+          "hash": {
+            "type": "string"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "content": {
+            "type": "string"
+          },
+          "forum": {
+            "$ref": "#/components/schemas/ForumItemViewModel"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileItemViewModel"
+            }
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TorrentIndexViewModel": {
+        "type": "object",
+        "properties": {
+          "torrentDetailsItem": {
+            "$ref": "#/components/schemas/TorrentDetailsItemViewModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "StringFacetItemViewModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isSelected": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "StringFacetViewModel": {
+        "type": "object",
+        "properties": {
+          "facetItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StringFacetItemViewModel"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Torrents",
+      "description": "The Torrent API controller."
+    }
+  ]
+}
