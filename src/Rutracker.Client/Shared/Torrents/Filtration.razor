@@ -8,39 +8,31 @@
             <EditForm Model="@Model" OnValidSubmit="@OnValidSubmitClicked">
                 <DataAnnotationsValidator />
 
-                <MatTextField @bind-Value="@Model.Search"
-                              Label="Search"
-                              Type="search"
+                <MatTextField Type="search"
+                              @bind-Value="@Model.Search"
                               FullWidth="true"
-                              Icon="@MatIconNames.Search"
                               IconTrailing="true"
-                              InputStyle="padding: 20px 48px 6px 16px;" />
+                              Icon="@MatIconNames.Search"
+                              InputStyle="padding: 20px 48px 6px 16px;"
+                              Label="Search" />
 
                 <ValidationMessage For="@(() => Model.Search)" />
 
-                <MatAccordion Multi="true" Class="mt-4">
+                <MatAccordion Multi="true" Class="my-4">
                     <MatExpansionPanel>
                         <MatExpansionPanelSummary Class="no-select">
-                            <MatExpansionPanelHeader Class="w-100" Style="flex-basis: inherit;">
-                                Size range
-                            </MatExpansionPanelHeader>
+                            <MatExpansionPanelHeader>Size range</MatExpansionPanelHeader>
                         </MatExpansionPanelSummary>
 
                         <MatExpansionPanelDetails>
-                            <div class="mat-layout-grid-inner py-0">
-                                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                            <div class="d-flex flex-wrap">
+                                <div class="flex-fill">
                                     <MatNumeric Label="From" @bind-Value="@Model.SizeFrom" />
-                                </div>
-
-                                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-                                    <MatNumeric Label="To" @bind-Value="@Model.SizeTo" />
-                                </div>
-
-                                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
                                     <ValidationMessage For="@(() => Model.SizeFrom)" />
                                 </div>
 
-                                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                                <div class="flex-fill">
+                                    <MatNumeric Label="To" @bind-Value="@Model.SizeTo" />
                                     <ValidationMessage For="@(() => Model.SizeTo)" />
                                 </div>
                             </div>
@@ -49,9 +41,7 @@
 
                     <MatExpansionPanel>
                         <MatExpansionPanelSummary Class="no-select">
-                            <MatExpansionPanelHeader Class="w-100" Style="flex-basis: inherit;">
-                                Forum titles category
-                            </MatExpansionPanelHeader>
+                            <MatExpansionPanelHeader>Forum titles category</MatExpansionPanelHeader>
                         </MatExpansionPanelSummary>
 
                         <MatExpansionPanelDetails>
@@ -72,22 +62,20 @@
                     </MatExpansionPanel>
                 </MatAccordion>
 
-                <div class="mat-layout-grid mat-layout-grid-align-right p-0 mt-3">
-                    <div class="mat-layout-grid-inner">
-                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12" style="grid-column-end: none">
-                            <MatButton Disabled="@AppState.SearchInProgress"
-                                       OnClick="@ResetButtonClicked"
-                                       Outlined="true"
-                                       Type="reset"
-                                       Class="filter-btn"
-                                       Label="All" />
+                <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-between filter-group-btn">
+                        <MatButton OnClick="@ResetButtonClicked"
+                                   Type="reset"
+                                   Disabled="@AppState.SearchInProgress"
+                                   Outlined="true"
+                                   Class="filter-btn"
+                                   Label="All" />
 
-                            <MatButton Disabled="@AppState.SearchInProgress"
-                                       Type="submit"
-                                       Raised="true"
-                                       Class="filter-btn"
-                                       Label="Apply" />
-                        </div>
+                        <MatButton Type="submit"
+                                   Disabled="@AppState.SearchInProgress"
+                                   Raised="true"
+                                   Class="filter-btn"
+                                   Label="Apply" />
                     </div>
                 </div>
             </EditForm>
@@ -133,13 +121,15 @@
         }
     }
 
-    void OnSubmitClicked() => Model.SelectedTitleIds = TitleFacet?.FacetItems?.Where(x => x.IsSelected).Select(x => x.Id);
-
     void ResetButtonClicked()
     {
         ResetFiltration();
         OnValidSubmitClicked();
     }
 
-    void OnValidSubmitClicked() => FilterChanged.InvokeAsync(Model);
+    void OnValidSubmitClicked()
+    {
+        Model.SelectedTitleIds = TitleFacet?.FacetItems?.Where(x => x.IsSelected).Select(x => x.Id);
+        FilterChanged.InvokeAsync(Model);
+    }
 }
