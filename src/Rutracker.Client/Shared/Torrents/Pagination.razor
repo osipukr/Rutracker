@@ -2,40 +2,32 @@
 
 @if (Model != null && Model.TotalPages > 1)
 {
-    <div class="mat-layout-grid px-0 py-3">
+    <div class="mat-layout-grid p-0">
         <div class="mat-layout-grid-inner">
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
                 <div class="mdc-paginator">
-                    <div class="mdc-paginator-container p-0">
+                    <div class="mdc-paginator-container">
                         <div class="mdc-paginator-range-actions">
                             <span class="mdc-paginator-range-label ml-0 mr-1">
                                 @($"Page {Model.CurrentPage} of {Model.TotalPages}")
                             </span>
 
                             <div class="mdc-paginator-range-buttons">
-                                <MatTooltip Tooltip="First page" Wrap="true">
-                                    <MatIconButton OnClick="@(_ => PageChangeClicked(1))"
-                                                   Disabled="@(AppState.SearchInProgress || Model.CurrentPage == 1)"
-                                                   Icon="@MatIconNames.First_page" />
-                                </MatTooltip>
+                                <MatIconButton OnClick="@(_ => PageChangeClicked(1))"
+                                               Disabled="@(AppState.SearchInProgress || Model.CurrentPage == 1)"
+                                               Icon="@MatIconNames.First_page" />
 
-                                <MatTooltip Tooltip="Previous page" Wrap="true">
-                                    <MatIconButton OnClick="@(_ => PageChangeClicked(Model.CurrentPage - 1))"
-                                                   Disabled="@(AppState.SearchInProgress || !Model.HasPrevious)"
-                                                   Icon="@MatIconNames.Navigate_before" />
-                                </MatTooltip>
+                                <MatIconButton OnClick="@(_ => PageChangeClicked(Model.CurrentPage - 1))"
+                                               Disabled="@(AppState.SearchInProgress || !Model.HasPrevious)"
+                                               Icon="@MatIconNames.Navigate_before" />
 
-                                <MatTooltip Tooltip="Next page" Wrap="true">
-                                    <MatIconButton OnClick="@(_ => PageChangeClicked(Model.CurrentPage + 1))"
-                                                   Disabled="@(AppState.SearchInProgress || !Model.HasNext)"
-                                                   Icon="@MatIconNames.Navigate_next" />
-                                </MatTooltip>
+                                <MatIconButton OnClick="@(_ => PageChangeClicked(Model.CurrentPage + 1))"
+                                               Disabled="@(AppState.SearchInProgress || !Model.HasNext)"
+                                               Icon="@MatIconNames.Navigate_next" />
 
-                                <MatTooltip Tooltip="Last page" Wrap="true">
-                                    <MatIconButton OnClick="@(_ => PageChangeClicked(Model.TotalPages))"
-                                                   Disabled="@(AppState.SearchInProgress || Model.CurrentPage == Model.TotalPages)"
-                                                   Icon="@MatIconNames.Last_page" />
-                                </MatTooltip>
+                                <MatIconButton OnClick="@(_ => PageChangeClicked(Model.TotalPages))"
+                                               Disabled="@(AppState.SearchInProgress || Model.CurrentPage == Model.TotalPages)"
+                                               Icon="@MatIconNames.Last_page" />
                             </div>
                         </div>
                     </div>

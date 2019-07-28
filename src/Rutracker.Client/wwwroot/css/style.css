@@ -1,16 +1,4 @@
-﻿body {
-    font-family: HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-    height: 100vh;
-    overflow-x: hidden;
-}
-
-app {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-}
-
-::-webkit-scrollbar {
+﻿::-webkit-scrollbar {
     width: 9px;
 }
 
@@ -132,6 +120,15 @@ div.mdc-tab-scroller__scroll-content {
     flex: auto;
     flex-wrap: wrap;
 }
+
+div.mdc-form-field {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+    div.mdc-form-field:last-child {
+        margin-bottom: 0;
+    }
 
 @media (max-width: 596.98px) {
     .logo-img {

@@ -26,12 +26,12 @@
 
                         <MatExpansionPanelDetails>
                             <div class="d-flex flex-wrap">
-                                <div class="flex-fill">
+                                <div class="flex-fill mx-2">
                                     <MatNumeric Label="From" @bind-Value="@Model.SizeFrom" />
                                     <ValidationMessage For="@(() => Model.SizeFrom)" />
                                 </div>
 
-                                <div class="flex-fill">
+                                <div class="flex-fill mx-2">
                                     <MatNumeric Label="To" @bind-Value="@Model.SizeTo" />
                                     <ValidationMessage For="@(() => Model.SizeTo)" />
                                 </div>
@@ -47,16 +47,16 @@
                         <MatExpansionPanelDetails>
                             @if (TitleFacet != null && TitleFacet.FacetItems != null)
                             {
-                                <div class="mat-layout-grid-inner p-0 pt-3">
-                                    @foreach (var facet in TitleFacet.FacetItems)
-                                    {
-                                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                                            <MatCheckbox @bind-Checked="@facet.IsSelected">
-                                                <span>@facet.Value - (Count: @facet.Count)</span>
-                                            </MatCheckbox>
-                                        </div>
-                                    }
-                                </div>
+                                foreach (var facet in TitleFacet.FacetItems)
+                                {
+                                    <MatCheckbox @bind-Checked="@facet.IsSelected">
+                                        @facet.Value
+
+                                        <span class="badge badge-pill text-white" style="background-color: var(--mdc-theme-primary, #6200ee);">
+                                            @facet.Count
+                                        </span>
+                                    </MatCheckbox>
+                                }
                             }
                         </MatExpansionPanelDetails>
                     </MatExpansionPanel>
