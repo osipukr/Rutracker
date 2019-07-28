@@ -5,12 +5,14 @@
     <MatAppBar Fixed="true">
         <MatAppBarRow>
             <MatAppBarSection Align="@MatAppBarSectionAlign.Start">
-                <img alt="@BrandName" class="h-100" src="img/brand.svg" title="@BrandName">
-                <MatAppBarTitle>@BrandName</MatAppBarTitle>
+                <MatButton Link="/" Class="h-100 text-white p-0">
+                    <img alt="@BrandName" class="h-100" style="width: 60px;" src="img/brand.svg" title="@BrandName">
+                    <MatAppBarTitle>@BrandName</MatAppBarTitle>
+                </MatButton>
             </MatAppBarSection>
             <MatAppBarSection Align="@MatAppBarSectionAlign.End">
-                <MatTooltip Tooltip="Github Repository">
-                    <MatIconButton Link="https://github.com/osipukr/Rutracker-Blazor" RefBack="@context">
+                <MatTooltip Tooltip="Github Repository" Wrap="true">
+                    <MatIconButton Link="https://github.com/osipukr/Rutracker-Blazor">
                         <i class="fa fa-github" aria-hidden="true"></i>
                     </MatIconButton>
                 </MatTooltip>
