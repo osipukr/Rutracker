@@ -5,7 +5,7 @@ The application was built on the basis of the Blazor-Hosted template, which incl
 
 ## Demo and Documentation
 
-You can see an example of a ready-made application on **Github Pages** - [Demo](https://rutrackerserver20190718033700.azurewebsites.net/). Also, you can see the api endpoints documentation here - [Documentation](https://osipukr.github.io/Rutracker-Blazor/).
+You can see an example of a ready-made application on **Github Pages** - [Demo](https://rutracker.azurewebsites.net/). Also, you can see the api endpoints documentation here - [Documentation](https://osipukr.github.io/Rutracker-Blazor/).
 
 
 ## Running the sample using Docker
