@@ -23,11 +23,12 @@
     <EmbeddedResource Include="clientsettings.json" />
   </ItemGroup>
 
-  <Target Name="FixBlazorConfigForDocker" AfterTargets="GenerateBlazorMetadataFile">
+  <!-- Uncomment this block of code using Docker -->
+  <!--<Target Name="FixBlazorConfigForDocker" AfterTargets="GenerateBlazorMetadataFile">
     <WriteLinesToFile File="$(BlazorMetadataFilePath)" Lines="BlazorASPNETCoreHosted.Client.csproj" Overwrite="true" Encoding="Unicode"/>
     <WriteLinesToFile File="$(BlazorMetadataFilePath)" Lines="$(OutDir)$(AssemblyName).dll" Overwrite="false" Encoding="Unicode"/>
     <WriteLinesToFile File="$(BlazorMetadataFilePath)" Condition="'$(BlazorRebuildOnFileChange)'=='true'" Lines="autorebuild:true" Overwrite="false" Encoding="Unicode"/>
     <WriteLinesToFile File="$(BlazorMetadataFilePath)" Condition="'$(BlazorEnableDebugging)'=='true'" Lines="debug:true" Overwrite="false" Encoding="Unicode"/>
-  </Target>
+  </Target>-->
 
 </Project>

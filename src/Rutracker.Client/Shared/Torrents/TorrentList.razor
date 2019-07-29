@@ -23,8 +23,8 @@ else
                     <MatRipple class="no-select mat-elevation-z10" Color="@MatRippleColor.Secondary">
                         <MatList TwoLine="true">
                             <MatListItem Href="@UriHelper.ToAbsoluteUri($"torrents/{torrent.Id}").AbsoluteUri">
-                                <MatIcon Icon="@MatIconNames.Date_range" />
-                                <span>@torrent.Date.ToShortDateString()</span>
+                                <MatIcon Icon="@MatIconNames.Date_range" Class="pr-2" />
+                                <span class="mat-button font-weight-bold">@torrent.Date.ToShortDateString()</span>
                             </MatListItem>
 
                             <MatListItem>

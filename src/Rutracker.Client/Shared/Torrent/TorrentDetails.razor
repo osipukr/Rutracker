@@ -80,7 +80,7 @@
         </MatTab>
     }
 
-    @if (Model.Files != null)
+    @if (Model.Files != null && Model.Files.Length != 0)
     {
         <MatTab>
             <LabelContent>
@@ -89,22 +89,21 @@
             </LabelContent>
 
             <ChildContent>
-                <MatTable Items="@Model.Files.AsEnumerable()"
+                <MatTable Items="@GetFiles()"
                           Class="mt-2 mat-elevation-z10"
                           DebounceMilliseconds="150"
                           FilterByColumnName="@nameof(FileItemViewModel.Name)"
                           SearchTermFieldLabel="Name"
                           SearchTermFieldPlaceHolder="Input the name">
                     <MatTableHeader>
-                        <th style="padding: 12px 12px 12px 24px;">Id</th>
-                        <th style="padding: 12px 12px 12px 24px;">Name</th>
-                        <th style="padding: 12px 12px 12px 24px;">Size (bytes)</th>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Size (bytes)</th>
                     </MatTableHeader>
-
                     <MatTableRow>
-                        <td style="border: 1px solid rgba(0, 0, 0, 0.1); padding: 12px 12px 12px 24px;">@context.Id</td>
-                        <td style="border: 1px solid rgba(0, 0, 0, 0.1); padding: 12px 12px 12px 24px;">@context.Name</td>
-                        <td style="border: 1px solid rgba(0, 0, 0, 0.1); padding: 12px 12px 12px 24px;">@context.Size</td>
+                        <td>@context.Id</td>
+                        <td>@context.Name</td>
+                        <td>@context.Size</td>
                     </MatTableRow>
                 </MatTable>
             </ChildContent>
@@ -124,4 +123,6 @@
 @code
 {
     [Parameter] TorrentDetailsItemViewModel Model { get; set; }
+
+    IEnumerable<FileItemViewModel> GetFiles() => Model.Files.AsEnumerable();
 }

@@ -2,11 +2,10 @@
 @inherits InputNumber<T>
 
 <div class="@Class mat-numericUpDownField mdc-text-field _mdc-text-field--upgraded mdc-text-field--with-leading-icon mdc-text-field--with-trailing-icon mdc-text-field--fullwidth mdc-text-field--fullwidth-with-leading-icon mdc-ripple-upgraded">
-    <i class="material-icons mdc-text-field__icon" tabindex="0" role="button">border_color</i>
+    <MatIcon Icon="@MatIconNames.Border_color" Class="mdc-text-field__icon" />
+    <InputNumber @bind-Value="@CurrentValue" Class="mdc-text-field__input" Id="@Id" style="padding: 20px 16px 18px 100px; text-align: left;" />
 
-    <InputNumber @bind-Value="@CurrentValue" Class="mdc-text-field__input pr-3" Id="@Id" />
-
-    <label class="mdc-floating-label" for="@Id">@Label</label>
+    <label class="mdc-floating-label" for="@Id" style="padding-top: 2px;">@Label</label>
     <div class="mdc-line-ripple"></div>
 </div>
 
