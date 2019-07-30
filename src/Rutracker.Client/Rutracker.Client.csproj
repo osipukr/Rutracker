@@ -8,10 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MatBlazor" Version="1.2.0" />
+    <PackageReference Include="MatBlazor" Version="1.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.0.0-preview7.19365.7" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.0.0-preview7.19365.7" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
 
@@ -22,13 +21,5 @@
   <ItemGroup>
     <EmbeddedResource Include="clientsettings.json" />
   </ItemGroup>
-
-  <!-- Uncomment this block of code using Docker -->
-  <!--<Target Name="FixBlazorConfigForDocker" AfterTargets="GenerateBlazorMetadataFile">
-    <WriteLinesToFile File="$(BlazorMetadataFilePath)" Lines="BlazorASPNETCoreHosted.Client.csproj" Overwrite="true" Encoding="Unicode"/>
-    <WriteLinesToFile File="$(BlazorMetadataFilePath)" Lines="$(OutDir)$(AssemblyName).dll" Overwrite="false" Encoding="Unicode"/>
-    <WriteLinesToFile File="$(BlazorMetadataFilePath)" Condition="'$(BlazorRebuildOnFileChange)'=='true'" Lines="autorebuild:true" Overwrite="false" Encoding="Unicode"/>
-    <WriteLinesToFile File="$(BlazorMetadataFilePath)" Condition="'$(BlazorEnableDebugging)'=='true'" Lines="debug:true" Overwrite="false" Encoding="Unicode"/>
-  </Target>-->
 
 </Project>
