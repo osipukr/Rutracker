@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,8 +17,8 @@ namespace Rutracker.Server
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
-            _configuration = configuration;
-            _environment = environment;
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _environment = environment ?? throw new ArgumentNullException(nameof(environment));
         }
 
         public void ConfigureServices(IServiceCollection services) =>
@@ -48,14 +49,14 @@ namespace Rutracker.Server
                 .UseSwaggerUI(options =>
                 {
                     options.DocumentTitle = "Rutracker - API Endpoints";
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                    options.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "v1");
                 })
                 .UseClientSideBlazorFiles<Client.Startup>()
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
-                    endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
+                    endpoints.MapFallbackToClientSideBlazor<Client.Startup>(filePath: "index.html");
                 })
                 .SeedDatabase();
         }

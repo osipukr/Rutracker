@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -11,8 +12,10 @@ namespace Rutracker.Server.Filters
     {
         private readonly ILogger<ControllerExceptionFilterAttribute> _logger;
 
-        public ControllerExceptionFilterAttribute(ILogger<ControllerExceptionFilterAttribute> logger) =>
-            _logger = logger;
+        public ControllerExceptionFilterAttribute(ILogger<ControllerExceptionFilterAttribute> logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
 
         public override void OnException(ExceptionContext context)
         {

@@ -6,7 +6,7 @@ using Rutracker.Core.Interfaces.Specifications;
 
 namespace Rutracker.Core.Interfaces.Repositories
 {
-    public interface IRepository<TEntity, TPrimaryKey> 
+    public interface IRepository<TEntity, TPrimaryKey>
         where TEntity : BaseEntity<TPrimaryKey>
         where TPrimaryKey : IEquatable<TPrimaryKey>
     {

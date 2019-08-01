@@ -19,9 +19,9 @@ namespace Rutracker.Infrastructure.Data.Contexts
         {
             base.OnModelCreating(builder);
 
-            builder.ApplyConfiguration(new ForumConfiguration());
-            builder.ApplyConfiguration(new TorrentConfiguration());
-            builder.ApplyConfiguration(new FileConfiguration());
+            builder.ApplyConfiguration(new ForumConfiguration())
+                   .ApplyConfiguration(new TorrentConfiguration())
+                   .ApplyConfiguration(new FileConfiguration());
         }
     }
 }

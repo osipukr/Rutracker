@@ -38,7 +38,6 @@ namespace Rutracker.Server.Extensions
         public static IServiceCollection AddCustomOptions(
             this IServiceCollection services, IConfiguration configuration) =>
             services
-                // Adds IOptions<CacheSettings> to the services container.
                 .Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)));
 
         /// <summary>
@@ -74,7 +73,7 @@ namespace Rutracker.Server.Extensions
                     var filePath = Path.Combine(AppContext.BaseDirectory, file);
                     options.IncludeXmlComments(filePath, includeControllerXmlComments: true);
 
-                    options.SwaggerDoc("v1", new OpenApiInfo
+                    options.SwaggerDoc(name: "v1", new OpenApiInfo
                     {
                         Title = "Rutracker API",
                         Description = "The current version of the API",

@@ -21,11 +21,11 @@ namespace Rutracker.Core.Specifications
             .Select(x => x.Value)
             .ToArray();
 
-            ApplyAndCriteria(x => titleIds == null || titleIds.Length == 0 || titleIds.Contains(x.ForumId));
-            ApplyAndCriteria(x => !sizeFrom.HasValue || x.Size >= sizeFrom);
-            ApplyAndCriteria(x => !sizeTo.HasValue || x.Size <= sizeTo);
+            base.ApplyAndCriteria(x => titleIds == null || titleIds.Length == 0 || titleIds.Contains(x.ForumId));
+            base.ApplyAndCriteria(x => !sizeFrom.HasValue || x.Size >= sizeFrom);
+            base.ApplyAndCriteria(x => !sizeTo.HasValue || x.Size <= sizeTo);
 
-            ApplyOrderBy(x => x.Date);
+            base.ApplyOrderBy(x => x.Date);
         }
     }
 }

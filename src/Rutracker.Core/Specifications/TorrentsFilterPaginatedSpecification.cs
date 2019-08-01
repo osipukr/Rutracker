@@ -12,7 +12,7 @@ namespace Rutracker.Core.Specifications
                                                     long? sizeTo)
             : base(search, selectedTitleIds, sizeFrom, sizeTo)
         {
-            ApplyPaging(skip, take);
+            base.ApplyPaging(skip, take);
         }
     }
 }

@@ -26,12 +26,12 @@ namespace Rutracker.Server.Services
             IMemoryCache cache,
             IOptions<CacheSettings> cacheOptions)
         {
-            _torrentService = torrentService;
-            _mapper = mapper;
-            _cache = cache;
+            _torrentService = torrentService ?? throw new ArgumentNullException(nameof(torrentService));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _cacheEntryOptions = new MemoryCacheEntryOptions
             {
-                SlidingExpiration = cacheOptions.Value?.CacheDuration
+                SlidingExpiration = (cacheOptions ?? throw new ArgumentNullException(nameof(cacheOptions))).Value?.CacheDuration
             };
         }
 
@@ -64,16 +64,16 @@ namespace Rutracker.Server.Services
         private async Task<TorrentsIndexViewModel> TorrentsIndexCallbackAsync(int page, int pageSize, FiltrationViewModel filter)
         {
             var torrentsSource = await _torrentService.GetTorrentsOnPageAsync(page, pageSize,
-                filter?.Search,
-                filter?.SelectedTitleIds,
-                filter?.SizeFrom,
-                filter?.SizeTo);
+                filter.Search,
+                filter.SelectedTitleIds,
+                filter.SizeFrom,
+                filter.SizeTo);
 
             var totalItemsCount = await _torrentService.GetTorrentsCountAsync(
-                filter?.Search,
-                filter?.SelectedTitleIds,
-                filter?.SizeFrom,
-                filter?.SizeTo);
+                filter.Search,
+                filter.SelectedTitleIds,
+                filter.SizeFrom,
+                filter.SizeTo);
 
             return new TorrentsIndexViewModel
             {

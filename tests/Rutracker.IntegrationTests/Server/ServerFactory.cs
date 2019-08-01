@@ -10,7 +10,7 @@ using Rutracker.Server;
 
 namespace Rutracker.IntegrationTests.Server
 {
-    public class ServerFactory : WebApplicationFactory<Startup> 
+    public class ServerFactory : WebApplicationFactory<Startup>
     {
         protected override IHostBuilder CreateHostBuilder() =>
             Host.CreateDefaultBuilder(null)

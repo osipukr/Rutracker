@@ -28,7 +28,7 @@ namespace Rutracker.UnitTests.Core.Extensions
 
             // Act
             var expression = left.And(right);
-            
+
             // Assert
             Assert.NotNull(expression);
             Assert.Equal(expectedCount, TestData().Where(expression).Count());

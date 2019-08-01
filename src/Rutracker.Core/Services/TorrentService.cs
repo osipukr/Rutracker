@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Rutracker.Core.Entities;
@@ -13,7 +14,10 @@ namespace Rutracker.Core.Services
     {
         private readonly ITorrentRepository _torrentRepository;
 
-        public TorrentService(ITorrentRepository torrentRepository) => _torrentRepository = torrentRepository;
+        public TorrentService(ITorrentRepository torrentRepository)
+        {
+            _torrentRepository = torrentRepository ?? throw new ArgumentNullException(nameof(torrentRepository));
+        }
 
         public async Task<IReadOnlyList<Torrent>> GetTorrentsOnPageAsync(int page, int pageSize,
             string search,
@@ -25,8 +29,8 @@ namespace Rutracker.Core.Services
             Guard.Against.OutOfRange(nameof(pageSize), pageSize, rangeFrom: 1, rangeTo: 100);
 
             var specification = new TorrentsFilterPaginatedSpecification(
-                (page - 1) * pageSize,
-                pageSize,
+                skip: (page - 1) * pageSize,
+                take: pageSize,
                 search,
                 selectedTitleIds,
                 sizeFrom,

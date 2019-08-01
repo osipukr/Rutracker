@@ -38,22 +38,22 @@ namespace Rutracker.Infrastructure.Data.Contexts
             }
         }
 
-        #region GetPreconfiguredItems
+        #region Get preconfigured items
 
         private static readonly Random Random = new Random();
-        private const int ForumMaxCount = 30;
-        private const int TorrentMaxCount = 200;
-        private const int FileMaxCount = 500;
+        private const int ForumMaxCount = 50;
+        private const int TorrentMaxCount = 500;
+        private const int FileMaxCount = 1000;
 
         private static IEnumerable<Forum> GetPreconfiguredForums() =>
-            Enumerable.Range(1, ForumMaxCount).Select(x => new Forum
+            GeneratePreconfiguredItems(ForumMaxCount, x => new Forum
             {
                 Id = x,
                 Title = Guid.NewGuid().ToString()
             });
 
         private static IEnumerable<Torrent> GetPreconfiguredTorrents() =>
-            Enumerable.Range(1, TorrentMaxCount).Select(x => new Torrent
+            GeneratePreconfiguredItems(TorrentMaxCount, x => new Torrent
             {
                 Id = x,
                 Date = DateTime.Now,
@@ -66,12 +66,15 @@ namespace Rutracker.Infrastructure.Data.Contexts
             });
 
         private static IEnumerable<File> GetPreconfiguredFiles() =>
-            Enumerable.Range(1, FileMaxCount).Select(x => new File
+            GeneratePreconfiguredItems(FileMaxCount, x => new File
             {
                 Name = Guid.NewGuid().ToString(),
                 Size = Random.Next(1, int.MaxValue),
                 TorrentId = Random.Next(1, TorrentMaxCount)
             });
+
+        private static IEnumerable<TItem> GeneratePreconfiguredItems<TItem>(int maxCount, Func<int, TItem> func) =>
+            Enumerable.Range(1, maxCount).Select(func);
 
         #endregion
     }
