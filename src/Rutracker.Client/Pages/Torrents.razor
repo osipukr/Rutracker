@@ -21,7 +21,7 @@ else
 {
     <LoadingBackground ShowLoader="false">
         <p>Failed to load page model</p>
-        <MatButton OnClick="@RetryLoad" Raised="true" Label="Try again" />
+        <MatButton OnClick="@ReloadClicked" Raised="true" Label="Try again" />
     </LoadingBackground>
 }
 
@@ -46,7 +46,7 @@ else
         }
     }
 
-    async Task RetryLoad() => await LoadTorrentsIndexAsync(Page, Filter);
+    async Task ReloadClicked() => await LoadTorrentsIndexAsync(Page, Filter);
     async Task PageChanged(int page) => await LoadTorrentsIndexAsync(Page = page, Filter);
     async Task FilterChanged(FiltrationViewModel filter) => await LoadTorrentsIndexAsync(Page = 1, Filter = filter);
 }

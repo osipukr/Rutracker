@@ -10,6 +10,7 @@
 
                 <MatTextField Type="search"
                               @bind-Value="@Model.Search"
+                              @bind-Value:event="oninput"
                               FullWidth="true"
                               IconTrailing="true"
                               Icon="@MatIconNames.Search"

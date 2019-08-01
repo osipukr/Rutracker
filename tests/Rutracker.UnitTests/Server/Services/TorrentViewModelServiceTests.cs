@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Rutracker.Server.Services;
 using Rutracker.Shared.Interfaces;
+using Rutracker.Shared.ViewModels.Shared;
 using Rutracker.UnitTests.Setup;
 using Xunit;
 
@@ -21,14 +23,14 @@ namespace Rutracker.UnitTests.Server.Services
         }
 
         [Fact(DisplayName = "GetTorrentsIndexAsync() with valid parameters should return TorrentsIndexViewMode")]
-        public async Task GetTorrentsIndexAsync_1_10_Null_ReturnsValidTorrentsIndexViewModel()
+        public async Task GetTorrentsIndexAsync_1_10_ReturnsValidTorrentsIndexViewModel()
         {
             // Arrange
             const int page = 1;
             const int pageSize = 10;
 
             // Act
-            var result = await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, null);
+            var result = await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, new FiltrationViewModel());
 
             // Assert
             Assert.NotNull(result);
@@ -64,6 +66,14 @@ namespace Rutracker.UnitTests.Server.Services
             Assert.NotNull(result);
             Assert.NotNull(result.FacetItems);
             Assert.Equal(expectedCount, result.FacetItems.Length);
+        }
+
+        [Fact(DisplayName = "GetTorrentsIndexAsync() with invalid parameters should throw ArgumentNullException")]
+        public async Task GetTorrentsIndexAsync_Null_ThrowArgumentNullException()
+        {
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await _torrentViewModelService.GetTorrentsIndexAsync(1, 1, null));
         }
     }
 }

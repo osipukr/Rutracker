@@ -14,7 +14,7 @@ namespace Rutracker.Client
             services.AddSingleton(clientSettings.ApiUriSettings);
             services.AddSingleton(clientSettings.ViewSettings);
             services.AddSingleton<AppStateService>();
-            services.AddMatToaster((MatToastConfiguration) clientSettings.MatToasterSettings);
+            services.AddMatToaster((MatToastConfiguration)clientSettings.MatToasterSettings);
         }
 
         public void Configure(IComponentsApplicationBuilder app)

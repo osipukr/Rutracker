@@ -14,7 +14,7 @@ else if (Model == null || Model.TorrentDetailsItem == null)
 {
     <LoadingBackground ShowLoader="false">
         <p>Torrent with id @Id not found</p>
-        <MatButton OnClick="@BackToButtonClicked" Raised="true" Label="Return to full torrents list" />
+        <MatButton OnClick="@BackButtonClicked" Raised="true" Label="Return to full torrents list" />
     </LoadingBackground>
 }
 else
@@ -22,7 +22,7 @@ else
     <div class="mat-layout-grid px-0 pb-5">
         <div class="mat-layout-grid-inner">
             <div class="mat-layout-grid-cell">
-                <MatIconButton Icon="@MatIconNames.Arrow_back" OnClick="@BackToButtonClicked" />
+                <MatIconButton Icon="@MatIconNames.Arrow_back" OnClick="@BackButtonClicked" />
             </div>
         </div>
     </div>
@@ -50,5 +50,5 @@ else
         }
     }
 
-    void BackToButtonClicked() => UriHelper.NavigateTo("/torrents");
+    void BackButtonClicked() => UriHelper.NavigateTo("/torrents");
 }

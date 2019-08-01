@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
@@ -63,6 +64,8 @@ namespace Rutracker.Server.Services
 
         private async Task<TorrentsIndexViewModel> TorrentsIndexCallbackAsync(int page, int pageSize, FiltrationViewModel filter)
         {
+            Guard.Against.Null(filter, nameof(filter));
+
             var torrentsSource = await _torrentService.GetTorrentsOnPageAsync(page, pageSize,
                 filter.Search,
                 filter.SelectedTitleIds,
