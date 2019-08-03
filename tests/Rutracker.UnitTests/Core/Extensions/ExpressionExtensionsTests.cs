@@ -28,10 +28,11 @@ namespace Rutracker.UnitTests.Core.Extensions
 
             // Act
             var expression = left.And(right);
+            var count = TestData().Where(expression).Count();
 
             // Assert
             Assert.NotNull(expression);
-            Assert.Equal(expectedCount, TestData().Where(expression).Count());
+            Assert.Equal(expectedCount, count);
         }
 
         [Fact(DisplayName = "Or() with valid parameters should return applied expression")]
@@ -44,21 +45,22 @@ namespace Rutracker.UnitTests.Core.Extensions
 
             // Act
             var expression = left.Or(right);
+            var count = TestData().Where(expression).Count();
 
             // Assert
             Assert.NotNull(expression);
-            Assert.Equal(expectedCount, TestData().Where(expression).Count());
+            Assert.Equal(expectedCount, count);
         }
 
         [Fact(DisplayName = "And() with an invalid parameters should throw ArgumentNullException")]
-        public void And_NullExpressions_ThrowArgumentNullException()
+        public void And_Null_ThrowArgumentNullException()
         {
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => ((Expression<Func<string, bool>>)null).And(null));
         }
 
         [Fact(DisplayName = "Or() with an invalid parameters should throw ArgumentNullException")]
-        public void Or_NullExpressions_ThrowArgumentNullException()
+        public void Or_Null_ThrowArgumentNullException()
         {
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => ((Expression<Func<string, bool>>)null).Or(null));

@@ -22,7 +22,7 @@ namespace Rutracker.IntegrationTests.Server
                         {
                             options.UseInMemoryDatabase(Guid.NewGuid().ToString());
                             options.UseInternalServiceProvider(provider);
-                        }, ServiceLifetime.Singleton);
+                        }, contextLifetime: ServiceLifetime.Singleton);
 
                     using var scope = services.BuildServiceProvider().CreateScope();
                     var context = scope.ServiceProvider.GetRequiredService<TorrentContext>();

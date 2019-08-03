@@ -28,14 +28,19 @@ namespace Rutracker.UnitTests.Server.Services
             // Arrange
             const int page = 1;
             const int pageSize = 10;
+            const int expectedCount = 10;
+            var filter = new FiltrationViewModel();
 
             // Act
-            var result = await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, new FiltrationViewModel());
+            var result = await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, filter);
 
             // Assert
             Assert.NotNull(result);
             Assert.NotNull(result.TorrentItems);
-            Assert.Equal(pageSize, result.TorrentItems.Length);
+            Assert.NotNull(result.PaginationModel);
+            Assert.Equal(page, result.PaginationModel.CurrentPage);
+            Assert.Equal(pageSize, result.PaginationModel.PageSize);
+            Assert.Equal(expectedCount, result.TorrentItems.Length);
         }
 
         [Fact(DisplayName = "GetTorrentIndexAsync() with valid parameter should return TorrentIndexViewModel")]
