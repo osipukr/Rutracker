@@ -30,35 +30,35 @@ namespace Rutracker.Server.Services
             _torrentService = torrentService ?? throw new ArgumentNullException(nameof(torrentService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+
+            if (cacheOptions == null)
+            {
+                throw new ArgumentNullException(nameof(cacheOptions));
+            }
+
             _cacheEntryOptions = new MemoryCacheEntryOptions
             {
-                SlidingExpiration = (cacheOptions ?? throw new ArgumentNullException(nameof(cacheOptions))).Value?.CacheDuration
+                SlidingExpiration = cacheOptions.Value?.CacheDuration
             };
         }
 
-        public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter)
-        {
-            var key = $"torrents-{page}-{pageSize}-{filter?.GetHashCode()}";
-            var callback = TorrentsIndexCallbackAsync(page, pageSize, filter);
+        public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter) =>
+            await GetActionAsync(
+                key: $"torrents-{page}-{pageSize}-{filter?.GetHashCode()}",
+                func: TorrentsIndexCallbackAsync(page, pageSize, filter));
 
-            return await _cache.GetOrCreateAsync(key, () => callback, _cacheEntryOptions);
-        }
+        public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id) =>
+            await GetActionAsync(
+                key: $"torrent-{id}",
+                func: TorrentIndexCallbackAsync(id));
 
-        public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id)
-        {
-            var key = $"torrent-{id}";
-            var callback = TorrentIndexCallbackAsync(id);
+        public async Task<FacetViewModel<string>> GetTitleFacetAsync(int count) =>
+            await GetActionAsync(
+                key: $"titles-{count}",
+                func: TitleFacetCallbackAsync(count));
 
-            return await _cache.GetOrCreateAsync(key, () => callback, _cacheEntryOptions);
-        }
-
-        public async Task<FacetViewModel<string>> GetTitleFacetAsync(int count)
-        {
-            var key = $"titles-{count}";
-            var callback = TitleFacetCallbackAsync(count);
-
-            return await _cache.GetOrCreateAsync(key, () => callback, _cacheEntryOptions);
-        }
+        private async Task<TResult> GetActionAsync<TResult>(string key, Task<TResult> func) =>
+            await _cache.GetOrCreateAsync(key, () => func, _cacheEntryOptions);
 
         #region Cache entry callback functions
 
