@@ -87,7 +87,7 @@
 @code
 {
     [Parameter] FiltrationViewModel Model { get; set; }
-    [Parameter] EventCallback<FiltrationViewModel> FilterChanged { get; set; }
+    [Parameter] EventCallback FilterChanged { get; set; }
 
     int TitleCount => ViewSettings.ForumTitlesCount;
     FacetViewModel<string> TitleFacet { get; set; }
@@ -131,6 +131,6 @@
     void OnValidSubmitClicked()
     {
         Model.SelectedTitleIds = TitleFacet?.FacetItems?.Where(x => x.IsSelected).Select(x => x.Id);
-        FilterChanged.InvokeAsync(Model);
+        FilterChanged.InvokeAsync(EventArgs.Empty);
     }
 }
