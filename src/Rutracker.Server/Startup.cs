@@ -23,7 +23,7 @@ namespace Rutracker.Server
 
         public void ConfigureServices(IServiceCollection services) =>
             services
-                .AddDatabaseContext(_configuration)
+                .AddDatabaseContext(_configuration, _environment)
                 .AddCaching()
                 .AddCustomOptions(_configuration)
                 .AddCustomResponseCompression(_configuration)

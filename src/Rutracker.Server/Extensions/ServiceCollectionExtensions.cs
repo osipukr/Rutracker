@@ -4,12 +4,15 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Rutracker.Core.Interfaces.Repositories;
 using Rutracker.Core.Interfaces.Services;
@@ -43,8 +46,8 @@ namespace Rutracker.Server.Extensions
         /// <summary>
         ///     Adds response compression to enable GZIP compression of responses.
         /// </summary>
-        public static IServiceCollection AddCustomResponseCompression(
-            this IServiceCollection services, IConfiguration configuration) =>
+        public static IServiceCollection AddCustomResponseCompression(this IServiceCollection services,
+            IConfiguration configuration) =>
             services
                 .AddResponseCompression(
                     options =>
@@ -120,13 +123,18 @@ namespace Rutracker.Server.Extensions
         /// <summary>
         ///     Adds project Database Context.
         /// </summary>
-        public static IServiceCollection AddDatabaseContext(
-            this IServiceCollection services, IConfiguration configuration) =>
+        public static IServiceCollection AddDatabaseContext(this IServiceCollection services,
+            IConfiguration configuration, IWebHostEnvironment environment) =>
             services
-                .AddDbContext<TorrentContext>(options =>
-                {
-                    options.UseSqlServer(configuration.GetConnectionString("TorrentConnection"));
-                    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-                });
+                .AddDbContext<TorrentContext>(options => options
+                    .UseSqlServer(
+                        configuration.GetConnectionString("TorrentConnection"),
+                        sqlServerOptions =>
+                        {
+                            sqlServerOptions.EnableRetryOnFailure();
+                        })
+                    .ConfigureWarnings(x => x.Throw(RelationalEventId.QueryClientEvaluationWarning))
+                    .EnableSensitiveDataLogging(environment.IsDevelopment())
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
     }
 }
