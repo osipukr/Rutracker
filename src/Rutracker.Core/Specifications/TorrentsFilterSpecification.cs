@@ -6,10 +6,7 @@ namespace Rutracker.Core.Specifications
 {
     public class TorrentsFilterSpecification : BaseSpecification<Torrent, long>
     {
-        public TorrentsFilterSpecification(string search,
-            IEnumerable<string> selectedTitleIds,
-            long? sizeFrom,
-            long? sizeTo)
+        public TorrentsFilterSpecification(string search, IEnumerable<string> selectedTitleIds, long? sizeFrom,long? sizeTo)
             : base(x => string.IsNullOrWhiteSpace(search) || x.Title.Contains(search))
         {
             var titleIds = selectedTitleIds?.Select(x => new

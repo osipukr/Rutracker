@@ -110,14 +110,17 @@
         </MatTab>
     }
 
-    <MatTab>
-        <LabelContent>
-            <MatIcon Icon="@MatIconNames.Comment" />
-            <p class="m-0">Content</p>
-        </LabelContent>
+   @if (Model.Content != null)
+   {
+       <MatTab>
+           <LabelContent>
+               <MatIcon Icon="@MatIconNames.Comment" />
+               <p class="m-0">Content</p>
+           </LabelContent>
 
-        <ChildContent>@((MarkupString)Model.Content)</ChildContent>
-    </MatTab>
+           <ChildContent>@((MarkupString)Model.Content)</ChildContent>
+       </MatTab>
+   }
 </MatTabGroup>
 
 @code

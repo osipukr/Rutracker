@@ -55,10 +55,7 @@ namespace Rutracker.Core.Services
             return torrent;
         }
 
-        public async Task<int> GetTorrentsCountAsync(string search,
-            IEnumerable<string> selectedTitleIds,
-            long? sizeFrom,
-            long? sizeTo)
+        public async Task<int> GetTorrentsCountAsync(string search, IEnumerable<string> selectedTitleIds, long? sizeFrom, long? sizeTo)
         {
             var specification = new TorrentsFilterSpecification(search, selectedTitleIds, sizeFrom, sizeTo);
             var count = await _torrentRepository.CountAsync(specification);

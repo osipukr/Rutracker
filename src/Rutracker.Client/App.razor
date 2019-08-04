@@ -1,8 +1,8 @@
 ﻿@implements IDisposable
 @inject AppState AppState
 
-<MatToastContainer />
 <MatThemeProvider Theme="@Theme">
+    <MatToastContainer />
     <Router AppAssembly="typeof(Program).Assembly">
         <NotFoundContent>
             <Error />
