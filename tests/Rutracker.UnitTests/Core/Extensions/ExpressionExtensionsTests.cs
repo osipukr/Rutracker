@@ -28,11 +28,10 @@ namespace Rutracker.UnitTests.Core.Extensions
 
             // Act
             var expression = left.And(right);
-            var count = TestData().Where(expression).Count();
 
             // Assert
             Assert.NotNull(expression);
-            Assert.Equal(expectedCount, count);
+            Assert.Equal(expectedCount, TestData().Where(expression).Count());
         }
 
         [Fact(DisplayName = "Or() with valid parameters should return applied expression")]
@@ -45,11 +44,10 @@ namespace Rutracker.UnitTests.Core.Extensions
 
             // Act
             var expression = left.Or(right);
-            var count = TestData().Where(expression).Count();
 
             // Assert
             Assert.NotNull(expression);
-            Assert.Equal(expectedCount, count);
+            Assert.Equal(expectedCount, TestData().Where(expression).Count());
         }
 
         [Fact(DisplayName = "And() with an invalid parameters should throw ArgumentNullException")]

@@ -7,16 +7,16 @@ namespace Rutracker.UnitTests.Core.Specifications
 {
     public class TorrentsFilterSpecificationTests
     {
-        public static IEnumerable<object[]> FilterSpecificationTestCases =>
-            new[]
+        public static TheoryData<string, IEnumerable<string>, long?, long?> Data =>
+            new TheoryData<string, IEnumerable<string>, long?, long?>
             {
-                new object[] { null, null, null, null },
-                new object[] { "search", Enumerable.Empty<string>(), long.MinValue, long.MinValue },
-                new object[] { null, new [] { "10", "20" }, null, null }
+                { null, null, null, null },
+                { "search", Enumerable.Empty<string>(), long.MinValue, long.MinValue },
+                { null, new [] { "10", "20" }, null, null }
             };
 
         [Theory(DisplayName = "TorrentsFilterSpecification() with valid parameters should return valid specification")]
-        [MemberData(nameof(FilterSpecificationTestCases))]
+        [MemberData(nameof(Data))]
         public void TorrentsFilterSpecification_ValidParameters_ReturnsValidSpecification(
             string search,
             IEnumerable<string> titles,

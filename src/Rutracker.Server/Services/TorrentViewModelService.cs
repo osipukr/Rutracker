@@ -43,21 +43,21 @@ namespace Rutracker.Server.Services
         }
 
         public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter) =>
-            await GetActionAsync(
+            await InvokeActionAsync(
                 key: $"torrents-{page}-{pageSize}-{filter?.GetHashCode()}",
                 func: TorrentsIndexCallbackAsync(page, pageSize, filter));
 
         public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id) =>
-            await GetActionAsync(
+            await InvokeActionAsync(
                 key: $"torrent-{id}",
                 func: TorrentIndexCallbackAsync(id));
 
         public async Task<FacetViewModel<string>> GetTitleFacetAsync(int count) =>
-            await GetActionAsync(
+            await InvokeActionAsync(
                 key: $"titles-{count}",
                 func: TitleFacetCallbackAsync(count));
 
-        private async Task<TResult> GetActionAsync<TResult>(string key, Task<TResult> func) =>
+        private async Task<TResult> InvokeActionAsync<TResult>(string key, Task<TResult> func) =>
             await _cache.GetOrCreateAsync(key, () => func, _cacheEntryOptions);
 
         #region Cache entry callback functions

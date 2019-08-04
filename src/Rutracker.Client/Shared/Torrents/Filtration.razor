@@ -8,13 +8,12 @@
             <EditForm Model="@Model" OnValidSubmit="@OnValidSubmitClicked">
                 <DataAnnotationsValidator />
 
-                <MatTextField Type="search"
-                              @bind-Value="@Model.Search"
-                              @bind-Value:event="oninput"
+                <MatTextField @bind-Value="@Model.Search"
+                              Type="search"
                               FullWidth="true"
                               IconTrailing="true"
                               Icon="@MatIconNames.Search"
-                              InputStyle="padding: 20px 48px 6px 16px;"
+                              InputClass="pr-5"
                               Label="Search" />
 
                 <ValidationMessage For="@(() => Model.Search)" />
@@ -53,7 +52,7 @@
                                     <MatCheckbox @bind-Checked="@facet.IsSelected">
                                         @facet.Value
 
-                                        <span class="badge badge-pill text-white" style="background-color: var(--mdc-theme-primary, #6200ee);">
+                                        <span class="badge badge-pill text-white" style="background-color: var(--mdc-theme-primary);">
                                             @facet.Count
                                         </span>
                                     </MatCheckbox>
@@ -69,13 +68,13 @@
                                    Type="reset"
                                    Disabled="@AppState.SearchInProgress"
                                    Outlined="true"
-                                   Class="filter-btn"
+                                   Class="filter-btn mat-elevation-z5"
                                    Label="All" />
 
                         <MatButton Type="submit"
                                    Disabled="@AppState.SearchInProgress"
                                    Raised="true"
-                                   Class="filter-btn"
+                                   Class="filter-btn mat-elevation-z5"
                                    Label="Apply" />
                     </div>
                 </div>

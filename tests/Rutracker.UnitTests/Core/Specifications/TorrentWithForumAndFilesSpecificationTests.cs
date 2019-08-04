@@ -1,21 +1,14 @@
-﻿using System.Collections.Generic;
-using Rutracker.Core.Specifications;
+﻿using Rutracker.Core.Specifications;
 using Xunit;
 
 namespace Rutracker.UnitTests.Core.Specifications
 {
     public class TorrentWithForumAndFilesSpecificationTests
     {
-        public static IEnumerable<object[]> TorrentWithForumAndFilesSpecificationTestCases =>
-            new[]
-            {
-                new object[] { 1 },
-                new object[] { 5 },
-                new object[] { 10 }
-            };
-
         [Theory(DisplayName = "TorrentWithForumAndFilesSpecification() with valid parameter should return valid specification")]
-        [MemberData(nameof(TorrentWithForumAndFilesSpecificationTestCases))]
+        [InlineData(1)]
+        [InlineData(5)]
+        [InlineData(10)]
         public void TorrentWithForumAndFilesSpecification_ValidParameter_ReturnsValidSpecification(long id)
         {
             // Arrange
