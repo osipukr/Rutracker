@@ -19,16 +19,17 @@ namespace Rutracker.UnitTests.Core.Specifications
 
         [Theory(DisplayName = "TorrentsFilterPaginatedSpecification() with valid parameters should return valid specification")]
         [MemberData(nameof(Data))]
-        public void TorrentsFilterPaginatedSpecification_ValidParameters_ReturnsValidSpecification(int skip, int take,
+        public void TorrentsFilterPaginatedSpecification_ValidParameters_ReturnsValidSpecification(
+            int skip, int take,
             string search,
             IEnumerable<string> titles,
-            long? sizeFrom,
-            long? sizeTo)
+            long? sizeFrom, long? sizeTo)
         {
             // Act
             var specification = new TorrentsFilterPaginatedSpecification(skip, take, search, titles, sizeFrom, sizeTo);
 
             // Assert
+            Assert.NotNull(specification);
             Assert.NotNull(specification.Criteria);
             Assert.True(specification.IsPagingEnabled);
             Assert.Equal(skip, specification.Skip);

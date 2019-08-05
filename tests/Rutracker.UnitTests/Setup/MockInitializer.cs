@@ -57,25 +57,22 @@ namespace Rutracker.UnitTests.Setup
         public static ITorrentService GeTorrentService()
         {
             var mockTorrentService = new Mock<ITorrentService>();
-            var torrents = DataInitializer.GeTestTorrents();
 
-            // default setup
             mockTorrentService.Setup(x =>
                     x.GetTorrentsOnPageAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive),
                         It.IsInRange(0, int.MaxValue, Range.Exclusive), null, null, null, null))
-                .ReturnsAsync((int page, int pageSize, string search,
-                        IEnumerable<string> titles, long? sizeFrom, long? sizeTo) => new Torrent[pageSize]);
+                .ReturnsAsync((int page, int pageSize, string search, IEnumerable<string> titles,
+                    long? sizeFrom, long? sizeTo) => new Torrent[pageSize]);
 
             mockTorrentService.Setup(x => x.GetTorrentDetailsAsync(It.IsInRange(0, long.MaxValue, Range.Exclusive)))
                 .ReturnsAsync((long x) => new Torrent { Id = x });
 
             mockTorrentService.Setup(x => x.GetTorrentsCountAsync(null, null, null, null))
-                .ReturnsAsync(torrents.Count());
+                .ReturnsAsync(DataInitializer.GeTestTorrents().Count());
 
             mockTorrentService.Setup(x => x.GetPopularForumsAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive)))
                 .ReturnsAsync((int x) => new (long, string, int)[x]);
 
-            // exception setup
             mockTorrentService.Setup(x =>
                     x.GetTorrentsOnPageAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive),
                         It.IsInRange(int.MinValue, 0, Range.Inclusive), null, null, null, null))

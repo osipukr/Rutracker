@@ -20,13 +20,13 @@ namespace Rutracker.UnitTests.Core.Specifications
         public void TorrentsFilterSpecification_ValidParameters_ReturnsValidSpecification(
             string search,
             IEnumerable<string> titles,
-            long? sizeFrom,
-            long? sizeTo)
+            long? sizeFrom, long? sizeTo)
         {
             // Act
             var specification = new TorrentsFilterSpecification(search, titles, sizeFrom, sizeTo);
 
             // Assert
+            Assert.NotNull(specification);
             Assert.NotNull(specification.Criteria);
         }
     }

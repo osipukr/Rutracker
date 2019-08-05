@@ -47,7 +47,7 @@ namespace Rutracker.UnitTests.Core.Services
         }
 
         [Fact(DisplayName = "GetTorrentsCountAsync() with valid parameters should return the number of torrents")]
-        public async Task GetTorrentsCountAsync_Nulls_ReturnsValidCount()
+        public async Task GetTorrentsCountAsync_Null_ReturnsValidCount()
         {
             // Arrange
             const int expectedCount = 9;

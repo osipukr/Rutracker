@@ -34,7 +34,7 @@ namespace Rutracker.UnitTests.Infrastructure.Repositories
         }
 
         [Fact(DisplayName = "GetAsync() with valid parameter should return valid torrent")]
-        public async Task GetAsync_5BySpecification_ReturnsValidTorrent()
+        public async Task GetAsync_5_ReturnsValidTorrentBySpecification()
         {
             // Arrange
             const long expectedId = 5;
@@ -49,15 +49,11 @@ namespace Rutracker.UnitTests.Infrastructure.Repositories
         }
 
         [Fact(DisplayName = "ListAsync() should return all items based on the specification")]
-        public async Task ListAsync_0_5_NullsBySpecification_ReturnsValidTorrentsBySpecification()
+        public async Task ListAsync_0_5_Null_ReturnsValidTorrentsBySpecification()
         {
             // Arrange
             const int expectedCount = 5;
-            var specification = new TorrentsFilterPaginatedSpecification(0, expectedCount,
-                null,
-                null,
-                null,
-                null);
+            var specification = new TorrentsFilterPaginatedSpecification(0, expectedCount, null, null, null, null);
 
             // Act
             var torrents = await _torrentRepository.ListAsync(specification);
@@ -68,15 +64,11 @@ namespace Rutracker.UnitTests.Infrastructure.Repositories
         }
 
         [Fact(DisplayName = "CountAsync() with valid parameters should return the number of items")]
-        public async Task CountAsync_0_5_Nulls_ReturnsValidCountBySpecification()
+        public async Task CountAsync_0_5_Null_ReturnsValidCountBySpecification()
         {
             // Arrange
             const int expectedCount = 5;
-            var specification = new TorrentsFilterPaginatedSpecification(0, expectedCount,
-                null,
-                null,
-                null,
-                null);
+            var specification = new TorrentsFilterPaginatedSpecification(0, expectedCount, null, null, null, null);
 
             // Act
             var count = await _torrentRepository.CountAsync(specification);

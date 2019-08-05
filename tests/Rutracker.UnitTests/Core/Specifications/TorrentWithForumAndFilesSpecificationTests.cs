@@ -18,6 +18,7 @@ namespace Rutracker.UnitTests.Core.Specifications
             var specification = new TorrentWithForumAndFilesSpecification(id);
 
             // Assert
+            Assert.NotNull(specification);
             Assert.NotNull(specification.Includes);
             Assert.Equal(expectedIncludeCount, specification.Includes.Count);
         }
