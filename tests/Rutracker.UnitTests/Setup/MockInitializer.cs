@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;
@@ -38,23 +37,19 @@ namespace Rutracker.UnitTests.Setup
         public static ITorrentRepository GetTorrentRepository()
         {
             var mockTorrentRepository = new Mock<ITorrentRepository>();
-            var torrents = (IReadOnlyList<Torrent>)DataInitializer.GeTestTorrents();
+            var torrents = DataInitializer.GeTestTorrents().AsQueryable();
 
             mockTorrentRepository.Setup(x => x.GetAsync(It.IsAny<ISpecification<Torrent, long>>()))
-                .Returns<ISpecification<Torrent, long>>(x =>
-                    Task.FromResult(torrents.AsQueryable().FirstOrDefault(x.Criteria)));
+                .ReturnsAsync((ISpecification<Torrent, long> x) => torrents.FirstOrDefault(x.Criteria));
 
             mockTorrentRepository.Setup(x => x.ListAsync(It.IsAny<ISpecification<Torrent, long>>()))
-                .Returns<ISpecification<Torrent, long>>(x =>
-                    Task.FromResult((IReadOnlyList<Torrent>)new Torrent[x.Take]));
+                .ReturnsAsync((ISpecification<Torrent, long> x) => new Torrent[x.Take]);
 
             mockTorrentRepository.Setup(x => x.CountAsync(It.IsAny<ISpecification<Torrent, long>>()))
-                .Returns<ISpecification<Torrent, long>>(x =>
-                    Task.FromResult(torrents.AsQueryable().Where(x.Criteria).Count()));
+                .ReturnsAsync((ISpecification<Torrent, long> x) => torrents.Where(x.Criteria).Count());
 
             mockTorrentRepository.Setup(x => x.GetPopularForumsAsync(It.IsAny<int>()))
-                .Returns<int>(x =>
-                    Task.FromResult((IReadOnlyList<(long, string, int)>)new (long, string, int)[x]));
+                .ReturnsAsync((int x) => new (long, string, int)[x]);
 
             return mockTorrentRepository.Object;
         }
@@ -62,28 +57,22 @@ namespace Rutracker.UnitTests.Setup
         public static ITorrentService GeTorrentService()
         {
             var mockTorrentService = new Mock<ITorrentService>();
-            var torrents = DataInitializer.GeTestTorrents();
 
-            // default setup
             mockTorrentService.Setup(x =>
                     x.GetTorrentsOnPageAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive),
                         It.IsInRange(0, int.MaxValue, Range.Exclusive), null, null, null, null))
-                .Returns<int, int, string, IEnumerable<string>, long?, long?>(
-                    (page, pageSize, search, titles, sizeFrom, sizeTo) =>
-                        Task.FromResult((IReadOnlyList<Torrent>)new Torrent[pageSize]));
+                .ReturnsAsync((int page, int pageSize, string search, IEnumerable<string> titles,
+                    long? sizeFrom, long? sizeTo) => new Torrent[pageSize]);
 
             mockTorrentService.Setup(x => x.GetTorrentDetailsAsync(It.IsInRange(0, long.MaxValue, Range.Exclusive)))
-                .Returns<long>(x => Task.FromResult(new Torrent { Id = x }));
+                .ReturnsAsync((long x) => new Torrent { Id = x });
 
             mockTorrentService.Setup(x => x.GetTorrentsCountAsync(null, null, null, null))
-                .ReturnsAsync(torrents.Count());
+                .ReturnsAsync(DataInitializer.GeTestTorrents().Count());
 
             mockTorrentService.Setup(x => x.GetPopularForumsAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive)))
-                .Returns<int>(x =>
-                    Task.FromResult((IReadOnlyList<(long, string, int)>)new (long, string, int)[x]));
+                .ReturnsAsync((int x) => new (long, string, int)[x]);
 
-
-            // exception setup
             mockTorrentService.Setup(x =>
                     x.GetTorrentsOnPageAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive),
                         It.IsInRange(int.MinValue, 0, Range.Inclusive), null, null, null, null))
@@ -95,24 +84,17 @@ namespace Rutracker.UnitTests.Setup
             mockTorrentService.Setup(x => x.GetPopularForumsAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive)))
                 .ThrowsAsync(new TorrentException(string.Empty, ExceptionEvent.NotValidParameters));
 
-
             return mockTorrentService.Object;
         }
 
         public static IMemoryCache GetMemoryCache() =>
             new Mock<MemoryCache>(new Mock<MemoryCacheOptions>().Object).Object;
 
-        public static IOptions<CacheSettings> GetCacheOptions()
-        {
-            var mockCacheOptions = new Mock<IOptions<CacheSettings>>();
-
-            mockCacheOptions.Setup(x => x.Value).Returns(new CacheSettings
+        public static IOptions<CacheSettings> GetCacheOptions() =>
+            Mock.Of<IOptions<CacheSettings>>(x => x.Value == new CacheSettings
             {
                 CacheDuration = TimeSpan.MaxValue
             });
-
-            return mockCacheOptions.Object;
-        }
 
         public static IMapper GeMapper()
         {

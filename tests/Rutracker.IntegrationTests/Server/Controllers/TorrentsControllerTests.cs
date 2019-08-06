@@ -59,8 +59,8 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             const int expectedCount = 5;
 
             // Act
-            var result =
-                await _client.GetJsonAsync<FacetViewModel<string>>($"api/torrents/titles/?count={expectedCount}");
+            var result = await _client.GetJsonAsync<FacetViewModel<string>>(
+                $"api/torrents/titles/?count={expectedCount}");
 
             // Assert
             Assert.NotNull(result);
@@ -69,18 +69,18 @@ namespace Rutracker.IntegrationTests.Server.Controllers
         }
 
         [Fact(DisplayName = "Pagination() with an invalid parameters should return 400BadRequest status")]
-        public async Task Pagination_Negative10_Negative10_ReturnsStatus400BadRequest()
+        public async Task Pagination_NegativeNumbers_ReturnsStatus400BadRequest()
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.PostJsonAsync<TorrentsIndexViewModel>("api/torrents/pagination/?page=-10&pageSize=-10",
-                    null));
+                await _client.PostJsonAsync<TorrentsIndexViewModel>(
+                    "api/torrents/pagination/?page=-10&pageSize=-10", null));
 
             Assert.Contains(StatusCodes.Status400BadRequest.ToString(), exception.Message);
         }
 
         [Fact(DisplayName = "Get() with an invalid parameter should return 400BadRequest status")]
-        public async Task Get_Negative10_ReturnsStatus400BadRequest()
+        public async Task Get_NegativeNumber_ReturnsStatus400BadRequest()
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
@@ -89,8 +89,8 @@ namespace Rutracker.IntegrationTests.Server.Controllers
             Assert.Contains(StatusCodes.Status400BadRequest.ToString(), exception.Message);
         }
 
-        [Fact(DisplayName = "Get() with an invalid parameter should return 400BadRequest status")]
-        public async Task Get_1000_ReturnsStatus400BadRequest()
+        [Fact(DisplayName = "Get() with an invalid parameter should return 404NotFound status")]
+        public async Task Get_1000_ReturnsStatus404NotFound()
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>

@@ -1,5 +1,5 @@
 ﻿@inject IMatToaster MatToaster
-@inject AppStateService AppState
+@inject AppState AppState
 @inject ViewSettings ViewSettings
 
 <div class="mat-layout-grid px-0">
@@ -8,12 +8,12 @@
             <EditForm Model="@Model" OnValidSubmit="@OnValidSubmitClicked">
                 <DataAnnotationsValidator />
 
-                <MatTextField Type="search"
-                              @bind-Value="@Model.Search"
+                <MatTextField @bind-Value="@Model.Search"
+                              Type="search"
                               FullWidth="true"
                               IconTrailing="true"
                               Icon="@MatIconNames.Search"
-                              InputStyle="padding: 20px 48px 6px 16px;"
+                              InputClass="pr-5"
                               Label="Search" />
 
                 <ValidationMessage For="@(() => Model.Search)" />
@@ -52,7 +52,7 @@
                                     <MatCheckbox @bind-Checked="@facet.IsSelected">
                                         @facet.Value
 
-                                        <span class="badge badge-pill text-white" style="background-color: var(--mdc-theme-primary, #6200ee);">
+                                        <span class="badge badge-pill text-white" style="background-color: var(--mdc-theme-primary);">
                                             @facet.Count
                                         </span>
                                     </MatCheckbox>
@@ -68,13 +68,15 @@
                                    Type="reset"
                                    Disabled="@AppState.SearchInProgress"
                                    Outlined="true"
-                                   Class="filter-btn"
+                                   Icon="@MatIconNames.Loop"
+                                   Class="filter-btn mat-elevation-z5"
                                    Label="All" />
 
                         <MatButton Type="submit"
                                    Disabled="@AppState.SearchInProgress"
                                    Raised="true"
-                                   Class="filter-btn"
+                                   TrailingIcon="@MatIconNames.Search"
+                                   Class="filter-btn mat-elevation-z5"
                                    Label="Apply" />
                     </div>
                 </div>
@@ -86,7 +88,7 @@
 @code
 {
     [Parameter] FiltrationViewModel Model { get; set; }
-    [Parameter] EventCallback<FiltrationViewModel> FilterChanged { get; set; }
+    [Parameter] EventCallback FilterChanged { get; set; }
 
     int TitleCount => ViewSettings.ForumTitlesCount;
     FacetViewModel<string> TitleFacet { get; set; }
@@ -130,6 +132,6 @@
     void OnValidSubmitClicked()
     {
         Model.SelectedTitleIds = TitleFacet?.FacetItems?.Where(x => x.IsSelected).Select(x => x.Id);
-        FilterChanged.InvokeAsync(Model);
+        FilterChanged.InvokeAsync(EventArgs.Empty);
     }
 }

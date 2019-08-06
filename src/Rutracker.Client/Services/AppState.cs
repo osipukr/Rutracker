@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Rutracker.Client.Settings;
 using Rutracker.Shared.Interfaces;
@@ -9,14 +8,15 @@ using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Client.Services
 {
-    public class AppStateService : BaseClientService, ITorrentViewModelService
+    public class AppState : ITorrentViewModelService
     {
+        private readonly HttpClientService _httpClientService;
         private readonly ApiUriSettings _apiUris;
 
-        public AppStateService(HttpClient httpClient, ApiUriSettings apiUris)
-            : base(httpClient)
+        public AppState(HttpClientService httpClientService, ApiUriSettings apiUris)
         {
-            _apiUris = apiUris;
+            _httpClientService = httpClientService ?? throw new ArgumentNullException(nameof(httpClientService));
+            _apiUris = apiUris ?? throw new ArgumentNullException(nameof(apiUris));
         }
 
         public bool SearchInProgress { get; private set; }
@@ -27,7 +27,7 @@ namespace Rutracker.Client.Services
             {
                 var url = string.Format(_apiUris.TorrentsIndex, page.ToString(), pageSize.ToString());
 
-                return PostJsonAsync<TorrentsIndexViewModel>(url, filter);
+                return _httpClientService.PostJsonAsync<TorrentsIndexViewModel>(url, filter);
             });
 
         public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id) =>
@@ -35,14 +35,14 @@ namespace Rutracker.Client.Services
             {
                 var url = string.Format(_apiUris.TorrentIndex, id.ToString());
 
-                return GetJsonAsync<TorrentIndexViewModel>(url);
+                return _httpClientService.GetJsonAsync<TorrentIndexViewModel>(url);
             });
 
         public async Task<FacetViewModel<string>> GetTitleFacetAsync(int count)
         {
             var url = string.Format(_apiUris.Titles, count.ToString());
 
-            return await GetJsonAsync<FacetViewModel<string>>(url);
+            return await _httpClientService.GetJsonAsync<FacetViewModel<string>>(url);
         }
 
         private async Task<TResult> IndexActionAsync<TResult>(Func<Task<TResult>> action)

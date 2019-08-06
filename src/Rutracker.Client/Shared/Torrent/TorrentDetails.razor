@@ -97,27 +97,30 @@
                           SearchTermFieldPlaceHolder="Input the name">
                     <MatTableHeader>
                         <th>Id</th>
+                        <th>Size</th>
                         <th>Name</th>
-                        <th>Size (bytes)</th>
                     </MatTableHeader>
                     <MatTableRow>
                         <td>@context.Id</td>
-                        <td>@context.Name</td>
                         <td>@context.Size</td>
+                        <td>@context.Name</td>
                     </MatTableRow>
                 </MatTable>
             </ChildContent>
         </MatTab>
     }
 
-    <MatTab>
-        <LabelContent>
-            <MatIcon Icon="@MatIconNames.Comment" />
-            <p class="m-0">Content</p>
-        </LabelContent>
+   @if (Model.Content != null)
+   {
+       <MatTab>
+           <LabelContent>
+               <MatIcon Icon="@MatIconNames.Comment" />
+               <p class="m-0">Content</p>
+           </LabelContent>
 
-        <ChildContent>@((MarkupString)Model.Content)</ChildContent>
-    </MatTab>
+           <ChildContent>@((MarkupString)Model.Content)</ChildContent>
+       </MatTab>
+   }
 </MatTabGroup>
 
 @code

@@ -26,26 +26,26 @@ namespace Rutracker.Core.Specifications
             Includes = new List<Expression<Func<TEntity, object>>>();
         }
 
-        protected void AddInclude(Expression<Func<TEntity, object>> includeExpression) =>
+        protected virtual void AddInclude(Expression<Func<TEntity, object>> includeExpression) =>
             Includes.Add(includeExpression);
 
-        protected void ApplyOrderBy(Expression<Func<TEntity, object>> orderByExpression) => 
+        protected virtual void ApplyOrderBy(Expression<Func<TEntity, object>> orderByExpression) =>
             OrderBy = orderByExpression;
 
-        protected void ApplyOrderByDescending(Expression<Func<TEntity, object>> orderByDescendingExpression) =>
+        protected virtual void ApplyOrderByDescending(Expression<Func<TEntity, object>> orderByDescendingExpression) =>
             OrderByDescending = orderByDescendingExpression;
 
-        protected void ApplyPaging(int skip, int take)
+        protected virtual void ApplyPaging(int skip, int take)
         {
             Skip = skip;
             Take = take;
             IsPagingEnabled = true;
         }
 
-        protected void ApplyAndCriteria(Expression<Func<TEntity, bool>> andExpression) =>
+        protected virtual void ApplyAndCriteria(Expression<Func<TEntity, bool>> andExpression) =>
             Criteria = Criteria.And(andExpression);
 
-        protected void ApplyOrCriteria(Expression<Func<TEntity, bool>> orExpression) =>
+        protected virtual void ApplyOrCriteria(Expression<Func<TEntity, bool>> orExpression) =>
             Criteria = Criteria.Or(orExpression);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Rutracker.Server.Interfaces;
@@ -22,8 +23,10 @@ namespace Rutracker.Server.Controllers
     {
         private readonly ITorrentViewModelService _torrentViewModelService;
 
-        public TorrentsController(ITorrentViewModelService torrentViewModelService) =>
-            _torrentViewModelService = torrentViewModelService;
+        public TorrentsController(ITorrentViewModelService torrentViewModelService)
+        {
+            _torrentViewModelService = torrentViewModelService ?? throw new ArgumentNullException(nameof(torrentViewModelService));
+        }
 
         /// <summary>
         ///     Get all items on the page with information for pagination.

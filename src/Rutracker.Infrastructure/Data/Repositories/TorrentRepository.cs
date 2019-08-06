@@ -29,6 +29,6 @@ namespace Rutracker.Infrastructure.Data.Repositories
                     g => g.Key,
                     f => f.Id,
                     (g, f) => ValueTuple.Create(g.Key, f.Title, g.Count))
-                .ToArrayAsync();
+                .ToListAsync();
     }
 }

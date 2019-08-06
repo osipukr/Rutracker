@@ -10,16 +10,16 @@ using Rutracker.Infrastructure.Extensions;
 
 namespace Rutracker.Infrastructure.Data.Repositories
 {
-    public abstract class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TPrimaryKey>
+    public class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TPrimaryKey>
         where TEntity : BaseEntity<TPrimaryKey>
         where TPrimaryKey : IEquatable<TPrimaryKey>
     {
         protected readonly TorrentContext _context;
         protected readonly DbSet<TEntity> _dbSet;
 
-        protected Repository(TorrentContext context)
+        public Repository(TorrentContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _dbSet = _context.Set<TEntity>();
         }
 

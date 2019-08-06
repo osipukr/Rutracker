@@ -8,4 +8,4 @@
 
         public virtual Torrent Torrent { get; set; }
     }
-}  
+}

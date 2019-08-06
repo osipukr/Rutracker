@@ -20,11 +20,13 @@
         </MatAppBarRow>
     </MatAppBar>
     <MatAppBarContent>
-        <section class="container-fluid">@Body</section>
+        <main class="container-fluid px-4 py-3">
+            @Body
+        </main>
     </MatAppBarContent>
 </MatAppBarContainer>
 
-@code 
+@code
 {
     string BrandName => ViewSettings.ServiceName;
 }
