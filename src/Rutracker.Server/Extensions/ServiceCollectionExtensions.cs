@@ -3,8 +3,11 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +15,9 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Rutracker.Core.Entities.Accounts;
 using Rutracker.Core.Interfaces.Repositories;
 using Rutracker.Core.Interfaces.Services;
 using Rutracker.Core.Services;
@@ -70,6 +75,53 @@ namespace Rutracker.Server.Extensions
                 {
                     options.Level = CompressionLevel.Optimal;
                 });
+
+        // <summary>
+        ///     Adds custom identity with Authentication and JwtBearer.
+        /// </summary>
+        public static IServiceCollection AddCustomIdentity(this IServiceCollection services,
+            IConfiguration configuration) =>
+            services
+                .AddIdentity<User, Role>(config =>
+                {
+                    config.User.RequireUniqueEmail = true;
+
+                    config.SignIn.RequireConfirmedEmail = true;
+                    config.Password.RequireNonAlphanumeric = false;
+                    config.Password.RequireUppercase = false;
+                    config.Password.RequireDigit = false;
+                })
+                .AddEntityFrameworkStores<AccountContext>()
+                .AddDefaultTokenProviders()
+                .Services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(configureOptions =>
+                {
+                    var jwtAppSettingOptions = configuration.GetSection(nameof(JwtSettings));
+                    configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtSettings.Issuer)];
+
+                    configureOptions.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = jwtAppSettingOptions[nameof(JwtSettings.Issuer)],
+
+                        ValidateAudience = true,
+                        ValidAudience = jwtAppSettingOptions[nameof(JwtSettings.Audience)],
+
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtAppSettingOptions[nameof(JwtSettings.SecretKey)])),
+
+                        RequireExpirationTime = false,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
+                    };
+                    configureOptions.SaveToken = true;
+                })
+                .Services;
 
         /// <summary>
         ///     Adds and configure Swagger middleware.
