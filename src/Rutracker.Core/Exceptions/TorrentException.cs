@@ -4,14 +4,14 @@ namespace Rutracker.Core.Exceptions
 {
     public class TorrentException : Exception
     {
-        public ExceptionEvent ExceptionEvent { get; }
+        public ExceptionEventType ExceptionEvent { get; }
 
-        public TorrentException(ExceptionEvent exceptionEvent)
+        public TorrentException(ExceptionEventType exceptionEvent)
             : this(null, exceptionEvent)
         {
         }
 
-        public TorrentException(string message, ExceptionEvent exceptionEvent)
+        public TorrentException(string message, ExceptionEventType exceptionEvent)
             : base(message)
         {
             ExceptionEvent = exceptionEvent;

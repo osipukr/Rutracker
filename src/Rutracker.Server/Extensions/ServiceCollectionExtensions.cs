@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +18,11 @@ using Rutracker.Core.Interfaces.Services;
 using Rutracker.Core.Services;
 using Rutracker.Infrastructure.Data.Contexts;
 using Rutracker.Infrastructure.Data.Repositories;
+using Rutracker.Infrastructure.Identity.Contexts;
+using Rutracker.Infrastructure.Services;
+using Rutracker.Infrastructure.Services.Options;
 using Rutracker.Server.Filters;
+using Rutracker.Server.Interfaces;
 using Rutracker.Server.Services;
 using Rutracker.Server.Settings;
 using Rutracker.Shared.Interfaces;
@@ -41,7 +44,11 @@ namespace Rutracker.Server.Extensions
         public static IServiceCollection AddCustomOptions(
             this IServiceCollection services, IConfiguration configuration) =>
             services
-                .Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)));
+                .Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)))
+                .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
+                .Configure<HostSettings>(configuration.GetSection(nameof(HostSettings)))
+                .Configure<EmailAuthOptions>(configuration.GetSection(nameof(EmailAuthOptions)))
+                .Configure<EmailConfirmationSettings>(configuration.GetSection(nameof(EmailConfirmationSettings)));
 
         /// <summary>
         ///     Adds response compression to enable GZIP compression of responses.
@@ -117,7 +124,13 @@ namespace Rutracker.Server.Extensions
         /// </summary>
         public static IServiceCollection AddServices(this IServiceCollection services) =>
             services
+                .AddSingleton<IJwtFactory, JwtFactory>()
+                .AddSingleton<IEmailSender, EmailSender>()
+                .AddSingleton<IEmailService, EmailService>()
+                .AddScoped<IEmailConfirmationService, EmailConfirmationService>()
                 .AddScoped<ITorrentService, TorrentService>()
+                .AddScoped<IAccountService, AccountService>()
+                .AddScoped<IAccountViewModelService, AccountViewModelService>()
                 .AddScoped<ITorrentViewModelService, TorrentViewModelService>();
 
         /// <summary>
@@ -133,7 +146,15 @@ namespace Rutracker.Server.Extensions
                         {
                             sqlServerOptions.EnableRetryOnFailure();
                         })
-                    .ConfigureWarnings(x => x.Throw(RelationalEventId.QueryClientEvaluationWarning))
+                    .EnableSensitiveDataLogging(environment.IsDevelopment())
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking))
+                .AddDbContext<AccountContext>(options => options
+                    .UseSqlServer(
+                        configuration.GetConnectionString("AccountConnection"),
+                        sqlServerOptions =>
+                        {
+                            sqlServerOptions.EnableRetryOnFailure(); 
+                        })
                     .EnableSensitiveDataLogging(environment.IsDevelopment())
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
     }

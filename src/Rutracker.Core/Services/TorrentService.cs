@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
-using Rutracker.Core.Entities;
+using Rutracker.Core.Entities.Torrents;
 using Rutracker.Core.Extensions;
 using Rutracker.Core.Interfaces.Repositories;
 using Rutracker.Core.Interfaces.Services;

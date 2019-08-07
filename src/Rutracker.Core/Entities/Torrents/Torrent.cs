@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rutracker.Core.Entities
+namespace Rutracker.Core.Entities.Torrents
 {
     public class Torrent : BaseEntity<long>
     {

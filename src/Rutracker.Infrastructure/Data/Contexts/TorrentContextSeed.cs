@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Rutracker.Core.Entities;
+using Rutracker.Core.Entities.Torrents;
 
 namespace Rutracker.Infrastructure.Data.Contexts
 {

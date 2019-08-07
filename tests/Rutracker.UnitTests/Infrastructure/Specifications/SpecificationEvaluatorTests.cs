@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Rutracker.Core.Entities;
+using Rutracker.Core.Entities.Torrents;
 using Rutracker.Core.Interfaces.Specifications;
 using Rutracker.Core.Specifications;
 using Rutracker.Infrastructure.Data.Specifications;

@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Rutracker.Core.Entities.Accounts;
 using Rutracker.Infrastructure.Data.Contexts;
+using Rutracker.Infrastructure.Identity.Contexts;
 
 namespace Rutracker.Server.Extensions
 {
@@ -31,12 +34,22 @@ namespace Rutracker.Server.Extensions
         {
             using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                var context = scope.ServiceProvider.GetRequiredService<TorrentContext>();
-                var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
+                var provider = scope.ServiceProvider;
+                var torrentContext = provider.GetRequiredService<TorrentContext>();
+                var accountContext = provider.GetRequiredService<AccountContext>();
+                var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
 
-                if (context.Database.EnsureCreated())
+                if (torrentContext.Database.EnsureCreated())
                 {
-                    TorrentContextSeed.SeedAsync(context, loggerFactory).Wait();
+                    TorrentContextSeed.SeedAsync(torrentContext, loggerFactory).Wait();
+                }
+
+                if (accountContext.Database.EnsureCreated())
+                {
+                    var userManager = provider.GetService<UserManager<User>>();
+                    var roleManager = provider.GetService<RoleManager<Role>>();
+
+                    AccountContextSeed.SeedAsync(accountContext, userManager, roleManager, loggerFactory).Wait();
                 }
             }
 

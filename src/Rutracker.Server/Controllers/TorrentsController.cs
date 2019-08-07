@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Rutracker.Server.Interfaces;
 using Rutracker.Shared.Interfaces;
 using Rutracker.Shared.ViewModels.Shared;
 using Rutracker.Shared.ViewModels.Torrent;
@@ -19,7 +18,7 @@ namespace Rutracker.Server.Controllers
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    public class TorrentsController : ControllerBase, ITorrentsController
+    public class TorrentsController : ControllerBase
     {
         private readonly ITorrentViewModelService _torrentViewModelService;
 
@@ -34,7 +33,7 @@ namespace Rutracker.Server.Controllers
         /// <param name="page">Page number.</param>
         /// <param name="pageSize">Number of items per page.</param>
         /// <param name="filter">Information to filter elements.</param>
-        [HttpPost("pagination")]
+        [HttpPost(nameof(Pagination))]
         public async Task<TorrentsIndexViewModel> Pagination(int page, int pageSize, FiltrationViewModel filter) =>
             await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, filter);
 
@@ -50,7 +49,7 @@ namespace Rutracker.Server.Controllers
         ///     Get information about the facet for the title.
         /// </summary>
         /// <param name="count">Number of elements.</param>
-        [HttpGet("titles")]
+        [HttpGet(nameof(Titles))]
         public async Task<FacetViewModel<string>> Titles(int count) =>
             await _torrentViewModelService.GetTitleFacetAsync(count);
     }

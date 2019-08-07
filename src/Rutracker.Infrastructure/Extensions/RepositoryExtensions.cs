@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Ardalis.GuardClauses;
-using Rutracker.Core.Entities;
+using Rutracker.Core.Entities.Torrents;
 using Rutracker.Core.Interfaces.Specifications;
 using Rutracker.Infrastructure.Data.Specifications;
 

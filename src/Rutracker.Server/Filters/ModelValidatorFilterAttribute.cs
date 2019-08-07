@@ -30,7 +30,7 @@ namespace Rutracker.Server.Filters
 
             var message = context.ModelState.Values.SelectMany(x => x.Errors).First().ErrorMessage;
 
-            throw new TorrentException(message, ExceptionEvent.NotValidParameters);
+            throw new TorrentException(message, ExceptionEventType.NotValidParameters);
         }
     }
 }

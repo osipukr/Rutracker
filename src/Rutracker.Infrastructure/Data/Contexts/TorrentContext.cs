@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Rutracker.Core.Entities;
+using Rutracker.Core.Entities.Torrents;
 using Rutracker.Infrastructure.Data.Contexts.Configurations;
 
 namespace Rutracker.Infrastructure.Data.Contexts
