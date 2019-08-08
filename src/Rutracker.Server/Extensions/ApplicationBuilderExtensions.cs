@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Rutracker.Core.Entities.Accounts;
+using Rutracker.Core.Entities.Identity;
 using Rutracker.Infrastructure.Data.Contexts;
 using Rutracker.Infrastructure.Identity.Contexts;
 

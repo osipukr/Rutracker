@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
-using Rutracker.Core.Entities.Accounts;
+using Rutracker.Core.Entities.Identity;
 using Rutracker.Core.Exceptions;
-using Rutracker.Core.Extensions;
 using Rutracker.Core.Interfaces.Services;
 
 namespace Rutracker.Core.Services
@@ -26,33 +23,32 @@ namespace Rutracker.Core.Services
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
         }
 
-        public async Task<User> CreateUserAsync(string userName, string email, string password)
+        public async Task<User> CreateUserAsync(string userName, string password)
         {
             var user = await _userManager.FindByNameAsync(userName);
 
             if (user != null)
             {
-                throw new TorrentException($"Login {userName} is already", ExceptionEventType.RegistrationFailed);
+                throw new TorrentException($"Login {userName} is already", ExceptionEventType.NotValidParameters);
             }
 
             user = new User
             {
-                UserName = userName,
-                Email = email
+                UserName = userName
             };
 
             var result = await _userManager.CreateAsync(user);
 
             if (!result.Succeeded)
             {
-                throw new TorrentException(result.Errors.First().Description, ExceptionEventType.RegistrationFailed);
+                throw new TorrentException($"Not valid user: {GetError(result)}.", ExceptionEventType.NotValidParameters);
             }
 
             var passwordResult = await _userManager.AddPasswordAsync(user, password);
 
             if (!passwordResult.Succeeded)
             {
-                throw new TorrentException("Not valid password.", ExceptionEventType.NotValidParameters);
+                throw new TorrentException($"Not valid password: {GetError(passwordResult)}.", ExceptionEventType.NotValidParameters);
             }
 
             return user;
@@ -62,24 +58,26 @@ namespace Rutracker.Core.Services
         {
             var user = await _userManager.FindByNameAsync(userName);
 
-            if (user != null)
+            if (user == null)
             {
-                var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: false);
-
-                if (result.Succeeded)
-                {
-                    return user;
-                }
+                throw new TorrentException($"User {userName} does not exist", ExceptionEventType.NotFound);
             }
 
-            throw new TorrentException("Failed to login user (user name or password).", ExceptionEventType.LoginFailed);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: false);
+
+            if (!result.Succeeded)
+            {
+                throw new TorrentException("Invalid password.", ExceptionEventType.NotValidParameters);
+            }
+
+            return user;
         }
 
         public async Task AddUserToRoleAsync(string userId, string role)
         {
             if (!await _roleManager.RoleExistsAsync(role))
             {
-                throw new TorrentException($"Role {role} not valid.", ExceptionEventType.NotValidParameters);
+                throw new TorrentException($"Role {role} not valid.", ExceptionEventType.NotFound);
 
             }
 
@@ -87,7 +85,7 @@ namespace Rutracker.Core.Services
 
             if (user == null)
             {
-                throw new TorrentException($"User id {userId} not valid.", ExceptionEventType.NotValidParameters);
+                throw new TorrentException($"User id {userId} not valid.", ExceptionEventType.NotFound);
             }
 
             var result = await _userManager.AddToRoleAsync(user, role);
@@ -102,48 +100,19 @@ namespace Rutracker.Core.Services
         {
             if (user == null)
             {
-                throw new TorrentException("Not valid user.", ExceptionEventType.NotValidParameters);
+                throw new TorrentException("Not valid user.", ExceptionEventType.NotFound);
             }
 
             var result = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
             {
-                throw new TorrentException("Error updating user.", ExceptionEventType.NotValidParameters);
+                throw new TorrentException($"Error updating user: {GetError(result)}", ExceptionEventType.NotValidParameters);
             }
-        }
-
-        public async Task<string> GetEmailConfirmationTokenAsync(User user)
-        {
-            if (user == null)
-            {
-                throw new TorrentException("Not valid user.", ExceptionEventType.NotValidParameters);
-            }
-
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                throw new TorrentException("Not valid token.", ExceptionEventType.NotValidParameters);
-            }
-
-            return token;
-        }
-
-        public async Task<IEnumerable<string>> GetUserRolesAsync(User user)
-        {
-            if (user == null)
-            {
-                throw new TorrentException("Not valid user.", ExceptionEventType.NotValidParameters);
-            }
-
-            var roles = await _userManager.GetRolesAsync(user);
-
-            Guard.Against.Null(nameof(roles), roles);
-
-            return roles;
         }
 
         public async Task LogOutUserAsync() => await _signInManager.SignOutAsync();
+
+        private string GetError(IdentityResult result) => result?.Errors?.FirstOrDefault()?.Description;
     }
 }

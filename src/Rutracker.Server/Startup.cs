@@ -47,6 +47,7 @@ namespace Rutracker.Server
                         .UseDeveloperErrorPages()
                         .UseDebugging())
                 .UseAuthentication()
+                .UseAuthorization()
                 .UseSwagger()
                 .UseSwaggerUI(options =>
                 {

@@ -1,4 +1,4 @@
-﻿namespace Rutracker.Core.Entities.Accounts
+﻿namespace Rutracker.Core.Entities.Identity
 {
     public static class UserRoles
     {

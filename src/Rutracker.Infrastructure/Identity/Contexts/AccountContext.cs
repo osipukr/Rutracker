@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Rutracker.Core.Entities.Accounts;
+using Rutracker.Core.Entities.Identity;
 
 namespace Rutracker.Infrastructure.Identity.Contexts
 {

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Rutracker.Core.Entities.Accounts;
+using Rutracker.Core.Entities.Identity;
 
 namespace Rutracker.Infrastructure.Identity.Contexts
 {
@@ -27,8 +27,7 @@ namespace Rutracker.Infrastructure.Identity.Contexts
                 UserName = "admin",
                 Email = "admin@gmail.com",
                 FirstName = "Admin",
-                LastName = "Admin",
-                PhoneNumber = "77777777"
+                LastName = "Admin"
             };
 
             AdminPassword = "Admin_Password_123";

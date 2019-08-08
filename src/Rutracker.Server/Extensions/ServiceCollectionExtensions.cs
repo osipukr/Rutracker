@@ -3,9 +3,11 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -16,15 +18,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Rutracker.Core.Entities.Accounts;
+using Rutracker.Core.Entities.Identity;
 using Rutracker.Core.Interfaces.Repositories;
 using Rutracker.Core.Interfaces.Services;
 using Rutracker.Core.Services;
 using Rutracker.Infrastructure.Data.Contexts;
 using Rutracker.Infrastructure.Data.Repositories;
 using Rutracker.Infrastructure.Identity.Contexts;
-using Rutracker.Infrastructure.Services;
-using Rutracker.Infrastructure.Services.Options;
 using Rutracker.Server.Filters;
 using Rutracker.Server.Interfaces;
 using Rutracker.Server.Services;
@@ -49,10 +49,7 @@ namespace Rutracker.Server.Extensions
             this IServiceCollection services, IConfiguration configuration) =>
             services
                 .Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)))
-                .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
-                .Configure<HostSettings>(configuration.GetSection(nameof(HostSettings)))
-                .Configure<EmailAuthOptions>(configuration.GetSection(nameof(EmailAuthOptions)))
-                .Configure<EmailConfirmationSettings>(configuration.GetSection(nameof(EmailConfirmationSettings)));
+                .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
 
         /// <summary>
         ///     Adds response compression to enable GZIP compression of responses.
@@ -83,16 +80,25 @@ namespace Rutracker.Server.Extensions
             services
                 .AddIdentity<User, Role>(config =>
                 {
-                    config.User.RequireUniqueEmail = true;
-
-                    config.SignIn.RequireConfirmedEmail = true;
                     config.Password.RequireNonAlphanumeric = false;
                     config.Password.RequireUppercase = false;
                     config.Password.RequireDigit = false;
                 })
+                .AddRoles<Role>()
                 .AddEntityFrameworkStores<AccountContext>()
                 .AddDefaultTokenProviders()
                 .Services
+                .ConfigureApplicationCookie(options =>
+                {
+                    options.Cookie.Name = "Torrent";
+                    options.Cookie.HttpOnly = true;
+                    options.ExpireTimeSpan = TimeSpan.FromDays(60);
+                    options.LoginPath = "api/account/login";
+                    options.LogoutPath = "api/account/logout";
+                    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                    options.SlidingExpiration = true;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                })
                 .AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -176,9 +182,6 @@ namespace Rutracker.Server.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services) =>
             services
                 .AddSingleton<IJwtFactory, JwtFactory>()
-                .AddSingleton<IEmailSender, EmailSender>()
-                .AddSingleton<IEmailService, EmailService>()
-                .AddScoped<IEmailConfirmationService, EmailConfirmationService>()
                 .AddScoped<ITorrentService, TorrentService>()
                 .AddScoped<IAccountService, AccountService>()
                 .AddScoped<IAccountViewModelService, AccountViewModelService>()
@@ -201,10 +204,10 @@ namespace Rutracker.Server.Extensions
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking))
                 .AddDbContext<AccountContext>(options => options
                     .UseSqlServer(
-                        configuration.GetConnectionString("AccountConnection"),
+                        configuration.GetConnectionString("IdentityConnection"),
                         sqlServerOptions =>
                         {
-                            sqlServerOptions.EnableRetryOnFailure(); 
+                            sqlServerOptions.EnableRetryOnFailure();
                         })
                     .EnableSensitiveDataLogging(environment.IsDevelopment())
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));

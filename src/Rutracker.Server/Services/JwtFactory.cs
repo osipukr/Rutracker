@@ -4,7 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
-using Rutracker.Core.Entities.Accounts;
+using Rutracker.Core.Entities.Identity;
 using Rutracker.Server.Interfaces;
 using Rutracker.Server.Settings;
 using Rutracker.Shared.ViewModels.Accounts;
@@ -17,7 +17,9 @@ namespace Rutracker.Server.Services
 
         public JwtFactory(IOptions<JwtSettings> jwtOptions)
         {
-            _jwtOptions = jwtOptions?.Value ?? throw new ArgumentNullException(nameof(jwtOptions));
+            Guard.Against.Null(jwtOptions, nameof(jwtOptions));
+
+            _jwtOptions = jwtOptions.Value;
 
             Guard.Against.Null(_jwtOptions, nameof(_jwtOptions));
 
@@ -35,8 +37,6 @@ namespace Rutracker.Server.Services
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                 new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64)
             };
