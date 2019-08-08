@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rutracker.Infrastructure.Data.Contexts;
+using Rutracker.Infrastructure.Identity.Contexts;
 using Rutracker.Server;
 
 namespace Rutracker.IntegrationTests.Server
@@ -19,6 +20,11 @@ namespace Rutracker.IntegrationTests.Server
                     services
                         .AddEntityFrameworkInMemoryDatabase()
                         .AddDbContext<TorrentContext>((provider, options) =>
+                        {
+                            options.UseInMemoryDatabase(Guid.NewGuid().ToString());
+                            options.UseInternalServiceProvider(provider);
+                        }, contextLifetime: ServiceLifetime.Singleton)
+                        .AddDbContext<IdentityContext>((provider, options) =>
                         {
                             options.UseInMemoryDatabase(Guid.NewGuid().ToString());
                             options.UseInternalServiceProvider(provider);
