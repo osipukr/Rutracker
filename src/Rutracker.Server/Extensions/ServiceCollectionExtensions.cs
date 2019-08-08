@@ -72,7 +72,7 @@ namespace Rutracker.Server.Extensions
                     options.Level = CompressionLevel.Optimal;
                 });
 
-        // <summary>
+        /// <summary>
         ///     Adds custom identity with Authentication and JwtBearer.
         /// </summary>
         public static IServiceCollection AddCustomIdentity(this IServiceCollection services,
@@ -85,7 +85,7 @@ namespace Rutracker.Server.Extensions
                     config.Password.RequireDigit = false;
                 })
                 .AddRoles<Role>()
-                .AddEntityFrameworkStores<AccountContext>()
+                .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders()
                 .Services
                 .ConfigureApplicationCookie(options =>
@@ -202,7 +202,7 @@ namespace Rutracker.Server.Extensions
                         })
                     .EnableSensitiveDataLogging(environment.IsDevelopment())
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking))
-                .AddDbContext<AccountContext>(options => options
+                .AddDbContext<IdentityContext>(options => options
                     .UseSqlServer(
                         configuration.GetConnectionString("IdentityConnection"),
                         sqlServerOptions =>

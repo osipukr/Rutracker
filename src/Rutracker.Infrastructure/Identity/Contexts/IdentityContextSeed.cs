@@ -8,13 +8,13 @@ using Rutracker.Core.Entities.Identity;
 
 namespace Rutracker.Infrastructure.Identity.Contexts
 {
-    public class AccountContextSeed
+    public class IdentityContextSeed
     {
         private static readonly IEnumerable<string> Roles;
         private static readonly User AdminUser;
         private static readonly string AdminPassword;
 
-        static AccountContextSeed()
+        static IdentityContextSeed()
         {
             Roles = new[]
             {
@@ -34,7 +34,7 @@ namespace Rutracker.Infrastructure.Identity.Contexts
         }
 
         public static async Task SeedAsync(
-            AccountContext context,
+            IdentityContext context,
             UserManager<User> userManager,
             RoleManager<Role> roleManager,
             ILoggerFactory loggerFactory)
@@ -55,7 +55,7 @@ namespace Rutracker.Infrastructure.Identity.Contexts
             }
             catch (Exception ex)
             {
-                loggerFactory.CreateLogger<AccountContextSeed>().LogError(ex.Message);
+                loggerFactory.CreateLogger<IdentityContextSeed>().LogError(ex.Message);
             }
         }
 
@@ -63,21 +63,14 @@ namespace Rutracker.Infrastructure.Identity.Contexts
         {
             foreach (var role in Roles)
             {
-                await roleManager.CreateAsync(new Role
-                {
-                    Name = role
-                });
+                await roleManager.CreateAsync(new Role { Name = role });
             }
         }
 
         private static async Task SeedUsersAsync(UserManager<User> userManager)
         {
-            var result = await userManager.CreateAsync(AdminUser, AdminPassword);
-
-            if (result.Succeeded)
-            {
-                await userManager.AddToRolesAsync(AdminUser, Roles);
-            }
+            await userManager.CreateAsync(AdminUser, AdminPassword);
+            await userManager.AddToRolesAsync(AdminUser, Roles);
         }
     }
 }

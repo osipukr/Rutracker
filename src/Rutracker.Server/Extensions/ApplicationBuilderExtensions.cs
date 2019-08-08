@@ -36,7 +36,7 @@ namespace Rutracker.Server.Extensions
             {
                 var provider = scope.ServiceProvider;
                 var torrentContext = provider.GetRequiredService<TorrentContext>();
-                var accountContext = provider.GetRequiredService<AccountContext>();
+                var identityContext = provider.GetRequiredService<IdentityContext>();
                 var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
 
                 if (torrentContext.Database.EnsureCreated())
@@ -44,12 +44,12 @@ namespace Rutracker.Server.Extensions
                     TorrentContextSeed.SeedAsync(torrentContext, loggerFactory).Wait();
                 }
 
-                if (accountContext.Database.EnsureCreated())
+                if (identityContext.Database.EnsureCreated())
                 {
                     var userManager = provider.GetService<UserManager<User>>();
                     var roleManager = provider.GetService<RoleManager<Role>>();
 
-                    AccountContextSeed.SeedAsync(accountContext, userManager, roleManager, loggerFactory).Wait();
+                    IdentityContextSeed.SeedAsync(identityContext, userManager, roleManager, loggerFactory).Wait();
                 }
             }
 

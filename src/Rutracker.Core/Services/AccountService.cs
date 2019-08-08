@@ -113,6 +113,6 @@ namespace Rutracker.Core.Services
 
         public async Task LogOutUserAsync() => await _signInManager.SignOutAsync();
 
-        private string GetError(IdentityResult result) => result?.Errors?.FirstOrDefault()?.Description;
+        private static string GetError(IdentityResult result) => result?.Errors?.FirstOrDefault()?.Description;
     }
 }

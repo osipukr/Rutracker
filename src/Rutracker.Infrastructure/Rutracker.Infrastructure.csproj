@@ -15,8 +15,4 @@
     <ProjectReference Include="..\Rutracker.Core\Rutracker.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Identity\Contexts\Configurations\" />
-  </ItemGroup>
-
 </Project>

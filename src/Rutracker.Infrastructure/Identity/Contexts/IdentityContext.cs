@@ -4,9 +4,9 @@ using Rutracker.Core.Entities.Identity;
 
 namespace Rutracker.Infrastructure.Identity.Contexts
 {
-    public class AccountContext : IdentityDbContext<User, Role, string>
+    public class IdentityContext : IdentityDbContext<User, Role, string>
     {
-        public AccountContext(DbContextOptions<AccountContext> options)
+        public IdentityContext(DbContextOptions<IdentityContext> options)
             : base(options)
         {
         }
