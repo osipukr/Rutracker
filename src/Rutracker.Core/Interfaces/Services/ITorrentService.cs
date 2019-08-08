@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Rutracker.Core.Entities;
+using Rutracker.Core.Entities.Torrents;
 
 namespace Rutracker.Core.Interfaces.Services
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Rutracker.Core.Entities;
+using Rutracker.Core.Entities.Torrents;
 using Rutracker.Core.Interfaces.Repositories;
 using Rutracker.Core.Interfaces.Specifications;
 using Rutracker.Infrastructure.Data.Contexts;

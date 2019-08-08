@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Rutracker.Core.Entities
+namespace Rutracker.Core.Entities.Torrents
 {
     public class Forum : BaseEntity<long>
     {

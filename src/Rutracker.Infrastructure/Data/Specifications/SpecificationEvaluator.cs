@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Rutracker.Core.Entities;
+using Rutracker.Core.Entities.Torrents;
 using Rutracker.Core.Interfaces.Specifications;
 
 namespace Rutracker.Infrastructure.Data.Specifications

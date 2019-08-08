@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Rutracker.Core.Entities;
+using Rutracker.Core.Entities.Torrents;
 using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Server.Mapping

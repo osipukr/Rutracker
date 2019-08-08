@@ -3,23 +3,30 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Rutracker.Core.Entities.Identity;
 using Rutracker.Core.Interfaces.Repositories;
 using Rutracker.Core.Interfaces.Services;
 using Rutracker.Core.Services;
 using Rutracker.Infrastructure.Data.Contexts;
 using Rutracker.Infrastructure.Data.Repositories;
+using Rutracker.Infrastructure.Identity.Contexts;
 using Rutracker.Server.Filters;
+using Rutracker.Server.Interfaces;
 using Rutracker.Server.Services;
 using Rutracker.Server.Settings;
 using Rutracker.Shared.Interfaces;
@@ -41,7 +48,8 @@ namespace Rutracker.Server.Extensions
         public static IServiceCollection AddCustomOptions(
             this IServiceCollection services, IConfiguration configuration) =>
             services
-                .Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)));
+                .Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)))
+                .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
 
         /// <summary>
         ///     Adds response compression to enable GZIP compression of responses.
@@ -63,6 +71,62 @@ namespace Rutracker.Server.Extensions
                 {
                     options.Level = CompressionLevel.Optimal;
                 });
+
+        /// <summary>
+        ///     Adds custom identity with Authentication and JwtBearer.
+        /// </summary>
+        public static IServiceCollection AddCustomIdentity(this IServiceCollection services,
+            IConfiguration configuration) =>
+            services
+                .AddIdentity<User, Role>(config =>
+                {
+                    config.Password.RequireNonAlphanumeric = false;
+                    config.Password.RequireUppercase = false;
+                    config.Password.RequireDigit = false;
+                })
+                .AddRoles<Role>()
+                .AddEntityFrameworkStores<IdentityContext>()
+                .AddDefaultTokenProviders()
+                .Services
+                .ConfigureApplicationCookie(options =>
+                {
+                    options.Cookie.Name = "Torrent";
+                    options.Cookie.HttpOnly = true;
+                    options.ExpireTimeSpan = TimeSpan.FromDays(60);
+                    options.LoginPath = "api/account/login";
+                    options.LogoutPath = "api/account/logout";
+                    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                    options.SlidingExpiration = true;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                })
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(configureOptions =>
+                {
+                    var jwtAppSettingOptions = configuration.GetSection(nameof(JwtSettings));
+
+                    configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtSettings.Issuer)];
+                    configureOptions.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = jwtAppSettingOptions[nameof(JwtSettings.Issuer)],
+
+                        ValidateAudience = true,
+                        ValidAudience = jwtAppSettingOptions[nameof(JwtSettings.Audience)],
+
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = JwtSettings.SigningKey,
+
+                        RequireExpirationTime = false,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
+                    };
+                    configureOptions.SaveToken = true;
+                })
+                .Services;
 
         /// <summary>
         ///     Adds and configure Swagger middleware.
@@ -117,7 +181,10 @@ namespace Rutracker.Server.Extensions
         /// </summary>
         public static IServiceCollection AddServices(this IServiceCollection services) =>
             services
+                .AddSingleton<IJwtFactory, JwtFactory>()
                 .AddScoped<ITorrentService, TorrentService>()
+                .AddScoped<IAccountService, AccountService>()
+                .AddScoped<IAccountViewModelService, AccountViewModelService>()
                 .AddScoped<ITorrentViewModelService, TorrentViewModelService>();
 
         /// <summary>
@@ -133,7 +200,15 @@ namespace Rutracker.Server.Extensions
                         {
                             sqlServerOptions.EnableRetryOnFailure();
                         })
-                    .ConfigureWarnings(x => x.Throw(RelationalEventId.QueryClientEvaluationWarning))
+                    .EnableSensitiveDataLogging(environment.IsDevelopment())
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking))
+                .AddDbContext<IdentityContext>(options => options
+                    .UseSqlServer(
+                        configuration.GetConnectionString("IdentityConnection"),
+                        sqlServerOptions =>
+                        {
+                            sqlServerOptions.EnableRetryOnFailure();
+                        })
                     .EnableSensitiveDataLogging(environment.IsDevelopment())
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
     }

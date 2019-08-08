@@ -1,6 +1,6 @@
 ﻿namespace Rutracker.Core.Exceptions
 {
-    public enum ExceptionEvent
+    public enum ExceptionEventType
     {
         NotFound = 1,
         NotValidParameters = 2

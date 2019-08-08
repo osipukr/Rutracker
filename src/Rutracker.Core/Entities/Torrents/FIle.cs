@@ -1,4 +1,4 @@
-﻿namespace Rutracker.Core.Entities
+﻿namespace Rutracker.Core.Entities.Torrents
 {
     public class File : BaseEntity<long>
     {

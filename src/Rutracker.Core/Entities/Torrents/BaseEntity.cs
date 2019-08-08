@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rutracker.Core.Entities
+namespace Rutracker.Core.Entities.Torrents
 {
     public abstract class BaseEntity<TPrimaryKey>
         where TPrimaryKey : IEquatable<TPrimaryKey>

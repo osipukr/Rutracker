@@ -29,6 +29,7 @@ namespace Rutracker.Server
                 .AddCustomResponseCompression(_configuration)
                 .AddSwagger()
                 .AddAutoMapper(typeof(Startup))
+                .AddCustomIdentity(_configuration)
                 .AddControllers()
                 .AddCustomMvcOptions()
                 .Services
@@ -45,6 +46,8 @@ namespace Rutracker.Server
                     x => x
                         .UseDeveloperErrorPages()
                         .UseDebugging())
+                .UseAuthentication()
+                .UseAuthorization()
                 .UseSwagger()
                 .UseSwaggerUI(options =>
                 {
