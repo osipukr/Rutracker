@@ -37,18 +37,11 @@ namespace Rutracker.Core.Services
                 UserName = userName
             };
 
-            var result = await _userManager.CreateAsync(user);
+            var result = await _userManager.CreateAsync(user, password);
 
             if (!result.Succeeded)
             {
-                throw new TorrentException($"Not valid user: {GetError(result)}.", ExceptionEventType.NotValidParameters);
-            }
-
-            var passwordResult = await _userManager.AddPasswordAsync(user, password);
-
-            if (!passwordResult.Succeeded)
-            {
-                throw new TorrentException($"Not valid password: {GetError(passwordResult)}.", ExceptionEventType.NotValidParameters);
+                throw new TorrentException($"Not valid parameters: {GetError(result)}.", ExceptionEventType.NotValidParameters);
             }
 
             return user;

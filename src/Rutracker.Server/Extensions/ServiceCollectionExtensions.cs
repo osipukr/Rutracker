@@ -29,7 +29,6 @@ using Rutracker.Server.Filters;
 using Rutracker.Server.Interfaces;
 using Rutracker.Server.Services;
 using Rutracker.Server.Settings;
-using Rutracker.Shared.Interfaces;
 
 namespace Rutracker.Server.Extensions
 {

@@ -18,6 +18,10 @@
     font-size: 30px;
 }
 
+.mat-toast-body {
+    padding: 10px;
+}
+
 .triangle-container {
     background-color: #5D2E8F;
     position: fixed;
@@ -43,12 +47,32 @@
     align-items: center;
 }
 
+/* Login page */
+
 .loading-container {
     position: relative;
     text-align: center;
     background-color: #fff;
     padding: 20px;
-    margin: 25px auto;
+    margin: auto;
+}
+
+.login-container {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    height: 100%;
+}
+
+    .login-container .mdc-card {
+        padding: 40px 30px;
+        width: 500px;
+    }
+
+.login-body {
+    position: relative;
+    flex-direction: column;
+    margin: 0 auto;
 }
 
 .validation-message {

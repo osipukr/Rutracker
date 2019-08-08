@@ -1,0 +1,57 @@
+﻿@page "/account/login"
+
+@layout LoginLayout
+@inject AuthenticationService AuthenticationService
+@inject IMatToaster MatToaster
+
+<MatCard>
+    <fieldset>
+        <div class="form-group">
+            <MatTextField @bind-value="@Model.UserName"
+                          Label="User Name"
+                          Icon="@MatIconNames.Person"
+                          IconTrailing="true"
+                          FullWidth="true"
+                          Required="true" />
+        </div>
+
+        <div class="form-group">
+            <MatTextField @bind-value="@Model.Password"
+                          Label="Password"
+                          Icon="@MatIconNames.Lock_open"
+                          IconTrailing="true"
+                          FullWidth="true"
+                          Required="true"
+                          Type="password" />
+        </div>
+
+        <div class="form-group text-right">
+            <MatButton OnClick="@LoginClicked" Raised="true" Label="Login" />
+        </div>
+
+        <hr />
+
+        <MatButton Link="@RegisterLink" Outlined="true" Label="Create account" />
+    </fieldset>
+</MatCard>
+
+@functions
+{
+    LoginViewModel Model { get; set; } = new LoginViewModel();
+
+    string RegisterLink = "account/register";
+
+    async Task LoginClicked()
+    {
+        try
+        {
+            var token = await AuthenticationService.Login(Model);
+
+            MatToaster.Add(token.Token, MatToastType.Success, "Login successful");
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Danger, "Login Attempt Failed");
+        }
+    }
+}

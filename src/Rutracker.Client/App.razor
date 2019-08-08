@@ -1,18 +1,23 @@
 ﻿@implements IDisposable
 @inject AppState AppState
 
-<MatThemeProvider Theme="@Theme">
-    <MatToastContainer />
-    <Router AppAssembly="typeof(Program).Assembly">
-        <NotFoundContent>
-            <Error />
-        </NotFoundContent>
-    </Router>
-</MatThemeProvider>
+<CascadingAuthenticationState>
+    <MatThemeProvider Theme="@Theme">
+        <Router AppAssembly="typeof(Program).Assembly">
+            <NotFoundContent>
+                <Error />
+            </NotFoundContent>
+            <NotAuthorizedContent>
+                <NotAuthorize />
+            </NotAuthorizedContent>
+        </Router>
+        <MatToastContainer />
+    </MatThemeProvider>
+</CascadingAuthenticationState>
 
 @code
 {
-    MatTheme Theme => new MatTheme()
+    MatTheme Theme = new MatTheme()
     {
         Primary = MatThemeColors.Purple._900.Value,
         Secondary = MatThemeColors.Purple._900.Value

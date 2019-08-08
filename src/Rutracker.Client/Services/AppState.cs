@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Rutracker.Client.Services.Interfaces;
 using Rutracker.Client.Settings;
-using Rutracker.Shared.Interfaces;
 using Rutracker.Shared.ViewModels.Shared;
 using Rutracker.Shared.ViewModels.Torrent;
 using Rutracker.Shared.ViewModels.Torrents;
 
 namespace Rutracker.Client.Services
 {
-    public class AppState : ITorrentViewModelService
+    public class AppState : ITorrentService
     {
         private readonly HttpClientService _httpClientService;
         private readonly ApiUriSettings _apiUris;

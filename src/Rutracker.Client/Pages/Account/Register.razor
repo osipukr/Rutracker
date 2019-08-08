@@ -1,0 +1,99 @@
+﻿@page "/account/register"
+
+@layout LoginLayout
+@inject AuthenticationService AuthenticationService
+@inject IMatToaster MatToaster
+
+<MatCard>
+    <EditForm Model="@Model" OnValidSubmit="@OnValidSubmitClicked">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <fieldset>
+            <div class="form-group">
+                <MatTextField @bind-value="@Model.UserName"
+                              Label="User Name"
+                              Icon="@MatIconNames.Person"
+                              IconTrailing="true"
+                              FullWidth="true"
+                              Required="true" />
+            </div>
+
+            <div class="form-group">
+                <MatTextField @bind-value="@Model.Email"
+                              Label="Email"
+                              Icon="@MatIconNames.Mail_outline"
+                              IconTrailing="true"
+                              FullWidth="true"
+                              Required="true" />
+            </div>
+
+            <div class="form-group">
+                <MatTextField @bind-value="@Model.FirstName"
+                              Label="First Name"
+                              Icon="@MatIconNames.Perm_identity"
+                              IconTrailing="true"
+                              FullWidth="true"
+                              Required="true" />
+            </div>
+
+            <div class="form-group">
+                <MatTextField @bind-value="@Model.LastName"
+                              Label="Last Name"
+                              Icon="@MatIconNames.Perm_identity"
+                              IconTrailing="true"
+                              FullWidth="true"
+                              Required="true" />
+            </div>
+
+            <div class="form-group">
+                <MatTextField @bind-value="@Model.Password"
+                              Label="Password"
+                              Icon="@MatIconNames.Lock_open"
+                              IconTrailing="true"
+                              FullWidth="true"
+                              Required="true"
+                              Type="password" />
+            </div>
+
+            <div class="form-group">
+                <MatTextField @bind-value="@Model.ConfirmPassword"
+                              Label="Password Confirmation"
+                              Icon="@MatIconNames.Lock_open"
+                              IconTrailing="true"
+                              FullWidth="true"
+                              Required="true"
+                              Type="password" />
+            </div>
+
+            <div class="form-group d-flex justify-content-end">
+                <MatButton Type="submit" Raised="true" Label="Create account" />
+            </div>
+
+            <hr />
+
+            <MatButton Link="@LoginLink" Outlined="true" Label="Login to account" />
+        </fieldset>
+    </EditForm>
+</MatCard>
+
+@functions
+{
+    RegisterViewModel Model { get; set; } = new RegisterViewModel();
+
+    string LoginLink = "account/login";
+
+    async Task OnValidSubmitClicked()
+    {
+        try
+        {
+            var token = await AuthenticationService.Register(Model);
+
+            MatToaster.Add(token.Token, MatToastType.Success, "Registration successful");
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Danger, "User Creation Failed");
+        }
+    }
+}
