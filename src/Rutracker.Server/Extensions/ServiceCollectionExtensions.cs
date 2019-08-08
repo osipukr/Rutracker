@@ -3,7 +3,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -102,8 +101,8 @@ namespace Rutracker.Server.Extensions
                 .AddJwtBearer(configureOptions =>
                 {
                     var jwtAppSettingOptions = configuration.GetSection(nameof(JwtSettings));
-                    configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtSettings.Issuer)];
 
+                    configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtSettings.Issuer)];
                     configureOptions.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
@@ -113,7 +112,7 @@ namespace Rutracker.Server.Extensions
                         ValidAudience = jwtAppSettingOptions[nameof(JwtSettings.Audience)],
 
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtAppSettingOptions[nameof(JwtSettings.SecretKey)])),
+                        IssuerSigningKey = JwtSettings.SigningKey,
 
                         RequireExpirationTime = false,
                         ValidateLifetime = true,

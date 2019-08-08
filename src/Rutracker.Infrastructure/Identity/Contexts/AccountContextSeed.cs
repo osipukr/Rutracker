@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -41,45 +40,38 @@ namespace Rutracker.Infrastructure.Identity.Contexts
             RoleManager<Role> roleManager,
             ILoggerFactory loggerFactory)
         {
-            var logger = loggerFactory.CreateLogger<AccountContextSeed>();
-
             try
             {
                 if (!await context.Roles.AnyAsync())
                 {
-                    await SeedRolesAsync(roleManager, logger);
+                    await SeedRolesAsync(roleManager);
                     await context.SaveChangesAsync();
                 }
 
                 if (!await context.Users.AnyAsync())
                 {
-                    await SeedUsersAsync(userManager, logger);
+                    await SeedUsersAsync(userManager);
                     await context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError(ex.Message);
+                loggerFactory.CreateLogger<AccountContextSeed>().LogError(ex.Message);
             }
         }
 
-        private static async Task SeedRolesAsync(RoleManager<Role> roleManager, ILogger logger)
+        private static async Task SeedRolesAsync(RoleManager<Role> roleManager)
         {
             foreach (var role in Roles)
             {
-                var result = await roleManager.CreateAsync(new Role
+                await roleManager.CreateAsync(new Role
                 {
                     Name = role
                 });
-
-                if (!result.Succeeded)
-                {
-                    logger.LogError(message: GetErrorFromResult(result));
-                }
             }
         }
 
-        private static async Task SeedUsersAsync(UserManager<User> userManager, ILogger logger)
+        private static async Task SeedUsersAsync(UserManager<User> userManager)
         {
             var result = await userManager.CreateAsync(AdminUser, AdminPassword);
 
@@ -87,12 +79,6 @@ namespace Rutracker.Infrastructure.Identity.Contexts
             {
                 await userManager.AddToRolesAsync(AdminUser, Roles);
             }
-            else
-            {
-                logger.LogError(message: GetErrorFromResult(result));
-            }
         }
-
-        private static string GetErrorFromResult(IdentityResult result) => result.Errors.First().Description;
     }
 }

@@ -19,7 +19,15 @@ namespace Rutracker.Server.Services
         {
             _jwtOptions = jwtOptions?.Value ?? throw new ArgumentNullException(nameof(jwtOptions));
 
-            ThrowIfInvalidOptions(_jwtOptions);
+            Guard.Against.Null(_jwtOptions, nameof(_jwtOptions));
+
+            if (_jwtOptions.ValidFor <= TimeSpan.Zero)
+            {
+                throw new ArgumentException("Must be a non-zero TimeSpan.", nameof(_jwtOptions.ValidFor));
+            }
+
+            Guard.Against.Null(_jwtOptions.SigningCredentials, nameof(_jwtOptions.SigningCredentials));
+            Guard.Against.Null(_jwtOptions.JtiGenerator, nameof(_jwtOptions.JtiGenerator));
         }
 
         public async Task<JwtToken> GenerateTokenAsync(User user)
@@ -27,7 +35,8 @@ namespace Rutracker.Server.Services
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(Constants.Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Constants.Strings.JwtClaims.ApiAccess),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                 new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64)
             };
@@ -45,25 +54,12 @@ namespace Rutracker.Server.Services
             return new JwtToken
             {
                 Token = encodedJwt,
-                ExpiresIn = (long)_jwtOptions.ValidFor.TotalSeconds,
+                ExpiresIn = (long)_jwtOptions.ValidFor.TotalSeconds
             };
         }
 
         /// <returns>Date converted to seconds since Unix epoch (Jan 1, 1970, midnight UTC).</returns>
         private static long ToUnixEpochDate(DateTime date) =>
             (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
-
-        private static void ThrowIfInvalidOptions(JwtSettings options)
-        {
-            Guard.Against.Null(options, nameof(options));
-
-            if (options.ValidFor <= TimeSpan.Zero)
-            {
-                throw new ArgumentException("Must be a non-zero TimeSpan.", nameof(JwtSettings.ValidFor));
-            }
-
-            Guard.Against.Null(options.SigningCredentials, nameof(options.SigningCredentials));
-            Guard.Against.Null(options.JtiGenerator, nameof(options.JtiGenerator));
-        }
     }
 }

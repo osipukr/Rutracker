@@ -55,9 +55,8 @@ namespace Rutracker.Server.Services
 
         public async Task RegisterAsync(RegisterViewModel model)
         {
-            var user = await _accountService.CreateUserAsync(model.UserName, model.Password);
+            var user = await _accountService.CreateUserAsync(model.UserName, model.Email, model.Password);
 
-            user.Email = model.Email;
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
 

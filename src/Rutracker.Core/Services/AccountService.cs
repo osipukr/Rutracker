@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
@@ -25,7 +26,7 @@ namespace Rutracker.Core.Services
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
         }
 
-        public async Task<User> CreateUserAsync(string userName, string password)
+        public async Task<User> CreateUserAsync(string userName, string email, string password)
         {
             var user = await _userManager.FindByNameAsync(userName);
 
@@ -36,14 +37,15 @@ namespace Rutracker.Core.Services
 
             user = new User
             {
-                UserName = userName
+                UserName = userName,
+                Email = email
             };
 
             var result = await _userManager.CreateAsync(user);
 
             if (!result.Succeeded)
             {
-                throw new TorrentException($"Failed to register user with login {userName}.", ExceptionEventType.RegistrationFailed);
+                throw new TorrentException(result.Errors.First().Description, ExceptionEventType.RegistrationFailed);
             }
 
             var passwordResult = await _userManager.AddPasswordAsync(user, password);
@@ -60,16 +62,17 @@ namespace Rutracker.Core.Services
         {
             var user = await _userManager.FindByNameAsync(userName);
 
-            Guard.Against.Null(nameof(user), user);
-
-            var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: false);
-
-            if (!result.Succeeded)
+            if (user != null)
             {
-                throw new TorrentException("Failed to login user.", ExceptionEventType.LoginFailed);
+                var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: false);
+
+                if (result.Succeeded)
+                {
+                    return user;
+                }
             }
 
-            return user;
+            throw new TorrentException("Failed to login user (user name or password).", ExceptionEventType.LoginFailed);
         }
 
         public async Task AddUserToRoleAsync(string userId, string role)
@@ -119,7 +122,7 @@ namespace Rutracker.Core.Services
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-            if(string.IsNullOrWhiteSpace(token))
+            if (string.IsNullOrWhiteSpace(token))
             {
                 throw new TorrentException("Not valid token.", ExceptionEventType.NotValidParameters);
             }
