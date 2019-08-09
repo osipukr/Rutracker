@@ -6,8 +6,7 @@ using Rutracker.Shared.ViewModels.Accounts;
 
 namespace Rutracker.Server.Controllers
 {
-    [ApiController, Route("api/[controller]")]
-    public class AccountController : ControllerBase
+    public class AccountController : BaseApiController
     {
         private readonly IAccountViewModelService _accountViewModelService;
         public AccountController(IAccountViewModelService accountViewModelService)
