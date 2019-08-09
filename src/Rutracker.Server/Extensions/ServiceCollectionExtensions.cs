@@ -5,15 +5,12 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Rutracker.Core.Entities.Identity;
@@ -108,7 +105,7 @@ namespace Rutracker.Server.Extensions
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = JwtSettings.SigningKey,
 
-                        RequireExpirationTime = true,
+                        RequireExpirationTime = false,
                         ValidateLifetime = true
                     };
                 })
@@ -142,13 +139,6 @@ namespace Rutracker.Server.Extensions
                 {
                     options.Filters.Add<ControllerExceptionFilterAttribute>();
                     options.Filters.Add<ModelValidatorFilterAttribute>();
-
-                    // Remove string and stream output formatters. These are not useful for an API serving JSON or XML.
-                    options.OutputFormatters.RemoveType<StreamOutputFormatter>();
-                    options.OutputFormatters.RemoveType<StringOutputFormatter>();
-
-                    // Returns a 406 Not Acceptable if the MIME type in the Accept HTTP header is not valid.
-                    options.ReturnHttpNotAcceptable = true;
                 })
                 .ConfigureApiBehaviorOptions(options =>
                 {
@@ -179,25 +169,17 @@ namespace Rutracker.Server.Extensions
         ///     Adds project Database Context.
         /// </summary>
         public static IServiceCollection AddDatabaseContext(this IServiceCollection services,
-            IConfiguration configuration, IWebHostEnvironment environment) =>
+            IConfiguration configuration) =>
             services
                 .AddDbContext<TorrentContext>(options => options
                     .UseSqlServer(
                         configuration.GetConnectionString("TorrentConnection"),
-                        sqlServerOptions =>
-                        {
-                            sqlServerOptions.EnableRetryOnFailure();
-                        })
-                    .EnableSensitiveDataLogging(environment.IsDevelopment())
+                        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure())
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking))
                 .AddDbContext<IdentityContext>(options => options
                     .UseSqlServer(
                         configuration.GetConnectionString("IdentityConnection"),
-                        sqlServerOptions =>
-                        {
-                            sqlServerOptions.EnableRetryOnFailure();
-                        })
-                    .EnableSensitiveDataLogging(environment.IsDevelopment())
+                        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure())
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
     }
 }

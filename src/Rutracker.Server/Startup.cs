@@ -23,7 +23,7 @@ namespace Rutracker.Server
 
         public void ConfigureServices(IServiceCollection services) =>
             services
-                .AddDatabaseContext(_configuration, _environment)
+                .AddDatabaseContext(_configuration)
                 .AddCaching()
                 .AddCustomOptions(_configuration)
                 .AddCustomResponseCompression(_configuration)
@@ -47,8 +47,6 @@ namespace Rutracker.Server
                     x => x
                         .UseDeveloperErrorPages()
                         .UseDebugging())
-                .UseAuthentication()
-                .UseAuthorization()
                 .UseSwagger()
                 .UseSwaggerUI(options =>
                 {
@@ -57,6 +55,8 @@ namespace Rutracker.Server
                 })
                 .UseClientSideBlazorFiles<Client.Startup>()
                 .UseRouting()
+                .UseAuthentication()
+                .UseAuthorization()
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
