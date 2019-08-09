@@ -37,7 +37,7 @@ else
     {
         try
         {
-            Model = await AppState.GetTorrentsIndexAsync(page, PageSize, filter);
+            Model = await AppState.Torrents(page, PageSize, filter);
         }
         catch (Exception ex)
         {

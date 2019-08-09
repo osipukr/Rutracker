@@ -16,19 +16,10 @@ namespace Rutracker.Client.Services
             _apiUri = apiUri;
         }
 
-        public async Task<JwtToken> Login(LoginViewModel model)
-        {
-            return await _httpClient.PostJsonAsync<JwtToken>(_apiUri.Login, model);
-        }
+        public async Task<JwtToken> Login(LoginViewModel model) => await _httpClient.PostJsonAsync<JwtToken>(_apiUri.Login, model);
 
-        public async Task<JwtToken> Register(RegisterViewModel model)
-        {
-            return await _httpClient.PostJsonAsync<JwtToken>(_apiUri.Register, model);
-        }
+        public async Task<JwtToken> Register(RegisterViewModel model) => await _httpClient.PostJsonAsync<JwtToken>(_apiUri.Register, model);
 
-        public async Task Logout()
-        {
-            await _httpClient.PostJsonAsync<JwtToken>(_apiUri.Logout, null);
-        }
+        public async Task Logout() => await _httpClient.PostJsonAsync<JwtToken>(_apiUri.Logout, null);
     }
 }

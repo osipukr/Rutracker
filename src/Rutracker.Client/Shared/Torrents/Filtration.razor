@@ -98,7 +98,7 @@
     {
         try
         {
-            TitleFacet = await AppState.GetTitleFacetAsync(TitleCount);
+            TitleFacet = await AppState.TitleFacet(TitleCount);
         }
         catch (Exception ex)
         {

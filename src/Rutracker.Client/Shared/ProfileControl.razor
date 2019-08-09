@@ -1,20 +1,29 @@
-﻿@inject IUriHelper uriHelper
-@inject AuthenticationService AuthenticationService
+﻿@inject IUriHelper UriHelper
+@inject AppState AppState
 
 <AuthorizeView Context="AuthorizeContext">
     <Authorized>
-        
+        <div class="drawer-profile">
+            <MatIconButton Icon="@MatIconNames.Account_circle" Link="@ProfileLink" ></MatIconButton>
+            <span class="miniHover"><b><a href="@ProfileLink">@Model.User.UserName</a></b></span>
+        </div>
     </Authorized>
 </AuthorizeView>
 
 @functions 
 {
-    [CascadingParameter] Task<AuthenticationState> authenticationStateTask  { get; set; }
+    [CascadingParameter] Task<AuthenticationState> AuthenticationStateTask  { get; set; }
 
-    bool IsLoggedIn = false;
+    UserResponseViewModel Model { get; set; }
+    string ProfileLink => "/account/profile";
 
     protected override async Task OnParametersSetAsync()
     {
-        
+        var user = (await AuthenticationStateTask).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            Model = await AppState.UserDetails();
+        }
     }
 }

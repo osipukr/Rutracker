@@ -1,8 +1,9 @@
 ﻿@page "/account/register"
 
 @layout LoginLayout
-@inject AuthenticationService AuthenticationService
+@inject IUriHelper UriHelper
 @inject IMatToaster MatToaster
+@inject AppState AppState
 
 <MatCard>
     <EditForm Model="@Model" OnValidSubmit="@OnValidSubmitClicked">
@@ -87,9 +88,10 @@
     {
         try
         {
-            var token = await AuthenticationService.Register(Model);
+            await AppState.Register(Model);
 
-            MatToaster.Add(token.Token, MatToastType.Success, "Registration successful");
+            MatToaster.Add("Registration successful", MatToastType.Success);
+            UriHelper.NavigateTo("/");
         }
         catch (Exception ex)
         {

@@ -42,7 +42,7 @@ else
     {
         try
         {
-            Model = await AppState.GetTorrentIndexAsync(Id);
+            Model = await AppState.Torrent(Id);
         }
         catch (Exception ex)
         {

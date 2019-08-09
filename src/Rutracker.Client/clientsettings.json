@@ -5,7 +5,9 @@
     "Titles": "api/torrents/titles/?count={0}",
     "Login": "api/account/login",
     "Register": "api/account/register",
-    "Logout": "api/account/logout"
+    "Logout": "api/account/logout",
+    "Users": "api/users",
+    "UserDetails": "api/users/details" 
   },
   "ViewSettings": {
     "ServiceName": "Rutracker",

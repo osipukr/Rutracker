@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -12,8 +13,10 @@ namespace Rutracker.Client.Services
 
         public HttpClientService(HttpClient httpClient) => _httpClient = httpClient;
 
-        public async Task<TResult> GetJsonAsync<TResult>(string url)
+        public async Task<TResult> GetJsonAsync<TResult>(string url, string token = null)
         {
+            SetAuthorizationHeader(token);
+
             using var response = await _httpClient.GetAsync(url);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -22,8 +25,10 @@ namespace Rutracker.Client.Services
                 : throw new Exception(message: DeserializeJsonError(json));
         }
 
-        public async Task<TResult> PostJsonAsync<TResult>(string url, object jsonObject)
+        public async Task<TResult> PostJsonAsync<TResult>(string url, object jsonObject, string token = null)
         {
+            SetAuthorizationHeader(token);
+
             using var content = new StringContent(
                 content: JsonConvert.SerializeObject(jsonObject),
                 encoding: Encoding.UTF8,
@@ -39,5 +44,13 @@ namespace Rutracker.Client.Services
 
         private static TResult DeserializeJson<TResult>(string json) => JsonConvert.DeserializeObject<TResult>(json);
         private static string DeserializeJsonError(string json) => DeserializeJson<string>(json);
+
+        private void SetAuthorizationHeader(string token)
+        {
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+        }
     }
 }

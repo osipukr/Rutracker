@@ -1,8 +1,9 @@
 ﻿@page "/account/login"
 
 @layout LoginLayout
-@inject AuthenticationService AuthenticationService
+@inject IUriHelper UriHelper
 @inject IMatToaster MatToaster
+@inject AppState AppState
 
 <MatCard>
     <fieldset>
@@ -45,9 +46,10 @@
     {
         try
         {
-            var token = await AuthenticationService.Login(Model);
+            await AppState.Login(Model);
 
-            MatToaster.Add(token.Token, MatToastType.Success, "Login successful");
+            MatToaster.Add("Login successful", MatToastType.Success);
+            UriHelper.NavigateTo("/");
         }
         catch (Exception ex)
         {

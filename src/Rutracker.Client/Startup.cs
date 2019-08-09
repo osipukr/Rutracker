@@ -21,9 +21,10 @@ namespace Rutracker.Client
             services.AddAuthorizationCore();
             services.AddSingleton<HttpClientService>();
             services.AddSingleton<IAccountService, AccountService>();
-            services.AddSingleton<AuthenticationService>();
-            services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<AuthenticationService>());
+            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<ITorrentService, TorrentService>();
             services.AddSingleton<AppState>();
+            services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<AppState>());
 
             services.AddBlazoredLocalStorage();
             services.AddMatToaster((MatToastConfiguration)clientSettings.MatToasterSettings);

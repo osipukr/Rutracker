@@ -1,5 +1,5 @@
 ﻿@inject IUriHelper UriHelper
-@inject AuthenticationService AuthenticationService
+@inject AppState AppState
 
 <AuthorizeView Context="AuthorizeContext">
     <Authorized>
@@ -7,7 +7,6 @@
             <MatIconButton Icon="@MatIconNames.Exit_to_app" OnClick="LogoutClick" />
         </MatTooltip>
     </Authorized>
-
     <NotAuthorized>
         <MatTooltip Tooltip="Login" Wrap="true">
             <MatIconButton Icon="@MatIconNames.Account_box" Link="@LoginLink" />
@@ -21,6 +20,7 @@
 
     async Task LogoutClick()
     {
-        // Logic
+        await AppState.Logout();
+        UriHelper.NavigateTo("/");
     }
 }
