@@ -1,0 +1,26 @@
+﻿@inject IUriHelper UriHelper
+@inject AuthenticationService AuthenticationService
+
+<AuthorizeView Context="AuthorizeContext">
+    <Authorized>
+        <MatTooltip Tooltip="Logout" Wrap="true">
+            <MatIconButton Icon="@MatIconNames.Exit_to_app" OnClick="LogoutClick" />
+        </MatTooltip>
+    </Authorized>
+
+    <NotAuthorized>
+        <MatTooltip Tooltip="Login" Wrap="true">
+            <MatIconButton Icon="@MatIconNames.Account_box" Link="@LoginLink" />
+        </MatTooltip>
+    </NotAuthorized>
+</AuthorizeView>
+
+@functions
+{
+    string LoginLink = "/account/login";
+
+    async Task LogoutClick()
+    {
+        // Logic
+    }
+}

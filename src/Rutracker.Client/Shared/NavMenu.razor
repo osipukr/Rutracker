@@ -1,0 +1,41 @@
+﻿@inject IUriHelper UriHelper
+
+<MatNavMenu Multi="true" Class="app-sidebar">
+    <MatNavItem Href="@UriHelper.ToAbsoluteUri("/").AbsoluteUri">
+        <MatIcon Icon="@MatIconNames.Home" /> <span class="miniHover">Home page</span>
+    </MatNavItem>
+
+    <MatNavItem Href="@UriHelper.ToAbsoluteUri("/account/profile").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+        <MatIcon Icon="@MatIconNames.Person" /> <span class="miniHover">Profile</span>
+    </MatNavItem>
+
+    <MatNavItem Href="@UriHelper.ToAbsoluteUri("/users").AbsoluteUri" Disabled="@(!IsLoggedIn)">
+        <MatIcon Icon="@MatIconNames.Supervisor_account" /> <span class="miniHover">Users</span>
+    </MatNavItem>
+
+    <MatNavItem Href="@UriHelper.ToAbsoluteUri("/torrents").AbsoluteUri">
+        <MatIcon Icon="@MatIconNames.Bar_chart" /> <span class="miniHover">Torrents</span>
+    </MatNavItem>
+
+    <MatNavItem Href="@UriHelper.ToAbsoluteUri("/contributors").AbsoluteUri">
+        <MatIcon Icon="@MatIconNames.Group_add" /> <span class="miniHover">Contributors</span>
+    </MatNavItem>
+</MatNavMenu>
+
+@functions
+{
+    [CascadingParameter] Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    bool IsLoggedIn = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        //IsLoggedIn = false;
+        //var user = (await AuthenticationStateTask).User;
+
+        //if (user.Identity.IsAuthenticated)
+        //{
+        //    IsLoggedIn = true;
+        //}
+    }
+}

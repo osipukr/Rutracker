@@ -1,0 +1,20 @@
+﻿@inject IUriHelper uriHelper
+@inject AuthenticationService AuthenticationService
+
+<AuthorizeView Context="AuthorizeContext">
+    <Authorized>
+        
+    </Authorized>
+</AuthorizeView>
+
+@functions 
+{
+    [CascadingParameter] Task<AuthenticationState> authenticationStateTask  { get; set; }
+
+    bool IsLoggedIn = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        
+    }
+}

@@ -19,7 +19,7 @@ else
             @foreach (var torrent in Items)
             {
                 <div class="mat-layout-grid-cell">
-                    <MatRipple class="no-select mat-elevation-z10" Color="@MatRippleColor.Secondary">
+                    <MatRipple class="no-select mat-elevation-z5" Color="@MatRippleColor.Secondary">
                         <MatList TwoLine="true">
                             <MatListItem Href="@($"/torrents/{torrent.Id}")">
                                 <MatIcon Icon="@MatIconNames.Date_range" Class="pr-2" />

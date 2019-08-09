@@ -1,32 +1,107 @@
 ﻿@inherits LayoutComponentBase
 @inject ViewSettings ViewSettings
 
-<MatAppBarContainer>
-    <MatAppBar Fixed="true">
-        <MatAppBarRow>
-            <MatAppBarSection Align="@MatAppBarSectionAlign.Start">
-                <MatButton Link="/" Class="h-100 text-white p-0">
-                    <img alt="@BrandName" class="h-100" style="width: 60px;" src="img/brand.svg" title="@BrandName">
-                    <MatAppBarTitle>@BrandName</MatAppBarTitle>
-                </MatButton>
-            </MatAppBarSection>
-            <MatAppBarSection Align="@MatAppBarSectionAlign.End">
-                <MatTooltip Tooltip="Github Repository" Wrap="true">
-                    <MatIconButton Link="https://github.com/osipukr/Rutracker-Blazor">
-                        <i class="fa fa-github" aria-hidden="true"></i>
-                    </MatIconButton>
-                </MatTooltip>
-            </MatAppBarSection>
-        </MatAppBarRow>
-    </MatAppBar>
-    <MatAppBarContent>
-        <main class="container-fluid px-4 py-3">
-            @Body
-        </main>
-    </MatAppBarContent>
-</MatAppBarContainer>
+<MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">
+    <MatDrawer @bind-Opened="@_navMenuOpened">
+        <header class="drawer-header">
+            <div class="drawer-logo">
+                <img alt="@BrandName" class="logo-img" src="img/brand-white.svg" title="@BrandName">
+                <a class="miniHover" href="/">@BrandName</a>
+            </div>
+            <ProfileControl />
+        </header>
 
-@code
+        <NavMenu />
+
+        <footer class="drawer-footer">
+            <MatButton Icon="@MatIconNames.Help" Class="w-100" Link="@RepositoryLink">
+                <span class="miniHover">Help & Support</span>
+            </MatButton>
+        </footer>
+    </MatDrawer>
+    <MatDrawerContent>
+        <MatAppBarContainer>
+            <MatAppBar Fixed="true">
+                <MatAppBarRow>
+                    <MatAppBarSection>
+                        <MatAppBarTitle>
+
+                        </MatAppBarTitle>
+                        <div class="hidden-mdc-down">
+                            <MatTooltip Tooltip="Toggle Navigation" Wrap="true">
+                                <MatIconButton Class="navToggle"
+                                               Icon="@MatIconNames.Menu"
+                                               ToggleIcon="@MatIconNames.Menu"
+                                               OnClick="@NavToggle" />
+                            </MatTooltip>
+
+                            <MatTooltip Tooltip="Minify Navigation" Wrap="true">
+                                <MatIconButton Class="navToggle"
+                                               Icon="@MatIconNames.Format_indent_decrease"
+                                               ToggleIcon="@MatIconNames.Format_indent_decrease"
+                                               OnClick="@NavMinify" />
+                            </MatTooltip>
+                        </div>
+                    </MatAppBarSection>
+
+                    <MatAppBarSection Align="@MatAppBarSectionAlign.End" Style="padding-right: 1rem;">
+                        <MatTooltip Tooltip="Github Repository" Wrap="true">
+                            <MatIconButton Link="@RepositoryLink">
+                                <i class="fa fa-github" aria-hidden="true"></i>
+                            </MatIconButton>
+                        </MatTooltip>
+
+                        <LoginControl />
+                    </MatAppBarSection>
+                </MatAppBarRow>
+            </MatAppBar>
+            <MatAppBarContent>
+                <section class="container-fluid px-4 py-3">
+                    @Body
+                </section>
+            </MatAppBarContent>
+        </MatAppBarContainer>
+    </MatDrawerContent>
+</MatDrawerContainer>
+
+@functions
 {
+    bool _navMenuOpened = true;
+    bool _navMinified = false;
+    string bbDrawerClass = "";
+
     string BrandName => ViewSettings.ServiceName;
+    string RepositoryLink => "https://github.com/osipukr/Rutracker-Blazor";
+
+    void NavToggle()
+    {
+        _navMenuOpened = !_navMenuOpened;
+        bbDrawerClass = _navMenuOpened ? "full" : "closed";
+
+        StateHasChanged();
+    }
+
+    void NavMinify()
+    {
+        _navMinified = !_navMinified;
+
+        if (!_navMenuOpened)
+        {
+            _navMinified = true;
+        }
+
+        if (_navMinified)
+        {
+            bbDrawerClass = "mini";
+            _navMenuOpened = true;
+        }
+        else if (_navMenuOpened)
+        {
+            bbDrawerClass = "full";
+        }
+
+        _navMenuOpened = true;
+
+        StateHasChanged();
+    }
 }

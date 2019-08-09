@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using MatBlazor;
 using Microsoft.AspNetCore.Blazor.Http;
 using Microsoft.AspNetCore.Components;
@@ -16,7 +17,6 @@ namespace Rutracker.Client
 
             services.AddSingleton(clientSettings.ApiUriSettings);
             services.AddSingleton(clientSettings.ViewSettings);
-            services.AddMatToaster((MatToastConfiguration) clientSettings.MatToasterSettings);
 
             services.AddAuthorizationCore();
             services.AddSingleton<HttpClientService>();
@@ -24,12 +24,14 @@ namespace Rutracker.Client
             services.AddSingleton<AuthenticationService>();
             services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<AuthenticationService>());
             services.AddSingleton<AppState>();
+
+            services.AddBlazoredLocalStorage();
+            services.AddMatToaster((MatToastConfiguration)clientSettings.MatToasterSettings);
         }
 
         public void Configure(IComponentsApplicationBuilder app)
         {
             WebAssemblyHttpMessageHandler.DefaultCredentials = FetchCredentialsOption.Include;
-
             app.AddComponent<App>("app");
         }
     }

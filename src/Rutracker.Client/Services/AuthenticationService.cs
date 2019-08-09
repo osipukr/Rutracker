@@ -10,10 +10,7 @@ namespace Rutracker.Client.Services
     {
         private readonly IAccountService _accountService;
 
-        public AuthenticationService(IAccountService accountService)
-        {
-            _accountService = accountService;
-        }
+        public AuthenticationService(IAccountService accountService) => _accountService = accountService;
 
         public async Task<JwtToken> Login(LoginViewModel model)
         {

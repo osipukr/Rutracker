@@ -10,10 +10,7 @@ namespace Rutracker.Client.Services
     {
         private readonly HttpClient _httpClient;
 
-        public HttpClientService(HttpClient httpClient)
-        {
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-        }
+        public HttpClientService(HttpClient httpClient) => _httpClient = httpClient;
 
         public async Task<TResult> GetJsonAsync<TResult>(string url)
         {

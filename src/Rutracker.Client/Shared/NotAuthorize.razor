@@ -1,9 +1,10 @@
 ﻿@inject IUriHelper UriHelper
 
 <div class="login-container">
-    <LoadingBackground ShowLogoBox="true">
+    <LoadingBackground ShowLoader="false">
         <div class="login-body">
-            <label>Sorry, You're not authorized to reach this page. You may need to log in as a different user.</label><br />
+            <label>Sorry, You're not authorized to reach this page. You may need to log in as a different user.</label>
+            <br />
             <MatButton OnClick="@ReturnHomeClicked" Raised="true">Home</MatButton>
         </div>
     </LoadingBackground>
