@@ -29,7 +29,6 @@ using Rutracker.Server.Filters;
 using Rutracker.Server.Interfaces;
 using Rutracker.Server.Services;
 using Rutracker.Server.Settings;
-using Rutracker.Shared.Interfaces;
 
 namespace Rutracker.Server.Extensions
 {
@@ -184,7 +183,9 @@ namespace Rutracker.Server.Extensions
                 .AddSingleton<IJwtFactory, JwtFactory>()
                 .AddScoped<ITorrentService, TorrentService>()
                 .AddScoped<IAccountService, AccountService>()
+                .AddScoped<IUserService, UserService>()
                 .AddScoped<IAccountViewModelService, AccountViewModelService>()
+                .AddScoped<IUserViewModelService, UserViewModelService>()
                 .AddScoped<ITorrentViewModelService, TorrentViewModelService>();
 
         /// <summary>

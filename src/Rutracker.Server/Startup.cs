@@ -33,6 +33,7 @@ namespace Rutracker.Server
                 .AddControllers()
                 .AddCustomMvcOptions()
                 .Services
+                .AddAuthorization()
                 .AddRepositories()
                 .AddServices();
 

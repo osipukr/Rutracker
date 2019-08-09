@@ -1,8 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Rutracker.Shared.Interfaces;
+using Rutracker.Server.Interfaces;
 using Rutracker.Shared.ViewModels.Shared;
 using Rutracker.Shared.ViewModels.Torrent;
 using Rutracker.Shared.ViewModels.Torrents;
@@ -14,11 +13,7 @@ namespace Rutracker.Server.Controllers
     /// </summary>
     /// <response code="400">If the parameters are not valid.</response>
     /// <response code="404">If the item is null.</response>
-    [ApiController, Route("api/[controller]")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    public class TorrentsController : ControllerBase
+    public class TorrentsController : BaseApiController
     {
         private readonly ITorrentViewModelService _torrentViewModelService;
 

@@ -3,7 +3,7 @@ using Rutracker.Shared.ViewModels.Shared;
 using Rutracker.Shared.ViewModels.Torrent;
 using Rutracker.Shared.ViewModels.Torrents;
 
-namespace Rutracker.Shared.Interfaces
+namespace Rutracker.Server.Interfaces
 {
     public interface ITorrentViewModelService
     {

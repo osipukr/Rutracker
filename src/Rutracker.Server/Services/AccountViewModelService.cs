@@ -30,7 +30,7 @@ namespace Rutracker.Server.Services
         {
             var user = await _accountService.CreateUserAsync(model.UserName, model.Password);
 
-            user.Email = user.Email;
+            user.Email = model.Email;
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
 
