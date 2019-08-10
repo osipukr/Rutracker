@@ -80,7 +80,7 @@ namespace Rutracker.UnitTests.Core.Services
             var exception = await Assert.ThrowsAsync<TorrentException>(async () =>
                 await _torrentService.GetTorrentsOnPageAsync(-10, -10, null, null, null, null));
 
-            Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionType);
+            Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
         }
 
         [Fact(DisplayName = "GetTorrentDetailsAsync() with an invalid parameters should throw TorrentException")]
@@ -90,7 +90,7 @@ namespace Rutracker.UnitTests.Core.Services
             var exception = await Assert.ThrowsAsync<TorrentException>(async () =>
                 await _torrentService.GetTorrentDetailsAsync(-10));
 
-            Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionType);
+            Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
         }
 
         [Fact(DisplayName = "GetTorrentDetailsAsync() with an invalid parameters should throw TorrentException")]
@@ -100,7 +100,7 @@ namespace Rutracker.UnitTests.Core.Services
             var exception = await Assert.ThrowsAsync<TorrentException>(async () =>
                 await _torrentService.GetTorrentDetailsAsync(1000));
 
-            Assert.Equal(ExceptionEventType.NotFound, exception.ExceptionType);
+            Assert.Equal(ExceptionEventType.NotFound, exception.ExceptionEventType);
         }
 
         [Fact(DisplayName = "GetPopularForumsAsync() with an invalid parameters should throw TorrentException")]
@@ -110,7 +110,7 @@ namespace Rutracker.UnitTests.Core.Services
             var exception = await Assert.ThrowsAsync<TorrentException>(async () =>
                 await _torrentService.GetPopularForumsAsync(-10));
 
-            Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionType);
+            Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
         }
     }
 }

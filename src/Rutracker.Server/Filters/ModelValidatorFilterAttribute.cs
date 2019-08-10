@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Rutracker.Core.Exceptions;
@@ -28,7 +29,8 @@ namespace Rutracker.Server.Filters
                 return;
             }
 
-            var message = context.ModelState.Values.SelectMany(x => x.Errors).First().ErrorMessage;
+            var errors = context.ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage);
+            var message = string.Join(Environment.NewLine, errors);
 
             throw new TorrentException(message, ExceptionEventType.NotValidParameters);
         }

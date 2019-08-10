@@ -82,25 +82,21 @@ namespace Rutracker.Server.Extensions
                 .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders()
                 .Services
-                .AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    var jwtSetting = configuration.GetSection(nameof(JwtSettings));
+                    var jwtSettings = configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
 
                     options.RequireHttpsMetadata = false;
                     options.SaveToken = true;
-                    options.ClaimsIssuer = jwtSetting[nameof(JwtSettings.Issuer)];
+                    options.ClaimsIssuer = jwtSettings.Issuer;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
-                        ValidIssuer = jwtSetting[nameof(JwtSettings.Issuer)],
+                        ValidIssuer = jwtSettings.Issuer,
 
                         ValidateAudience = true,
-                        ValidAudience = jwtSetting[nameof(JwtSettings.Audience)],
+                        ValidAudience = jwtSettings.Audience,
 
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = JwtSettings.SigningKey,
@@ -179,7 +175,6 @@ namespace Rutracker.Server.Extensions
                 .AddDbContext<IdentityContext>(options => options
                     .UseSqlServer(
                         configuration.GetConnectionString("IdentityConnection"),
-                        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure())
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+                        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
     }
 }
