@@ -12,16 +12,11 @@ namespace Rutracker.Core.Services
     public class AccountService : IAccountService
     {
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
         private readonly SignInManager<User> _signInManager;
 
-        public AccountService(
-            UserManager<User> userManager,
-            RoleManager<Role> roleManager,
-            SignInManager<User> signInManager)
+        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-            _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
         }
 
@@ -44,7 +39,14 @@ namespace Rutracker.Core.Services
 
             if (!result.Succeeded)
             {
-                throw new TorrentException($"{GetIdentityErrors(result)}.", ExceptionEventType.NotValidParameters);
+                throw new TorrentException(GetIdentityErrors(result), ExceptionEventType.NotValidParameters);
+            }
+
+            var roleResult = await _userManager.AddToRoleAsync(user, UserRoles.Names.User);
+
+            if (!roleResult.Succeeded)
+            {
+                throw new TorrentException(GetIdentityErrors(roleResult), ExceptionEventType.NotValidParameters);
             }
 
             return user;
@@ -86,29 +88,6 @@ namespace Rutracker.Core.Services
             return roles.ToList();
         }
 
-        public async Task AddUserToRoleAsync(string userId, string role)
-        {
-            if (!await _roleManager.RoleExistsAsync(role))
-            {
-                throw new TorrentException($"Role with name '{role}' does not exist.", ExceptionEventType.NotFound);
-
-            }
-
-            var user = await _userManager.FindByIdAsync(userId);
-
-            if (user == null)
-            {
-                throw new TorrentException($"User with id '{userId}' does not exist.", ExceptionEventType.NotFound);
-            }
-
-            var result = await _userManager.AddToRoleAsync(user, role);
-
-            if (!result.Succeeded)
-            {
-                throw new TorrentException($"Error adding role '{role}'.", ExceptionEventType.NotValidParameters);
-            }
-        }
-
         public async Task UpdateUserAsync(User user)
         {
             if (user == null)
@@ -120,7 +99,7 @@ namespace Rutracker.Core.Services
 
             if (!result.Succeeded)
             {
-                throw new TorrentException($"{GetIdentityErrors(result)}.", ExceptionEventType.NotValidParameters);
+                throw new TorrentException(GetIdentityErrors(result), ExceptionEventType.NotValidParameters);
             }
         }
 

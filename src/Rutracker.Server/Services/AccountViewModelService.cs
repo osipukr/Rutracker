@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Rutracker.Core.Entities.Identity;
 using Rutracker.Core.Interfaces.Services;
 using Rutracker.Server.Interfaces;
 using Rutracker.Shared.ViewModels.Accounts;
@@ -35,9 +34,8 @@ namespace Rutracker.Server.Services
             user.LastName = model.LastName;
 
             await _accountService.UpdateUserAsync(user);
-            await _accountService.AddUserToRoleAsync(user.Id, UserRoles.User);
 
-            var roles = new[] { UserRoles.User };
+            var roles = await _accountService.GetUserRolesAsync(user);
             var jwt = await _jwtFactory.GenerateTokenAsync(user, roles);
 
             return jwt;

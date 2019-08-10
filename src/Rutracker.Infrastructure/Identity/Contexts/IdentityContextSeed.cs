@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ namespace Rutracker.Infrastructure.Identity.Contexts
 {
     public class IdentityContextSeed
     {
-        private static readonly IEnumerable<string> Roles;
+        private static readonly IEnumerable<Role> Roles;
         private static readonly User AdminUser;
         private static readonly string AdminPassword;
 
@@ -18,8 +19,16 @@ namespace Rutracker.Infrastructure.Identity.Contexts
         {
             Roles = new[]
             {
-                UserRoles.User,
-                UserRoles.Admin
+                new Role
+                {
+                    Name = UserRoles.Names.User,
+                    Description = UserRoles.Descriptions.User
+                },
+                new Role
+                {
+                    Name = UserRoles.Names.Admin,
+                    Description = UserRoles.Descriptions.Admin
+                }
             };
 
             AdminUser = new User
@@ -63,14 +72,17 @@ namespace Rutracker.Infrastructure.Identity.Contexts
         {
             foreach (var role in Roles)
             {
-                await roleManager.CreateAsync(new Role { Name = role });
+                await roleManager.CreateAsync(role);
             }
         }
 
         private static async Task SeedUsersAsync(UserManager<User> userManager)
         {
             await userManager.CreateAsync(AdminUser, AdminPassword);
-            await userManager.AddToRolesAsync(AdminUser, Roles);
+
+            var roleNames = Roles.Select(x => x.Name);
+
+            await userManager.AddToRolesAsync(AdminUser, roleNames);
         }
     }
 }
