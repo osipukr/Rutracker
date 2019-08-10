@@ -19,9 +19,9 @@ namespace Rutracker.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IReadOnlyList<UserViewModel>> GetAll() => await _userViewModelService.GetUsersAsync();
+        public async Task<UserViewModel[]> GetAll() => await _userViewModelService.GetUsersAsync();
 
         [HttpGet(nameof(Details))]
-        public async Task<UserResponseViewModel> Details() => await _userViewModelService.GetUserAsync(User);
+        public async Task<UserDetailsViewModel> Details() => await _userViewModelService.GetUserAsync(User);
     }
 }

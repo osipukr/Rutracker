@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Rutracker.Client.Services;
+using Rutracker.Client.Services.Implementations;
 using Rutracker.Client.Services.Interfaces;
 
 namespace Rutracker.Client
@@ -18,15 +19,16 @@ namespace Rutracker.Client
             services.AddSingleton(clientSettings.ApiUriSettings);
             services.AddSingleton(clientSettings.ViewSettings);
 
+            services.AddBlazoredLocalStorage();
             services.AddAuthorizationCore();
             services.AddSingleton<HttpClientService>();
+            services.AddScoped<ApiAuthenticationStateProvider>();
+            services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<ApiAuthenticationStateProvider>());
             services.AddSingleton<IAccountService, AccountService>();
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<ITorrentService, TorrentService>();
             services.AddSingleton<AppState>();
-            services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<AppState>());
 
-            services.AddBlazoredLocalStorage();
             services.AddMatToaster((MatToastConfiguration)clientSettings.MatToasterSettings);
         }
 

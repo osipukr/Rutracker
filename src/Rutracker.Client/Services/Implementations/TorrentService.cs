@@ -5,7 +5,7 @@ using Rutracker.Shared.ViewModels.Shared;
 using Rutracker.Shared.ViewModels.Torrent;
 using Rutracker.Shared.ViewModels.Torrents;
 
-namespace Rutracker.Client.Services
+namespace Rutracker.Client.Services.Implementations
 {
     public class TorrentService : ITorrentService
     {

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
 using Rutracker.Client.Services.Interfaces;
 using Rutracker.Shared.ViewModels.Accounts;
 using Rutracker.Shared.ViewModels.Shared;
@@ -12,22 +9,26 @@ using Rutracker.Shared.ViewModels.Users;
 
 namespace Rutracker.Client.Services
 {
-    public class AppState : AuthenticationStateProvider
+    public class AppState
     {
         private readonly IAccountService _accountService;
         private readonly IUserService _userService;
         private readonly ITorrentService _torrentService;
 
-        private JwtToken _token;
-        private UserResponseViewModel _user;
+        private readonly ApiAuthenticationStateProvider _apiAuthenticationState;
 
-        public AppState(IAccountService accountService,
+        private UserDetailsViewModel _user;
+
+        public AppState(
+            IAccountService accountService,
             IUserService userService,
-            ITorrentService torrentService)
+            ITorrentService torrentService,
+            ApiAuthenticationStateProvider apiAuthenticationState)
         {
             _accountService = accountService;
             _userService = userService;
             _torrentService = torrentService;
+            _apiAuthenticationState = apiAuthenticationState;
         }
 
         public bool SearchInProgress { get; private set; }
@@ -38,42 +39,39 @@ namespace Rutracker.Client.Services
 
         public async Task Login(LoginViewModel model)
         {
-            _token = await _accountService.Login(model);
+            var token = await _accountService.Login(model);
 
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            await _apiAuthenticationState.MarkUserAsAuthenticated(token.Token);
+
+            IsAuthenticated = true;
         }
 
         public async Task Register(RegisterViewModel model)
         {
-            _token = await _accountService.Register(model);
+            var token = await _accountService.Register(model);
 
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            await _apiAuthenticationState.MarkUserAsAuthenticated(token.Token);
+
+            IsAuthenticated = true;
         }
 
         public async Task Logout()
         {
             await _accountService.Logout();
+            await _apiAuthenticationState.MarkUserAsLoggedOut();
 
-            _token = null;
-            _user = null;
-
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            IsAuthenticated = false;
         }
 
         #endregion
 
         #region Users
 
-        public async Task<IReadOnlyList<UserViewModel>> Users() => await IndexActionAsync(_userService.Users(_token));
+        public async Task<UserViewModel[]> Users() => await IndexActionAsync(_userService.Users());
 
-        public async Task<UserResponseViewModel> UserDetails()
+        public async Task<UserDetailsViewModel> UserDetails()
         {
-            if (_user == null || !IsAuthenticated)
-            {
-                _user = await _userService.UserDetails(_token);
-            }
-
-            return _user;
+            return _user ??= await IndexActionAsync(_userService.UserDetails());
         }
 
         #endregion
@@ -85,33 +83,6 @@ namespace Rutracker.Client.Services
         public async Task<FacetViewModel<string>> TitleFacet(int count) => await _torrentService.TitleFacet(count);
 
         #endregion
-
-        public override async Task<AuthenticationState> GetAuthenticationStateAsync()
-        {
-            var identity = new ClaimsIdentity();
-
-            try
-            {
-                _user = await UserDetails();
-
-                var claims = new[]
-                {
-                    new Claim(ClaimTypes.Name, _user.User.UserName),
-                    new Claim(ClaimTypes.Email, _user.User.Email),
-                    new Claim(ClaimTypes.Surname, _user.User.LastName)
-                };
-
-                identity = new ClaimsIdentity(claims, "Server authentication");
-
-                IsAuthenticated = true;
-            }
-            catch (Exception)
-            {
-                IsAuthenticated = false;
-            }
-
-            return new AuthenticationState(new ClaimsPrincipal(identity));
-        }
 
         #region Helpers
 

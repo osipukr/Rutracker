@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -20,19 +19,19 @@ namespace Rutracker.Server.Services
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<IReadOnlyList<UserViewModel>> GetUsersAsync()
+        public async Task<UserViewModel[]> GetUsersAsync()
         {
             var users = await _userService.GetAllUserAsync();
 
             return _mapper.Map<UserViewModel[]>(users);
         }
 
-        public async Task<UserResponseViewModel> GetUserAsync(ClaimsPrincipal principal)
+        public async Task<UserDetailsViewModel> GetUserAsync(ClaimsPrincipal principal)
         {
             var user = await _userService.GetUserAsync(principal);
             var roles = await _userService.GetUserRolesAsync(user);
 
-            return new UserResponseViewModel
+            return new UserDetailsViewModel
             {
                 User = _mapper.Map<UserViewModel>(user),
                 Roles = _mapper.Map<RoleViewModel[]>(roles)

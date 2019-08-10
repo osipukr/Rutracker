@@ -3,7 +3,7 @@ using Rutracker.Client.Services.Interfaces;
 using Rutracker.Client.Settings;
 using Rutracker.Shared.ViewModels.Accounts;
 
-namespace Rutracker.Client.Services
+namespace Rutracker.Client.Services.Implementations
 {
     public class AccountService : IAccountService
     {

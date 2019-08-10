@@ -1,9 +1,52 @@
 ﻿@page "/account/profile"
+
 @attribute [Authorize]
 
-<h3>Profile</h3>
+@inject IMatToaster MatToaster
+@inject AppState AppState
 
-@code 
+@if (AppState.SearchInProgress)
 {
+    <LoadingBackground>
+        <span>Loading user list, please wait...</span>
+    </LoadingBackground>
+}
+else if (Model == null)
+{
+    <LoadingBackground ShowLoader="false">
+        <p>Error load profile, sorry</p>
+    </LoadingBackground>
+}
+else
+{
+    <h3>Profile</h3>
 
+    <p>@Model.User.UserName</p>
+    <p>@Model.User.Email</p>
+    <p>@Model.User.FirstName</p>
+    <p>@Model.User.LastName</p>
+
+    foreach (var role in Model.Roles)
+    {
+        <p>@role.Name</p>
+    }
+}
+
+@functions
+{
+    UserDetailsViewModel Model { get; set; }
+
+    protected override async Task OnInitAsync() => await LoadUserDetailsAsync();
+
+    async Task LoadUserDetailsAsync()
+    {
+        try
+        {
+            Model = await AppState.UserDetails();
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Error load model.");
+        }
+    }
 }

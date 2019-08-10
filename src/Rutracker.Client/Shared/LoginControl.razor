@@ -1,4 +1,5 @@
 ﻿@inject IUriHelper UriHelper
+@inject IMatToaster MatToaster
 @inject AppState AppState
 
 <AuthorizeView Context="AuthorizeContext">
@@ -11,16 +12,31 @@
         <MatTooltip Tooltip="Login" Wrap="true">
             <MatIconButton Icon="@MatIconNames.Account_box" Link="@LoginLink" />
         </MatTooltip>
+
+        <MatTooltip Tooltip="Register" Wrap="true">
+            <MatIconButton Icon="@MatIconNames.How_to_reg" Link="@RegisterLink" />
+        </MatTooltip>
     </NotAuthorized>
 </AuthorizeView>
 
 @functions
 {
     string LoginLink = "/account/login";
+    string RegisterLink = "/account/register";
 
     async Task LogoutClick()
     {
-        await AppState.Logout();
-        UriHelper.NavigateTo("/");
+        try
+        {
+            await AppState.Logout();
+
+            MatToaster.Add(string.Empty, MatToastType.Success, "Failed successfull.");
+
+            UriHelper.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Failed logout.");
+        }
     }
 }

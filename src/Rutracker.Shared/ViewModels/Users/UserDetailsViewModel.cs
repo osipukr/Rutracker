@@ -1,6 +1,6 @@
 ﻿namespace Rutracker.Shared.ViewModels.Users
 {
-    public class UserResponseViewModel
+    public class UserDetailsViewModel
     {
         public UserViewModel User { get; set; }
         public RoleViewModel[] Roles { get; set; }

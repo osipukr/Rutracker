@@ -13,10 +13,8 @@ namespace Rutracker.Client.Services
 
         public HttpClientService(HttpClient httpClient) => _httpClient = httpClient;
 
-        public async Task<TResult> GetJsonAsync<TResult>(string url, string token = null)
+        public async Task<TResult> GetJsonAsync<TResult>(string url)
         {
-            SetAuthorizationHeader(token);
-
             using var response = await _httpClient.GetAsync(url);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -25,10 +23,8 @@ namespace Rutracker.Client.Services
                 : throw new Exception(message: DeserializeJsonError(json));
         }
 
-        public async Task<TResult> PostJsonAsync<TResult>(string url, object jsonObject, string token = null)
+        public async Task<TResult> PostJsonAsync<TResult>(string url, object jsonObject)
         {
-            SetAuthorizationHeader(token);
-
             using var content = new StringContent(
                 content: JsonConvert.SerializeObject(jsonObject),
                 encoding: Encoding.UTF8,
@@ -42,15 +38,14 @@ namespace Rutracker.Client.Services
                 : throw new Exception(message: DeserializeJsonError(json));
         }
 
+        public void SetAuthorizationToken(string token)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = string.IsNullOrWhiteSpace(token)
+                ? null
+                : new AuthenticationHeaderValue("bearer", token);
+        }
+
         private static TResult DeserializeJson<TResult>(string json) => JsonConvert.DeserializeObject<TResult>(json);
         private static string DeserializeJsonError(string json) => DeserializeJson<string>(json);
-
-        private void SetAuthorizationHeader(string token)
-        {
-            if (!string.IsNullOrWhiteSpace(token))
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-        }
     }
 }

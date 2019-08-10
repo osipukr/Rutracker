@@ -1,29 +1,38 @@
 ﻿@inject IUriHelper UriHelper
+@inject IMatToaster MatToaster
 @inject AppState AppState
 
-<AuthorizeView Context="AuthorizeContext">
+<AuthorizeView>
     <Authorized>
-        <div class="drawer-profile">
-            <MatIconButton Icon="@MatIconNames.Account_circle" Link="@ProfileLink" ></MatIconButton>
-            <span class="miniHover"><b><a href="@ProfileLink">@Model.User.UserName</a></b></span>
-        </div>
+        @if (Model != null)
+        {
+            <div class="drawer-profile">
+                <MatIconButton Icon="@MatIconNames.Account_circle" Link="@ProfileLink"></MatIconButton>
+                <span class="miniHover"><b><a href="@ProfileLink">@Model.User.UserName</a></b></span>
+            </div>
+        }
     </Authorized>
 </AuthorizeView>
 
-@functions 
+@functions
 {
-    [CascadingParameter] Task<AuthenticationState> AuthenticationStateTask  { get; set; }
+    [CascadingParameter] Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
-    UserResponseViewModel Model { get; set; }
+    UserDetailsViewModel Model { get; set; }
     string ProfileLink => "/account/profile";
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitAsync()
     {
-        var user = (await AuthenticationStateTask).User;
-
-        if (user.Identity.IsAuthenticated)
+        if ((await AuthenticationStateTask).User.Identity.IsAuthenticated)
         {
-            Model = await AppState.UserDetails();
+            try
+            {
+                Model = await AppState.UserDetails();
+            }
+            catch (Exception ex)
+            {
+                MatToaster.Add(ex.Message, MatToastType.Warning, "Failed to get user profile.");
+            }
         }
     }
 }
