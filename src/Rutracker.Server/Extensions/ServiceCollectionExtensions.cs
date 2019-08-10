@@ -74,6 +74,10 @@ namespace Rutracker.Server.Extensions
             services
                 .AddIdentity<User, Role>(config =>
                 {
+                    // User
+                    config.User.RequireUniqueEmail = true;
+
+                    // Password
                     config.Password.RequireNonAlphanumeric = false;
                     config.Password.RequireUppercase = false;
                     config.Password.RequireDigit = false;
@@ -82,7 +86,11 @@ namespace Rutracker.Server.Extensions
                 .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders()
                 .Services
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
                 .AddJwtBearer(options =>
                 {
                     var jwtSettings = configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
@@ -102,7 +110,8 @@ namespace Rutracker.Server.Extensions
                         IssuerSigningKey = JwtSettings.SigningKey,
 
                         RequireExpirationTime = false,
-                        ValidateLifetime = true
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
                     };
                 })
                 .Services;
