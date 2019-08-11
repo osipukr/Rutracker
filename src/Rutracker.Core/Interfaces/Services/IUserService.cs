@@ -9,6 +9,5 @@ namespace Rutracker.Core.Interfaces.Services
     {
         Task<IReadOnlyList<User>> GetAllUserAsync();
         Task<User> GetUserAsync(ClaimsPrincipal principal);
-        Task<IReadOnlyList<Role>> GetUserRolesAsync(User user);
     }
 }

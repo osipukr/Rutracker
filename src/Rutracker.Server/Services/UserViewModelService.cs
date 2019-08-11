@@ -26,16 +26,11 @@ namespace Rutracker.Server.Services
             return _mapper.Map<UserViewModel[]>(users);
         }
 
-        public async Task<UserDetailsViewModel> GetUserAsync(ClaimsPrincipal principal)
+        public async Task<UserViewModel> GetUserAsync(ClaimsPrincipal principal)
         {
             var user = await _userService.GetUserAsync(principal);
-            var roles = await _userService.GetUserRolesAsync(user);
 
-            return new UserDetailsViewModel
-            {
-                User = _mapper.Map<UserViewModel>(user),
-                Roles = _mapper.Map<RoleViewModel[]>(roles)
-            };
+            return _mapper.Map<UserViewModel>(user);
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Rutracker.Core.Entities.Identity;
 using Rutracker.Infrastructure.Data.Contexts;
 using Rutracker.Infrastructure.Identity.Contexts;
 using Rutracker.Server;
@@ -17,26 +19,36 @@ namespace Rutracker.IntegrationTests.Server
             Host.CreateDefaultBuilder(null)
                 .ConfigureServices(services =>
                 {
+                    var provider = services.AddEntityFrameworkInMemoryDatabase()
+                                           .BuildServiceProvider();
+
                     services
-                        .AddEntityFrameworkInMemoryDatabase()
-                        .AddDbContext<TorrentContext>((provider, options) =>
-                        {
-                            options.UseInMemoryDatabase(Guid.NewGuid().ToString());
-                            options.UseInternalServiceProvider(provider);
-                        }, contextLifetime: ServiceLifetime.Singleton)
-                        .AddDbContext<IdentityContext>((provider, options) =>
-                        {
-                            options.UseInMemoryDatabase(Guid.NewGuid().ToString());
-                            options.UseInternalServiceProvider(provider);
-                        }, contextLifetime: ServiceLifetime.Singleton);
+                        .AddDbContext<TorrentContext>(options => options
+                            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                            .UseInternalServiceProvider(provider),
+                            contextLifetime: ServiceLifetime.Singleton)
+                        .AddDbContext<IdentityContext>(options => options
+                            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                            .UseInternalServiceProvider(provider),
+                            contextLifetime: ServiceLifetime.Singleton);
 
                     using var scope = services.BuildServiceProvider().CreateScope();
-                    var context = scope.ServiceProvider.GetRequiredService<TorrentContext>();
+
+                    var torrentContext = scope.ServiceProvider.GetRequiredService<TorrentContext>();
+                    var identityContext = scope.ServiceProvider.GetRequiredService<IdentityContext>();
                     var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
 
-                    if (context.Database.EnsureCreated())
+                    if (torrentContext.Database.EnsureCreated())
                     {
-                        TorrentContextSeed.SeedAsync(context, loggerFactory).Wait();
+                        TorrentContextSeed.SeedAsync(torrentContext, loggerFactory).Wait();
+                    }
+
+                    if (identityContext.Database.EnsureCreated())
+                    {
+                        var userManager = provider.GetService<UserManager<User>>();
+                        var roleManager = provider.GetService<RoleManager<Role>>();
+
+                        IdentityContextSeed.SeedAsync(identityContext, userManager, roleManager, loggerFactory).Wait();
                     }
                 })
                 .ConfigureWebHostDefaults(builder =>

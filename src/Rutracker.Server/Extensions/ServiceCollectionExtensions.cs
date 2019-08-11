@@ -74,6 +74,10 @@ namespace Rutracker.Server.Extensions
             services
                 .AddIdentity<User, Role>(config =>
                 {
+                    // User
+                    config.User.RequireUniqueEmail = true;
+
+                    // Password
                     config.Password.RequireNonAlphanumeric = false;
                     config.Password.RequireUppercase = false;
                     config.Password.RequireDigit = false;
@@ -89,24 +93,25 @@ namespace Rutracker.Server.Extensions
                 })
                 .AddJwtBearer(options =>
                 {
-                    var jwtSetting = configuration.GetSection(nameof(JwtSettings));
+                    var jwtSettings = configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
 
                     options.RequireHttpsMetadata = false;
                     options.SaveToken = true;
-                    options.ClaimsIssuer = jwtSetting[nameof(JwtSettings.Issuer)];
+                    options.ClaimsIssuer = jwtSettings.Issuer;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
-                        ValidIssuer = jwtSetting[nameof(JwtSettings.Issuer)],
+                        ValidIssuer = jwtSettings.Issuer,
 
                         ValidateAudience = true,
-                        ValidAudience = jwtSetting[nameof(JwtSettings.Audience)],
+                        ValidAudience = jwtSettings.Audience,
 
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = JwtSettings.SigningKey,
 
                         RequireExpirationTime = false,
-                        ValidateLifetime = true
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
                     };
                 })
                 .Services;
@@ -179,7 +184,6 @@ namespace Rutracker.Server.Extensions
                 .AddDbContext<IdentityContext>(options => options
                     .UseSqlServer(
                         configuration.GetConnectionString("IdentityConnection"),
-                        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure())
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+                        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
     }
 }

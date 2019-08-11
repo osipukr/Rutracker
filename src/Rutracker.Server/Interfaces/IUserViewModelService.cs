@@ -7,6 +7,6 @@ namespace Rutracker.Server.Interfaces
     public interface IUserViewModelService
     {
         Task<UserViewModel[]> GetUsersAsync();
-        Task<UserDetailsViewModel> GetUserAsync(ClaimsPrincipal principal);
+        Task<UserViewModel> GetUserAsync(ClaimsPrincipal principal);
     }
 }
