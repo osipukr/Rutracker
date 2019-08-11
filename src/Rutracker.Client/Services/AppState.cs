@@ -17,8 +17,6 @@ namespace Rutracker.Client.Services
 
         private readonly ApiAuthenticationStateProvider _apiAuthenticationState;
 
-        private UserViewModel _user;
-
         public AppState(
             IAccountService accountService,
             IUserService userService,
@@ -41,8 +39,6 @@ namespace Rutracker.Client.Services
             var token = await _accountService.Login(model);
 
             await _apiAuthenticationState.MarkUserAsAuthenticated(token.Token);
-
-            NotifyStateChanged();
         }
 
         public async Task Register(RegisterViewModel model)
@@ -50,16 +46,12 @@ namespace Rutracker.Client.Services
             var token = await _accountService.Register(model);
 
             await _apiAuthenticationState.MarkUserAsAuthenticated(token.Token);
-
-            NotifyStateChanged();
         }
 
         public async Task Logout()
         {
             await _accountService.Logout();
             await _apiAuthenticationState.MarkUserAsLoggedOut();
-
-            NotifyStateChanged();
         }
 
         #endregion
@@ -67,11 +59,7 @@ namespace Rutracker.Client.Services
         #region Users
 
         public async Task<UserViewModel[]> Users() => await IndexActionAsync(() => _userService.Users());
-
-        public async Task<UserViewModel> UserDetails()
-        {
-            return _user ??= await IndexActionAsync(() => _userService.UserDetails());
-        }
+        public async Task<UserViewModel> UserDetails() => await IndexActionAsync(() => _userService.UserDetails());
 
         #endregion
 
