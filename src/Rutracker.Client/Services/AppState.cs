@@ -60,6 +60,7 @@ namespace Rutracker.Client.Services
 
         public async Task<UserViewModel[]> Users() => await IndexActionAsync(() => _userService.Users());
         public async Task<UserViewModel> UserDetails() => await IndexActionAsync(() => _userService.UserDetails());
+        public async Task UpdateUser(EditUserViewModel model) => await _userService.UpdateUser(model);
 
         #endregion
 

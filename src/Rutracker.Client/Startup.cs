@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using Blazored.Modal;
 using MatBlazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Builder;
@@ -18,6 +19,7 @@ namespace Rutracker.Client
             services.AddSingleton(clientSettings.ApiUriSettings);
             services.AddSingleton(clientSettings.ViewSettings);
 
+            services.AddBlazoredModal();
             services.AddBlazoredLocalStorage();
             services.AddAuthorizationCore();
             services.AddSingleton<HttpClientService>();

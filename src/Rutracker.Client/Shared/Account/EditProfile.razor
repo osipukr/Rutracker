@@ -1,0 +1,65 @@
+﻿@inject AppState AppState
+@inject IMatToaster MatToaster
+@inject IModalService ModalService
+
+<EditForm Model="@EditModel" OnValidSubmit="@UpdateClicked">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <p>
+        First Name:
+        <MatTextField @bind-Value="@EditModel.FirstName"
+                      Label="Firt Name"
+                      Icon="@MatIconNames.Perm_identity"
+                      Outlined="true" />
+    </p>
+
+    <p>
+        Last Name:
+        <MatTextField @bind-Value="@EditModel.LastName"
+                      Label="Last Name"
+                      Icon="@MatIconNames.Perm_identity"
+                      Outlined="true" />
+    </p>
+
+    <p>
+        Image Url:
+        <MatTextField @bind-Value="@EditModel.ImageUrl"
+                      Label="Standard"
+                      Icon="favorite"
+                      Outlined="true" />
+    </p>
+
+    <p>
+        <MatButton OnClick="@CancelClicked" Raised="true" Label="Cancel" />
+        <MatButton Type="submit" Raised="true" Label="Update" />
+    </p>
+</EditForm>
+
+@code
+{
+    [CascadingParameter] private ModalParameters Parameters { get; set; }
+
+    private EditUserViewModel EditModel { get; set; }
+
+    protected override void OnInit()
+    {
+        EditModel = Parameters.Get<EditUserViewModel>(nameof(EditUserViewModel));
+    }
+
+    private async Task UpdateClicked()
+    {
+        try
+        {
+            await AppState.UpdateUser(EditModel);
+
+            ModalService.Close(ModalResult.Ok(EditModel));
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Error update user");
+        }
+    }
+
+    private void CancelClicked() => ModalService.Cancel();
+}

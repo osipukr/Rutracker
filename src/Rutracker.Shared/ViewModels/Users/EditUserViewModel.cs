@@ -4,10 +4,8 @@ namespace Rutracker.Shared.ViewModels.Users
 {
     public class EditUserViewModel
     {
-        [Required]
         public string FirstName { get; set; }
 
-        [Required]
         public string LastName { get; set; }
 
         [DataType(DataType.ImageUrl)]

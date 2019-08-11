@@ -9,7 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="2.0.7" />
-    <PackageReference Include="MatBlazor" Version="1.5.0" />
+    <PackageReference Include="Blazored.Modal" Version="2.0.5" />
+    <PackageReference Include="MatBlazor" Version="1.5.2" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.0.0-preview7.19365.7" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.0.0-preview7.19365.7" PrivateAssets="all" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />

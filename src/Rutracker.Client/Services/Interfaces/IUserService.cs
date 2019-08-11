@@ -7,5 +7,6 @@ namespace Rutracker.Client.Services.Interfaces
     {
         Task<UserViewModel[]> Users();
         Task<UserViewModel> UserDetails();
+        Task UpdateUser(EditUserViewModel model);
     }
 }

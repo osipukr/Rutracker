@@ -7,7 +7,8 @@
     "Register": "api/account/register",
     "Logout": "api/account/logout",
     "Users": "api/users",
-    "UserDetails": "api/users/details" 
+    "UserDetails": "api/users/details",
+    "UpdateUser": "api/users/update"
   },
   "ViewSettings": {
     "ServiceName": "Rutracker",

@@ -24,7 +24,7 @@ namespace Rutracker.Server.Controllers
         [HttpGet(nameof(Details))]
         public async Task<UserViewModel> Details() => await _userViewModelService.GetUserAsync(User);
 
-        [HttpGet(nameof(Update))]
+        [HttpPut(nameof(Update))]
         public async Task Update(EditUserViewModel model) => await _userViewModelService.UpdateUserAsync(User, model);
     }
 }

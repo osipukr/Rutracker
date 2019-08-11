@@ -38,6 +38,40 @@ namespace Rutracker.Client.Services
                 : throw new Exception(message: DeserializeJsonError(json));
         }
 
+        public async Task PostJsonAsync(string url, object jsonObject)
+        {
+            using var content = new StringContent(
+                content: JsonConvert.SerializeObject(jsonObject),
+                encoding: Encoding.UTF8,
+                mediaType: "application/json");
+
+            using var response = await _httpClient.PostAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+
+                throw new Exception(message: DeserializeJsonError(json));
+            }
+        }
+
+        public async Task PutJsonAsync(string url, object jsonObject)
+        {
+            using var content = new StringContent(
+                content: JsonConvert.SerializeObject(jsonObject),
+                encoding: Encoding.UTF8,
+                mediaType: "application/json");
+
+            using var response = await _httpClient.PutAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+
+                throw new Exception(message: DeserializeJsonError(json));
+            }
+        }
+
         public void SetAuthorizationToken(string token)
         {
             if (!string.IsNullOrWhiteSpace(token))

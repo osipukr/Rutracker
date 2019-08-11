@@ -364,29 +364,6 @@ ul.mdc-nav-menu {
         text-decoration: none;
     }
 
-.drawer-profile {
-    padding: 16px;
-    border-bottom: solid 1px #777;
-    background-image: url("../img/profile-bg.jpg");
-    background-size: cover;
-    color: #fff;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-}
-
-    .drawer-profile a {
-        height: 100%;
-        padding-left: 10px;
-        padding-top: 3px;
-        font-size: medium;
-    }
-
-    .drawer-profile a,
-    .drawer-profile .material-icons {
-        color: #fff;
-    }
-
 .app-sidebar .material-icons {
     margin-right: 8px;
     padding-left: 7px;
@@ -463,14 +440,10 @@ ul.mdc-nav-menu {
         transition: width .4s ease-in-out;
     }
 
-    .drawer-profile {
-        padding: 0 4px;
-    }
-
-    .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
-        margin-left: 54px !important;
-        transition: margin-left .2s ease-in-out;
-    }
+        .mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
+            margin-left: 54px !important;
+            transition: margin-left .2s ease-in-out;
+        }
 
     .mat-accordion .mdc-nav-menu .mat-expansion-panel__content {
         padding-left: 6px;
@@ -481,7 +454,6 @@ ul.mdc-nav-menu {
     }
 
     .mdc-sub-menu-icon,
-    .drawer-profile span,
     .miniHover,
     .brand {
         visibility: hidden;
@@ -497,10 +469,8 @@ ul.mdc-nav-menu {
         z-index: 99;
     }
 
-        .full .drawer-profile span,
         .full .miniHover,
         .full .brand,
-        .mdc-drawer:hover .drawer-profile span,
         .mdc-drawer:hover .miniHover,
         .mdc-drawer:hover .brand {
             visibility: visible;
@@ -565,4 +535,42 @@ ul.mdc-nav-menu {
 
 .mat-toast-close-button .material-icons {
     color: white;
+}
+
+/* Profile sidebar */
+.profile-sidebar {
+    padding: 20px 0 10px 0;
+    background: #fff;
+}
+
+.profile-userpic img {
+    margin: 0 auto;
+    width: 50%;
+    height: 50%;
+    border-radius: 50% !important;
+}
+
+.profile-usertitle {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.profile-usertitle-name {
+    color: #5a7391;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+.profile-usertitle-job {
+    text-transform: uppercase;
+    color: #5b9bd1;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.profile-userbuttons {
+    text-align: center;
+    margin-top: 10px;
 }

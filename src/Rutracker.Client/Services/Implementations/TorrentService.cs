@@ -9,34 +9,34 @@ namespace Rutracker.Client.Services.Implementations
 {
     public class TorrentService : ITorrentService
     {
-        private readonly HttpClientService _httpClient;
-        private readonly ApiUriSettings _uriSettings;
+        private readonly HttpClientService _httpClientService;
+        private readonly ApiUriSettings _apiUriSettings;
 
         public TorrentService(HttpClientService httpClient, ApiUriSettings uriSettings)
         {
-            _httpClient = httpClient;
-            _uriSettings = uriSettings;
+            _httpClientService = httpClient;
+            _apiUriSettings = uriSettings;
         }
 
         public async Task<TorrentsIndexViewModel> Torrents(int page, int pageSize, FiltrationViewModel filter)
         {
-            var url = string.Format(_uriSettings.TorrentsIndex, page.ToString(), pageSize.ToString());
+            var url = string.Format(_apiUriSettings.TorrentsIndex, page.ToString(), pageSize.ToString());
 
-            return await _httpClient.PostJsonAsync<TorrentsIndexViewModel>(url, filter);
+            return await _httpClientService.PostJsonAsync<TorrentsIndexViewModel>(url, filter);
         }
 
         public async Task<TorrentIndexViewModel> Torrent(long id)
         {
-            var url = string.Format(_uriSettings.TorrentIndex, id.ToString());
+            var url = string.Format(_apiUriSettings.TorrentIndex, id.ToString());
 
-            return await _httpClient.GetJsonAsync<TorrentIndexViewModel>(url);
+            return await _httpClientService.GetJsonAsync<TorrentIndexViewModel>(url);
         }
 
         public async Task<FacetViewModel<string>> TitleFacet(int count)
         {
-            var url = string.Format(_uriSettings.Titles, count.ToString());
+            var url = string.Format(_apiUriSettings.Titles, count.ToString());
 
-            return await _httpClient.GetJsonAsync<FacetViewModel<string>>(url);
+            return await _httpClientService.GetJsonAsync<FacetViewModel<string>>(url);
         }
     }
 }
