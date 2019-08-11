@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Rutracker.Core.Entities.Identity;
 using Rutracker.Core.Exceptions;
+using Rutracker.Core.Extensions;
 using Rutracker.Core.Interfaces.Services;
 
 namespace Rutracker.Core.Services
@@ -46,6 +47,21 @@ namespace Rutracker.Core.Services
             }
 
             return user;
+        }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            if (user == null)
+            {
+                throw new TorrentException("Not valid user.", ExceptionEventType.NotValidParameters);
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                throw new TorrentException(result.GetError(), ExceptionEventType.NotValidParameters);
+            }
         }
     }
 }

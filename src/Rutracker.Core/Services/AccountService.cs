@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Rutracker.Core.Entities.Identity;
 using Rutracker.Core.Exceptions;
+using Rutracker.Core.Extensions;
 using Rutracker.Core.Interfaces.Services;
 
 namespace Rutracker.Core.Services
@@ -39,17 +40,34 @@ namespace Rutracker.Core.Services
 
             if (!result.Succeeded)
             {
-                throw new TorrentException(GetIdentityErrors(result), ExceptionEventType.NotValidParameters);
+                throw new TorrentException(result.GetError(), ExceptionEventType.NotValidParameters);
             }
 
             var roleResult = await _userManager.AddToRoleAsync(user, UserRoles.Names.User);
 
             if (!roleResult.Succeeded)
             {
-                throw new TorrentException(GetIdentityErrors(roleResult), ExceptionEventType.NotValidParameters);
+                throw new TorrentException(roleResult.GetError(), ExceptionEventType.NotValidParameters);
             }
 
             return user;
+        }
+
+        public async Task<IReadOnlyList<string>> GetUserRolesAsync(User user)
+        {
+            if (user == null)
+            {
+                throw new TorrentException("Not valid user.", ExceptionEventType.NotValidParameters);
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if (roles == null)
+            {
+                throw new TorrentException($"The roles for user '{user.UserName}' not found.", ExceptionEventType.NotFound);
+            }
+
+            return roles.ToArray();
         }
 
         public async Task<User> CheckUserAsync(string userName, string password)
@@ -71,45 +89,6 @@ namespace Rutracker.Core.Services
             return user;
         }
 
-        public async Task<IReadOnlyList<string>> GetUserRolesAsync(User user)
-        {
-            if (user == null)
-            {
-                throw new TorrentException("Not valid user.", ExceptionEventType.NotValidParameters);
-            }
-
-            var roles = await _userManager.GetRolesAsync(user);
-
-            if (roles == null)
-            {
-                throw new TorrentException($"The roles for user '{user.UserName}' not found.", ExceptionEventType.NotFound);
-            }
-
-            return roles.ToList();
-        }
-
-        public async Task UpdateUserAsync(User user)
-        {
-            if (user == null)
-            {
-                throw new TorrentException("Not valid user.", ExceptionEventType.NotValidParameters);
-            }
-
-            var result = await _userManager.UpdateAsync(user);
-
-            if (!result.Succeeded)
-            {
-                throw new TorrentException(GetIdentityErrors(result), ExceptionEventType.NotValidParameters);
-            }
-        }
-
         public async Task LogOutUserAsync() => await _signInManager.SignOutAsync();
-
-        private static string GetIdentityErrors(IdentityResult result)
-        {
-            var errors = result.Errors.Select(x => x.Description);
-
-            return string.Join(Environment.NewLine, errors);
-        }
     }
 }

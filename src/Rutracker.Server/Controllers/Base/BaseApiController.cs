@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Rutracker.Server.Controllers
+namespace Rutracker.Server.Controllers.Base
 {
     [ApiController, Route("api/[controller]")]
     [ProducesResponseType(StatusCodes.Status200OK)]

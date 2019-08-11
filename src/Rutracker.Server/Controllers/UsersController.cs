@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Rutracker.Server.Controllers.Base;
 using Rutracker.Server.Interfaces;
 using Rutracker.Shared.ViewModels.Users;
 
@@ -22,5 +23,8 @@ namespace Rutracker.Server.Controllers
 
         [HttpGet(nameof(Details))]
         public async Task<UserViewModel> Details() => await _userViewModelService.GetUserAsync(User);
+
+        [HttpGet(nameof(Update))]
+        public async Task Update(EditUserViewModel model) => await _userViewModelService.UpdateUserAsync(User, model);
     }
 }

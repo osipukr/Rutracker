@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Rutracker.Server.Controllers.Base;
 using Rutracker.Server.Interfaces;
 using Rutracker.Shared.ViewModels.Accounts;
 
@@ -20,7 +21,7 @@ namespace Rutracker.Server.Controllers
         [HttpPost(nameof(Register))]
         public async Task<JwtToken> Register(RegisterViewModel model) => await _accountViewModelService.RegisterAsync(model);
 
-        [HttpPost(nameof(LogOut))]
-        public async Task LogOut() => await _accountViewModelService.LogoutAsync();
+        [HttpPost(nameof(Logout))]
+        public async Task Logout() => await _accountViewModelService.LogoutAsync();
     }
 }
