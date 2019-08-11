@@ -1,6 +1,6 @@
-﻿@inject IMatToaster MatToaster
-@inject AppState AppState
+﻿@inject AppState AppState
 @inject ViewSettings ViewSettings
+@inject IMatToaster MatToaster
 
 <div class="mat-layout-grid px-0">
     <div class="mat-layout-grid-inner">
@@ -45,7 +45,7 @@
                         </MatExpansionPanelSummary>
 
                         <MatExpansionPanelDetails>
-                            @if (TitleFacet != null && TitleFacet.FacetItems != null)
+                            @if (TitleFacet?.FacetItems != null)
                             {
                                 foreach (var facet in TitleFacet.FacetItems)
                                 {
@@ -68,7 +68,6 @@
                                    Type="reset"
                                    Disabled="@AppState.SearchInProgress"
                                    Outlined="true"
-                                   Icon="@MatIconNames.Loop"
                                    Class="filter-btn mat-elevation-z5"
                                    Label="All" />
 
@@ -87,34 +86,34 @@
 
 @code
 {
-    [Parameter] FiltrationViewModel Model { get; set; }
-    [Parameter] EventCallback FilterChanged { get; set; }
+    [Parameter] private FiltrationViewModel Model { get; set; }
+    [Parameter] private EventCallback FilterChanged { get; set; }
 
-    int TitleCount => ViewSettings.ForumTitlesCount;
-    FacetViewModel<string> TitleFacet { get; set; }
+    private int TitleCount => ViewSettings.ForumTitlesCount;
+    private FacetViewModel<string> TitleFacet { get; set; }
 
     protected override async Task OnInitAsync() => await LoadTitleFacetsAsync();
 
-    async Task LoadTitleFacetsAsync()
+    private async Task LoadTitleFacetsAsync()
     {
         try
         {
-            TitleFacet = await AppState.GetTitleFacetAsync(TitleCount);
+            TitleFacet = await AppState.TitleFacet(TitleCount);
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Titles Load Failed", MatIconNames.Warning);
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Failed load titles");
         }
     }
 
-    void ResetFiltration()
+    private void ResetFiltration()
     {
         Model.Search = null;
         Model.SizeFrom = null;
         Model.SizeTo = null;
         Model.SelectedTitleIds = null;
 
-        if (TitleFacet != null && TitleFacet.FacetItems != null)
+        if (TitleFacet?.FacetItems != null)
         {
             foreach (var facet in TitleFacet.FacetItems)
             {
@@ -123,15 +122,16 @@
         }
     }
 
-    void ResetButtonClicked()
+    private void ResetButtonClicked()
     {
         ResetFiltration();
         OnValidSubmitClicked();
     }
 
-    void OnValidSubmitClicked()
+    private void OnValidSubmitClicked()
     {
         Model.SelectedTitleIds = TitleFacet?.FacetItems?.Where(x => x.IsSelected).Select(x => x.Id);
+
         FilterChanged.InvokeAsync(EventArgs.Empty);
     }
 }

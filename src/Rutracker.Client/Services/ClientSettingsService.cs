@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Newtonsoft.Json;
 
 namespace Rutracker.Client.Services
@@ -8,11 +7,6 @@ namespace Rutracker.Client.Services
     {
         public static ClientSettings GetSettings(string filePath)
         {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentException("Path cannot be null or whitespace.", nameof(filePath));
-            }
-
             var assembly = typeof(Startup).Assembly;
             var resource = $"{assembly.GetName().Name}.{filePath}";
 

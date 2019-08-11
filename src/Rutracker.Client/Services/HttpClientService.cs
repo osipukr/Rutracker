@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -10,10 +11,7 @@ namespace Rutracker.Client.Services
     {
         private readonly HttpClient _httpClient;
 
-        public HttpClientService(HttpClient httpClient)
-        {
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-        }
+        public HttpClientService(HttpClient httpClient) => _httpClient = httpClient;
 
         public async Task<TResult> GetJsonAsync<TResult>(string url)
         {
@@ -38,6 +36,22 @@ namespace Rutracker.Client.Services
             return response.IsSuccessStatusCode
                 ? DeserializeJson<TResult>(json)
                 : throw new Exception(message: DeserializeJsonError(json));
+        }
+
+        public void SetAuthorizationToken(string token)
+        {
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            }
+        }
+
+        public void RemoveAuthorizationToken()
+        {
+            if (_httpClient.DefaultRequestHeaders.Authorization != null)
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = null;
+            }
         }
 
         private static TResult DeserializeJson<TResult>(string json) => JsonConvert.DeserializeObject<TResult>(json);

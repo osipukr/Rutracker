@@ -1,0 +1,53 @@
+﻿@attribute [Authorize]
+@inject AppState AppState
+@inject IMatToaster MatToaster
+
+@page "/users"
+
+@if (AppState.SearchInProgress)
+{
+    <LoadingBackground>
+        <span>Loading user list, please wait...</span>
+    </LoadingBackground>
+}
+else if (UsersModel == null || UsersModel.Length == 0)
+{
+    <LoadingBackground ShowLoader="false">
+        <p>User list is empty</p>
+    </LoadingBackground>
+}
+else
+{
+    <h3>Users list</h3>
+
+    <MatList SingleSelection="true" TwoLine="true">
+        @foreach (var user in UsersModel)
+        {
+            <MatListItem>
+                <MatListItemText>
+                    <MatListItemPrimaryText>@user.UserName</MatListItemPrimaryText>
+                    <MatListItemSecondaryText>@user.Email</MatListItemSecondaryText>
+                </MatListItemText>
+            </MatListItem>
+        }
+    </MatList>
+}
+
+@code
+{
+    private UserViewModel[] UsersModel { get; set; }
+
+    protected override async Task OnInitAsync() => await LoadUsersAsync();
+
+    private async Task LoadUsersAsync()
+    {
+        try
+        {
+            UsersModel = await AppState.Users();
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Failed load user list");
+        }
+    }
+}

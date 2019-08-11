@@ -39,8 +39,8 @@
 
 @code
 {
-    [Parameter] PaginationViewModel Model { get; set; }
-    [Parameter] EventCallback<int> PageChanged { get; set; }
+    [Parameter] private PaginationViewModel Model { get; set; }
+    [Parameter] private EventCallback<int> PageChanged { get; set; }
 
-    void PageChangeClicked(int page) => PageChanged.InvokeAsync(page);
+    private void PageChangeClicked(int page) => PageChanged.InvokeAsync(page);
 }

@@ -1,15 +1,14 @@
-﻿@page "/"
+﻿@inject AppState AppState
+@inject ViewSettings ViewSettings
+@inject IMatToaster MatToaster
+
 @page "/torrents"
 
-@inject IMatToaster MatToaster
-@inject AppState AppState
-@inject ViewSettings ViewSettings
-
-@if (Model != null)
+@if (TorrentsIndexModel != null)
 {
-    <Filtration Model="@Filter" FilterChanged="@FilterChanged" />
-    <TorrentList Items="@Model.TorrentItems" />
-    <Pagination Model="@Model.PaginationModel" PageChanged="@PageChanged" />
+    <Filtration Model="@FilterModel" FilterChanged="@FilterChanged" />
+    <TorrentList Items="@TorrentsIndexModel.TorrentItems" />
+    <Pagination Model="@TorrentsIndexModel.PaginationModel" PageChanged="@PageChanged" />
 }
 else if (AppState.SearchInProgress)
 {
@@ -27,26 +26,29 @@ else
 
 @code
 {
-    TorrentsIndexViewModel Model { get; set; }
-    FiltrationViewModel Filter { get; set; } = new FiltrationViewModel();
-    int Page { get; set; } = 1;
-    int PageSize => ViewSettings.ItemsPerPageCount;
+    private TorrentsIndexViewModel TorrentsIndexModel { get; set; }
+    private FiltrationViewModel FilterModel { get; set; } = new FiltrationViewModel();
 
-    protected override async Task OnInitAsync() => await LoadTorrentsIndexAsync(Page, Filter);
+    private int Page { get; set; } = 1;
+    private int PageSize => ViewSettings.ItemsPerPageCount;
 
-    async Task LoadTorrentsIndexAsync(int page, FiltrationViewModel filter)
+    protected override async Task OnInitAsync() => await LoadTorrentsIndexAsync(Page, FilterModel);
+
+    private async Task LoadTorrentsIndexAsync(int page, FiltrationViewModel filter)
     {
         try
         {
-            Model = await AppState.GetTorrentsIndexAsync(page, PageSize, filter);
+            TorrentsIndexModel = await AppState.Torrents(page, PageSize, filter);
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Danger, "Model Load Failed", MatIconNames.Warning);
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Failed load torrent list");
         }
     }
 
-    async Task ReloadClicked() => await LoadTorrentsIndexAsync(Page, Filter);
-    async Task PageChanged(int page) => await LoadTorrentsIndexAsync(Page = page, Filter);
-    async Task FilterChanged() => await PageChanged(1);
+    private async Task ReloadClicked() => await LoadTorrentsIndexAsync(Page, FilterModel);
+
+    private async Task PageChanged(int page) => await LoadTorrentsIndexAsync(Page = page, FilterModel);
+
+    private async Task FilterChanged() => await PageChanged(1);
 }
