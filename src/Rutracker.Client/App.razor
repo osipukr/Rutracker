@@ -1,8 +1,7 @@
-﻿@implements IDisposable
-@inject AppState AppState
+﻿@inject AppState AppState
 
 <CascadingAuthenticationState>
-    <MatThemeProvider Theme="@Theme">
+    <MatThemeProvider Theme="@_theme">
         <Router AppAssembly="typeof(Program).Assembly">
             <NotFoundContent>
                 <Error />
@@ -17,13 +16,11 @@
 
 @code
 {
-    MatTheme Theme = new MatTheme()
+    private readonly MatTheme _theme = new MatTheme
     {
         Primary = MatThemeColors.Purple._900.Value,
         Secondary = MatThemeColors.Purple._900.Value
     };
 
     protected override void OnInit() => AppState.OnChange += StateHasChanged;
-
-    public void Dispose() => AppState.OnChange -= StateHasChanged;
 }

@@ -1,16 +1,16 @@
-﻿@inject IUriHelper UriHelper
-@inject AppState AppState
+﻿@inject AppState AppState
+@inject IUriHelper UriHelper
 
 <MatNavMenu Multi="true" Class="app-sidebar">
     <MatNavItem Href="@UriHelper.ToAbsoluteUri("/").AbsoluteUri">
         <MatIcon Icon="@MatIconNames.Home" /> <span class="miniHover">Home page</span>
     </MatNavItem>
 
-    <MatNavItem Href="@UriHelper.ToAbsoluteUri("/account/profile").AbsoluteUri" Disabled="@(!IsAuthenticated)">
+    <MatNavItem Href="@UriHelper.ToAbsoluteUri("/account/profile").AbsoluteUri" Disabled="@(!_isAuthenticated)">
         <MatIcon Icon="@MatIconNames.Person" /> <span class="miniHover">Profile</span>
     </MatNavItem>
 
-    <MatNavItem Href="@UriHelper.ToAbsoluteUri("/users").AbsoluteUri" Disabled="@(!IsAuthenticated)">
+    <MatNavItem Href="@UriHelper.ToAbsoluteUri("/users").AbsoluteUri" Disabled="@(!_isAuthenticated)">
         <MatIcon Icon="@MatIconNames.Supervisor_account" /> <span class="miniHover">Users</span>
     </MatNavItem>
 
@@ -23,14 +23,16 @@
     </MatNavItem>
 </MatNavMenu>
 
-@functions 
+@code
 {
-    [CascadingParameter] Task<AuthenticationState> AuthenticationStateTask  { get; set; }
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask  { get; set; }
 
-    bool IsAuthenticated;
+    private bool _isAuthenticated;
 
     protected override async Task OnParametersSetAsync()
     {
-        IsAuthenticated = (await AuthenticationStateTask).User.Identity.IsAuthenticated;
+        var state = await AuthenticationStateTask;
+
+        _isAuthenticated = state.User.Identity.IsAuthenticated;
     }
 }

@@ -1,9 +1,8 @@
-﻿@page "/account/profile"
-
-@attribute [Authorize]
-
+﻿@attribute [Authorize]
 @inject IMatToaster MatToaster
 @inject AppState AppState
+
+@page "/account/profile"
 
 @if (AppState.SearchInProgress)
 {
@@ -27,13 +26,13 @@ else
     <p>@Model.LastName</p>
 }
 
-@functions
+@code
 {
-    UserViewModel Model { get; set; }
+    private UserViewModel Model { get; set; }
 
-    protected override async Task OnInitAsync() => await LoadUserDetailsAsync();
+    protected override async Task OnInitAsync() => await LoadUserModelAsync();
 
-    async Task LoadUserDetailsAsync()
+    private async Task LoadUserModelAsync()
     {
         try
         {
@@ -41,7 +40,7 @@ else
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Error load model.");
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Error load model");
         }
     }
 }

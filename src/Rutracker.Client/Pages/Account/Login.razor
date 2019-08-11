@@ -1,59 +1,63 @@
-﻿@page "/account/login"
-
-@layout LoginLayout
+﻿@layout LoginLayout
+@inject AppState AppState
 @inject IUriHelper UriHelper
 @inject IMatToaster MatToaster
-@inject AppState AppState
+
+@page "/account/login"
 
 <MatCard>
-    <fieldset>
-        <div class="form-group">
-            <MatTextField @bind-value="@Model.UserName"
-                          Label="User Name"
-                          Icon="@MatIconNames.Person"
-                          IconTrailing="true"
-                          FullWidth="true"
-                          Required="true" />
-        </div>
+    <EditForm Model="@LoginModel" OnValidSubmit="@OnValidSubmitClicked">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
-        <div class="form-group">
-            <MatTextField @bind-value="@Model.Password"
-                          Label="Password"
-                          Icon="@MatIconNames.Lock_open"
-                          IconTrailing="true"
-                          FullWidth="true"
-                          Required="true"
-                          Type="password" />
-        </div>
+        <fieldset>
+            <div class="form-group">
+                <MatTextField @bind-value="@LoginModel.UserName"
+                              Label="User Name"
+                              Icon="@MatIconNames.Person"
+                              IconTrailing="true"
+                              FullWidth="true"
+                              Required="true" />
+            </div>
 
-        <div class="form-group text-right">
-            <MatButton OnClick="@LoginClicked" Raised="true" Label="Login" />
-        </div>
+            <div class="form-group">
+                <MatTextField @bind-value="@LoginModel.Password"
+                              Label="Password"
+                              Icon="@MatIconNames.Lock_open"
+                              IconTrailing="true"
+                              FullWidth="true"
+                              Required="true"
+                              Type="password" />
+            </div>
 
-        <hr />
+            <div class="form-group text-right">
+                <MatButton Type="submit" Raised="true" Label="Login" />
+            </div>
 
-        <MatButton Link="@RegisterLink" Outlined="true" Label="Create account" />
-    </fieldset>
+            <hr />
+
+            <MatButton Link="@RegisterLink" Outlined="true" Label="Create account" />
+        </fieldset>
+    </EditForm>
 </MatCard>
 
-@functions
+@code
 {
-    LoginViewModel Model { get; set; } = new LoginViewModel();
+    private LoginViewModel LoginModel { get; set; } = new LoginViewModel();
 
-    string RegisterLink = "account/register";
+    private const string RegisterLink = "account/register";
 
-    async Task LoginClicked()
+    private async Task OnValidSubmitClicked()
     {
         try
         {
-            await AppState.Login(Model);
+            await AppState.Login(LoginModel);
 
-            MatToaster.Add("Login successful", MatToastType.Success);
-            UriHelper.NavigateTo("/");
+            UriHelper.NavigateTo("/", forceLoad: true);
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Danger, "Login Attempt Failed");
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Login error");
         }
     }
 }

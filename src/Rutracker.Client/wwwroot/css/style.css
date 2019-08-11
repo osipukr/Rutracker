@@ -81,6 +81,7 @@ app {
     margin-top: 10px;
     font-size: 13px;
     color: red;
+    text-align: left;
 }
 
 .no-select {
@@ -370,7 +371,16 @@ ul.mdc-nav-menu {
     background-size: cover;
     color: #fff;
     font-size: 12px;
+    display: flex;
+    align-items: center;
 }
+
+    .drawer-profile a {
+        height: 100%;
+        padding-left: 10px;
+        padding-top: 3px;
+        font-size: medium;
+    }
 
     .drawer-profile a,
     .drawer-profile .material-icons {

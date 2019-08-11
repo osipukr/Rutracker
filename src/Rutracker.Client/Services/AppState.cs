@@ -32,7 +32,6 @@ namespace Rutracker.Client.Services
         }
 
         public bool SearchInProgress { get; private set; }
-        public bool IsAuthenticated { get; private set; }
         public event Action OnChange;
 
         #region Account
@@ -43,7 +42,7 @@ namespace Rutracker.Client.Services
 
             await _apiAuthenticationState.MarkUserAsAuthenticated(token.Token);
 
-            IsAuthenticated = true;
+            NotifyStateChanged();
         }
 
         public async Task Register(RegisterViewModel model)
@@ -52,7 +51,7 @@ namespace Rutracker.Client.Services
 
             await _apiAuthenticationState.MarkUserAsAuthenticated(token.Token);
 
-            IsAuthenticated = true;
+            NotifyStateChanged();
         }
 
         public async Task Logout()
@@ -60,40 +59,40 @@ namespace Rutracker.Client.Services
             await _accountService.Logout();
             await _apiAuthenticationState.MarkUserAsLoggedOut();
 
-            IsAuthenticated = false;
+            NotifyStateChanged();
         }
 
         #endregion
 
         #region Users
 
-        public async Task<UserViewModel[]> Users() => await IndexActionAsync(_userService.Users());
+        public async Task<UserViewModel[]> Users() => await IndexActionAsync(() => _userService.Users());
 
         public async Task<UserViewModel> UserDetails()
         {
-            return _user ??= await IndexActionAsync(_userService.UserDetails());
+            return _user ??= await IndexActionAsync(() => _userService.UserDetails());
         }
 
         #endregion
 
         #region Torrents
 
-        public async Task<TorrentsIndexViewModel> Torrents(int page, int pageSize, FiltrationViewModel filter) => await IndexActionAsync(_torrentService.Torrents(page, pageSize, filter));
-        public async Task<TorrentIndexViewModel> Torrent(long id) => await IndexActionAsync(_torrentService.Torrent(id));
+        public async Task<TorrentsIndexViewModel> Torrents(int page, int pageSize, FiltrationViewModel filter) => await IndexActionAsync(() => _torrentService.Torrents(page, pageSize, filter));
+        public async Task<TorrentIndexViewModel> Torrent(long id) => await IndexActionAsync(() => _torrentService.Torrent(id));
         public async Task<FacetViewModel<string>> TitleFacet(int count) => await _torrentService.TitleFacet(count);
 
         #endregion
 
         #region Helpers
 
-        private async Task<TResult> IndexActionAsync<TResult>(Task<TResult> func)
+        private async Task<TResult> IndexActionAsync<TResult>(Func<Task<TResult>> func)
         {
             SearchInProgress = true;
             NotifyStateChanged();
 
             try
             {
-                return await func;
+                return await func();
             }
             finally
             {

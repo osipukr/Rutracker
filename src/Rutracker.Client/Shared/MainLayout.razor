@@ -1,7 +1,8 @@
 ﻿@inherits LayoutComponentBase
+
 @inject ViewSettings ViewSettings
 
-<MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@bbDrawerClass">
+<MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@_bbDrawerClass">
     <MatDrawer @bind-Opened="@_navMenuOpened">
         <header class="drawer-header">
             <div class="drawer-logo">
@@ -32,14 +33,14 @@
                                 <MatIconButton Class="navToggle"
                                                Icon="@MatIconNames.Menu"
                                                ToggleIcon="@MatIconNames.Menu"
-                                               OnClick="@NavToggle" />
+                                               OnClick="@NavToggleClicked" />
                             </MatTooltip>
 
                             <MatTooltip Tooltip="Minify Navigation" Wrap="true">
                                 <MatIconButton Class="navToggle"
                                                Icon="@MatIconNames.Format_indent_decrease"
                                                ToggleIcon="@MatIconNames.Format_indent_decrease"
-                                               OnClick="@NavMinify" />
+                                               OnClick="@NavMinifyClicked" />
                             </MatTooltip>
                         </div>
                     </MatAppBarSection>
@@ -64,40 +65,35 @@
     </MatDrawerContent>
 </MatDrawerContainer>
 
-@functions
+@code
 {
-    bool _navMenuOpened = true;
-    bool _navMinified = false;
-    string bbDrawerClass = "";
+    private bool _navMenuOpened = true;
+    private bool _navMinified = false;
+    private string _bbDrawerClass = string.Empty;
 
-    string BrandName => ViewSettings.ServiceName;
-    string RepositoryLink => "https://github.com/osipukr/Rutracker-Blazor";
+    private string BrandName => ViewSettings.ServiceName;
+    private const string RepositoryLink = "https://github.com/osipukr/Rutracker-Blazor";
 
-    void NavToggle()
+    private void NavToggleClicked()
     {
         _navMenuOpened = !_navMenuOpened;
-        bbDrawerClass = _navMenuOpened ? "full" : "closed";
+        _bbDrawerClass = _navMenuOpened ? "full" : "closed";
 
         StateHasChanged();
     }
 
-    void NavMinify()
+    private void NavMinifyClicked()
     {
-        _navMinified = !_navMinified;
-
-        if (!_navMenuOpened)
-        {
-            _navMinified = true;
-        }
+        _navMinified = !_navMinified || !_navMenuOpened;
 
         if (_navMinified)
         {
-            bbDrawerClass = "mini";
+            _bbDrawerClass = "mini";
             _navMenuOpened = true;
         }
         else if (_navMenuOpened)
         {
-            bbDrawerClass = "full";
+            _bbDrawerClass = "full";
         }
 
         _navMenuOpened = true;

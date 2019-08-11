@@ -1,8 +1,8 @@
-﻿@page "/torrents/{id:long}"
-
+﻿@inject AppState AppState
 @inject IUriHelper UriHelper
 @inject IMatToaster MatToaster
-@inject AppState AppState
+
+@page "/torrents/{id:long}"
 
 @if (AppState.SearchInProgress)
 {
@@ -10,7 +10,7 @@
         <span>Loading page model, please wait...</span>
     </LoadingBackground>
 }
-else if (Model == null || Model.TorrentDetailsItem == null)
+else if (Model?.TorrentDetailsItem == null)
 {
     <LoadingBackground ShowLoader="false">
         <p>Torrent with id=@Id not found</p>
@@ -32,13 +32,13 @@ else
 
 @code
 {
-    [Parameter] long Id { get; set; }
+    [Parameter] private long Id { get; set; }
 
-    TorrentIndexViewModel Model { get; set; }
+    private TorrentIndexViewModel Model { get; set; }
 
     protected override async Task OnInitAsync() => await LoadTorrentIndexAsync();
 
-    async Task LoadTorrentIndexAsync()
+    private async Task LoadTorrentIndexAsync()
     {
         try
         {
@@ -46,9 +46,9 @@ else
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Danger, "Model Load Failed", MatIconNames.Warning);
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Failed load torrent info");
         }
     }
 
-    void BackButtonClicked() => UriHelper.NavigateTo("/torrents");
+    private void BackButtonClicked() => UriHelper.NavigateTo("/torrents");
 }

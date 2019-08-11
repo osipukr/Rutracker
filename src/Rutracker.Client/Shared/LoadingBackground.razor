@@ -9,7 +9,7 @@
 
 @code
 {
-    [Parameter] bool ShowLoader { get; set; } = true;
-    [Parameter] string Style { get; set; }
-    [Parameter] RenderFragment ChildContent { get; set; }
+    [Parameter] private bool ShowLoader { get; set; } = true;
+    [Parameter] private string Style { get; set; }
+    [Parameter] private RenderFragment ChildContent { get; set; }
 }

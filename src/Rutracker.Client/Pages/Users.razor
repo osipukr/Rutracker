@@ -1,9 +1,8 @@
-﻿@page "/users"
-
-@attribute [Authorize]
-
-@inject IMatToaster MatToaster
+﻿@attribute [Authorize]
 @inject AppState AppState
+@inject IMatToaster MatToaster
+
+@page "/users"
 
 @if (AppState.SearchInProgress)
 {
@@ -11,7 +10,7 @@
         <span>Loading user list, please wait...</span>
     </LoadingBackground>
 }
-else if (Model == null || Model.Length == 0)
+else if (UsersModel == null || UsersModel.Length == 0)
 {
     <LoadingBackground ShowLoader="false">
         <p>User list is empty</p>
@@ -21,29 +20,34 @@ else
 {
     <h3>Users list</h3>
 
-    foreach (var user in Model)
-    {
-        <p>@user.UserName</p>
-        <p>@user.Email</p>
-        <br />
-    }
+    <MatList SingleSelection="true" TwoLine="true">
+        @foreach (var user in UsersModel)
+        {
+            <MatListItem>
+                <MatListItemText>
+                    <MatListItemPrimaryText>@user.UserName</MatListItemPrimaryText>
+                    <MatListItemSecondaryText>@user.Email</MatListItemSecondaryText>
+                </MatListItemText>
+            </MatListItem>
+        }
+    </MatList>
 }
 
-@functions
+@code
 {
-    UserViewModel[] Model { get; set; }
+    private UserViewModel[] UsersModel { get; set; }
 
     protected override async Task OnInitAsync() => await LoadUsersAsync();
 
-    async Task LoadUsersAsync()
+    private async Task LoadUsersAsync()
     {
         try
         {
-            Model = await AppState.Users();
+            UsersModel = await AppState.Users();
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Danger, "Model Load Failed", MatIconNames.Warning);
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Failed load user list");
         }
     }
 }
