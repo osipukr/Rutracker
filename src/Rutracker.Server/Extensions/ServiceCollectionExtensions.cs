@@ -3,19 +3,14 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Rutracker.Core.Entities.Identity;
@@ -29,7 +24,6 @@ using Rutracker.Server.Filters;
 using Rutracker.Server.Interfaces;
 using Rutracker.Server.Services;
 using Rutracker.Server.Settings;
-using Rutracker.Shared.Interfaces;
 
 namespace Rutracker.Server.Extensions
 {
@@ -80,6 +74,10 @@ namespace Rutracker.Server.Extensions
             services
                 .AddIdentity<User, Role>(config =>
                 {
+                    // User
+                    config.User.RequireUniqueEmail = true;
+
+                    // Password
                     config.Password.RequireNonAlphanumeric = false;
                     config.Password.RequireUppercase = false;
                     config.Password.RequireDigit = false;
@@ -88,34 +86,25 @@ namespace Rutracker.Server.Extensions
                 .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders()
                 .Services
-                .ConfigureApplicationCookie(options =>
-                {
-                    options.Cookie.Name = "Torrent";
-                    options.Cookie.HttpOnly = true;
-                    options.ExpireTimeSpan = TimeSpan.FromDays(60);
-                    options.LoginPath = "api/account/login";
-                    options.LogoutPath = "api/account/logout";
-                    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-                    options.SlidingExpiration = true;
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
-                })
                 .AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
-                .AddJwtBearer(configureOptions =>
+                .AddJwtBearer(options =>
                 {
-                    var jwtAppSettingOptions = configuration.GetSection(nameof(JwtSettings));
+                    var jwtSettings = configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
 
-                    configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtSettings.Issuer)];
-                    configureOptions.TokenValidationParameters = new TokenValidationParameters
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.ClaimsIssuer = jwtSettings.Issuer;
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
-                        ValidIssuer = jwtAppSettingOptions[nameof(JwtSettings.Issuer)],
+                        ValidIssuer = jwtSettings.Issuer,
 
                         ValidateAudience = true,
-                        ValidAudience = jwtAppSettingOptions[nameof(JwtSettings.Audience)],
+                        ValidAudience = jwtSettings.Audience,
 
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = JwtSettings.SigningKey,
@@ -124,7 +113,6 @@ namespace Rutracker.Server.Extensions
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.Zero
                     };
-                    configureOptions.SaveToken = true;
                 })
                 .Services;
 
@@ -156,13 +144,6 @@ namespace Rutracker.Server.Extensions
                 {
                     options.Filters.Add<ControllerExceptionFilterAttribute>();
                     options.Filters.Add<ModelValidatorFilterAttribute>();
-
-                    // Remove string and stream output formatters. These are not useful for an API serving JSON or XML.
-                    options.OutputFormatters.RemoveType<StreamOutputFormatter>();
-                    options.OutputFormatters.RemoveType<StringOutputFormatter>();
-
-                    // Returns a 406 Not Acceptable if the MIME type in the Accept HTTP header is not valid.
-                    options.ReturnHttpNotAcceptable = true;
                 })
                 .ConfigureApiBehaviorOptions(options =>
                 {
@@ -184,32 +165,25 @@ namespace Rutracker.Server.Extensions
                 .AddSingleton<IJwtFactory, JwtFactory>()
                 .AddScoped<ITorrentService, TorrentService>()
                 .AddScoped<IAccountService, AccountService>()
+                .AddScoped<IUserService, UserService>()
                 .AddScoped<IAccountViewModelService, AccountViewModelService>()
+                .AddScoped<IUserViewModelService, UserViewModelService>()
                 .AddScoped<ITorrentViewModelService, TorrentViewModelService>();
 
         /// <summary>
         ///     Adds project Database Context.
         /// </summary>
         public static IServiceCollection AddDatabaseContext(this IServiceCollection services,
-            IConfiguration configuration, IWebHostEnvironment environment) =>
+            IConfiguration configuration) =>
             services
                 .AddDbContext<TorrentContext>(options => options
                     .UseSqlServer(
                         configuration.GetConnectionString("TorrentConnection"),
-                        sqlServerOptions =>
-                        {
-                            sqlServerOptions.EnableRetryOnFailure();
-                        })
-                    .EnableSensitiveDataLogging(environment.IsDevelopment())
+                        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure())
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking))
                 .AddDbContext<IdentityContext>(options => options
                     .UseSqlServer(
                         configuration.GetConnectionString("IdentityConnection"),
-                        sqlServerOptions =>
-                        {
-                            sqlServerOptions.EnableRetryOnFailure();
-                        })
-                    .EnableSensitiveDataLogging(environment.IsDevelopment())
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+                        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
     }
 }

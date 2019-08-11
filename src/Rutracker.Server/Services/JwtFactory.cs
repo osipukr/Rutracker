@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -32,9 +34,10 @@ namespace Rutracker.Server.Services
             Guard.Against.Null(_jwtOptions.JtiGenerator, nameof(_jwtOptions.JtiGenerator));
         }
 
-        public async Task<JwtToken> GenerateTokenAsync(User user)
+        public async Task<JwtToken> GenerateTokenAsync(User user, IEnumerable<string> roles)
         {
             Guard.Against.Null(user, nameof(user));
+            Guard.Against.Null(roles, nameof(roles));
 
             var claims = new[]
             {
@@ -46,10 +49,12 @@ namespace Rutracker.Server.Services
                 new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64)
             };
 
+            var roleClaims = roles.Select(x => new Claim(ClaimTypes.Role, x));
+
             var jwt = new JwtSecurityToken(
                 issuer: _jwtOptions.Issuer,
                 audience: _jwtOptions.Audience,
-                claims: claims,
+                claims: claims.Concat(roleClaims),
                 notBefore: _jwtOptions.NotBefore,
                 expires: _jwtOptions.Expiration,
                 signingCredentials: _jwtOptions.SigningCredentials);

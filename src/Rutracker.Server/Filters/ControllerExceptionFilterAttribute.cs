@@ -43,7 +43,7 @@ namespace Rutracker.Server.Filters
             if (context.Exception is TorrentException exception)
             {
                 message = exception.Message;
-                statusCode = exception.ExceptionEvent switch
+                statusCode = exception.ExceptionEventType switch
                 {
                     ExceptionEventType.NotFound => StatusCodes.Status404NotFound,
                     ExceptionEventType.NotValidParameters => StatusCodes.Status400BadRequest,
