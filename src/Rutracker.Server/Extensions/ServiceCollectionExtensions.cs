@@ -6,6 +6,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -144,6 +145,10 @@ namespace Rutracker.Server.Extensions
                 {
                     options.Filters.Add<ControllerExceptionFilterAttribute>();
                     options.Filters.Add<ModelValidatorFilterAttribute>();
+
+                    // Remove string and stream output formatters. These are not useful for an API serving JSON or XML.
+                    options.OutputFormatters.RemoveType<StreamOutputFormatter>();
+                    options.OutputFormatters.RemoveType<StringOutputFormatter>();
                 })
                 .ConfigureApiBehaviorOptions(options =>
                 {

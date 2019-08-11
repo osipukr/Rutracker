@@ -18,6 +18,6 @@ namespace Rutracker.Client.Services.Implementations
 
         public async Task<UserViewModel[]> Users() => await _clientService.GetJsonAsync<UserViewModel[]>(_uriSettings.Users);
 
-        public async Task<UserDetailsViewModel> UserDetails() => await _clientService.GetJsonAsync<UserDetailsViewModel>(_uriSettings.UserDetails);
+        public async Task<UserViewModel> UserDetails() => await _clientService.GetJsonAsync<UserViewModel>(_uriSettings.UserDetails);
     }
 }

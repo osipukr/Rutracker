@@ -8,7 +8,7 @@
         {
             <div class="drawer-profile">
                 <MatIconButton Icon="@MatIconNames.Account_circle" Link="@ProfileLink"></MatIconButton>
-                <span class="miniHover"><b><a href="@ProfileLink">@Model.User.UserName</a></b></span>
+                <span class="miniHover"><b><a href="@ProfileLink">@Model.UserName</a></b></span>
             </div>
         }
     </Authorized>
@@ -18,7 +18,7 @@
 {
     [CascadingParameter] Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
-    UserDetailsViewModel Model { get; set; }
+    UserViewModel Model { get; set; }
     string ProfileLink => "/account/profile";
 
     protected override async Task OnInitAsync()

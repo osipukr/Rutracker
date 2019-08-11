@@ -40,9 +40,18 @@ namespace Rutracker.Client.Services
 
         public void SetAuthorizationToken(string token)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = string.IsNullOrWhiteSpace(token)
-                ? null
-                : new AuthenticationHeaderValue("bearer", token);
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            }
+        }
+
+        public void RemoveAuthorizationToken()
+        {
+            if (_httpClient.DefaultRequestHeaders.Authorization != null)
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = null;
+            }
         }
 
         private static TResult DeserializeJson<TResult>(string json) => JsonConvert.DeserializeObject<TResult>(json);

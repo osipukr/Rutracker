@@ -6,6 +6,6 @@ namespace Rutracker.Client.Services.Interfaces
     public interface IUserService
     {
         Task<UserViewModel[]> Users();
-        Task<UserDetailsViewModel> UserDetails();
+        Task<UserViewModel> UserDetails();
     }
 }

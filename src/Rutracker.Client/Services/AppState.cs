@@ -17,7 +17,7 @@ namespace Rutracker.Client.Services
 
         private readonly ApiAuthenticationStateProvider _apiAuthenticationState;
 
-        private UserDetailsViewModel _user;
+        private UserViewModel _user;
 
         public AppState(
             IAccountService accountService,
@@ -69,7 +69,7 @@ namespace Rutracker.Client.Services
 
         public async Task<UserViewModel[]> Users() => await IndexActionAsync(_userService.Users());
 
-        public async Task<UserDetailsViewModel> UserDetails()
+        public async Task<UserViewModel> UserDetails()
         {
             return _user ??= await IndexActionAsync(_userService.UserDetails());
         }

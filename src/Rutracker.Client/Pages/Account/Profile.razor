@@ -21,20 +21,15 @@ else
 {
     <h3>Profile</h3>
 
-    <p>@Model.User.UserName</p>
-    <p>@Model.User.Email</p>
-    <p>@Model.User.FirstName</p>
-    <p>@Model.User.LastName</p>
-
-    foreach (var role in Model.Roles)
-    {
-        <p>@role.Name</p>
-    }
+    <p>@Model.UserName</p>
+    <p>@Model.Email</p>
+    <p>@Model.FirstName</p>
+    <p>@Model.LastName</p>
 }
 
 @functions
 {
-    UserDetailsViewModel Model { get; set; }
+    UserViewModel Model { get; set; }
 
     protected override async Task OnInitAsync() => await LoadUserDetailsAsync();
 

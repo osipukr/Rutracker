@@ -82,7 +82,7 @@
 {
     RegisterViewModel Model { get; set; } = new RegisterViewModel();
 
-    string LoginLink = "account/login";
+    private const string LoginLink = "account/login";
 
     async Task OnValidSubmitClicked()
     {
