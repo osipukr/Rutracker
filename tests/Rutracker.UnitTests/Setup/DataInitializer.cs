@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Rutracker.Core.Entities.Torrents;
+using Rutracker.Server.DataAccessLayer.Entities;
 
 namespace Rutracker.UnitTests.Setup
 {

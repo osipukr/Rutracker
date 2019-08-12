@@ -8,19 +8,16 @@
 
   <ItemGroup>
     <PackageReference Include="EntityFrameworkCoreMock.Moq" Version="1.0.0.25" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0-preview-20190715-02" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0-preview-20190808-03" />
     <PackageReference Include="Moq" Version="4.12.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Rutracker.Core\Rutracker.Core.csproj" />
-    <ProjectReference Include="..\..\src\Rutracker.Infrastructure\Rutracker.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\src\Rutracker.Server\Rutracker.Server.csproj" />
+    <ProjectReference Include="..\..\src\Rutracker.Server.DataAccessLayer\Rutracker.Server.DataAccessLayer.csproj" />
+    <ProjectReference Include="..\..\src\Rutracker.Server.BusinessLayer\Rutracker.Server.BusinessLayer.csproj" />
+    <ProjectReference Include="..\..\src\Rutracker.Server.WebApi\Rutracker.Server.WebApi.csproj" />
   </ItemGroup>
 
 </Project>

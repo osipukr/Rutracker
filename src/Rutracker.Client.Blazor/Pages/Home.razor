@@ -1,0 +1,22 @@
+﻿@page "/"
+
+<AuthorizeView>
+    <Authorized>
+        <h1>Hello, @context.User.Identity.Name!</h1>
+        <p>You can only see this content if you're authenticated.</p>
+    </Authorized>
+    <Authorizing>
+        <h1>Authentication in progress</h1>
+        <p>You can only see this content while authentication is in progress.</p>
+    </Authorizing>
+    <NotAuthorized>
+        <p>You can only see this content if you're not authenticated.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+<AuthorizeView Roles="user">
+    <p>You can only see this if you're in the User role.</p>
+</AuthorizeView>
+<AuthorizeView Roles="admin">
+    <p>You can only see this if you're in the Admin role.</p>
+</AuthorizeView>
