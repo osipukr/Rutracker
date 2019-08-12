@@ -3,40 +3,50 @@
 @inject IModalService ModalService
 
 <EditForm Model="@EditModel" OnValidSubmit="@UpdateClicked">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+    <fieldset>
+        <div class="form-group">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+        </div>
 
-    <p>
-        First Name:
-        <MatTextField @bind-Value="@EditModel.FirstName"
-                      Label="Firt Name"
-                      Icon="@MatIconNames.Perm_identity"
-                      Outlined="true" />
-    </p>
+        <div class="form-group">
+            <MatTextField @bind-Value="@EditModel.Email"
+                          Label="Email"
+                          Icon="@MatIconNames.Mail_outline"
+                          IconTrailing="true"
+                          FullWidth="true" />
+        </div>
 
-    <p>
-        Last Name:
-        <MatTextField @bind-Value="@EditModel.LastName"
-                      Label="Last Name"
-                      Icon="@MatIconNames.Perm_identity"
-                      Outlined="true" />
-    </p>
+        <div class="form-group">
+            <MatTextField @bind-Value="@EditModel.FirstName"
+                          Label="Fist Name"
+                          Icon="@MatIconNames.Person"
+                          IconTrailing="true"
+                          FullWidth="true" />
+        </div>
 
-    <p>
-        Image Url:
-        <MatTextField @bind-Value="@EditModel.ImageUrl"
-                      Label="Standard"
-                      Icon="favorite"
-                      Outlined="true" />
-    </p>
+        <div class="form-group">
+            <MatTextField @bind-Value="@EditModel.LastName"
+                          Label="Last Name"
+                          Icon="@MatIconNames.Person"
+                          IconTrailing="true"
+                          FullWidth="true" />
+        </div>
 
-    <p>
-        <MatButton OnClick="@CancelClicked" Raised="true" Label="Cancel" />
-        <MatButton Type="submit" Raised="true" Label="Update" />
-    </p>
+        <div class="form-group">
+            <MatTextField @bind-Value="@EditModel.ImageUrl"
+                          Label="Image Url"
+                          FullWidth="true" />
+        </div>
+
+        <div class="form-group mt-4 d-flex justify-content-end">
+            <MatButton OnClick="@CancelClicked" Raised="true" Label="Cancel" Class="mx-2" />
+            <MatButton Type="submit" Raised="true" Label="Update" Class="mx-2" />
+        </div>
+    </fieldset>
 </EditForm>
 
-@code
+@functions
 {
     [CascadingParameter] private ModalParameters Parameters { get; set; }
 

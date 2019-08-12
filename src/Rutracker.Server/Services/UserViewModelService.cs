@@ -37,6 +37,7 @@ namespace Rutracker.Server.Services
         {
             var user = await _userService.GetUserAsync(principal);
 
+            user.Email = model.Email;
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
             user.ImageUrl = model.ImageUrl;

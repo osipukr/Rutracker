@@ -538,39 +538,29 @@ ul.mdc-nav-menu {
 }
 
 /* Profile sidebar */
-.profile-sidebar {
-    padding: 20px 0 10px 0;
-    background: #fff;
+.profile-container {
+    width: 100%;
 }
 
-.profile-userpic img {
-    margin: 0 auto;
-    width: 50%;
-    height: 50%;
-    border-radius: 50% !important;
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem
 }
 
-.profile-usertitle {
-    text-align: center;
-    margin-top: 20px;
+.profile-header__image {
+    border-radius: 50%;
+    width: 200px;
+    height: 200px;
 }
 
-.profile-usertitle-name {
-    color: #5a7391;
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 7px;
+.profile-header__name {
+    font-size: 2rem;
+    margin: 15px 0;
 }
 
-.profile-usertitle-job {
-    text-transform: uppercase;
-    color: #5b9bd1;
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 15px;
-}
-
-.profile-userbuttons {
-    text-align: center;
-    margin-top: 10px;
+.profile-body {
+    width: 100%;
 }

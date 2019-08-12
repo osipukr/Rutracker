@@ -7,11 +7,13 @@
 @page "/account/login"
 
 <MatCard>
-    <EditForm Model="@LoginModel" OnValidSubmit="@OnValidSubmitClicked">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-
+    <EditForm Model="@LoginModel" OnValidSubmit="@LoginClicked">
         <fieldset>
+            <div class="form-group">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+            </div>
+
             <div class="form-group">
                 <MatTextField @bind-value="@LoginModel.UserName"
                               Label="User Name"
@@ -48,7 +50,7 @@
 
     private const string RegisterLink = "account/register";
 
-    private async Task OnValidSubmitClicked()
+    private async Task LoginClicked()
     {
         try
         {
