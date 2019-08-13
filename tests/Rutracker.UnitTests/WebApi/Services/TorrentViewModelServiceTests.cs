@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Services;
 using Rutracker.Shared.Models.ViewModels.Shared;
@@ -71,14 +70,6 @@ namespace Rutracker.UnitTests.WebApi.Services
             Assert.NotNull(result);
             Assert.NotNull(result.FacetItems);
             Assert.Equal(expectedCount, result.FacetItems.Length);
-        }
-
-        [Fact(DisplayName = "GetTorrentsIndexAsync() with invalid parameters should throw ArgumentNullException")]
-        public async Task GetTorrentsIndexAsync_Null_ThrowArgumentNullException()
-        {
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
-                await _torrentViewModelService.GetTorrentsIndexAsync(1, 1, null));
         }
     }
 }

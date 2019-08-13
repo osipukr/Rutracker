@@ -12,18 +12,20 @@ using Rutracker.Server.WebApi;
 
 namespace Rutracker.IntegrationTests.WebApi
 {
-    public class ServerFactory : WebApplicationFactory<Startup>
+    public class WebApiFactory : WebApplicationFactory<Startup>
     {
         protected override IHostBuilder CreateHostBuilder() =>
             Host.CreateDefaultBuilder(null)
                 .ConfigureServices(services =>
                 {
                     var provider = services.AddEntityFrameworkInMemoryDatabase()
+                                           .AddEntityFrameworkProxies()
                                            .BuildServiceProvider();
 
                     services
                         .AddDbContext<TorrentContext>(options => options
                             .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                            .UseLazyLoadingProxies()
                             .UseInternalServiceProvider(provider),
                             contextLifetime: ServiceLifetime.Singleton)
                         .AddDbContext<IdentityContext>(options => options

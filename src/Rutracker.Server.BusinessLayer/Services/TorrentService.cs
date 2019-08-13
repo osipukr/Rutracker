@@ -31,15 +31,7 @@ namespace Rutracker.Server.BusinessLayer.Services
                 throw new TorrentException($"The {nameof(pageSize)} is out of range (1 - 100).", ExceptionEventType.NotValidParameters);
             }
 
-            var forumIds = selectedForumIds?.Select(x => new
-            {
-                Success = long.TryParse(x, out var value),
-                Value = value
-            })
-            .Where(x => x.Success)
-            .Select(x => x.Value)
-            .ToArray();
-
+            var forumIds = ConvertForumIds(selectedForumIds);
             var torrents = await _torrentRepository.Search(search, forumIds, sizeFrom, sizeTo)
                 .OrderBy(torrent => torrent.Date)
                 .Skip((page - 1) * pageSize)
@@ -73,14 +65,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<int> CountAsync(string search, IEnumerable<string> selectedForumIds, long? sizeFrom, long? sizeTo)
         {
-            var forumIds = selectedForumIds?.Select(x => new
-                {
-                    Success = long.TryParse(x, out var value),
-                    Value = value
-                })
-                .Where(x => x.Success)
-                .Select(x => x.Value)
-                .ToArray();
+            var forumIds = ConvertForumIds(selectedForumIds);
 
             return await _torrentRepository.Search(search, forumIds, sizeFrom, sizeTo).CountAsync();
         }
@@ -101,5 +86,15 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             return forums;
         }
+
+        private static long[] ConvertForumIds(IEnumerable<string> selectedForumIds) =>
+            selectedForumIds?.Select(x => new
+            {
+                Success = long.TryParse(x, out var value),
+                Value = value
+            })
+            .Where(x => x.Success)
+            .Select(x => x.Value)
+            .ToArray();
     }
 }

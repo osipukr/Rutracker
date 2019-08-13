@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
@@ -12,6 +14,11 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
             : base(context)
         {
         }
+
+        public override async Task<Torrent> GetAsync(long id) =>
+            await _dbSet.Include(x => x.Forum)
+                .Include(x => x.Files)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
         public IQueryable<Torrent> Search(string search, long[] forumIds, long? sizeFrom, long? sizeTo) =>
             GetAll(torrent =>
@@ -29,7 +36,7 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
                     })
                 .OrderByDescending(x => x.Count)
                 .Take(count)
-                .Join(_context.Forums,
+                .Join(_context.Forums, 
                     g => g.Key,
                     f => f.Id,
                     (g, f) => ValueTuple.Create(g.Key, f.Title, g.Count));

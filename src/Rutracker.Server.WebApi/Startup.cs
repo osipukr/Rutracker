@@ -4,7 +4,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using AutoMapper;
-using Boilerplate.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -55,7 +54,7 @@ namespace Rutracker.Server.WebApi
             {
                 options.EnableForHttps = true;
 
-                var compressionSettings = _configuration.GetSection<ResponseCompressionSettings>(nameof(ResponseCompressionSettings));
+                var compressionSettings = _configuration.GetSection(nameof(ResponseCompressionSettings)).Get<ResponseCompressionSettings>();
 
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(compressionSettings.MimeTypes);
             })
@@ -102,7 +101,7 @@ namespace Rutracker.Server.WebApi
             })
             .AddJwtBearer(options =>
             {
-                var jwtSettings = _configuration.GetSection<JwtSettings>(nameof(JwtSettings));
+                var jwtSettings = _configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
 
                 options.RequireHttpsMetadata = false;
                 options.SaveToken = true;

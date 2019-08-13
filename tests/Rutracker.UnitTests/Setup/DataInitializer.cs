@@ -26,7 +26,8 @@ namespace Rutracker.UnitTests.Setup
                 new Torrent { Id = 6, Title = "Torrent Titles 123456", ForumId = 3, Size = 10000 },
                 new Torrent { Id = 7, Title = "Torrent Titles 1234567", ForumId = 4, Size = 100000 },
                 new Torrent { Id = 8, Title = "Torrent Titles 12345678", ForumId = 5, Size = 100000 },
-                new Torrent { Id = 9, Title = "Torrent Titles 123456789", ForumId = 5, Size = 100000 }
+                new Torrent { Id = 9, Title = "Torrent Titles 123456789", ForumId = 5, Size = 100000 },
+                new Torrent { Id = 10, Title = "Torrent Titles 123456789", ForumId = 5, Size = 100000 }
             };
 
         public static IEnumerable<File> GetTestFiles() =>
@@ -40,7 +41,8 @@ namespace Rutracker.UnitTests.Setup
                 new File { Id = 6, Size = 100, TorrentId = 2 },
                 new File { Id = 7, Size = 100, TorrentId = 3 },
                 new File { Id = 8, Size = 100, TorrentId = 4 },
-                new File { Id = 9, Size = 100, TorrentId = 4 }
+                new File { Id = 9, Size = 100, TorrentId = 4 },
+                new File { Id = 10, Size = 100, TorrentId = 4 }
             };
     }
 }

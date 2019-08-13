@@ -9,11 +9,11 @@ using Xunit;
 
 namespace Rutracker.IntegrationTests.WebApi.Controllers
 {
-    public class TorrentsControllerTests : IClassFixture<ServerFactory>
+    public class TorrentsControllerTests : IClassFixture<WebApiFactory>
     {
         private readonly HttpClient _client;
 
-        public TorrentsControllerTests(ServerFactory factory) => _client = factory.CreateClient();
+        public TorrentsControllerTests(WebApiFactory factory) => _client = factory.CreateClient();
 
         [Fact(DisplayName = "Pagination() with valid parameters should return 200OK status")]
         public async Task Pagination_1_5_ReturnsStatus200OK()
