@@ -38,15 +38,13 @@ namespace Rutracker.Server.WebApi.Controllers
         /// </summary>
         /// <param name="id">ID of the element.</param>
         [HttpGet]
-        public async Task<TorrentIndexViewModel> Get(long id) =>
-            await _torrentViewModelService.GetTorrentIndexAsync(id);
+        public async Task<TorrentIndexViewModel> Get(long id) => await _torrentViewModelService.GetTorrentIndexAsync(id);
 
         /// <summary>
         ///     Get information about the facet for the title.
         /// </summary>
         /// <param name="count">Number of elements.</param>
         [HttpGet(nameof(Titles))]
-        public async Task<FacetViewModel<string>> Titles(int count) =>
-            await _torrentViewModelService.GetTitleFacetAsync(count);
+        public async Task<FacetViewModel<string>> Titles(int count) => await _torrentViewModelService.GetTitleFacetAsync(count);
     }
 }
