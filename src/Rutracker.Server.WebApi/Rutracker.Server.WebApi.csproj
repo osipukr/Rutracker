@@ -5,6 +5,9 @@
     <LangVersion>8</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <Authors>Roman Osipuk</Authors>
+    <Product>Rutracker</Product>
+    <RepositoryUrl>https://github.com/osipukr/Rutracker-Blazor</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

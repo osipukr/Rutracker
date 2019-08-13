@@ -13,6 +13,7 @@ namespace Rutracker.Shared.Models.ViewModels.Account
 
         [Required]
         [DataType(DataType.Password)]
+        [MinLength(6)]
         public string Password { get; set; }
 
         [Required]
