@@ -19,8 +19,8 @@ namespace Rutracker.Server.WebApi.Services
 
         public async Task<JwtToken> LoginAsync(LoginViewModel model)
         {
-            var user = await _accountService.CheckUserAsync(model.UserName, model.Password);
-            var roles = await _accountService.GetUserRolesAsync(user);
+            var user = await _accountService.LoginAsync(model.UserName, model.Password);
+            var roles = await _accountService.RolesAsync(user);
             var jwt = await _jwtFactory.GenerateTokenAsync(user, roles);
 
             return jwt;
@@ -29,12 +29,12 @@ namespace Rutracker.Server.WebApi.Services
         public async Task<JwtToken> RegisterAsync(RegisterViewModel model)
         {
             var user = await _accountService.CreateAsync(model.UserName, model.Email, model.Password);
-            var roles = await _accountService.GetUserRolesAsync(user);
+            var roles = await _accountService.RolesAsync(user);
             var jwt = await _jwtFactory.GenerateTokenAsync(user, roles);
 
             return jwt;
         }
 
-        public async Task LogoutAsync() => await _accountService.LogOutUserAsync();
+        public async Task LogoutAsync() => await _accountService.LogoutAsync();
     }
 }

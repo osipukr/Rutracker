@@ -21,7 +21,7 @@ namespace Rutracker.Server.WebApi.Services
 
         public async Task<UserViewModel[]> GetUsersAsync()
         {
-            var users = await _userService.GetAllUserAsync();
+            var users = await _userService.ListAsync();
 
             return _mapper.Map<UserViewModel[]>(users);
         }
