@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Server.WebApi.Extensions;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Settings;
 using Rutracker.Shared.Models.ViewModels.Shared;
@@ -55,11 +56,6 @@ namespace Rutracker.Server.WebApi.Services
                 func: TitleFacetCallbackAsync(count));
 
         private async Task<TResult> InvokeActionWithCacheOptionsAsync<TResult>(string key, Task<TResult> func) =>
-            await _cache.GetOrCreateAsync(key, async entry =>
-            {
-                entry.SetOptions(_cacheEntryOptions);
-
-                return await func;
-            });
+            await _cache.GetOrCreateAsync(key, func, _cacheEntryOptions);
     }
 }

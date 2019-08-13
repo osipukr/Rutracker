@@ -184,7 +184,8 @@ namespace Rutracker.Server.WebApi.Extensions
                     .UseSqlServer(
                         configuration.GetConnectionString("TorrentConnection"),
                         sqlServerOptions => sqlServerOptions.EnableRetryOnFailure())
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking))
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                    .UseLazyLoadingProxies())
                 .AddDbContext<IdentityContext>(options => options
                     .UseSqlServer(
                         configuration.GetConnectionString("IdentityConnection"),

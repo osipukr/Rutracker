@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
 using Rutracker.Shared.Models.ViewModels.Shared;
 using Rutracker.Shared.Models.ViewModels.Torrent;
 using Rutracker.Shared.Models.ViewModels.Torrents;
@@ -12,8 +11,6 @@ namespace Rutracker.Server.WebApi.Services
     {
         private async Task<TorrentsIndexViewModel> TorrentsIndexCallbackAsync(int page, int pageSize, FiltrationViewModel filter)
         {
-            Guard.Against.Null(filter, nameof(filter));
-
             var torrentsSource = await _torrentService.ListAsync(page, pageSize,
                 filter.Search,
                 filter.SelectedTitleIds,

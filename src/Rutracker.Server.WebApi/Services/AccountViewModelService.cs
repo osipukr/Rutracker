@@ -9,30 +9,30 @@ namespace Rutracker.Server.WebApi.Services
     public class AccountViewModelService : IAccountViewModelService
     {
         private readonly IAccountService _accountService;
+        private readonly IUserService _userService;
         private readonly IJwtFactory _jwtFactory;
 
-        public AccountViewModelService(IAccountService accountService, IJwtFactory jwtFactory)
+        public AccountViewModelService(IAccountService accountService, IUserService userService, IJwtFactory jwtFactory)
         {
             _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _jwtFactory = jwtFactory ?? throw new ArgumentNullException(nameof(jwtFactory));
         }
 
         public async Task<JwtToken> LoginAsync(LoginViewModel model)
         {
             var user = await _accountService.LoginAsync(model.UserName, model.Password);
-            var roles = await _accountService.RolesAsync(user);
-            var jwt = await _jwtFactory.GenerateTokenAsync(user, roles);
+            var roles = await _userService.RolesAsync(user);
 
-            return jwt;
+            return await _jwtFactory.GenerateTokenAsync(user, roles);
         }
 
         public async Task<JwtToken> RegisterAsync(RegisterViewModel model)
         {
             var user = await _accountService.CreateAsync(model.UserName, model.Email, model.Password);
-            var roles = await _accountService.RolesAsync(user);
-            var jwt = await _jwtFactory.GenerateTokenAsync(user, roles);
+            var roles = await _userService.RolesAsync(user);
 
-            return jwt;
+            return await _jwtFactory.GenerateTokenAsync(user, roles);
         }
 
         public async Task LogoutAsync() => await _accountService.LogoutAsync();
