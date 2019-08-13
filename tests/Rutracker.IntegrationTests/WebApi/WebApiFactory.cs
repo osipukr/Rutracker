@@ -30,6 +30,7 @@ namespace Rutracker.IntegrationTests.WebApi
                             contextLifetime: ServiceLifetime.Singleton)
                         .AddDbContext<IdentityContext>(options => options
                             .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                            .UseLazyLoadingProxies()
                             .UseInternalServiceProvider(provider),
                             contextLifetime: ServiceLifetime.Singleton);
 

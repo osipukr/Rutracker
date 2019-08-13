@@ -54,9 +54,9 @@ namespace Rutracker.Server.WebApi.Services
             {
                 FacetItems = facets.Select(x => new FacetItemViewModel<string>
                 {
-                    Id = x.Id.ToString(),
-                    Value = x.Value,
-                    Count = x.Count
+                    Id = x.Item1.ToString(),
+                    Value = x.Item2,
+                    Count = x.Item3
                 }).ToArray()
             };
         }

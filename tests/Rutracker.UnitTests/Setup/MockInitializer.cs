@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using AutoMapper;
 using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;
@@ -38,7 +37,7 @@ namespace Rutracker.UnitTests.Setup
         public static ITorrentRepository GetTorrentRepository()
         {
             var mockTorrentRepository = new Mock<ITorrentRepository>();
-            var torrents = DataInitializer.GeTestTorrents().AsQueryable();
+            var torrents = new DbQueryMock<Torrent>(DataInitializer.GeTestTorrents()).Object;
 
             mockTorrentRepository.Setup(x => x.GetAll()).Returns(torrents);
 
@@ -57,7 +56,7 @@ namespace Rutracker.UnitTests.Setup
                 .ReturnsAsync(torrents.Count);
 
             mockTorrentRepository.Setup(x => x.GetForums(It.IsAny<int>()))
-                .Returns<int>(x => new (long Id, string Value, int Count)[x].AsQueryable());
+                .Returns<int>(x => new DbQueryMock<Tuple<long, string, int>>(new Tuple<long, string, int>[x]).Object);
 
             mockTorrentRepository.Setup(x => x.Search(null, null, null, null))
                 .Returns<string, long[], long?, long?>((search, forumIds, sizeFrom, sizeTo) => torrents);
@@ -82,7 +81,8 @@ namespace Rutracker.UnitTests.Setup
                 .ReturnsAsync(DataInitializer.GeTestTorrents().Count());
 
             mockTorrentService.Setup(x => x.ForumsAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive)))
-                .ReturnsAsync((int x) => new (long, string, int)[x]);
+                .ReturnsAsync((int x) => Enumerable.Range(0, x)
+                    .Select(t => new Tuple<long, string, int>(long.MinValue, string.Empty, int.MinValue)));
 
             mockTorrentService.Setup(x =>
                     x.ListAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive),

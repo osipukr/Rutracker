@@ -22,13 +22,13 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
             _dbSet = _context.Set<TEntity>();
         }
 
-        public virtual IQueryable<TEntity> GetAll() => _dbSet;
+        public virtual IQueryable<TEntity> GetAll() => _dbSet.AsQueryable();
 
         public virtual IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> expression) => _dbSet.Where(expression);
 
         public virtual async Task<TEntity> GetAsync(TPrimaryKey id) => await _dbSet.SingleOrDefaultAsync(x => x.Id.Equals(id));
 
-        public virtual async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression) => await _dbSet.FirstOrDefaultAsync(expression);
+        public virtual async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression) => await _dbSet.SingleOrDefaultAsync(expression);
 
         public virtual async Task<int> CountAsync() => await _dbSet.CountAsync();
 

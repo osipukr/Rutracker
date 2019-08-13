@@ -27,7 +27,7 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
                 (!sizeFrom.HasValue || torrent.Size >= sizeFrom) &&
                 (!sizeTo.HasValue || torrent.Size <= sizeTo));
 
-        public IQueryable<(long Id, string Value, int Count)> GetForums(int count) =>
+        public IQueryable<Tuple<long, string, int>> GetForums(int count) =>
             _dbSet.GroupBy(x => x.ForumId,
                     (key, items) => new
                     {
@@ -39,6 +39,6 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
                 .Join(_context.Forums, 
                     g => g.Key,
                     f => f.Id,
-                    (g, f) => ValueTuple.Create(g.Key, f.Title, g.Count));
+                    (g, f) => Tuple.Create(g.Key, f.Title, g.Count));
     }
 }

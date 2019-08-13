@@ -192,7 +192,8 @@ namespace Rutracker.Server.WebApi
             services.AddDbContext<IdentityContext>(options => options
                     .UseSqlServer(
                         _configuration.GetConnectionString("IdentityConnection"),
-                        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
+                        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure())
+                    .UseLazyLoadingProxies());
         }
 
         private void SeedDatabase(IApplicationBuilder app)

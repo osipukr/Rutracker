@@ -70,7 +70,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             return await _torrentRepository.Search(search, forumIds, sizeFrom, sizeTo).CountAsync();
         }
 
-        public async Task<IEnumerable<(long Id, string Value, int Count)>> ForumsAsync(int count)
+        public async Task<IEnumerable<Tuple<long, string, int>>> ForumsAsync(int count)
         {
             if (count < 1 || count > 100)
             {
