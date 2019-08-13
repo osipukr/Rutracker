@@ -9,7 +9,6 @@ using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Settings;
 using Rutracker.Shared.Models.ViewModels.Shared;
 using Rutracker.Shared.Models.ViewModels.Torrent;
-using Rutracker.Shared.Models.ViewModels.Torrents;
 
 namespace Rutracker.Server.WebApi.Services
 {
@@ -40,17 +39,17 @@ namespace Rutracker.Server.WebApi.Services
             };
         }
 
-        public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter) =>
+        public async Task<PaginationResult<TorrentViewModel>> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter) =>
             await InvokeActionWithCacheOptionsAsync(
                 key: $"torrents-{page}-{pageSize}-{filter?.GetHashCode()}",
                 func: TorrentsIndexCallbackAsync(page, pageSize, filter));
 
-        public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id) =>
+        public async Task<TorrentDetailsViewModel> GetTorrentIndexAsync(long id) =>
             await InvokeActionWithCacheOptionsAsync(
                 key: $"torrent-{id}",
                 func: TorrentIndexCallbackAsync(id));
 
-        public async Task<FacetViewModel<string>> GetTitleFacetAsync(int count) =>
+        public async Task<FacetResult<string>> GetTitleFacetAsync(int count) =>
             await InvokeActionWithCacheOptionsAsync(
                 key: $"titles-{count}",
                 func: TitleFacetCallbackAsync(count));

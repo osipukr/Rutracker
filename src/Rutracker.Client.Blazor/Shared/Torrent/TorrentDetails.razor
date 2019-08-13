@@ -92,7 +92,7 @@
                 <MatTable Items="@GetFiles()"
                           Class="mt-2 mat-elevation-z10"
                           DebounceMilliseconds="150"
-                          FilterByColumnName="@nameof(FileItemViewModel.Name)"
+                          FilterByColumnName="@nameof(FileViewModel.Name)"
                           SearchTermFieldLabel="Name"
                           SearchTermFieldPlaceHolder="Input the name">
                     <MatTableHeader>
@@ -125,7 +125,7 @@
 
 @code
 {
-    [Parameter] private TorrentDetailsItemViewModel Model { get; set; }
+    [Parameter] private TorrentDetailsViewModel Model { get; set; }
 
-    private IEnumerable<FileItemViewModel> GetFiles() => Model.Files.AsEnumerable();
+    private IEnumerable<FileViewModel> GetFiles() => Model.Files.AsEnumerable();
 }

@@ -1,6 +1,6 @@
 ﻿@inject AppState AppState
 
-@if (Model != null && Model.TotalPages > 1)
+@if (TotalPages > 1)
 {
     <div class="mat-layout-grid p-0">
         <div class="mat-layout-grid-inner">
@@ -9,24 +9,24 @@
                     <div class="mdc-paginator-container">
                         <div class="mdc-paginator-range-actions">
                             <span class="mdc-paginator-range-label ml-0 mr-1">
-                                @($"Page {Model.CurrentPage} of {Model.TotalPages}")
+                                @($"Page {Page} of {TotalPages}")
                             </span>
 
                             <div class="mdc-paginator-range-buttons">
                                 <MatIconButton OnClick="@(_ => PageChangeClicked(1))"
-                                               Disabled="@(AppState.SearchInProgress || Model.CurrentPage == 1)"
+                                               Disabled="@(AppState.SearchInProgress || Page == 1)"
                                                Icon="@MatIconNames.First_page" />
 
-                                <MatIconButton OnClick="@(_ => PageChangeClicked(Model.CurrentPage - 1))"
-                                               Disabled="@(AppState.SearchInProgress || !Model.HasPrevious)"
+                                <MatIconButton OnClick="@(_ => PageChangeClicked(Page - 1))"
+                                               Disabled="@(AppState.SearchInProgress || !HasPrevious)"
                                                Icon="@MatIconNames.Navigate_before" />
 
-                                <MatIconButton OnClick="@(_ => PageChangeClicked(Model.CurrentPage + 1))"
-                                               Disabled="@(AppState.SearchInProgress || !Model.HasNext)"
+                                <MatIconButton OnClick="@(_ => PageChangeClicked(Page + 1))"
+                                               Disabled="@(AppState.SearchInProgress || !HasNext)"
                                                Icon="@MatIconNames.Navigate_next" />
 
-                                <MatIconButton OnClick="@(_ => PageChangeClicked(Model.TotalPages))"
-                                               Disabled="@(AppState.SearchInProgress || Model.CurrentPage == Model.TotalPages)"
+                                <MatIconButton OnClick="@(_ => PageChangeClicked(TotalPages))"
+                                               Disabled="@(AppState.SearchInProgress || Page == TotalPages)"
                                                Icon="@MatIconNames.Last_page" />
                             </div>
                         </div>
@@ -39,8 +39,13 @@
 
 @code
 {
-    [Parameter] private PaginationViewModel Model { get; set; }
+    [Parameter] private int Page { get; set; }
+    [Parameter] private int PageSize { get; set; }
+    [Parameter] private int TotalPages { get; set; }
     [Parameter] private EventCallback<int> PageChanged { get; set; }
+            
+    private bool HasPrevious => Page > 1 && TotalPages > 1;
+    private bool HasNext => Page < TotalPages;
 
     private void PageChangeClicked(int page) => PageChanged.InvokeAsync(page);
 }

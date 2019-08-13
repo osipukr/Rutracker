@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Rutracker.Shared.Models.ViewModels.Shared;
 using Rutracker.Shared.Models.ViewModels.Torrent;
-using Rutracker.Shared.Models.ViewModels.Torrents;
 using Xunit;
 
 namespace Rutracker.IntegrationTests.WebApi.Controllers
@@ -25,16 +24,15 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
             var filter = new FiltrationViewModel();
 
             // Act
-            var result = await _client.PostJsonAsync<TorrentsIndexViewModel>(
+            var result = await _client.PostJsonAsync<PaginationResult<TorrentViewModel>>(
                 $"api/torrents/pagination/?page={page}&pageSize={pageSize}", filter);
 
             // Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.TorrentItems);
-            Assert.NotNull(result.PaginationModel);
-            Assert.Equal(page, result.PaginationModel.CurrentPage);
-            Assert.Equal(pageSize, result.PaginationModel.PageSize);
-            Assert.Equal(expectedCount, result.TorrentItems.Length);
+            Assert.NotNull(result.Items);
+            Assert.Equal(page, result.Page);
+            Assert.Equal(pageSize, result.PageSize);
+            Assert.Equal(expectedCount, result.Items.Length);
         }
 
         [Fact(DisplayName = "Get() with valid parameters should return 200OK status")]
@@ -44,12 +42,11 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
             const long expectedId = 5;
 
             // Act
-            var result = await _client.GetJsonAsync<TorrentIndexViewModel>($"api/torrents/?id={expectedId}");
+            var result = await _client.GetJsonAsync<TorrentDetailsViewModel>($"api/torrents/?id={expectedId}");
 
             // Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.TorrentDetailsItem);
-            Assert.Equal(expectedId, result.TorrentDetailsItem.Id);
+            Assert.Equal(expectedId, result.Id);
         }
 
         [Fact(DisplayName = "Titles() with valid parameters should return 200OK status")]
@@ -59,13 +56,13 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
             const int expectedCount = 5;
 
             // Act
-            var result = await _client.GetJsonAsync<FacetViewModel<string>>(
+            var result = await _client.GetJsonAsync<FacetResult<string>>(
                 $"api/torrents/titles/?count={expectedCount}");
 
             // Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.FacetItems);
-            Assert.Equal(expectedCount, result.FacetItems.Length);
+            Assert.NotNull(result.Items);
+            Assert.Equal(expectedCount, result.Items.Length);
         }
 
         [Fact(DisplayName = "Pagination() with an invalid parameters should return 400BadRequest status")]
@@ -73,7 +70,7 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.PostJsonAsync<TorrentsIndexViewModel>(
+                await _client.PostJsonAsync<PaginationResult<TorrentViewModel>>(
                     "api/torrents/pagination/?page=-10&pageSize=-10", null));
 
             Assert.Contains(StatusCodes.Status400BadRequest.ToString(), exception.Message);
@@ -84,7 +81,7 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.GetJsonAsync<TorrentIndexViewModel>("api/torrents/?id=-10"));
+                await _client.GetJsonAsync<TorrentDetailsViewModel>("api/torrents/?id=-10"));
 
             Assert.Contains(StatusCodes.Status400BadRequest.ToString(), exception.Message);
         }
@@ -94,7 +91,7 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.GetJsonAsync<TorrentIndexViewModel>("api/torrents/?id=1000"));
+                await _client.GetJsonAsync<TorrentDetailsViewModel>("api/torrents/?id=1000"));
 
             Assert.Contains(StatusCodes.Status404NotFound.ToString(), exception.Message);
         }
@@ -104,7 +101,7 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.GetJsonAsync<FacetViewModel<string>>("api/torrents/titles/?count=-10"));
+                await _client.GetJsonAsync<FacetResult<string>>("api/torrents/titles/?count=-10"));
 
             Assert.Contains(StatusCodes.Status400BadRequest.ToString(), exception.Message);
         }

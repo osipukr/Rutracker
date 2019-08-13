@@ -45,9 +45,9 @@
                         </MatExpansionPanelSummary>
 
                         <MatExpansionPanelDetails>
-                            @if (TitleFacet?.FacetItems != null)
+                            @if (TitleFacet?.Items != null)
                             {
-                                foreach (var facet in TitleFacet.FacetItems)
+                                foreach (var facet in TitleFacet.Items)
                                 {
                                     <MatCheckbox @bind-Checked="@facet.IsSelected">
                                         @facet.Value
@@ -90,7 +90,7 @@
     [Parameter] private EventCallback FilterChanged { get; set; }
 
     private int TitleCount => ViewSettings.ForumTitlesCount;
-    private FacetViewModel<string> TitleFacet { get; set; }
+    private FacetResult<string> TitleFacet { get; set; }
 
     protected override async Task OnInitAsync() => await LoadTitleFacetsAsync();
 
@@ -113,9 +113,9 @@
         Model.SizeTo = null;
         Model.SelectedTitleIds = null;
 
-        if (TitleFacet?.FacetItems != null)
+        if (TitleFacet?.Items != null)
         {
-            foreach (var facet in TitleFacet.FacetItems)
+            foreach (var facet in TitleFacet.Items)
             {
                 facet.IsSelected = false;
             }
@@ -130,7 +130,7 @@
 
     private void OnValidSubmitClicked()
     {
-        Model.SelectedTitleIds = TitleFacet?.FacetItems?.Where(x => x.IsSelected).Select(x => x.Id);
+        Model.SelectedTitleIds = TitleFacet?.Items?.Where(x => x.IsSelected).Select(x => x.Id);
 
         FilterChanged.InvokeAsync(EventArgs.Empty);
     }

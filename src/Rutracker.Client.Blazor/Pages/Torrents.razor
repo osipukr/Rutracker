@@ -4,11 +4,16 @@
 
 @page "/torrents"
 
-@if (TorrentsIndexModel != null)
+@if (TorrentsModel != null)
 {
     <Filtration Model="@FilterModel" FilterChanged="@FilterChanged" />
-    <TorrentList Items="@TorrentsIndexModel.TorrentItems" />
-    <Pagination Model="@TorrentsIndexModel.PaginationModel" PageChanged="@PageChanged" />
+
+    <TorrentList Items="@TorrentsModel.Items" />
+
+    <Pagination Page="@TorrentsModel.Page"
+                PageSize="@TorrentsModel.PageSize"
+                TotalPages="@TorrentsModel.TotalPages"
+                PageChanged="@PageChanged" />
 }
 else if (AppState.SearchInProgress)
 {
@@ -26,7 +31,7 @@ else
 
 @code
 {
-    private TorrentsIndexViewModel TorrentsIndexModel { get; set; }
+    private PaginationResult<TorrentViewModel> TorrentsModel { get; set; }
     private FiltrationViewModel FilterModel { get; set; } = new FiltrationViewModel();
 
     private int Page { get; set; } = 1;
@@ -38,7 +43,7 @@ else
     {
         try
         {
-            TorrentsIndexModel = await AppState.Torrents(page, PageSize, filter);
+            TorrentsModel = await AppState.Torrents(page, PageSize, filter);
         }
         catch (Exception ex)
         {

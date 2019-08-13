@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Rutracker.Shared.Models.ViewModels.Torrents
+namespace Rutracker.Shared.Models.ViewModels.Torrent
 {
-    public class TorrentItemViewModel
+    public class TorrentViewModel
     {
         public long Id { get; set; }
         public DateTime Date { get; set; }

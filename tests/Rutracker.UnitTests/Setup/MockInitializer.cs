@@ -15,7 +15,6 @@ using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
 using Rutracker.Server.WebApi.Settings;
 using Rutracker.Shared.Models.ViewModels.Torrent;
-using Rutracker.Shared.Models.ViewModels.Torrents;
 using Range = Moq.Range;
 
 namespace Rutracker.UnitTests.Setup
@@ -117,11 +116,11 @@ namespace Rutracker.UnitTests.Setup
         {
             var mockMapper = new Mock<IMapper>();
 
-            mockMapper.Setup(x => x.Map<TorrentItemViewModel[]>(It.IsAny<Torrent[]>()))
-                .Returns<Torrent[]>(x => new TorrentItemViewModel[x.Length]);
+            mockMapper.Setup(x => x.Map<TorrentViewModel[]>(It.IsAny<Torrent[]>()))
+                .Returns<Torrent[]>(x => new TorrentViewModel[x.Length]);
 
-            mockMapper.Setup(x => x.Map<TorrentDetailsItemViewModel>(It.IsAny<Torrent>()))
-                .Returns<Torrent>(x => new TorrentDetailsItemViewModel { Id = x.Id });
+            mockMapper.Setup(x => x.Map<TorrentDetailsViewModel>(It.IsAny<Torrent>()))
+                .Returns<Torrent>(x => new TorrentDetailsViewModel { Id = x.Id });
 
             return mockMapper.Object;
         }

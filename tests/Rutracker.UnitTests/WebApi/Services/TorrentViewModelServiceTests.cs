@@ -35,11 +35,10 @@ namespace Rutracker.UnitTests.WebApi.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.TorrentItems);
-            Assert.NotNull(result.PaginationModel);
-            Assert.Equal(page, result.PaginationModel.CurrentPage);
-            Assert.Equal(pageSize, result.PaginationModel.PageSize);
-            Assert.Equal(expectedCount, result.TorrentItems.Length);
+            Assert.NotNull(result.Items);
+            Assert.Equal(page, result.Page);
+            Assert.Equal(pageSize, result.PageSize);
+            Assert.Equal(expectedCount, result.Items.Length);
         }
 
         [Fact(DisplayName = "GetTorrentIndexAsync() with valid parameter should return TorrentIndexViewModel")]
@@ -53,8 +52,7 @@ namespace Rutracker.UnitTests.WebApi.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.TorrentDetailsItem);
-            Assert.Equal(expectedId, result.TorrentDetailsItem.Id);
+            Assert.Equal(expectedId, result.Id);
         }
 
         [Fact(DisplayName = "GetTitleFacetAsync() with valid parameter should return FacetViewModel")]
@@ -68,8 +66,8 @@ namespace Rutracker.UnitTests.WebApi.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.FacetItems);
-            Assert.Equal(expectedCount, result.FacetItems.Length);
+            Assert.NotNull(result.Items);
+            Assert.Equal(expectedCount, result.Items.Length);
         }
     }
 }

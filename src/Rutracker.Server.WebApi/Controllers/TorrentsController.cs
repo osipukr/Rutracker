@@ -5,7 +5,6 @@ using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Shared.Models.ViewModels.Shared;
 using Rutracker.Shared.Models.ViewModels.Torrent;
-using Rutracker.Shared.Models.ViewModels.Torrents;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
@@ -30,7 +29,7 @@ namespace Rutracker.Server.WebApi.Controllers
         /// <param name="pageSize">Number of items per page.</param>
         /// <param name="filter">Information to filter elements.</param>
         [HttpPost(nameof(Pagination))]
-        public async Task<TorrentsIndexViewModel> Pagination(int page, int pageSize, FiltrationViewModel filter) =>
+        public async Task<PaginationResult<TorrentViewModel>> Pagination(int page, int pageSize, FiltrationViewModel filter) =>
             await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, filter);
 
         /// <summary>
@@ -38,13 +37,13 @@ namespace Rutracker.Server.WebApi.Controllers
         /// </summary>
         /// <param name="id">ID of the element.</param>
         [HttpGet]
-        public async Task<TorrentIndexViewModel> Get(long id) => await _torrentViewModelService.GetTorrentIndexAsync(id);
+        public async Task<TorrentDetailsViewModel> Get(long id) => await _torrentViewModelService.GetTorrentIndexAsync(id);
 
         /// <summary>
         ///     Get information about the facet for the title.
         /// </summary>
         /// <param name="count">Number of elements.</param>
         [HttpGet(nameof(Titles))]
-        public async Task<FacetViewModel<string>> Titles(int count) => await _torrentViewModelService.GetTitleFacetAsync(count);
+        public async Task<FacetResult<string>> Titles(int count) => await _torrentViewModelService.GetTitleFacetAsync(count);
     }
 }
