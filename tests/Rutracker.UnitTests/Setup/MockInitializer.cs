@@ -47,7 +47,7 @@ namespace Rutracker.UnitTests.Setup
             mockTorrentRepository.Setup(x => x.CountAsync(It.IsAny<ISpecification<Torrent, long>>()))
                 .ReturnsAsync((ISpecification<Torrent, long> x) => torrents.Where(x.Criteria).Count());
 
-            mockTorrentRepository.Setup(x => x.GetPopularForumsAsync(It.IsAny<int>()))
+            mockTorrentRepository.Setup(x => x.GetForums(It.IsAny<int>()))
                 .ReturnsAsync((int x) => new (long, string, int)[x]);
 
             return mockTorrentRepository.Object;
@@ -58,29 +58,29 @@ namespace Rutracker.UnitTests.Setup
             var mockTorrentService = new Mock<ITorrentService>();
 
             mockTorrentService.Setup(x =>
-                    x.GetTorrentsOnPageAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive),
+                    x.ListAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive),
                         It.IsInRange(0, int.MaxValue, Range.Exclusive), null, null, null, null))
                 .ReturnsAsync((int page, int pageSize, string search, IEnumerable<string> titles,
                     long? sizeFrom, long? sizeTo) => new Torrent[pageSize]);
 
-            mockTorrentService.Setup(x => x.GetTorrentDetailsAsync(It.IsInRange(0, long.MaxValue, Range.Exclusive)))
+            mockTorrentService.Setup(x => x.FindAsync(It.IsInRange(0, long.MaxValue, Range.Exclusive)))
                 .ReturnsAsync((long x) => new Torrent { Id = x });
 
-            mockTorrentService.Setup(x => x.GetTorrentsCountAsync(null, null, null, null))
+            mockTorrentService.Setup(x => x.CountAsync(null, null, null, null))
                 .ReturnsAsync(DataInitializer.GeTestTorrents().Count());
 
-            mockTorrentService.Setup(x => x.GetPopularForumsAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive)))
+            mockTorrentService.Setup(x => x.ForumsAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive)))
                 .ReturnsAsync((int x) => new (long, string, int)[x]);
 
             mockTorrentService.Setup(x =>
-                    x.GetTorrentsOnPageAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive),
+                    x.ListAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive),
                         It.IsInRange(int.MinValue, 0, Range.Inclusive), null, null, null, null))
                 .ThrowsAsync(new TorrentException(string.Empty, ExceptionEventType.NotValidParameters));
 
-            mockTorrentService.Setup(x => x.GetTorrentDetailsAsync(It.IsInRange(long.MinValue, 0, Range.Inclusive)))
+            mockTorrentService.Setup(x => x.FindAsync(It.IsInRange(long.MinValue, 0, Range.Inclusive)))
                 .ThrowsAsync(new TorrentException(string.Empty, ExceptionEventType.NotValidParameters));
 
-            mockTorrentService.Setup(x => x.GetPopularForumsAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive)))
+            mockTorrentService.Setup(x => x.ForumsAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive)))
                 .ThrowsAsync(new TorrentException(string.Empty, ExceptionEventType.NotValidParameters));
 
             return mockTorrentService.Object;

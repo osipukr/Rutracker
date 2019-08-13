@@ -25,7 +25,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             const int expectedCount = 10;
 
             // Act
-            var torrents = await _torrentService.GetTorrentsOnPageAsync(1, expectedCount, null, null, null, null);
+            var torrents = await _torrentService.ListAsync(1, expectedCount, null, null, null, null);
 
             // Assert
             Assert.NotNull(torrents);
@@ -39,7 +39,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             const long expectedId = 5;
 
             // Act
-            var torrent = await _torrentService.GetTorrentDetailsAsync(expectedId);
+            var torrent = await _torrentService.FindAsync(expectedId);
 
             // Assert
             Assert.NotNull(torrent);
@@ -53,7 +53,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             const int expectedCount = 9;
 
             // Act
-            var count = await _torrentService.GetTorrentsCountAsync(null, null, null, null);
+            var count = await _torrentService.CountAsync(null, null, null, null);
 
             // Assert
             Assert.Equal(expectedCount, count);
@@ -66,7 +66,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             const int expectedCount = 10;
 
             // Act
-            var titles = await _torrentService.GetPopularForumsAsync(expectedCount);
+            var titles = await _torrentService.ForumsAsync(expectedCount);
 
             // Assert
             Assert.NotNull(titles);
@@ -78,7 +78,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<TorrentException>(async () =>
-                await _torrentService.GetTorrentsOnPageAsync(-10, -10, null, null, null, null));
+                await _torrentService.ListAsync(-10, -10, null, null, null, null));
 
             Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
         }
@@ -88,7 +88,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<TorrentException>(async () =>
-                await _torrentService.GetTorrentDetailsAsync(-10));
+                await _torrentService.FindAsync(-10));
 
             Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
         }
@@ -98,7 +98,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<TorrentException>(async () =>
-                await _torrentService.GetTorrentDetailsAsync(1000));
+                await _torrentService.FindAsync(1000));
 
             Assert.Equal(ExceptionEventType.NotFound, exception.ExceptionEventType);
         }
@@ -108,7 +108,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<TorrentException>(async () =>
-                await _torrentService.GetPopularForumsAsync(-10));
+                await _torrentService.ForumsAsync(-10));
 
             Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
         }

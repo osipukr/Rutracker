@@ -84,7 +84,7 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
             const int expectedCount = 5;
 
             // Act
-            var forums = await _torrentRepository.GetPopularForumsAsync(expectedCount);
+            var forums = await _torrentRepository.GetForums(expectedCount);
 
             // Assert
             Assert.NotNull(forums);

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
-using Rutracker.Server.BusinessLayer.Extensions;
+using Microsoft.EntityFrameworkCore;
+using Rutracker.Server.BusinessLayer.Exceptions;
 using Rutracker.Server.BusinessLayer.Interfaces;
-using Rutracker.Server.BusinessLayer.Specifications;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
 
@@ -19,59 +19,85 @@ namespace Rutracker.Server.BusinessLayer.Services
             _torrentRepository = torrentRepository ?? throw new ArgumentNullException(nameof(torrentRepository));
         }
 
-        public async Task<IReadOnlyList<Torrent>> GetTorrentsOnPageAsync(int page, int pageSize,
-            string search,
-            IEnumerable<string> selectedTitleIds,
-            long? sizeFrom,
-            long? sizeTo)
+        public async Task<IEnumerable<Torrent>> ListAsync(int page, int pageSize, string search, IEnumerable<string> selectedForumIds, long? sizeFrom, long? sizeTo)
         {
-            Guard.Against.OutOfRange(nameof(page), page, rangeFrom: 1, rangeTo: int.MaxValue);
-            Guard.Against.OutOfRange(nameof(pageSize), pageSize, rangeFrom: 1, rangeTo: 100);
+            if (page < 1)
+            {
+                throw new TorrentException($"The {nameof(page)} is less than 1.", ExceptionEventType.NotValidParameters);
+            }
 
-            var specification = new TorrentsFilterPaginatedSpecification(
-                skip: (page - 1) * pageSize,
-                take: pageSize,
-                search,
-                selectedTitleIds,
-                sizeFrom,
-                sizeTo);
+            if (pageSize < 1 || pageSize > 100)
+            {
+                throw new TorrentException($"The {nameof(pageSize)} is out of range (1 - 100).", ExceptionEventType.NotValidParameters);
+            }
 
-            var torrents = await _torrentRepository.ListAsync(specification);
+            var forumIds = selectedForumIds?.Select(x => new
+            {
+                Success = long.TryParse(x, out var value),
+                Value = value
+            })
+            .Where(x => x.Success)
+            .Select(x => x.Value)
+            .ToArray();
 
-            Guard.Against.Null(nameof(torrents), torrents);
+            var torrents = await _torrentRepository.Search(search, forumIds, sizeFrom, sizeTo)
+                .OrderBy(torrent => torrent.Date)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            if (torrents == null)
+            {
+                throw new TorrentException($"The {nameof(torrents)} not found.", ExceptionEventType.NotFound);
+            }
 
             return torrents;
         }
 
-        public async Task<Torrent> GetTorrentDetailsAsync(long id)
+        public async Task<Torrent> FindAsync(long id)
         {
-            Guard.Against.OutOfRange(nameof(id), id, rangeFrom: 1, rangeTo: long.MaxValue);
+            if (id < 1)
+            {
+                throw new TorrentException($"The {nameof(id)} is less than 1.", ExceptionEventType.NotValidParameters);
+            }
 
-            var specification = new TorrentWithForumAndFilesSpecification(id);
-            var torrent = await _torrentRepository.GetAsync(specification);
+            var torrent = await _torrentRepository.GetAsync(id);
 
-            Guard.Against.Null(nameof(torrent), torrent);
+            if (torrent == null)
+            {
+                throw new TorrentException($"The {nameof(torrent)} not found.", ExceptionEventType.NotFound);
+            }
 
             return torrent;
         }
 
-        public async Task<int> GetTorrentsCountAsync(string search, IEnumerable<string> selectedTitleIds, long? sizeFrom, long? sizeTo)
+        public async Task<int> CountAsync(string search, IEnumerable<string> selectedForumIds, long? sizeFrom, long? sizeTo)
         {
-            var specification = new TorrentsFilterSpecification(search, selectedTitleIds, sizeFrom, sizeTo);
-            var count = await _torrentRepository.CountAsync(specification);
+            var forumIds = selectedForumIds?.Select(x => new
+                {
+                    Success = long.TryParse(x, out var value),
+                    Value = value
+                })
+                .Where(x => x.Success)
+                .Select(x => x.Value)
+                .ToArray();
 
-            Guard.Against.OutOfRange(nameof(count), count, rangeFrom: 0, rangeTo: int.MaxValue);
-
-            return count;
+            return await _torrentRepository.Search(search, forumIds, sizeFrom, sizeTo).CountAsync();
         }
 
-        public async Task<IReadOnlyList<(long Id, string Value, int Count)>> GetPopularForumsAsync(int count)
+        public async Task<IEnumerable<(long Id, string Value, int Count)>> ForumsAsync(int count)
         {
-            Guard.Against.OutOfRange(nameof(count), count, rangeFrom: 1, rangeTo: 100);
+            if (count < 1 || count > 100)
+            {
+                throw new TorrentException($"The {nameof(count)} is out of range (1 - 100).", ExceptionEventType.NotValidParameters);
+            }
 
-            var forums = await _torrentRepository.GetPopularForumsAsync(count);
+            var forums = await _torrentRepository.GetForums(count).ToListAsync();
 
-            Guard.Against.Null(nameof(forums), forums);
+            if (forums == null)
+            {
+                throw new TorrentException($"The {nameof(forums)} not found.", ExceptionEventType.NotFound);
+            }
 
             return forums;
         }

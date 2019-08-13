@@ -21,7 +21,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
         }
 
-        public async Task<User> CreateUserAsync(string userName, string email, string password)
+        public async Task<User> CreateAsync(string userName, string email, string password)
         {
             var user = await _userManager.FindByNameAsync(userName);
 

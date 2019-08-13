@@ -14,13 +14,13 @@ namespace Rutracker.Server.WebApi.Services
         {
             Guard.Against.Null(filter, nameof(filter));
 
-            var torrentsSource = await _torrentService.GetTorrentsOnPageAsync(page, pageSize,
+            var torrentsSource = await _torrentService.ListAsync(page, pageSize,
                 filter.Search,
                 filter.SelectedTitleIds,
                 filter.SizeFrom,
                 filter.SizeTo);
 
-            var totalItemsCount = await _torrentService.GetTorrentsCountAsync(
+            var totalItemsCount = await _torrentService.CountAsync(
                 filter.Search,
                 filter.SelectedTitleIds,
                 filter.SizeFrom,
@@ -41,7 +41,7 @@ namespace Rutracker.Server.WebApi.Services
 
         private async Task<TorrentIndexViewModel> TorrentIndexCallbackAsync(long id)
         {
-            var torrentsSource = await _torrentService.GetTorrentDetailsAsync(id);
+            var torrentsSource = await _torrentService.FindAsync(id);
 
             return new TorrentIndexViewModel
             {
@@ -51,7 +51,7 @@ namespace Rutracker.Server.WebApi.Services
 
         private async Task<FacetViewModel<string>> TitleFacetCallbackAsync(int count)
         {
-            var facets = await _torrentService.GetPopularForumsAsync(count);
+            var facets = await _torrentService.ForumsAsync(count);
 
             return new FacetViewModel<string>
             {

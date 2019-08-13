@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
@@ -16,8 +13,15 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
         {
         }
 
-        public async Task<IReadOnlyList<(long Id, string Value, int Count)>> GetPopularForumsAsync(int count) =>
-            await _dbSet.GroupBy(x => x.ForumId,
+        public IQueryable<Torrent> Search(string search, long[] forumIds, long? sizeFrom, long? sizeTo) =>
+            GetAll(torrent =>
+                (string.IsNullOrWhiteSpace(search) || torrent.Title.Contains(search)) &&
+                (forumIds == null || forumIds.Length == 0 || forumIds.Contains(torrent.ForumId)) &&
+                (!sizeFrom.HasValue || torrent.Size >= sizeFrom) &&
+                (!sizeTo.HasValue || torrent.Size <= sizeTo));
+
+        public IQueryable<(long Id, string Value, int Count)> GetForums(int count) =>
+            _dbSet.GroupBy(x => x.ForumId,
                     (key, items) => new
                     {
                         Key = key,
@@ -28,7 +32,6 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
                 .Join(_context.Forums,
                     g => g.Key,
                     f => f.Id,
-                    (g, f) => ValueTuple.Create(g.Key, f.Title, g.Count))
-                .ToListAsync();
+                    (g, f) => ValueTuple.Create(g.Key, f.Title, g.Count));
     }
 }
