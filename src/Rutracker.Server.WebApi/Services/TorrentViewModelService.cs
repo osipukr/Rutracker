@@ -8,37 +8,28 @@ namespace Rutracker.Server.WebApi.Services
 {
     public partial class TorrentViewModelService
     {
-        private async Task<PaginationResult<TorrentViewModel>> TorrentsIndexCallbackAsync(int page, int pageSize, FilterViewModel filter)
+        private async Task<PaginationResult<TorrentViewModel>> TorrentsCallbackAsync(int page, int pageSize, FilterViewModel filter)
         {
-            var torrentsSource = await _torrentService.ListAsync(page, pageSize,
-                filter.Search,
-                filter.SelectedForumIds,
-                filter.SizeFrom,
-                filter.SizeTo);
-
-            var totalItemsCount = await _torrentService.CountAsync(
-                filter.Search,
-                filter.SelectedForumIds,
-                filter.SizeFrom,
-                filter.SizeTo);
+            var torrents = await _torrentService.ListAsync(page, pageSize, filter.Search, filter.SelectedForumIds, filter.SizeFrom, filter.SizeTo);
+            var count = await _torrentService.CountAsync(filter.Search, filter.SelectedForumIds, filter.SizeFrom, filter.SizeTo);
 
             return new PaginationResult<TorrentViewModel>
             {
                 Page = page,
                 PageSize = pageSize,
-                TotalPages = (int)Math.Ceiling(totalItemsCount / (double)pageSize),
-                Items = _mapper.Map<TorrentViewModel[]>(torrentsSource)
+                TotalPages = (int)Math.Ceiling(count / (double)pageSize),
+                Items = _mapper.Map<TorrentViewModel[]>(torrents)
             };
         }
 
-        private async Task<TorrentDetailsViewModel> TorrentIndexCallbackAsync(long id)
+        private async Task<TorrentDetailsViewModel> TorrentCallbackAsync(long id)
         {
-            var torrentsSource = await _torrentService.FindAsync(id);
+            var torrent = await _torrentService.FindAsync(id);
 
-            return _mapper.Map<TorrentDetailsViewModel>(torrentsSource);
+            return _mapper.Map<TorrentDetailsViewModel>(torrent);
         }
 
-        private async Task<FacetResult<string>> TitleFacetCallbackAsync(int count)
+        private async Task<FacetResult<string>> ForumFacetCallbackAsync(int count)
         {
             var facets = await _torrentService.ForumsAsync(count);
 

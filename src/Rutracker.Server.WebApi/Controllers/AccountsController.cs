@@ -7,10 +7,10 @@ using Rutracker.Shared.Models.ViewModels.Account;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
-    public class AccountController : BaseApiController
+    public class AccountsController : BaseApiController
     {
         private readonly IAccountViewModelService _accountViewModelService;
-        public AccountController(IAccountViewModelService accountViewModelService)
+        public AccountsController(IAccountViewModelService accountViewModelService)
         {
             _accountViewModelService = accountViewModelService ?? throw new ArgumentNullException(nameof(accountViewModelService));
         }

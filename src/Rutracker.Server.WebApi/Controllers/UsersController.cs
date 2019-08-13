@@ -19,12 +19,12 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<UserViewModel[]> GetAll() => await _userViewModelService.GetUsersAsync();
+        public async Task<UserViewModel[]> GetAll() => await _userViewModelService.UsersAsync();
 
         [HttpGet(nameof(Details))]
-        public async Task<UserViewModel> Details() => await _userViewModelService.GetUserAsync(User);
+        public async Task<UserViewModel> Details() => await _userViewModelService.UserAsync(User);
 
         [HttpPut(nameof(Update))]
-        public async Task Update(EditUserViewModel model) => await _userViewModelService.UpdateUserAsync(User, model);
+        public async Task Update(EditUserViewModel model) => await _userViewModelService.UpdateAsync(User, model);
     }
 }

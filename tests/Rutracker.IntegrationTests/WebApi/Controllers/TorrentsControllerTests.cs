@@ -24,15 +24,15 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
             var filter = new FilterViewModel();
 
             // Act
-            var result = await _client.PostJsonAsync<PaginationResult<TorrentViewModel>>(
+            var torrents = await _client.PostJsonAsync<PaginationResult<TorrentViewModel>>(
                 $"api/torrents/pagination/?page={page}&pageSize={pageSize}", filter);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.NotNull(result.Items);
-            Assert.Equal(page, result.Page);
-            Assert.Equal(pageSize, result.PageSize);
-            Assert.Equal(expectedCount, result.Items.Length);
+            Assert.NotNull(torrents);
+            Assert.NotNull(torrents.Items);
+            Assert.Equal(page, torrents.Page);
+            Assert.Equal(pageSize, torrents.PageSize);
+            Assert.Equal(expectedCount, torrents.Items.Length);
         }
 
         [Fact(DisplayName = "Get() with valid parameters should return 200OK status")]
@@ -42,11 +42,11 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
             const long expectedId = 5;
 
             // Act
-            var result = await _client.GetJsonAsync<TorrentDetailsViewModel>($"api/torrents/?id={expectedId}");
+            var torrent = await _client.GetJsonAsync<TorrentDetailsViewModel>($"api/torrents/?id={expectedId}");
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(expectedId, result.Id);
+            Assert.NotNull(torrent);
+            Assert.Equal(expectedId, torrent.Id);
         }
 
         [Fact(DisplayName = "Titles() with valid parameters should return 200OK status")]
@@ -56,13 +56,13 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
             const int expectedCount = 5;
 
             // Act
-            var result = await _client.GetJsonAsync<FacetResult<string>>(
+            var forumFacets = await _client.GetJsonAsync<FacetResult<string>>(
                 $"api/torrents/titles/?count={expectedCount}");
 
             // Assert
-            Assert.NotNull(result);
-            Assert.NotNull(result.Items);
-            Assert.Equal(expectedCount, result.Items.Length);
+            Assert.NotNull(forumFacets);
+            Assert.NotNull(forumFacets.Items);
+            Assert.Equal(expectedCount, forumFacets.Items.Length);
         }
 
         [Fact(DisplayName = "Pagination() with an invalid parameters should return 400BadRequest status")]

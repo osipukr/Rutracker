@@ -20,14 +20,14 @@ namespace Rutracker.Server.WebApi.Services
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<UserViewModel[]> GetUsersAsync()
+        public async Task<UserViewModel[]> UsersAsync()
         {
             var users = await _userService.ListAsync();
 
             return _mapper.Map<UserViewModel[]>(users);
         }
 
-        public async Task<UserViewModel> GetUserAsync(ClaimsPrincipal principal)
+        public async Task<UserViewModel> UserAsync(ClaimsPrincipal principal)
         {
             var userId = principal.GetUserId();
             var user = await _userService.FindAsync(userId);
@@ -35,7 +35,7 @@ namespace Rutracker.Server.WebApi.Services
             return _mapper.Map<UserViewModel>(user);
         }
 
-        public async Task UpdateUserAsync(ClaimsPrincipal principal, EditUserViewModel model)
+        public async Task UpdateAsync(ClaimsPrincipal principal, EditUserViewModel model)
         {
             var userId = principal.GetUserId();
             var user = await _userService.FindAsync(userId);

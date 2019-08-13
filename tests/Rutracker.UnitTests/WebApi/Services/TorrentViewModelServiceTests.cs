@@ -21,8 +21,8 @@ namespace Rutracker.UnitTests.WebApi.Services
             _torrentViewModelService = new TorrentViewModelService(service, mapper, cache, options);
         }
 
-        [Fact(DisplayName = "GetTorrentsIndexAsync() with valid parameters should return TorrentsIndexViewMode")]
-        public async Task GetTorrentsIndexAsync_1_10_ReturnsValidTorrentsIndexViewModel()
+        [Fact(DisplayName = "TorrentsAsync() with valid parameters should return torrents.")]
+        public async Task TorrentsAsync_1_10_ReturnsValidTorrentsIndexViewModel()
         {
             // Arrange
             const int page = 1;
@@ -31,43 +31,43 @@ namespace Rutracker.UnitTests.WebApi.Services
             var filter = new FilterViewModel();
 
             // Act
-            var result = await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, filter);
+            var torrents = await _torrentViewModelService.TorrentsAsync(page, pageSize, filter);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.NotNull(result.Items);
-            Assert.Equal(page, result.Page);
-            Assert.Equal(pageSize, result.PageSize);
-            Assert.Equal(expectedCount, result.Items.Length);
+            Assert.NotNull(torrents);
+            Assert.NotNull(torrents.Items);
+            Assert.Equal(page, torrents.Page);
+            Assert.Equal(pageSize, torrents.PageSize);
+            Assert.Equal(expectedCount, torrents.Items.Length);
         }
 
-        [Fact(DisplayName = "GetTorrentIndexAsync() with valid parameter should return TorrentIndexViewModel")]
-        public async Task GetTorrentIndexAsync_5_ReturnsValidTorrentIndexViewModel()
+        [Fact(DisplayName = "TorrentAsync() with valid parameter should return torrent details.")]
+        public async Task TorrentAsync_5_ReturnsValidTorrentIndexViewModel()
         {
             // Arrange
             const long expectedId = 5;
 
             // Act
-            var result = await _torrentViewModelService.GetTorrentIndexAsync(expectedId);
+            var torrent = await _torrentViewModelService.TorrentAsync(expectedId);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(expectedId, result.Id);
+            Assert.NotNull(torrent);
+            Assert.Equal(expectedId, torrent.Id);
         }
 
-        [Fact(DisplayName = "GetTitleFacetAsync() with valid parameter should return FacetViewModel")]
-        public async Task GetTitleFacetAsync_5_ReturnsValidFacetViewModel()
+        [Fact(DisplayName = "ForumFacetAsync() with valid parameter should return forum facets.")]
+        public async Task ForumFacetAsync_5_ReturnsValidFacetViewModel()
         {
             // Arrange
             const int expectedCount = 5;
 
             // Act
-            var result = await _torrentViewModelService.GetTitleFacetAsync(expectedCount);
+            var forumFacets = await _torrentViewModelService.ForumFacetAsync(expectedCount);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.NotNull(result.Items);
-            Assert.Equal(expectedCount, result.Items.Length);
+            Assert.NotNull(forumFacets);
+            Assert.NotNull(forumFacets.Items);
+            Assert.Equal(expectedCount, forumFacets.Items.Length);
         }
     }
 }
