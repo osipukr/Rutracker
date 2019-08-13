@@ -7,6 +7,11 @@ using Rutracker.Shared.Models.ViewModels.Account;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
+    /// <summary>
+    ///     The Account API controller.
+    /// </summary>
+    /// <response code="400">If the parameters are not valid.</response>
+    /// <response code="404">If the item is null.</response>
     public class AccountsController : BaseApiController
     {
         private readonly IAccountViewModelService _accountViewModelService;

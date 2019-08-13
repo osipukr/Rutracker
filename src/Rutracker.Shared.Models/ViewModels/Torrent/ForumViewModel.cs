@@ -1,8 +1,9 @@
-﻿namespace Rutracker.Shared.Models.ViewModels.Torrent
+﻿using Rutracker.Shared.Models.ViewModels.Torrent.Base;
+
+namespace Rutracker.Shared.Models.ViewModels.Torrent
 {
-    public class ForumViewModel
+    public class ForumViewModel : BaseViewModel
     {
-        public long Id { get; set; }
         public string Title { get; set; }
     }
 }

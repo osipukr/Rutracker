@@ -8,6 +8,12 @@ using Rutracker.Shared.Models.ViewModels.User;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
+    /// <summary>
+    ///     The User API controller.
+    /// </summary>
+    /// <response code="400">If the parameters are not valid.</response>
+    /// <response code="401">If the user is not authorized.</response>
+    /// <response code="404">If the item is null.</response>
     [Authorize]
     public class UsersController : BaseApiController
     {

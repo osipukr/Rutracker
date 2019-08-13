@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,37 +9,6 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
 {
     public class IdentityContextSeed
     {
-        private static readonly IEnumerable<Role> Roles;
-        private static readonly User AdminUser;
-        private static readonly string AdminPassword;
-
-        static IdentityContextSeed()
-        {
-            Roles = new[]
-            {
-                new Role
-                {
-                    Name = UserRoles.Names.User,
-                    Description = UserRoles.Descriptions.User
-                },
-                new Role
-                {
-                    Name = UserRoles.Names.Admin,
-                    Description = UserRoles.Descriptions.Admin
-                }
-            };
-
-            AdminUser = new User
-            {
-                UserName = "admin",
-                Email = "admin@gmail.com",
-                FirstName = "Admin",
-                LastName = "Admin"
-            };
-
-            AdminPassword = "Admin_Password_123";
-        }
-
         public static async Task SeedAsync(
             IdentityContext context,
             UserManager<User> userManager,
@@ -70,7 +37,21 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
 
         private static async Task SeedRolesAsync(RoleManager<Role> roleManager)
         {
-            foreach (var role in Roles)
+            var roles = new[]
+            {
+                new Role
+                {
+                    Name = UserRoles.Names.User,
+                    Description = UserRoles.Descriptions.User
+                },
+                new Role
+                {
+                    Name = UserRoles.Names.Admin,
+                    Description = UserRoles.Descriptions.Admin
+                }
+            };
+
+            foreach (var role in roles)
             {
                 await roleManager.CreateAsync(role);
             }
@@ -78,11 +59,20 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
 
         private static async Task SeedUsersAsync(UserManager<User> userManager)
         {
-            await userManager.CreateAsync(AdminUser, AdminPassword);
+            var admin = new User
+            {
+                UserName = "admin",
+                Email = "admin@gmail.com",
+                FirstName = "Admin",
+                LastName = "Admin"
+            };
 
-            var roleNames = Roles.Select(x => x.Name);
-
-            await userManager.AddToRolesAsync(AdminUser, roleNames);
+            await userManager.CreateAsync(admin, "Admin_Password_123");
+            await userManager.AddToRolesAsync(admin, new[]
+            {
+                UserRoles.Names.User,
+                UserRoles.Names.Admin
+            });
         }
     }
 }
