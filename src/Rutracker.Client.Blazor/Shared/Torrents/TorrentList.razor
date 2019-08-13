@@ -51,5 +51,5 @@ else
 {
     [Parameter] private TorrentViewModel[] Items { get; set; }
 
-    private static string GetTorrentDetailsLink(long id) => $"/torrents/{id}";
+    private static string GetTorrentDetailsLink(long id) => string.Format(Constants.Path.Torrent, id.ToString());
 }

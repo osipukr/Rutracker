@@ -1,23 +1,21 @@
-﻿@inject IUriHelper UriHelper
-
-<MatNavMenu Multi="true" Class="app-sidebar">
-    <MatNavItem Href="@UriHelper.ToAbsoluteUri("/").AbsoluteUri">
+﻿<MatNavMenu Multi="true" Class="app-sidebar">
+    <MatNavItem Href="@Constants.Path.Home">
         <MatIcon Icon="@MatIconNames.Home" /> <span class="miniHover">Home page</span>
     </MatNavItem>
 
-    <MatNavItem Href="@UriHelper.ToAbsoluteUri("/account/profile").AbsoluteUri" Disabled="@(!_isAuthenticated)">
+    <MatNavItem Href="@Constants.Path.Profile" Disabled="@(!_isAuthenticated)">
         <MatIcon Icon="@MatIconNames.Person" /> <span class="miniHover">Profile</span>
     </MatNavItem>
 
-    <MatNavItem Href="@UriHelper.ToAbsoluteUri("/users").AbsoluteUri" Disabled="@(!_isAuthenticated)">
+    <MatNavItem Href="@Constants.Path.Users" Disabled="@(!_isAuthenticated)">
         <MatIcon Icon="@MatIconNames.Supervisor_account" /> <span class="miniHover">Users</span>
     </MatNavItem>
 
-    <MatNavItem Href="@UriHelper.ToAbsoluteUri("/torrents").AbsoluteUri">
+    <MatNavItem Href="@Constants.Path.Torrents">
         <MatIcon Icon="@MatIconNames.Bar_chart" /> <span class="miniHover">Torrents</span>
     </MatNavItem>
 
-    <MatNavItem Href="@UriHelper.ToAbsoluteUri("/contributors").AbsoluteUri">
+    <MatNavItem Href="@Constants.Path.Contributors">
         <MatIcon Icon="@MatIconNames.Group_add" /> <span class="miniHover">Contributors</span>
     </MatNavItem>
 </MatNavMenu>
