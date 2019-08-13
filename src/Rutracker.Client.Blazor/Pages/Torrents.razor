@@ -32,14 +32,14 @@ else
 @code
 {
     private PaginationResult<TorrentViewModel> TorrentsModel { get; set; }
-    private FiltrationViewModel FilterModel { get; set; } = new FiltrationViewModel();
+    private FilterViewModel FilterModel { get; set; } = new FilterViewModel();
 
     private int Page { get; set; } = 1;
     private int PageSize => ViewSettings.ItemsPerPageCount;
 
     protected override async Task OnInitAsync() => await LoadTorrentsIndexAsync(Page, FilterModel);
 
-    private async Task LoadTorrentsIndexAsync(int page, FiltrationViewModel filter)
+    private async Task LoadTorrentsIndexAsync(int page, FilterViewModel filter)
     {
         try
         {

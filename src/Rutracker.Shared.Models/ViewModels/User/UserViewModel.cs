@@ -1,4 +1,4 @@
-﻿namespace Rutracker.Shared.Models.ViewModels.Users
+﻿namespace Rutracker.Shared.Models.ViewModels.User
 {
     public class UserViewModel
     {

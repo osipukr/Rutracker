@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Services;
-using Rutracker.Shared.Models.ViewModels.Shared;
+using Rutracker.Shared.Models.ViewModels.Torrent;
 using Rutracker.UnitTests.Setup;
 using Xunit;
 
@@ -28,7 +28,7 @@ namespace Rutracker.UnitTests.WebApi.Services
             const int page = 1;
             const int pageSize = 10;
             const int expectedCount = 10;
-            var filter = new FiltrationViewModel();
+            var filter = new FilterViewModel();
 
             // Act
             var result = await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, filter);

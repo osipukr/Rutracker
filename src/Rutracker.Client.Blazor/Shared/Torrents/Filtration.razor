@@ -86,7 +86,7 @@
 
 @code
 {
-    [Parameter] private FiltrationViewModel Model { get; set; }
+    [Parameter] private FilterViewModel Model { get; set; }
     [Parameter] private EventCallback FilterChanged { get; set; }
 
     private int TitleCount => ViewSettings.ForumTitlesCount;
@@ -111,7 +111,7 @@
         Model.Search = null;
         Model.SizeFrom = null;
         Model.SizeTo = null;
-        Model.SelectedTitleIds = null;
+        Model.SelectedForumIds = null;
 
         if (TitleFacet?.Items != null)
         {
@@ -130,7 +130,7 @@
 
     private void OnValidSubmitClicked()
     {
-        Model.SelectedTitleIds = TitleFacet?.Items?.Where(x => x.IsSelected).Select(x => x.Id);
+        Model.SelectedForumIds = TitleFacet?.Items?.Where(x => x.IsSelected).Select(x => x.Id);
 
         FilterChanged.InvokeAsync(EventArgs.Empty);
     }

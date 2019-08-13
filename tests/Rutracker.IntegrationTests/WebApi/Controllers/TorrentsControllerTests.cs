@@ -21,7 +21,7 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
             const int page = 1;
             const int pageSize = 5;
             const int expectedCount = 5;
-            var filter = new FiltrationViewModel();
+            var filter = new FilterViewModel();
 
             // Act
             var result = await _client.PostJsonAsync<PaginationResult<TorrentViewModel>>(

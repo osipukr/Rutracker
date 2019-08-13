@@ -39,7 +39,7 @@ namespace Rutracker.Server.WebApi.Services
             };
         }
 
-        public async Task<PaginationResult<TorrentViewModel>> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter) =>
+        public async Task<PaginationResult<TorrentViewModel>> GetTorrentsIndexAsync(int page, int pageSize, FilterViewModel filter) =>
             await InvokeActionWithCacheOptionsAsync(
                 key: $"torrents-{page}-{pageSize}-{filter?.GetHashCode()}",
                 func: TorrentsIndexCallbackAsync(page, pageSize, filter));

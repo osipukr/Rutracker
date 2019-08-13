@@ -6,7 +6,7 @@ namespace Rutracker.Client.Blazor.Interfaces
 {
     public interface ITorrentService
     {
-        Task<PaginationResult<TorrentViewModel>> Torrents(int page, int pageSize, FiltrationViewModel filter);
+        Task<PaginationResult<TorrentViewModel>> Torrents(int page, int pageSize, FilterViewModel filter);
         Task<TorrentDetailsViewModel> Torrent(long id);
         Task<FacetResult<string>> TitleFacet(int count);
     }

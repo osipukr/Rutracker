@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
-using Rutracker.Shared.Models.ViewModels.Users;
+using Rutracker.Shared.Models.ViewModels.User;
 
 namespace Rutracker.Server.WebApi.Interfaces
 {

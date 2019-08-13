@@ -17,7 +17,7 @@ namespace Rutracker.Client.Blazor.Services
             _apiUriSettings = uriSettings;
         }
 
-        public async Task<PaginationResult<TorrentViewModel>> Torrents(int page, int pageSize, FiltrationViewModel filter)
+        public async Task<PaginationResult<TorrentViewModel>> Torrents(int page, int pageSize, FilterViewModel filter)
         {
             var url = string.Format(_apiUriSettings.TorrentsIndex, page.ToString(), pageSize.ToString());
 

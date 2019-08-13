@@ -8,17 +8,17 @@ namespace Rutracker.Server.WebApi.Services
 {
     public partial class TorrentViewModelService
     {
-        private async Task<PaginationResult<TorrentViewModel>> TorrentsIndexCallbackAsync(int page, int pageSize, FiltrationViewModel filter)
+        private async Task<PaginationResult<TorrentViewModel>> TorrentsIndexCallbackAsync(int page, int pageSize, FilterViewModel filter)
         {
             var torrentsSource = await _torrentService.ListAsync(page, pageSize,
                 filter.Search,
-                filter.SelectedTitleIds,
+                filter.SelectedForumIds,
                 filter.SizeFrom,
                 filter.SizeTo);
 
             var totalItemsCount = await _torrentService.CountAsync(
                 filter.Search,
-                filter.SelectedTitleIds,
+                filter.SelectedForumIds,
                 filter.SizeFrom,
                 filter.SizeTo);
 

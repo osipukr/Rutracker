@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Interfaces;
-using Rutracker.Shared.Models.ViewModels.Accounts;
+using Rutracker.Shared.Models.ViewModels.Account;
 
 namespace Rutracker.Server.WebApi.Controllers
 {

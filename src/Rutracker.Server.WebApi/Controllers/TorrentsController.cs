@@ -29,7 +29,7 @@ namespace Rutracker.Server.WebApi.Controllers
         /// <param name="pageSize">Number of items per page.</param>
         /// <param name="filter">Information to filter elements.</param>
         [HttpPost(nameof(Pagination))]
-        public async Task<PaginationResult<TorrentViewModel>> Pagination(int page, int pageSize, FiltrationViewModel filter) =>
+        public async Task<PaginationResult<TorrentViewModel>> Pagination(int page, int pageSize, FilterViewModel filter) =>
             await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, filter);
 
         /// <summary>

@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using Rutracker.Shared.Models.Resources.ViewModels;
 
-namespace Rutracker.Shared.Models.ViewModels.Shared
+namespace Rutracker.Shared.Models.ViewModels.Torrent
 {
-    public class FiltrationViewModel
+    public class FilterViewModel
     {
         [StringLength(maximumLength: 100,
             ErrorMessageResourceName = nameof(FiltrationViewModelResource.SearchError),
@@ -21,6 +21,6 @@ namespace Rutracker.Shared.Models.ViewModels.Shared
             ErrorMessageResourceType = typeof(FiltrationViewModelResource))]
         public long? SizeTo { get; set; }
 
-        public IEnumerable<string> SelectedTitleIds { get; set; }
+        public IEnumerable<string> SelectedForumIds { get; set; }
     }
 }

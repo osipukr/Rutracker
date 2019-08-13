@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Interfaces;
-using Rutracker.Shared.Models.ViewModels.Users;
+using Rutracker.Shared.Models.ViewModels.User;
 
 namespace Rutracker.Server.WebApi.Controllers
 {

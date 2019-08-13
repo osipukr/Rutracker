@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Rutracker.Client.Blazor.Interfaces;
 using Rutracker.Client.Blazor.Settings;
-using Rutracker.Shared.Models.ViewModels.Accounts;
+using Rutracker.Shared.Models.ViewModels.Account;
 
 namespace Rutracker.Client.Blazor.Services
 {

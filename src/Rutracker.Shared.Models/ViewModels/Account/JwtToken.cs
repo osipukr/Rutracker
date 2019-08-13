@@ -1,4 +1,4 @@
-﻿namespace Rutracker.Shared.Models.ViewModels.Accounts
+﻿namespace Rutracker.Shared.Models.ViewModels.Account
 {
     public class JwtToken
     {

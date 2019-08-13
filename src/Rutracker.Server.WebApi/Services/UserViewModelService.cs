@@ -5,7 +5,7 @@ using AutoMapper;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.WebApi.Extensions;
 using Rutracker.Server.WebApi.Interfaces;
-using Rutracker.Shared.Models.ViewModels.Users;
+using Rutracker.Shared.Models.ViewModels.User;
 
 namespace Rutracker.Server.WebApi.Services
 {
