@@ -16,7 +16,7 @@ namespace Rutracker.Server.WebApi.Services
         private readonly IStorageService _storageService;
         private readonly IMapper _mapper;
 
-        public UserViewModelService(IUserService userService, IStorageService storageService, IMapper mapper,)
+        public UserViewModelService(IUserService userService, IStorageService storageService, IMapper mapper)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
@@ -47,16 +47,16 @@ namespace Rutracker.Server.WebApi.Services
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
 
-            if (model.ImageBytes != null && model.ImageBytes.Length > 0)
+            if (model.ImageBytes?.Length > 0)
             {
                 await using var stream = new MemoryStream(model.ImageBytes);
 
-                var folder = user.UserName;
+                var containerName = user.UserName;
                 var fileName = $"profile-image-{Guid.NewGuid()}";
 
-                await _storageService.UploadFileAsync(folder, fileName, stream);
+                await _storageService.UploadFileAsync(containerName, fileName, stream);
 
-                user.ImageUrl = await _storageService.PathToFileAsync(folder, fileName);
+                user.ImageUrl = await _storageService.PathToFileAsync(containerName, fileName);
             }
             else
             {
