@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Exceptions;
 using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
@@ -21,7 +21,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<IEnumerable<User>> ListAsync()
         {
-            var users = await Task.FromResult(_userManager.Users.ToList());
+            var users = await _userManager.Users.ToListAsync();
 
             if (users == null)
             {

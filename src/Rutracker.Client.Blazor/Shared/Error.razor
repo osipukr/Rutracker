@@ -1,16 +1,9 @@
-﻿@inject IUriHelper UriHelper
-
-<div class="triangle-container">
+﻿<div class="triangle-container">
     <div class="triangles"></div>
 </div>
 
 <LoadingBackground ShowLoader="false" Style="margin-top: 40vh;">
     <h1>We lost this page ;(</h1>
     <p>We searched high and low but couldn't find what you're looking for.</p>
-    <MatButton OnClick="@ReturnHomeClicked" Raised="true" Label="Return Home" />
+    <MatButton Link="@Constants.Path.Home" Raised="true" Label="Return Home" />
 </LoadingBackground>
-
-@code
-{
-    private void ReturnHomeClicked() => UriHelper.NavigateTo(Constants.Path.Home);
-}

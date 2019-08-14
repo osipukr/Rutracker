@@ -128,7 +128,6 @@ namespace Rutracker.Server.WebApi
                 options.Filters.Add<ControllerExceptionFilterAttribute>();
                 options.Filters.Add<ModelValidatorFilterAttribute>();
 
-                // Remove string and stream output formatters. These are not useful for an API serving JSON or XML.
                 options.OutputFormatters.RemoveType<StreamOutputFormatter>();
                 options.OutputFormatters.RemoveType<StringOutputFormatter>();
             })
