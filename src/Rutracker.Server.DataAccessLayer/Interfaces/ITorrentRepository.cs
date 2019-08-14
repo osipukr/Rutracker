@@ -1,12 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rutracker.Server.DataAccessLayer.Entities;
 
 namespace Rutracker.Server.DataAccessLayer.Interfaces
 {
     public interface ITorrentRepository : IRepository<Torrent, long>
     {
-        IQueryable<Torrent> Search(string search, long[] forumIds, long? sizeFrom, long? sizeTo);
-        IQueryable<Tuple<long, string, int>> GetForums(int count);
+        Task<IReadOnlyList<(long Id, string Value, int Count)>> GetPopularForumsAsync(int count);
     }
 }

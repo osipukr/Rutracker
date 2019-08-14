@@ -3,9 +3,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Rutracker.Server.BusinessLayer.Interfaces;
-using Rutracker.Server.WebApi.Extensions;
 using Rutracker.Server.WebApi.Interfaces;
-using Rutracker.Shared.Models.ViewModels.User;
+using Rutracker.Shared.Models.ViewModels.Users;
 
 namespace Rutracker.Server.WebApi.Services
 {
@@ -20,32 +19,30 @@ namespace Rutracker.Server.WebApi.Services
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<UserViewModel[]> UsersAsync()
+        public async Task<UserViewModel[]> GetUsersAsync()
         {
-            var users = await _userService.ListAsync();
+            var users = await _userService.GetAllUserAsync();
 
             return _mapper.Map<UserViewModel[]>(users);
         }
 
-        public async Task<UserViewModel> UserAsync(ClaimsPrincipal principal)
+        public async Task<UserViewModel> GetUserAsync(ClaimsPrincipal principal)
         {
-            var userId = principal.GetUserId();
-            var user = await _userService.FindAsync(userId);
+            var user = await _userService.GetUserAsync(principal);
 
             return _mapper.Map<UserViewModel>(user);
         }
 
-        public async Task UpdateAsync(ClaimsPrincipal principal, EditUserViewModel model)
+        public async Task UpdateUserAsync(ClaimsPrincipal principal, EditUserViewModel model)
         {
-            var userId = principal.GetUserId();
-            var user = await _userService.FindAsync(userId);
+            var user = await _userService.GetUserAsync(principal);
 
             user.Email = model.Email;
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
             user.ImageUrl = model.ImageUrl;
 
-            await _userService.UpdateAsync(user);
+            await _userService.UpdateUserAsync(user);
         }
     }
 }

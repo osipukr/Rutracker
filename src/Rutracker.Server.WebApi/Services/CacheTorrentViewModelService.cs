@@ -4,11 +4,11 @@ using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Rutracker.Server.BusinessLayer.Interfaces;
-using Rutracker.Server.WebApi.Extensions;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Settings;
 using Rutracker.Shared.Models.ViewModels.Shared;
 using Rutracker.Shared.Models.ViewModels.Torrent;
+using Rutracker.Shared.Models.ViewModels.Torrents;
 
 namespace Rutracker.Server.WebApi.Services
 {
@@ -19,35 +19,47 @@ namespace Rutracker.Server.WebApi.Services
         private readonly IMemoryCache _cache;
         private readonly MemoryCacheEntryOptions _cacheEntryOptions;
 
-        public TorrentViewModelService(ITorrentService torrentService, IMapper mapper, IMemoryCache cache, IOptions<CacheSettings> cacheOptions)
+        public TorrentViewModelService(ITorrentService torrentService,
+            IMapper mapper,
+            IMemoryCache cache,
+            IOptions<CacheSettings> cacheOptions)
         {
             _torrentService = torrentService ?? throw new ArgumentNullException(nameof(torrentService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
-            var cacheSettings = cacheOptions?.Value ?? throw new ArgumentNullException(nameof(cacheOptions));
+
+            if (cacheOptions == null)
+            {
+                throw new ArgumentNullException(nameof(cacheOptions));
+            }
 
             _cacheEntryOptions = new MemoryCacheEntryOptions
             {
-                SlidingExpiration = cacheSettings.CacheDuration
+                SlidingExpiration = cacheOptions.Value?.CacheDuration
             };
         }
 
-        public async Task<PaginationResult<TorrentViewModel>> TorrentsAsync(int page, int pageSize, FilterViewModel filter) =>
+        public async Task<TorrentsIndexViewModel> GetTorrentsIndexAsync(int page, int pageSize, FiltrationViewModel filter) =>
             await InvokeActionWithCacheOptionsAsync(
-                key: $"torrents-{page}-{pageSize}-{filter.GetHashCode()}",
-                func: TorrentsCallbackAsync(page, pageSize, filter));
+                key: $"torrents-{page}-{pageSize}-{filter?.GetHashCode()}",
+                func: TorrentsIndexCallbackAsync(page, pageSize, filter));
 
-        public async Task<TorrentDetailsViewModel> TorrentAsync(long id) =>
+        public async Task<TorrentIndexViewModel> GetTorrentIndexAsync(long id) =>
             await InvokeActionWithCacheOptionsAsync(
                 key: $"torrent-{id}",
-                func: TorrentCallbackAsync(id));
+                func: TorrentIndexCallbackAsync(id));
 
-        public async Task<FacetResult<string>> ForumFacetAsync(int count) =>
+        public async Task<FacetViewModel<string>> GetTitleFacetAsync(int count) =>
             await InvokeActionWithCacheOptionsAsync(
                 key: $"titles-{count}",
-                func: ForumFacetCallbackAsync(count));
+                func: TitleFacetCallbackAsync(count));
 
         private async Task<TResult> InvokeActionWithCacheOptionsAsync<TResult>(string key, Task<TResult> func) =>
-            await _cache.GetOrCreateAsync(key, func, _cacheEntryOptions);
+            await _cache.GetOrCreateAsync(key, async entry =>
+            {
+                entry.SetOptions(_cacheEntryOptions);
+
+                return await func;
+            });
     }
 }
