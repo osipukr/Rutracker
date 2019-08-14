@@ -70,7 +70,6 @@ else
                         </div>
 
                         <div class="form-group mt-4 d-flex justify-content-end">
-                            <MatButton Raised="true" Label="Upload image" Class="mx-2" />
                             <MatButton OnClick="@EditUserClicked" Raised="true" Label="Edit profile" Class="mx-2" />
                         </div>
                     </ChildContent>
@@ -91,6 +90,8 @@ else
         try
         {
             UserModel = await AppState.UserDetails();
+
+            StateHasChanged();
         }
         catch (Exception ex)
         {
@@ -111,19 +112,15 @@ else
         });
 
         ModalService.OnClose += ModalClosed;
+
         ModalService.Show("Edit profile", typeof(EditProfile), parameters);
     }
 
-    private void ModalClosed(ModalResult result)
+    private async void ModalClosed(ModalResult result)
     {
-        if (!result.Cancelled && result.Data is EditUserViewModel user)
+        if (!result.Cancelled)
         {
-            UserModel.Email = user.Email;
-            UserModel.FirstName = user.FirstName;
-            UserModel.LastName = user.LastName;
-            UserModel.ImageUrl = user.ImageUrl;
-
-            StateHasChanged();
+            await LoadUserModelAsync();
         }
 
         ModalService.OnClose -= ModalClosed;

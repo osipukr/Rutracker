@@ -16,5 +16,10 @@
 
             public const string Repository = "https://github.com/osipukr/Rutracker-Blazor";
         }
+
+        public static class File
+        {
+            public const long MaxImageSize = 300 * 1024;
+        }
     }
 }

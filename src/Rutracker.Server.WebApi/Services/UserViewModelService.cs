@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -12,11 +13,13 @@ namespace Rutracker.Server.WebApi.Services
     public class UserViewModelService : IUserViewModelService
     {
         private readonly IUserService _userService;
+        private readonly IStorageService _storageService;
         private readonly IMapper _mapper;
 
-        public UserViewModelService(IUserService userService, IMapper mapper)
+        public UserViewModelService(IUserService userService, IStorageService storageService, IMapper mapper,)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -43,7 +46,22 @@ namespace Rutracker.Server.WebApi.Services
             user.Email = model.Email;
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
-            user.ImageUrl = model.ImageUrl;
+
+            if (model.ImageBytes != null && model.ImageBytes.Length > 0)
+            {
+                await using var stream = new MemoryStream(model.ImageBytes);
+
+                var folder = user.UserName;
+                var fileName = $"profile-image-{Guid.NewGuid()}";
+
+                await _storageService.UploadFileAsync(folder, fileName, stream);
+
+                user.ImageUrl = await _storageService.PathToFileAsync(folder, fileName);
+            }
+            else
+            {
+                user.ImageUrl = model.ImageUrl;
+            }
 
             await _userService.UpdateAsync(user);
         }

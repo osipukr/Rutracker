@@ -18,6 +18,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Server.BusinessLayer.Options;
 using Rutracker.Server.BusinessLayer.Services;
 using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities;
@@ -49,6 +50,7 @@ namespace Rutracker.Server.WebApi
 
             services.Configure<CacheSettings>(_configuration.GetSection(nameof(CacheSettings)));
             services.Configure<JwtSettings>(_configuration.GetSection(nameof(JwtSettings)));
+            services.Configure<StorageSettings>(_configuration.GetSection(nameof(StorageSettings)));
 
             services.AddResponseCompression(options =>
             {
@@ -138,9 +140,10 @@ namespace Rutracker.Server.WebApi
 
             services.AddScoped<ITorrentRepository, TorrentRepository>();
             services.AddSingleton<IJwtFactory, JwtFactory>();
-            services.AddScoped<ITorrentService, TorrentService>();
+            services.AddScoped<IStorageService, StorageService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITorrentService, TorrentService>();
             services.AddScoped<IAccountViewModelService, AccountViewModelService>();
             services.AddScoped<IUserViewModelService, UserViewModelService>();
             services.AddScoped<ITorrentViewModelService, TorrentViewModelService>();

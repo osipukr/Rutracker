@@ -14,5 +14,9 @@ namespace Rutracker.Shared.Models.ViewModels.User
 
         [DataType(DataType.ImageUrl)]
         public string ImageUrl { get; set; }
+
+        [DataType(DataType.Upload)]
+        public byte[] ImageBytes { get; set; }
+
     }
 }

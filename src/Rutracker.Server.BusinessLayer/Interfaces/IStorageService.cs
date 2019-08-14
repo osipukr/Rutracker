@@ -1,5 +1,4 @@
-﻿
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 
 namespace Rutracker.Server.BusinessLayer.Interfaces

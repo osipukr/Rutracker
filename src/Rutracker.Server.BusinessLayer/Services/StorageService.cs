@@ -1,32 +1,34 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Rutracker.Server.BusinessLayer.Exceptions;
 using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Server.BusinessLayer.Options;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
-    public class BlobStorageService : IStorageService
+    public class StorageService : IStorageService
     {
+        private readonly StorageSettings _storageSettings;
         private readonly CloudBlobClient _client;
 
-        public BlobStorageService(IConfiguration configuration)
+        public StorageService(IOptions<StorageSettings> storageOptions)
         {
-            var connectionString = configuration.GetConnectionString("StorageConnection");
+            _storageSettings = storageOptions?.Value ?? throw new ArgumentNullException(nameof(storageOptions));
 
-            if (string.IsNullOrWhiteSpace(connectionString))
+            if (string.IsNullOrWhiteSpace(_storageSettings.ConnectionString))
             {
-                throw new ArgumentNullException(nameof(connectionString));
+                throw new ArgumentException("ConnectionString can't be null.", nameof(_storageSettings.ConnectionString));
             }
 
-            _client = CloudStorageAccount.Parse(connectionString).CreateCloudBlobClient();
+            _client = CloudStorageAccount.Parse(_storageSettings.ConnectionString).CreateCloudBlobClient();
 
             if (_client == null)
             {
-                throw new TorrentException($"", ExceptionEventType.NotValidParameters);
+                throw new ArgumentException("Not valid blob client.", nameof(_client));
             }
         }
 
@@ -76,9 +78,13 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var container = _client.GetContainerReference(containerName);
 
-            if (createIfNotExists && !await container.CreateIfNotExistsAsync())
+            if (createIfNotExists)
             {
-                throw new TorrentException($"Failed to create container {containerName}.", ExceptionEventType.NotValidParameters);
+                await container.CreateIfNotExistsAsync();
+                await container.SetPermissionsAsync(new BlobContainerPermissions
+                {
+                    PublicAccess = BlobContainerPublicAccessType.Container
+                });
             }
 
             var blockBlob = container.GetBlockBlobReference(fileName);
