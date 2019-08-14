@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities.Base;
-using Rutracker.Server.DataAccessLayer.Extensions;
 using Rutracker.Server.DataAccessLayer.Interfaces;
 
 namespace Rutracker.Server.DataAccessLayer.Repositories
@@ -22,16 +22,16 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
             _dbSet = _context.Set<TEntity>();
         }
 
-        public virtual async Task<TEntity> GetAsync(TPrimaryKey id) =>
-            await _dbSet.SingleOrDefaultAsync(x => x.Id.Equals(id));
+        public virtual IQueryable<TEntity> GetAll() => _dbSet.AsQueryable();
 
-        public virtual async Task<TEntity> GetAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
-            await _dbSet.ApplySpecification(specification).SingleOrDefaultAsync();
+        public virtual IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> expression) => _dbSet.Where(expression);
 
-        public virtual async Task<IReadOnlyList<TEntity>> ListAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
-            await _dbSet.ApplySpecification(specification).ToListAsync();
+        public virtual async Task<TEntity> GetAsync(TPrimaryKey id) => await _dbSet.SingleOrDefaultAsync(x => x.Id.Equals(id));
 
-        public virtual async Task<int> CountAsync(ISpecification<TEntity, TPrimaryKey> specification) =>
-            await _dbSet.ApplySpecification(specification).CountAsync();
+        public virtual async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression) => await _dbSet.SingleOrDefaultAsync(expression);
+
+        public virtual async Task<int> CountAsync() => await _dbSet.CountAsync();
+
+        public virtual async Task<int> CountAsync(Expression<Func<TEntity, bool>> expression) => await _dbSet.CountAsync(expression);
     }
 }

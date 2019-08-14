@@ -12,8 +12,4 @@
     <ProjectReference Include="..\Rutracker.Server.DataAccessLayer\Rutracker.Server.DataAccessLayer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Specifications\" />
-  </ItemGroup>
-
 </Project>

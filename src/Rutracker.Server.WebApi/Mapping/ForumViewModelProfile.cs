@@ -6,6 +6,6 @@ namespace Rutracker.Server.WebApi.Mapping
 {
     public class ForumViewModelProfile : Profile
     {
-        public ForumViewModelProfile() => CreateMap<Forum, ForumItemViewModel>();
+        public ForumViewModelProfile() => CreateMap<Forum, ForumViewModel>();
     }
 }

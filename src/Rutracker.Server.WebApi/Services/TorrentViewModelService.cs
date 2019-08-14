@@ -1,65 +1,45 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
 using Rutracker.Shared.Models.ViewModels.Shared;
 using Rutracker.Shared.Models.ViewModels.Torrent;
-using Rutracker.Shared.Models.ViewModels.Torrents;
 
 namespace Rutracker.Server.WebApi.Services
 {
     public partial class TorrentViewModelService
     {
-        private async Task<TorrentsIndexViewModel> TorrentsIndexCallbackAsync(int page, int pageSize, FiltrationViewModel filter)
+        private async Task<PaginationResult<TorrentViewModel>> TorrentsCallbackAsync(int page, int pageSize, FilterViewModel filter)
         {
-            Guard.Against.Null(filter, nameof(filter));
+            var torrents = await _torrentService.ListAsync(page, pageSize, filter.Search, filter.SelectedForumIds, filter.SizeFrom, filter.SizeTo);
+            var count = await _torrentService.CountAsync(filter.Search, filter.SelectedForumIds, filter.SizeFrom, filter.SizeTo);
 
-            var torrentsSource = await _torrentService.GetTorrentsOnPageAsync(page, pageSize,
-                filter.Search,
-                filter.SelectedTitleIds,
-                filter.SizeFrom,
-                filter.SizeTo);
-
-            var totalItemsCount = await _torrentService.GetTorrentsCountAsync(
-                filter.Search,
-                filter.SelectedTitleIds,
-                filter.SizeFrom,
-                filter.SizeTo);
-
-            return new TorrentsIndexViewModel
+            return new PaginationResult<TorrentViewModel>
             {
-                TorrentItems = _mapper.Map<TorrentItemViewModel[]>(torrentsSource),
-                PaginationModel = new PaginationViewModel
-                {
-                    CurrentPage = page,
-                    TotalItems = totalItemsCount,
-                    PageSize = pageSize,
-                    TotalPages = (int)Math.Ceiling(totalItemsCount / (double)pageSize)
-                }
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = (int)Math.Ceiling(count / (double)pageSize),
+                Items = _mapper.Map<TorrentViewModel[]>(torrents)
             };
         }
 
-        private async Task<TorrentIndexViewModel> TorrentIndexCallbackAsync(long id)
+        private async Task<TorrentDetailsViewModel> TorrentCallbackAsync(long id)
         {
-            var torrentsSource = await _torrentService.GetTorrentDetailsAsync(id);
+            var torrent = await _torrentService.FindAsync(id);
 
-            return new TorrentIndexViewModel
-            {
-                TorrentDetailsItem = _mapper.Map<TorrentDetailsItemViewModel>(torrentsSource)
-            };
+            return _mapper.Map<TorrentDetailsViewModel>(torrent);
         }
 
-        private async Task<FacetViewModel<string>> TitleFacetCallbackAsync(int count)
+        private async Task<FacetResult<string>> ForumFacetCallbackAsync(int count)
         {
-            var facets = await _torrentService.GetPopularForumsAsync(count);
+            var facets = await _torrentService.ForumsAsync(count);
 
-            return new FacetViewModel<string>
+            return new FacetResult<string>
             {
-                FacetItems = facets.Select(x => new FacetItemViewModel<string>
+                Items = facets.Select(x => new FacetViewModel<string>
                 {
-                    Id = x.Id.ToString(),
-                    Value = x.Value,
-                    Count = x.Count
+                    Id = x.Item1.ToString(),
+                    Value = x.Item2,
+                    Count = x.Item3
                 }).ToArray()
             };
         }
