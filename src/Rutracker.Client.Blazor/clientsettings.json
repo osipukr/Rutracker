@@ -1,0 +1,27 @@
+{
+  "ApiUriSettings": {
+    "TorrentsIndex": "api/torrents/pagination/?page={0}&pageSize={1}",
+    "TorrentIndex": "api/torrents/?id={0}",
+    "Titles": "api/torrents/titles/?count={0}",
+    "Login": "api/account/login",
+    "Register": "api/account/register",
+    "Logout": "api/account/logout",
+    "Users": "api/users",
+    "UserDetails": "api/users/details",
+    "UpdateUser": "api/users/update"
+  },
+  "ViewSettings": {
+    "ServiceName": "Rutracker",
+    "ForumTitlesCount": 5,
+    "ItemsPerPageCount": 6
+  },
+  "MatToasterSettings": {
+    "Position": "BottomRight",
+    "PreventDuplicates": true,
+    "NewestOnTop": true,
+    "ShowProgressBar": false,
+    "ShowCloseButton": true,
+    "MaximumOpacity": 100,
+    "VisibleStateDuration": 3000
+  }
+}

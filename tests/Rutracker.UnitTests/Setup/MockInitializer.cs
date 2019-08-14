@@ -7,15 +7,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Moq;
-using Rutracker.Core.Entities.Torrents;
-using Rutracker.Core.Exceptions;
-using Rutracker.Core.Interfaces.Repositories;
-using Rutracker.Core.Interfaces.Services;
-using Rutracker.Core.Interfaces.Specifications;
-using Rutracker.Infrastructure.Data.Contexts;
-using Rutracker.Server.Settings;
-using Rutracker.Shared.ViewModels.Torrent;
-using Rutracker.Shared.ViewModels.Torrents;
+using Rutracker.Server.BusinessLayer.Exceptions;
+using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Server.DataAccessLayer.Contexts;
+using Rutracker.Server.DataAccessLayer.Entities;
+using Rutracker.Server.DataAccessLayer.Interfaces;
+using Rutracker.Server.WebApi.Settings;
+using Rutracker.Shared.Models.ViewModels.Torrent;
+using Rutracker.Shared.Models.ViewModels.Torrents;
 using Range = Moq.Range;
 
 namespace Rutracker.UnitTests.Setup

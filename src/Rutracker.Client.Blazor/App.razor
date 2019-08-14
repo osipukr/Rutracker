@@ -1,0 +1,27 @@
+﻿@inject AppState AppState
+
+<CascadingAuthenticationState>
+    <MatThemeProvider Theme="@_theme">
+        <Router AppAssembly="typeof(Program).Assembly">
+            <NotFoundContent>
+                <Error />
+            </NotFoundContent>
+            <NotAuthorizedContent>
+                <NotAuthorize />
+            </NotAuthorizedContent>
+        </Router>
+        <BlazoredModal />
+        <MatToastContainer />
+    </MatThemeProvider>
+</CascadingAuthenticationState>
+
+@code
+{
+    private readonly MatTheme _theme = new MatTheme
+    {
+        Primary = MatThemeColors.Purple._900.Value,
+        Secondary = MatThemeColors.Purple._900.Value
+    };
+
+    protected override void OnInit() => AppState.OnChange += StateHasChanged;
+}
