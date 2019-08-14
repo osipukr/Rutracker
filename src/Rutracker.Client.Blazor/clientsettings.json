@@ -3,9 +3,9 @@
     "TorrentsIndex": "api/torrents/pagination/?page={0}&pageSize={1}",
     "TorrentIndex": "api/torrents/?id={0}",
     "Titles": "api/torrents/titles/?count={0}",
-    "Login": "api/account/login",
-    "Register": "api/account/register",
-    "Logout": "api/account/logout",
+    "Login": "api/accounts/login",
+    "Register": "api/accounts/register",
+    "Logout": "api/accounts/logout",
     "Users": "api/users",
     "UserDetails": "api/users/details",
     "UpdateUser": "api/users/update"

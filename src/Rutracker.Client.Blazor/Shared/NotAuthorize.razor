@@ -1,16 +1,9 @@
-﻿@inject IUriHelper UriHelper
-
-<div class="login-container">
+﻿<div class="login-container">
     <LoadingBackground ShowLoader="false">
         <div class="login-body">
             <label>Sorry, You're not authorized to reach this page. You may need to log in as a different user.</label>
             <br />
-            <MatButton OnClick="@ReturnHomeClicked" Raised="true">Home</MatButton>
+            <MatButton Link="@Constants.Path.Home" Raised="true">Home</MatButton>
         </div>
     </LoadingBackground>
 </div>
-
-@code
-{
-    private void ReturnHomeClicked() => UriHelper.NavigateTo("/");
-}

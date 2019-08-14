@@ -6,12 +6,13 @@
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class FiltrationViewModelResource
+    public class FilterViewModelResource
     {
+
         private static global::System.Resources.ResourceManager resourceMan;
 
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal FiltrationViewModelResource()
+        internal FilterViewModelResource()
         {
         }
 
@@ -25,7 +26,9 @@
             {
                 if (object.ReferenceEquals(resourceMan, null))
                 {
-                    resourceMan = new global::System.Resources.ResourceManager("Rutracker.Shared.Models.Resources.ViewModels.FiltrationViewModelResource", typeof(FiltrationViewModelResource).Assembly);
+                    resourceMan = new global::System.Resources.ResourceManager(
+                        "Rutracker.Shared.Models.Resources.ViewModels.FilterViewModelResource",
+                        typeof(FilterViewModelResource).Assembly);
                 }
 
                 return resourceMan;

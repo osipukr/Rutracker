@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Exceptions;
 using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
@@ -20,9 +19,9 @@ namespace Rutracker.Server.BusinessLayer.Services
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
-        public async Task<IReadOnlyList<User>> GetAllUserAsync()
+        public async Task<IEnumerable<User>> ListAsync()
         {
-            var users = await Task.FromResult(_userManager.Users.ToList());
+            var users = await _userManager.Users.ToListAsync();
 
             if (users == null)
             {
@@ -32,28 +31,28 @@ namespace Rutracker.Server.BusinessLayer.Services
             return users;
         }
 
-        public async Task<User> GetUserAsync(ClaimsPrincipal principal)
+        public async Task<User> FindAsync(string userId)
         {
-            if (principal == null)
+            if (string.IsNullOrWhiteSpace(userId))
             {
-                throw new TorrentException("Not valid claims principal.", ExceptionEventType.NotValidParameters);
+                throw new TorrentException($"The {nameof(userId)} not valid.", ExceptionEventType.NotValidParameters);
             }
 
-            var user = await _userManager.GetUserAsync(principal);
+            var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
             {
-                throw new TorrentException("The user not found.", ExceptionEventType.NotFound);
+                throw new TorrentException($"The {nameof(user)} not found.", ExceptionEventType.NotFound);
             }
 
             return user;
         }
 
-        public async Task UpdateUserAsync(User user)
+        public async Task UpdateAsync(User user)
         {
             if (user == null)
             {
-                throw new TorrentException("Not valid user.", ExceptionEventType.NotValidParameters);
+                throw new TorrentException($"The {nameof(user)} not valid.", ExceptionEventType.NotValidParameters);
             }
 
             var result = await _userManager.UpdateAsync(user);
@@ -62,6 +61,23 @@ namespace Rutracker.Server.BusinessLayer.Services
             {
                 throw new TorrentException(result.GetError(), ExceptionEventType.NotValidParameters);
             }
+        }
+
+        public async Task<IEnumerable<string>> RolesAsync(User user)
+        {
+            if (user == null)
+            {
+                throw new TorrentException($"The {nameof(user)} not valid.", ExceptionEventType.NotValidParameters);
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if (roles == null)
+            {
+                throw new TorrentException($"The {nameof(roles)} not found.", ExceptionEventType.NotFound);
+            }
+
+            return roles;
         }
     }
 }

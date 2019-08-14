@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Rutracker.Client.Blazor.Interfaces;
-using Rutracker.Shared.Models.ViewModels.Accounts;
+using Rutracker.Shared.Models.ViewModels.Account;
 using Rutracker.Shared.Models.ViewModels.Shared;
 using Rutracker.Shared.Models.ViewModels.Torrent;
-using Rutracker.Shared.Models.ViewModels.Torrents;
-using Rutracker.Shared.Models.ViewModels.Users;
+using Rutracker.Shared.Models.ViewModels.User;
 
 namespace Rutracker.Client.Blazor.Services
 {
@@ -67,9 +66,9 @@ namespace Rutracker.Client.Blazor.Services
 
         #region Torrents
 
-        public async Task<TorrentsIndexViewModel> Torrents(int page, int pageSize, FiltrationViewModel filter) => await IndexActionAsync(() => _torrentService.Torrents(page, pageSize, filter));
-        public async Task<TorrentIndexViewModel> Torrent(long id) => await IndexActionAsync(() => _torrentService.Torrent(id));
-        public async Task<FacetViewModel<string>> TitleFacet(int count) => await _torrentService.TitleFacet(count);
+        public async Task<PaginationResult<TorrentViewModel>> Torrents(int page, int pageSize, FilterViewModel filter) => await IndexActionAsync(() => _torrentService.Torrents(page, pageSize, filter));
+        public async Task<TorrentDetailsViewModel> Torrent(long id) => await IndexActionAsync(() => _torrentService.Torrent(id));
+        public async Task<FacetResult<string>> TitleFacet(int count) => await _torrentService.TitleFacet(count);
 
         #endregion
 

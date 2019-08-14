@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Rutracker.Server.DataAccessLayer.Entities;
-using Rutracker.Shared.Models.ViewModels.Users;
+using Rutracker.Shared.Models.ViewModels.User;
 
 namespace Rutracker.Server.WebApi.Mapping
 {

@@ -8,7 +8,7 @@ namespace Rutracker.Server.WebApi.Mapping
     public class TorrentDetailsViewModelProfile : Profile
     {
         public TorrentDetailsViewModelProfile() =>
-            CreateMap<Torrent, TorrentDetailsItemViewModel>()
+            CreateMap<Torrent, TorrentDetailsViewModel>()
                 .ForMember(dist => dist.Content,
                     opt => opt.MapFrom(src => BBCode.ToHtml(src.Content)));
     }

@@ -3,14 +3,19 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Interfaces;
-using Rutracker.Shared.Models.ViewModels.Accounts;
+using Rutracker.Shared.Models.ViewModels.Account;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
-    public class AccountController : BaseApiController
+    /// <summary>
+    ///     The Account API controller.
+    /// </summary>
+    /// <response code="400">If the parameters are not valid.</response>
+    /// <response code="404">If the item is null.</response>
+    public class AccountsController : BaseApiController
     {
         private readonly IAccountViewModelService _accountViewModelService;
-        public AccountController(IAccountViewModelService accountViewModelService)
+        public AccountsController(IAccountViewModelService accountViewModelService)
         {
             _accountViewModelService = accountViewModelService ?? throw new ArgumentNullException(nameof(accountViewModelService));
         }

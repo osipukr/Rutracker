@@ -10,7 +10,7 @@
         <span>Loading page model, please wait...</span>
     </LoadingBackground>
 }
-else if (Model?.TorrentDetailsItem == null)
+else if (TorrentDetailsModel == null)
 {
     <LoadingBackground ShowLoader="false">
         <p>Torrent with id=@Id not found</p>
@@ -27,14 +27,14 @@ else
         </div>
     </div>
 
-    <TorrentDetails Model="@Model.TorrentDetailsItem" />
+    <TorrentDetails Model="@TorrentDetailsModel" />
 }
 
 @code
 {
     [Parameter] private long Id { get; set; }
 
-    private TorrentIndexViewModel Model { get; set; }
+    private TorrentDetailsViewModel TorrentDetailsModel { get; set; }
 
     protected override async Task OnInitAsync() => await LoadTorrentIndexAsync();
 
@@ -42,7 +42,7 @@ else
     {
         try
         {
-            Model = await AppState.Torrent(Id);
+            TorrentDetailsModel = await AppState.Torrent(Id);
         }
         catch (Exception ex)
         {
@@ -50,5 +50,5 @@ else
         }
     }
 
-    private void BackButtonClicked() => UriHelper.NavigateTo("/torrents");
+    private void BackButtonClicked() => UriHelper.NavigateTo(Constants.Path.Torrents);
 }

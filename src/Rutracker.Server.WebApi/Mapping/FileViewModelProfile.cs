@@ -6,6 +6,6 @@ namespace Rutracker.Server.WebApi.Mapping
 {
     public class FileViewModelProfile : Profile
     {
-        public FileViewModelProfile() => CreateMap<File, FileItemViewModel>();
+        public FileViewModelProfile() => CreateMap<File, FileViewModel>();
     }
 }

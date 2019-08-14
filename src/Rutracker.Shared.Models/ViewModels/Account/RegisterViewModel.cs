@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Rutracker.Shared.Models.ViewModels.Accounts
+namespace Rutracker.Shared.Models.ViewModels.Account
 {
     public class RegisterViewModel
     {
@@ -13,6 +13,7 @@ namespace Rutracker.Shared.Models.ViewModels.Accounts
 
         [Required]
         [DataType(DataType.Password)]
+        [MinLength(6)]
         public string Password { get; set; }
 
         [Required]

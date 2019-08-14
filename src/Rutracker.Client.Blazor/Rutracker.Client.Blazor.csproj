@@ -5,6 +5,9 @@
     <OutputType>Exe</OutputType>
     <LangVersion>8</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
+    <Authors>Roman Osipuk</Authors>
+    <Product>Rutracker</Product>
+    <RepositoryUrl>https://github.com/osipukr/Rutracker-Blazor</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

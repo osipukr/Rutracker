@@ -4,12 +4,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Settings;
-using Rutracker.Shared.Models.ViewModels.Accounts;
+using Rutracker.Shared.Models.ViewModels.Account;
 
 namespace Rutracker.Server.WebApi.Services
 {
@@ -19,26 +18,26 @@ namespace Rutracker.Server.WebApi.Services
 
         public JwtFactory(IOptions<JwtSettings> jwtOptions)
         {
-            Guard.Against.Null(jwtOptions, nameof(jwtOptions));
-
-            _jwtOptions = jwtOptions.Value;
-
-            Guard.Against.Null(_jwtOptions, nameof(_jwtOptions));
+            _jwtOptions = jwtOptions?.Value ?? throw new ArgumentNullException(nameof(jwtOptions));
 
             if (_jwtOptions.ValidFor <= TimeSpan.Zero)
             {
                 throw new ArgumentException("Must be a non-zero TimeSpan.", nameof(_jwtOptions.ValidFor));
             }
 
-            Guard.Against.Null(_jwtOptions.SigningCredentials, nameof(_jwtOptions.SigningCredentials));
-            Guard.Against.Null(_jwtOptions.JtiGenerator, nameof(_jwtOptions.JtiGenerator));
+            if (_jwtOptions.SigningCredentials == null)
+            {
+                throw new ArgumentNullException(nameof(_jwtOptions.SigningCredentials));
+            }
+
+            if (_jwtOptions.JtiGenerator == null)
+            {
+                throw new ArgumentNullException(nameof(_jwtOptions.JtiGenerator));
+            }
         }
 
         public async Task<JwtToken> GenerateTokenAsync(User user, IEnumerable<string> roles)
         {
-            Guard.Against.Null(user, nameof(user));
-            Guard.Against.Null(roles, nameof(roles));
-
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),

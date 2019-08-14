@@ -1,8 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Services;
-using Rutracker.Shared.Models.ViewModels.Shared;
+using Rutracker.Shared.Models.ViewModels.Torrent;
 using Rutracker.UnitTests.Setup;
 using Xunit;
 
@@ -22,63 +21,53 @@ namespace Rutracker.UnitTests.WebApi.Services
             _torrentViewModelService = new TorrentViewModelService(service, mapper, cache, options);
         }
 
-        [Fact(DisplayName = "GetTorrentsIndexAsync() with valid parameters should return TorrentsIndexViewMode")]
-        public async Task GetTorrentsIndexAsync_1_10_ReturnsValidTorrentsIndexViewModel()
+        [Fact(DisplayName = "TorrentsAsync() with valid parameters should return torrents.")]
+        public async Task TorrentsAsync_1_10_ReturnsValidTorrentsIndexViewModel()
         {
             // Arrange
             const int page = 1;
             const int pageSize = 10;
             const int expectedCount = 10;
-            var filter = new FiltrationViewModel();
+            var filter = new FilterViewModel();
 
             // Act
-            var result = await _torrentViewModelService.GetTorrentsIndexAsync(page, pageSize, filter);
+            var torrents = await _torrentViewModelService.TorrentsAsync(page, pageSize, filter);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.NotNull(result.TorrentItems);
-            Assert.NotNull(result.PaginationModel);
-            Assert.Equal(page, result.PaginationModel.CurrentPage);
-            Assert.Equal(pageSize, result.PaginationModel.PageSize);
-            Assert.Equal(expectedCount, result.TorrentItems.Length);
+            Assert.NotNull(torrents);
+            Assert.NotNull(torrents.Items);
+            Assert.Equal(page, torrents.Page);
+            Assert.Equal(pageSize, torrents.PageSize);
+            Assert.Equal(expectedCount, torrents.Items.Length);
         }
 
-        [Fact(DisplayName = "GetTorrentIndexAsync() with valid parameter should return TorrentIndexViewModel")]
-        public async Task GetTorrentIndexAsync_5_ReturnsValidTorrentIndexViewModel()
+        [Fact(DisplayName = "TorrentAsync() with valid parameter should return torrent details.")]
+        public async Task TorrentAsync_5_ReturnsValidTorrentIndexViewModel()
         {
             // Arrange
             const long expectedId = 5;
 
             // Act
-            var result = await _torrentViewModelService.GetTorrentIndexAsync(expectedId);
+            var torrent = await _torrentViewModelService.TorrentAsync(expectedId);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.NotNull(result.TorrentDetailsItem);
-            Assert.Equal(expectedId, result.TorrentDetailsItem.Id);
+            Assert.NotNull(torrent);
+            Assert.Equal(expectedId, torrent.Id);
         }
 
-        [Fact(DisplayName = "GetTitleFacetAsync() with valid parameter should return FacetViewModel")]
-        public async Task GetTitleFacetAsync_5_ReturnsValidFacetViewModel()
+        [Fact(DisplayName = "ForumFacetAsync() with valid parameter should return forum facets.")]
+        public async Task ForumFacetAsync_5_ReturnsValidFacetViewModel()
         {
             // Arrange
             const int expectedCount = 5;
 
             // Act
-            var result = await _torrentViewModelService.GetTitleFacetAsync(expectedCount);
+            var forumFacets = await _torrentViewModelService.ForumFacetAsync(expectedCount);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.NotNull(result.FacetItems);
-            Assert.Equal(expectedCount, result.FacetItems.Length);
-        }
-
-        [Fact(DisplayName = "GetTorrentsIndexAsync() with invalid parameters should throw ArgumentNullException")]
-        public async Task GetTorrentsIndexAsync_Null_ThrowArgumentNullException()
-        {
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
-                await _torrentViewModelService.GetTorrentsIndexAsync(1, 1, null));
+            Assert.NotNull(forumFacets);
+            Assert.NotNull(forumFacets.Items);
+            Assert.Equal(expectedCount, forumFacets.Items.Length);
         }
     }
 }

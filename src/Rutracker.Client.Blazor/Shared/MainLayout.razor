@@ -7,14 +7,14 @@
         <header class="drawer-header">
             <div class="drawer-logo">
                 <img alt="@BrandName" class="logo-img" src="img/brand-white.svg" title="@BrandName">
-                <a class="miniHover" href="/">@BrandName</a>
+                <a class="miniHover" href="@Constants.Path.Home">@BrandName</a>
             </div>
         </header>
 
         <NavMenu />
 
         <footer class="drawer-footer">
-            <MatButton Icon="@MatIconNames.Help" Class="w-100" Link="@RepositoryLink">
+            <MatButton Icon="@MatIconNames.Help" Class="w-100" Link="@Constants.Path.Repository">
                 <span class="miniHover">Help & Support</span>
             </MatButton>
         </footer>
@@ -46,7 +46,7 @@
 
                     <MatAppBarSection Align="@MatAppBarSectionAlign.End" Style="padding-right: 1rem;">
                         <MatTooltip Tooltip="Github Repository" Wrap="true">
-                            <MatIconButton Link="@RepositoryLink">
+                            <MatIconButton Link="@Constants.Path.Repository">
                                 <i class="fa fa-github" aria-hidden="true"></i>
                             </MatIconButton>
                         </MatTooltip>
@@ -71,7 +71,6 @@
     private string _bbDrawerClass = string.Empty;
 
     private string BrandName => ViewSettings.ServiceName;
-    private const string RepositoryLink = "https://github.com/osipukr/Rutracker-Blazor";
 
     private void NavToggleClicked()
     {
