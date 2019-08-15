@@ -9,11 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CodeKicker.BBCode-NETStandard" Version="5.0.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Rutracker.Server.DataAccessLayer\Rutracker.Server.DataAccessLayer.csproj" />
+    <ProjectReference Include="..\Rutracker.Shared.Infrastructure\Rutracker.Shared.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

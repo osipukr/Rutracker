@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Rutracker.Server.BusinessLayer.Exceptions;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.BusinessLayer.Services;
+using Rutracker.Shared.Infrastructure.Exceptions;
 using Rutracker.UnitTests.Setup;
 using Xunit;
 
@@ -78,7 +78,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
         public async Task ListAsync_NegativeNumbers_ThrowTorrentException()
         {
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<TorrentException>(async () =>
+            var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _torrentService.ListAsync(-10, -10, null, null, null, null));
 
             Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
@@ -88,7 +88,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
         public async Task FindAsync_NegativeNumber_ThrowTorrentException()
         {
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<TorrentException>(async () =>
+            var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _torrentService.FindAsync(-10));
 
             Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
@@ -98,7 +98,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
         public async Task FindAsync_1000_ThrowTorrentException()
         {
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<TorrentException>(async () =>
+            var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _torrentService.FindAsync(1000));
 
             Assert.Equal(ExceptionEventType.NotFound, exception.ExceptionEventType);
@@ -108,7 +108,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
         public async Task ForumsAsync_NegativeNumber_ThrowTorrentException()
         {
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<TorrentException>(async () =>
+            var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _torrentService.ForumsAsync(-10));
 
             Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);

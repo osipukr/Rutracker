@@ -1,4 +1,4 @@
-﻿namespace Rutracker.Server.BusinessLayer.Exceptions
+﻿namespace Rutracker.Shared.Infrastructure.Exceptions
 {
     public enum ExceptionEventType
     {

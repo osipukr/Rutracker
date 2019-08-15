@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Moq;
-using Rutracker.Server.BusinessLayer.Exceptions;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
 using Rutracker.Server.WebApi.Settings;
+using Rutracker.Shared.Infrastructure.Exceptions;
 using Rutracker.Shared.Models.ViewModels.Torrent;
 using Range = Moq.Range;
 
@@ -86,13 +86,13 @@ namespace Rutracker.UnitTests.Setup
             mockTorrentService.Setup(x =>
                     x.ListAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive),
                         It.IsInRange(int.MinValue, 0, Range.Inclusive), null, null, null, null))
-                .ThrowsAsync(new TorrentException(string.Empty, ExceptionEventType.NotValidParameters));
+                .ThrowsAsync(new RutrackerException(string.Empty, ExceptionEventType.NotValidParameters));
 
             mockTorrentService.Setup(x => x.FindAsync(It.IsInRange(long.MinValue, 0, Range.Inclusive)))
-                .ThrowsAsync(new TorrentException(string.Empty, ExceptionEventType.NotValidParameters));
+                .ThrowsAsync(new RutrackerException(string.Empty, ExceptionEventType.NotValidParameters));
 
             mockTorrentService.Setup(x => x.ForumsAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive)))
-                .ThrowsAsync(new TorrentException(string.Empty, ExceptionEventType.NotValidParameters));
+                .ThrowsAsync(new RutrackerException(string.Empty, ExceptionEventType.NotValidParameters));
 
             return mockTorrentService.Object;
         }

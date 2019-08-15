@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CodeKicker.BBCode;
 using Microsoft.EntityFrameworkCore;
-using Rutracker.Server.BusinessLayer.Exceptions;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
+using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
@@ -23,12 +24,12 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             if (page < 1)
             {
-                throw new TorrentException($"The {nameof(page)} is less than 1.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"The {nameof(page)} is less than 1.", ExceptionEventType.NotValidParameters);
             }
 
             if (pageSize < 1 || pageSize > 100)
             {
-                throw new TorrentException($"The {nameof(pageSize)} is out of range (1 - 100).", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"The {nameof(pageSize)} is out of range (1 - 100).", ExceptionEventType.NotValidParameters);
             }
 
             var forumIds = ConvertForumIds(selectedForumIds);
@@ -40,7 +41,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (torrents == null)
             {
-                throw new TorrentException($"The {nameof(torrents)} not found.", ExceptionEventType.NotFound);
+                throw new RutrackerException($"The {nameof(torrents)} not found.", ExceptionEventType.NotFound);
             }
 
             return torrents;
@@ -50,14 +51,19 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             if (id < 1)
             {
-                throw new TorrentException($"The {nameof(id)} is less than 1.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"The {nameof(id)} is less than 1.", ExceptionEventType.NotValidParameters);
             }
 
             var torrent = await _torrentRepository.GetAsync(id);
 
             if (torrent == null)
             {
-                throw new TorrentException($"The {nameof(torrent)} not found.", ExceptionEventType.NotFound);
+                throw new RutrackerException($"The {nameof(torrent)} not found.", ExceptionEventType.NotFound);
+            }
+
+            if (!string.IsNullOrWhiteSpace(torrent.Content))
+            {
+                torrent.Content = BBCode.ToHtml(torrent.Content);
             }
 
             return torrent;
@@ -74,14 +80,14 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             if (count < 1 || count > 100)
             {
-                throw new TorrentException($"The {nameof(count)} is out of range (1 - 100).", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"The {nameof(count)} is out of range (1 - 100).", ExceptionEventType.NotValidParameters);
             }
 
             var forums = await _torrentRepository.GetForums(count).ToListAsync();
 
             if (forums == null)
             {
-                throw new TorrentException($"The {nameof(forums)} not found.", ExceptionEventType.NotFound);
+                throw new RutrackerException($"The {nameof(forums)} not found.", ExceptionEventType.NotFound);
             }
 
             return forums;
