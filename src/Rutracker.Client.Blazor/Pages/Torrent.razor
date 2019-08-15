@@ -1,5 +1,4 @@
 ﻿@inject AppState AppState
-@inject IUriHelper UriHelper
 @inject IMatToaster MatToaster
 
 @page "/torrents/{id:long}"
@@ -14,7 +13,7 @@ else if (TorrentDetailsModel == null)
 {
     <LoadingBackground ShowLoader="false">
         <p>Torrent with id=@Id not found</p>
-        <MatButton OnClick="@BackButtonClicked" Raised="true" Label="Return to full torrents list" />
+        <MatButton Link="@Constants.Path.Torrents" Raised="true" Label="Return to full torrents list" />
     </LoadingBackground>
 }
 else
@@ -22,7 +21,7 @@ else
     <div class="mat-layout-grid px-0 pb-5">
         <div class="mat-layout-grid-inner">
             <div class="mat-layout-grid-cell">
-                <MatIconButton Icon="@MatIconNames.Arrow_back" OnClick="@BackButtonClicked" />
+                <MatIconButton Icon="@MatIconNames.Arrow_back" Link="@Constants.Path.Torrents" />
             </div>
         </div>
     </div>
@@ -49,6 +48,4 @@ else
             MatToaster.Add(ex.Message, MatToastType.Warning, "Failed load torrent info");
         }
     }
-
-    private void BackButtonClicked() => UriHelper.NavigateTo(Constants.Path.Torrents);
 }

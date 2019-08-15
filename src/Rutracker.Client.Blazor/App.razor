@@ -1,4 +1,5 @@
-﻿@inject AppState AppState
+﻿@implements IDisposable
+@inject AppState AppState
 
 <CascadingAuthenticationState>
     <MatThemeProvider Theme="@_theme">
@@ -24,4 +25,6 @@
     };
 
     protected override void OnInit() => AppState.OnChange += StateHasChanged;
+
+    public void Dispose() => AppState.OnChange -= StateHasChanged;
 }

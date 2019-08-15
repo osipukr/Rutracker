@@ -90,8 +90,6 @@ else
         try
         {
             UserModel = await AppState.UserDetails();
-
-            StateHasChanged();
         }
         catch (Exception ex)
         {
@@ -118,9 +116,11 @@ else
 
     private async void ModalClosed(ModalResult result)
     {
-        if (!result.Cancelled)
+        if (!result.Cancelled && result.Data is bool isSuccess && isSuccess)
         {
             await LoadUserModelAsync();
+
+            StateHasChanged();
         }
 
         ModalService.OnClose -= ModalClosed;
