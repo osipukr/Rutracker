@@ -2,7 +2,6 @@
 
 @inject AppState AppState
 @inject IMatToaster MatToaster
-@inject IModalService ModalService
 
 @page "/account/profile"
 
@@ -22,58 +21,24 @@ else
 {
     <div class="profile-container">
         <div class="profile-header">
-            @if (IsValidUserImage())
-            {
-                <img class="profile-header__image" src="@UserModel.ImageUrl" alt=" user image" />
-            }
-            else
-            {
-                <img class="profile-header__image" src="img/profile-bg.jpg" alt="default user image" />
-            }
+            <div class="profile-header__image">
+                <MatRipple Class="rounded-circle w-100 h-100 mat-elevation-z5" Style="cursor: pointer;">
+                    @if (IsValidUserImage())
+                    {
+                        <img class="w-100 h-100" src="@UserModel.ImageUrl" alt="User image" />
+                    }
+                    else
+                    {
+                        <img class="w-100 h-100" src="img/profile-bg.jpg" alt="Default user image" />
+                    }
+                </MatRipple>
+            </div>
 
             <h1 class="profile-header__name">@UserModel.UserName</h1>
         </div>
         <div class="profile-body">
             <MatTabGroup>
-                <MatTab>
-                    <LabelContent>Personal info</LabelContent>
-                    <ChildContent>
-                        <div class="form-group">
-                            <MatTextField Value="@UserModel.UserName"
-                                          Label="User Name"
-                                          Icon="@MatIconNames.Person"
-                                          IconTrailing="true"
-                                          FullWidth="true"
-                                          ReadOnly="true" />
-                        </div>
-
-                        <div class="form-group">
-                            <MatTextField Value="@UserModel.Email"
-                                          Label="User Name"
-                                          Icon="@MatIconNames.Mail_outline"
-                                          IconTrailing="true"
-                                          FullWidth="true"
-                                          ReadOnly="true" />
-                        </div>
-
-                        <div class="form-group">
-                            <MatTextField Value="@UserModel.FirstName"
-                                          Label="User Name"
-                                          FullWidth="true"
-                                          ReadOnly="true" />
-                        </div>
-                        <div class="form-group">
-                            <MatTextField Value="@UserModel.LastName"
-                                          Label="User Name"
-                                          FullWidth="true"
-                                          ReadOnly="true" />
-                        </div>
-
-                        <div class="form-group mt-4 d-flex justify-content-end">
-                            <MatButton OnClick="@EditUserClicked" Raised="true" Label="Edit profile" Class="mx-2" />
-                        </div>
-                    </ChildContent>
-                </MatTab>
+                <UserInfoTab UserModel="@UserModel" OnUpdateClick="@UpdateUserAsync" />
             </MatTabGroup>
         </div>
     </div>
@@ -97,33 +62,19 @@ else
         }
     }
 
-    private void EditUserClicked()
+    private async Task UpdateUserAsync(EditUserViewModel model)
     {
-        var parameters = new ModalParameters();
-
-        parameters.Add(nameof(EditUserViewModel), new EditUserViewModel
+        try
         {
-            Email = UserModel.Email,
-            FirstName = UserModel.FirstName,
-            LastName = UserModel.LastName,
-            ImageUrl = UserModel.ImageUrl
-        });
-
-        ModalService.OnClose += ModalClosed;
-
-        ModalService.Show("Edit profile", typeof(EditProfile), parameters);
-    }
-
-    private async void ModalClosed(ModalResult result)
-    {
-        if (!result.Cancelled && result.Data is bool isSuccess && isSuccess)
-        {
+            await AppState.UpdateUser(model);
             await LoadUserModelAsync();
 
             StateHasChanged();
         }
-
-        ModalService.OnClose -= ModalClosed;
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Error update user");
+        }
     }
 
     private bool IsValidUserImage() => !string.IsNullOrWhiteSpace(UserModel.ImageUrl);

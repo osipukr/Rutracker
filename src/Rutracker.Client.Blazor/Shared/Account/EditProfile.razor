@@ -13,7 +13,7 @@
         </div>
 
         <div class="form-group">
-            <MatTextField @bind-Value="EditModel.Email"
+            <MatTextField @bind-Value="@EditModel.Email"
                           Label="Email"
                           Icon="@MatIconNames.Mail_outline"
                           IconTrailing="true"
@@ -21,25 +21,15 @@
         </div>
 
         <div class="form-group">
-            <MatTextField @bind-Value="EditModel.FirstName"
-                          Label="Fist Name"
-                          Icon="@MatIconNames.Person"
-                          IconTrailing="true"
-                          FullWidth="true" />
+            <MatTextField @bind-Value="@EditModel.FirstName" Label="Fist Name" FullWidth="true" />
         </div>
 
         <div class="form-group">
-            <MatTextField @bind-Value="EditModel.LastName"
-                          Label="Last Name"
-                          Icon="@MatIconNames.Person"
-                          IconTrailing="true"
-                          FullWidth="true" />
+            <MatTextField @bind-Value="@EditModel.LastName" Label="Last Name" FullWidth="true" />
         </div>
 
         <div class="form-group">
-            <MatTextField @bind-Value="EditModel.ImageUrl"
-                          Label="Image Url"
-                          FullWidth="true" />
+            <MatTextField @bind-Value="@EditModel.ImageUrl" Label="Image Url" FullWidth="true" />
         </div>
 
         <div class="form-group">
@@ -100,13 +90,12 @@
         try
         {
             await ReadFileAsync();
-            await AppState.UpdateUser(EditModel);
 
-            ModalService.Close(ModalResult.Ok(true));
+            ModalService.Close(ModalResult.Ok(EditModel));
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Error update user");
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Error read image file");
         }
     }
 
