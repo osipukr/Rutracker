@@ -6,7 +6,7 @@ namespace Rutracker.Client.Blazor.Interfaces
     public interface IUserService
     {
         Task<UserViewModel[]> Users();
-        Task<UserViewModel> UserDetails();
+        Task<UserDetailsViewModel> UserDetails();
         Task UpdateUser(EditUserViewModel model);
     }
 }

@@ -11,7 +11,7 @@
         <span>Loading user list, please wait...</span>
     </LoadingBackground>
 }
-else if (UserModel == null)
+else if (UserDetailsModel == null)
 {
     <LoadingBackground ShowLoader="false">
         <p>Error load profile, sorry</p>
@@ -25,7 +25,7 @@ else
                 <MatRipple Class="rounded-circle w-100 h-100 mat-elevation-z5" Style="cursor: pointer;">
                     @if (IsValidUserImage())
                     {
-                        <img class="w-100 h-100" src="@UserModel.ImageUrl" alt="User image" />
+                        <img class="w-100 h-100" src="@UserDetailsModel.ImageUrl" alt="User image" />
                     }
                     else
                     {
@@ -34,11 +34,22 @@ else
                 </MatRipple>
             </div>
 
-            <h1 class="profile-header__name">@UserModel.UserName</h1>
+            <h1 class="profile-header__name">@UserDetailsModel.UserName</h1>
+
+            @if (UserDetailsModel.Roles != null)
+            {
+                <MatChipSet>
+                    @foreach (var role in UserDetailsModel.Roles)
+                    {
+                        <MatChip Label="@role" />
+                    }
+                </MatChipSet>
+            }
         </div>
+
         <div class="profile-body">
             <MatTabGroup>
-                <UserInfoTab UserModel="@UserModel" OnUpdateClick="@UpdateUserAsync" />
+                <UserInfoTab UserModel="@UserDetailsModel" OnUpdateClick="@UpdateUserAsync" />
             </MatTabGroup>
         </div>
     </div>
@@ -46,7 +57,7 @@ else
 
 @code
 {
-    private UserViewModel UserModel { get; set; }
+    private UserDetailsViewModel UserDetailsModel { get; set; }
 
     protected override async Task OnInitAsync() => await LoadUserModelAsync();
 
@@ -54,7 +65,7 @@ else
     {
         try
         {
-            UserModel = await AppState.UserDetails();
+            UserDetailsModel = await AppState.UserDetails();
         }
         catch (Exception ex)
         {
@@ -77,5 +88,5 @@ else
         }
     }
 
-    private bool IsValidUserImage() => !string.IsNullOrWhiteSpace(UserModel.ImageUrl);
+    private bool IsValidUserImage() => !string.IsNullOrWhiteSpace(UserDetailsModel.ImageUrl);
 }

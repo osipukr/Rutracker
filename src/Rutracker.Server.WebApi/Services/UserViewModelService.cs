@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -30,12 +31,16 @@ namespace Rutracker.Server.WebApi.Services
             return _mapper.Map<UserViewModel[]>(users);
         }
 
-        public async Task<UserViewModel> UserAsync(ClaimsPrincipal principal)
+        public async Task<UserDetailsViewModel> UserAsync(ClaimsPrincipal principal)
         {
             var userId = principal.GetUserId();
             var user = await _userService.FindAsync(userId);
+            var roles = await _userService.RolesAsync(user);
+            var userResult = _mapper.Map<UserDetailsViewModel>(user);
 
-            return _mapper.Map<UserViewModel>(user);
+            userResult.Roles = roles.ToArray();
+
+            return userResult;
         }
 
         public async Task UpdateAsync(ClaimsPrincipal principal, EditUserViewModel model)
