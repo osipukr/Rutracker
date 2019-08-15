@@ -9,9 +9,8 @@ namespace Rutracker.Server.WebApi.Extensions
         public static string GetError(this ModelStateDictionary modelState)
         {
             var errors = modelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage);
-            var message = string.Join(Environment.NewLine, errors);
 
-            return message;
+            return string.Join(Environment.NewLine, errors);
         }
     }
 }
