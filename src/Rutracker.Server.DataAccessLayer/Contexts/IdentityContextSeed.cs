@@ -41,13 +41,11 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
             {
                 new Role
                 {
-                    Name = UserRoles.Names.User,
-                    Description = UserRoles.Descriptions.User
+                    Name = UserRoles.Names.User
                 },
                 new Role
                 {
-                    Name = UserRoles.Names.Admin,
-                    Description = UserRoles.Descriptions.Admin
+                    Name = UserRoles.Names.Admin
                 }
             };
 

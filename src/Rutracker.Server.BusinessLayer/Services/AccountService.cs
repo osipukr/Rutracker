@@ -68,7 +68,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             return user;
         }
 
-        public async Task<User> LoginAsync(string userName, string password)
+        public async Task<User> LoginAsync(string userName, string password, bool rememberMe)
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -94,7 +94,7 @@ namespace Rutracker.Server.BusinessLayer.Services
                 throw new TorrentException("Not valid password.", ExceptionEventType.NotValidParameters);
             }
 
-            await _signInManager.SignInAsync(user, isPersistent: true);
+            await _signInManager.SignInAsync(user, rememberMe);
 
             return user;
         }

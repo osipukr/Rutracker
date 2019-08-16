@@ -56,7 +56,7 @@
                 <MatButton Type="submit" Raised="true" Label="Create account" />
             </div>
 
-            <MatButton Link="@LoginLink" Outlined="true" Label="Login to account" />
+            <MatButton Link="@Constants.Path.Login" Outlined="true" Label="Login to account" />
         </fieldset>
     </EditForm>
 </MatCard>
@@ -65,15 +65,13 @@
 {
     private RegisterViewModel RegisterModel { get; set; } = new RegisterViewModel();
 
-    private const string LoginLink = "account/login";
-
     private async Task RegisterClicked()
     {
         try
         {
             await AppState.Register(RegisterModel);
 
-            UriHelper.NavigateTo("/", forceLoad: true);
+            UriHelper.NavigateTo(Constants.Path.Home, forceLoad: true);
         }
         catch (Exception ex)
         {

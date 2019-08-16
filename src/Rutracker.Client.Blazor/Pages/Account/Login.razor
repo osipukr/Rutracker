@@ -34,12 +34,13 @@
             </div>
 
             <div class="form-group text-right">
+                <MatCheckbox @bind-Checked="@LoginModel.RememberMe" class="filled-in chk-col-blue" Label="Remember Me" />
                 <MatButton Type="submit" Raised="true" Label="Login" />
             </div>
 
             <hr />
 
-            <MatButton Link="@RegisterLink" Outlined="true" Label="Create account" />
+            <MatButton Link="@Constants.Path.Register" Outlined="true" Label="Create account" />
         </fieldset>
     </EditForm>
 </MatCard>
@@ -48,15 +49,13 @@
 {
     private LoginViewModel LoginModel { get; set; } = new LoginViewModel();
 
-        private const string RegisterLink = "account/register";
-
     private async Task LoginClicked()
     {
         try
         {
             await AppState.Login(LoginModel);
 
-            UriHelper.NavigateTo("/", forceLoad: true);
+            UriHelper.NavigateTo(Constants.Path.Home, forceLoad: true);
         }
         catch (Exception ex)
         {

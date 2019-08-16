@@ -21,7 +21,7 @@ namespace Rutracker.Server.WebApi.Services
 
         public async Task<JwtToken> LoginAsync(LoginViewModel model)
         {
-            var user = await _accountService.LoginAsync(model.UserName, model.Password);
+            var user = await _accountService.LoginAsync(model.UserName, model.Password, model.RememberMe);
             var roles = await _userService.RolesAsync(user);
 
             return await _jwtFactory.GenerateTokenAsync(user, roles);

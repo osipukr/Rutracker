@@ -1,3 +1,4 @@
+using Blazor.FileReader;
 using Blazored.LocalStorage;
 using Blazored.Modal;
 using MatBlazor;
@@ -20,6 +21,7 @@ namespace Rutracker.Client.Blazor
             services.AddSingleton(clientSettings.ViewSettings);
 
             services.AddBlazoredModal();
+            services.AddFileReaderService();
             services.AddBlazoredLocalStorage();
             services.AddAuthorizationCore();
             services.AddSingleton<HttpClientService>();
@@ -36,7 +38,6 @@ namespace Rutracker.Client.Blazor
         public void Configure(IComponentsApplicationBuilder app)
         {
             WebAssemblyHttpMessageHandler.DefaultCredentials = FetchCredentialsOption.Include;
-
             app.AddComponent<App>("app");
         }
     }

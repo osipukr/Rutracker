@@ -1,6 +1,9 @@
-﻿@inject AppState AppState
+﻿@using global::Blazor.FileReader
+
+@inject AppState AppState
 @inject IMatToaster MatToaster
 @inject IModalService ModalService
+@inject IFileReaderService FileReaderService
 
 <EditForm Model="@EditModel" OnValidSubmit="@UpdateClicked">
     <fieldset>
@@ -18,25 +21,19 @@
         </div>
 
         <div class="form-group">
-            <MatTextField @bind-Value="@EditModel.FirstName"
-                          Label="Fist Name"
-                          Icon="@MatIconNames.Person"
-                          IconTrailing="true"
-                          FullWidth="true" />
+            <MatTextField @bind-Value="@EditModel.FirstName" Label="Fist Name" FullWidth="true" />
         </div>
 
         <div class="form-group">
-            <MatTextField @bind-Value="@EditModel.LastName"
-                          Label="Last Name"
-                          Icon="@MatIconNames.Person"
-                          IconTrailing="true"
-                          FullWidth="true" />
+            <MatTextField @bind-Value="@EditModel.LastName" Label="Last Name" FullWidth="true" />
         </div>
 
         <div class="form-group">
-            <MatTextField @bind-Value="@EditModel.ImageUrl"
-                          Label="Image Url"
-                          FullWidth="true" />
+            <MatTextField @bind-Value="@EditModel.ImageUrl" Label="Image Url" FullWidth="true" />
+        </div>
+
+        <div class="form-group">
+            Select image from computer: <input type="file" @ref="_inputTypeFileElement" />
         </div>
 
         <div class="form-group mt-4 d-flex justify-content-end">
@@ -46,28 +43,59 @@
     </fieldset>
 </EditForm>
 
-@functions
+@code
 {
     [CascadingParameter] private ModalParameters Parameters { get; set; }
 
     private EditUserViewModel EditModel { get; set; }
+    private ElementRef _inputTypeFileElement;
 
     protected override void OnInit()
     {
         EditModel = Parameters.Get<EditUserViewModel>(nameof(EditUserViewModel));
     }
 
+    private async Task ReadFileAsync()
+    {
+        var file = (await FileReaderService.CreateReference(_inputTypeFileElement).EnumerateFilesAsync()).FirstOrDefault();
+
+        if (file == null)
+        {
+            return;
+        }
+
+        using var stream = await file.OpenReadAsync();
+
+        if (stream.Length > Constants.File.MaxImageSize)
+        {
+            throw new Exception("File size too large.");
+        }
+
+        EditModel.ImageBytes = new byte[stream.Length];
+
+        var buffer = new byte[4 * 1024];
+        var length = 0;
+        int count;
+
+        while ((count = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+        {
+            Array.Copy(buffer, 0, EditModel.ImageBytes, length, count);
+
+            length += count;
+        }
+    }
+
     private async Task UpdateClicked()
     {
         try
         {
-            await AppState.UpdateUser(EditModel);
+            await ReadFileAsync();
 
             ModalService.Close(ModalResult.Ok(EditModel));
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Error update user");
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Error read image file");
         }
     }
 

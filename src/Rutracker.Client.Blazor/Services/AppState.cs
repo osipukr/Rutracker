@@ -59,7 +59,7 @@ namespace Rutracker.Client.Blazor.Services
         #region Users
 
         public async Task<UserViewModel[]> Users() => await IndexActionAsync(() => _userService.Users());
-        public async Task<UserViewModel> UserDetails() => await IndexActionAsync(() => _userService.UserDetails());
+        public async Task<UserDetailsViewModel> UserDetails() => await IndexActionAsync(() => _userService.UserDetails());
         public async Task UpdateUser(EditUserViewModel model) => await _userService.UpdateUser(model);
 
         #endregion

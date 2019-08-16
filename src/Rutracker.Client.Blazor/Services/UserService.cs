@@ -18,7 +18,7 @@ namespace Rutracker.Client.Blazor.Services
 
         public async Task<UserViewModel[]> Users() => await _httpClientService.GetJsonAsync<UserViewModel[]>(_apiUriSettings.Users);
 
-        public async Task<UserViewModel> UserDetails() => await _httpClientService.GetJsonAsync<UserViewModel>(_apiUriSettings.UserDetails);
+        public async Task<UserDetailsViewModel> UserDetails() => await _httpClientService.GetJsonAsync<UserDetailsViewModel>(_apiUriSettings.UserDetails);
 
         public async Task UpdateUser(EditUserViewModel model) => await _httpClientService.PutJsonAsync(_apiUriSettings.UpdateUser, model);
     }
