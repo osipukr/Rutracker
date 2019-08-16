@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-using Rutracker.Server.BusinessLayer.Exceptions;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.BusinessLayer.Options;
+using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
@@ -68,12 +68,12 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             if (string.IsNullOrWhiteSpace(containerName))
             {
-                throw new TorrentException($"The {nameof(containerName)} not valid.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"The {nameof(containerName)} not valid.", ExceptionEventType.NotValidParameters);
             }
 
             if (string.IsNullOrWhiteSpace(fileName))
             {
-                throw new TorrentException($"The {nameof(fileName)} not valid.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"The {nameof(fileName)} not valid.", ExceptionEventType.NotValidParameters);
             }
 
             var container = _client.GetContainerReference(containerName);
@@ -91,7 +91,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (blockBlob == null)
             {
-                throw new TorrentException($"The {nameof(blockBlob)} not found.", ExceptionEventType.NotFound);
+                throw new RutrackerException($"The {nameof(blockBlob)} not found.", ExceptionEventType.NotFound);
             }
 
             return blockBlob;

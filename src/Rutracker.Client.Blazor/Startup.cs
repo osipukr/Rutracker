@@ -25,8 +25,8 @@ namespace Rutracker.Client.Blazor
             services.AddBlazoredLocalStorage();
             services.AddAuthorizationCore();
             services.AddSingleton<HttpClientService>();
-            services.AddScoped<ApiAuthenticationStateProvider>();
-            services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<ApiAuthenticationStateProvider>());
+            services.AddSingleton<ApiAuthenticationStateProvider>();
+            services.AddSingleton<AuthenticationStateProvider>(s => s.GetRequiredService<ApiAuthenticationStateProvider>());
             services.AddSingleton<IAccountService, AccountService>();
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<ITorrentService, TorrentService>();

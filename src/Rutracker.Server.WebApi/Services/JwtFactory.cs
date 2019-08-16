@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Settings;
-using Rutracker.Shared.Models.ViewModels.Account;
+using Rutracker.Shared.Models;
 
 namespace Rutracker.Server.WebApi.Services
 {

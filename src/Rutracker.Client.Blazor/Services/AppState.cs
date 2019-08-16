@@ -58,17 +58,39 @@ namespace Rutracker.Client.Blazor.Services
 
         #region Users
 
-        public async Task<UserViewModel[]> Users() => await IndexActionAsync(() => _userService.Users());
-        public async Task<UserDetailsViewModel> UserDetails() => await IndexActionAsync(() => _userService.UserDetails());
-        public async Task UpdateUser(EditUserViewModel model) => await _userService.UpdateUser(model);
+        public async Task<UserViewModel[]> Users()
+        {
+            return await IndexActionAsync(() => _userService.Users());
+        }
+
+        public async Task<UserDetailsViewModel> UserDetails()
+        {
+            return await IndexActionAsync(() => _userService.UserDetails());
+        }
+
+        public async Task UpdateUser(EditUserViewModel model)
+        {
+            await _userService.UpdateUser(model);
+        }
 
         #endregion
 
         #region Torrents
 
-        public async Task<PaginationResult<TorrentViewModel>> Torrents(int page, int pageSize, FilterViewModel filter) => await IndexActionAsync(() => _torrentService.Torrents(page, pageSize, filter));
-        public async Task<TorrentDetailsViewModel> Torrent(long id) => await IndexActionAsync(() => _torrentService.Torrent(id));
-        public async Task<FacetResult<string>> TitleFacet(int count) => await _torrentService.TitleFacet(count);
+        public async Task<PaginationResult<TorrentViewModel>> Torrents(int page, int pageSize, FilterViewModel filter)
+        {
+            return await IndexActionAsync(() => _torrentService.Torrents(page, pageSize, filter));
+        }
+
+        public async Task<TorrentDetailsViewModel> Torrent(long id)
+        {
+            return await IndexActionAsync(() => _torrentService.Torrent(id));
+        }
+
+        public async Task<FacetResult<string>> TitleFacet(int count)
+        {
+            return await _torrentService.TitleFacet(count);
+        }
 
         #endregion
 

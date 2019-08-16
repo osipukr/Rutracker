@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Rutracker.Server.BusinessLayer.Exceptions;
+using Rutracker.Server.WebApi.Extensions;
+using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.WebApi.Filters
 {
@@ -29,10 +28,9 @@ namespace Rutracker.Server.WebApi.Filters
                 return;
             }
 
-            var errors = context.ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage);
-            var message = string.Join(Environment.NewLine, errors);
+            var message = context.ModelState.GetError();
 
-            throw new TorrentException(message, ExceptionEventType.NotValidParameters);
+            throw new RutrackerException(message, ExceptionEventType.NotValidParameters);
         }
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-using Rutracker.Server.BusinessLayer.Exceptions;
+using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.WebApi.Filters
 {
@@ -40,7 +40,7 @@ namespace Rutracker.Server.WebApi.Filters
 #endif
             var statusCode = StatusCodes.Status500InternalServerError;
 
-            if (context.Exception is TorrentException exception)
+            if (context.Exception is RutrackerException exception)
             {
                 message = exception.Message;
                 statusCode = exception.ExceptionEventType switch

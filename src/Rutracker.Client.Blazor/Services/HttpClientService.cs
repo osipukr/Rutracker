@@ -13,6 +13,18 @@ namespace Rutracker.Client.Blazor.Services
 
         public HttpClientService(HttpClient httpClient) => _httpClient = httpClient;
 
+        public async Task TaskGetJsonAsync(string url)
+        {
+            using var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+
+                throw new Exception(DeserializeJsonError(json));
+            }
+        }
+
         public async Task<TResult> GetJsonAsync<TResult>(string url)
         {
             using var response = await _httpClient.GetAsync(url);
@@ -20,22 +32,7 @@ namespace Rutracker.Client.Blazor.Services
 
             return response.IsSuccessStatusCode
                 ? DeserializeJson<TResult>(json)
-                : throw new Exception(message: DeserializeJsonError(json));
-        }
-
-        public async Task<TResult> PostJsonAsync<TResult>(string url, object jsonObject)
-        {
-            using var content = new StringContent(
-                content: JsonConvert.SerializeObject(jsonObject),
-                encoding: Encoding.UTF8,
-                mediaType: "application/json");
-
-            using var response = await _httpClient.PostAsync(url, content);
-            var json = await response.Content.ReadAsStringAsync();
-
-            return response.IsSuccessStatusCode
-                ? DeserializeJson<TResult>(json)
-                : throw new Exception(message: DeserializeJsonError(json));
+                : throw new Exception(DeserializeJsonError(json));
         }
 
         public async Task PostJsonAsync(string url, object jsonObject)
@@ -51,8 +48,23 @@ namespace Rutracker.Client.Blazor.Services
             {
                 var json = await response.Content.ReadAsStringAsync();
 
-                throw new Exception(message: DeserializeJsonError(json));
+                throw new Exception(DeserializeJsonError(json));
             }
+        }
+
+        public async Task<TResult> PostJsonAsync<TResult>(string url, object jsonObject)
+        {
+            using var content = new StringContent(
+                content: JsonConvert.SerializeObject(jsonObject),
+                encoding: Encoding.UTF8,
+                mediaType: "application/json");
+
+            using var response = await _httpClient.PostAsync(url, content);
+            var json = await response.Content.ReadAsStringAsync();
+
+            return response.IsSuccessStatusCode
+                ? DeserializeJson<TResult>(json)
+                : throw new Exception(DeserializeJsonError(json));
         }
 
         public async Task PutJsonAsync(string url, object jsonObject)
@@ -68,7 +80,7 @@ namespace Rutracker.Client.Blazor.Services
             {
                 var json = await response.Content.ReadAsStringAsync();
 
-                throw new Exception(message: DeserializeJsonError(json));
+                throw new Exception(DeserializeJsonError(json));
             }
         }
 

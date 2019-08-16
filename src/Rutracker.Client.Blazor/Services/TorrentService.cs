@@ -11,9 +11,9 @@ namespace Rutracker.Client.Blazor.Services
         private readonly HttpClientService _httpClientService;
         private readonly ApiUriSettings _apiUriSettings;
 
-        public TorrentService(HttpClientService httpClient, ApiUriSettings uriSettings)
+        public TorrentService(HttpClientService httpClientService, ApiUriSettings uriSettings)
         {
-            _httpClientService = httpClient;
+            _httpClientService = httpClientService;
             _apiUriSettings = uriSettings;
         }
 

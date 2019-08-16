@@ -12,8 +12,8 @@
   },
   "ViewSettings": {
     "ServiceName": "Rutracker",
-    "ForumTitlesCount": 5,
-    "ItemsPerPageCount": 6
+    "TorrentsPerPageCount": 6,
+    "ForumTitlesCount": 5
   },
   "MatToasterSettings": {
     "Position": "BottomRight",

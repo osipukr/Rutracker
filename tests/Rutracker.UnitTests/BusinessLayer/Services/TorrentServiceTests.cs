@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Rutracker.Server.BusinessLayer.Exceptions;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.BusinessLayer.Services;
+using Rutracker.Shared.Infrastructure.Exceptions;
 using Rutracker.UnitTests.Setup;
 using Xunit;
 
@@ -74,41 +74,41 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             Assert.Equal(expectedCount, forums.Count());
         }
 
-        [Fact(DisplayName = "ListAsync() with an invalid parameters should throw TorrentException.")]
+        [Fact(DisplayName = "ListAsync() with an invalid parameters should throw RutrackerException.")]
         public async Task ListAsync_NegativeNumbers_ThrowTorrentException()
         {
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<TorrentException>(async () =>
+            var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _torrentService.ListAsync(-10, -10, null, null, null, null));
 
             Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
         }
 
-        [Fact(DisplayName = "FindAsync() with an invalid parameters should throw TorrentException.")]
+        [Fact(DisplayName = "FindAsync() with an invalid parameters should throw RutrackerException.")]
         public async Task FindAsync_NegativeNumber_ThrowTorrentException()
         {
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<TorrentException>(async () =>
+            var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _torrentService.FindAsync(-10));
 
             Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
         }
 
-        [Fact(DisplayName = "FindAsync() with an invalid parameters should throw TorrentException.")]
+        [Fact(DisplayName = "FindAsync() with an invalid parameters should throw RutrackerException.")]
         public async Task FindAsync_1000_ThrowTorrentException()
         {
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<TorrentException>(async () =>
+            var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _torrentService.FindAsync(1000));
 
             Assert.Equal(ExceptionEventType.NotFound, exception.ExceptionEventType);
         }
 
-        [Fact(DisplayName = "ForumsAsync() with an invalid parameters should throw TorrentException.")]
+        [Fact(DisplayName = "ForumsAsync() with an invalid parameters should throw RutrackerException.")]
         public async Task ForumsAsync_NegativeNumber_ThrowTorrentException()
         {
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<TorrentException>(async () =>
+            var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _torrentService.ForumsAsync(-10));
 
             Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);

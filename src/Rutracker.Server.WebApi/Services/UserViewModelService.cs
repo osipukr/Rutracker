@@ -33,8 +33,7 @@ namespace Rutracker.Server.WebApi.Services
 
         public async Task<UserDetailsViewModel> UserAsync(ClaimsPrincipal principal)
         {
-            var userId = principal.GetUserId();
-            var user = await _userService.FindAsync(userId);
+            var user = await _userService.FindAsync(principal.GetUserId());
             var roles = await _userService.RolesAsync(user);
             var userResult = _mapper.Map<UserDetailsViewModel>(user);
 
@@ -45,8 +44,7 @@ namespace Rutracker.Server.WebApi.Services
 
         public async Task UpdateAsync(ClaimsPrincipal principal, EditUserViewModel model)
         {
-            var userId = principal.GetUserId();
-            var user = await _userService.FindAsync(userId);
+            var user = await _userService.FindAsync(principal.GetUserId());
 
             user.Email = model.Email;
             user.FirstName = model.FirstName;
