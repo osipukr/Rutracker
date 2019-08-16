@@ -13,17 +13,35 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\ViewModels\FilterViewModelResource.Designer.cs">
+    <Compile Update="Resources\FilterViewModelResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>FilterViewModelResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\LoginViewModelResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LoginViewModelResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\RegisterViewModelResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RegisterViewModelResource.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\ViewModels\FilterViewModelResource.resx">
+    <EmbeddedResource Update="Resources\FilterViewModelResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>FilterViewModelResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\LoginViewModelResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>LoginViewModelResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\RegisterViewModelResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RegisterViewModelResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 
