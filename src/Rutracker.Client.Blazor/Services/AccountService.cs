@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-using Rutracker.Client.Blazor.Extensions;
+﻿using System.Threading.Tasks;
 using Rutracker.Client.Blazor.Interfaces;
 using Rutracker.Client.Blazor.Settings;
 using Rutracker.Shared.Models;
@@ -10,28 +8,28 @@ namespace Rutracker.Client.Blazor.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly HttpClient _httpClient;
+        private readonly HttpClientService _httpClientService;
         private readonly ApiUriSettings _apiUriSettings;
 
-        public AccountService(HttpClient httpClient, ApiUriSettings apiUri)
+        public AccountService(HttpClientService httpClientService, ApiUriSettings apiUri)
         {
-            _httpClient = httpClient;
+            _httpClientService = httpClientService;
             _apiUriSettings = apiUri;
         }
 
         public async Task<JwtToken> Login(LoginViewModel model)
         {
-            return await _httpClient.ApiPostAsync<JwtToken>(_apiUriSettings.Login, model);
+            return await _httpClientService.PostJsonAsync<JwtToken>(_apiUriSettings.Login, model);
         }
 
         public async Task<JwtToken> Register(RegisterViewModel model)
         {
-            return await _httpClient.ApiPostAsync<JwtToken>(_apiUriSettings.Register, model);
+            return await _httpClientService.PostJsonAsync<JwtToken>(_apiUriSettings.Register, model);
         }
 
         public async Task Logout()
         {
-            await _httpClient.ApiPostAsync(_apiUriSettings.Logout, null);
+            await _httpClientService.PostJsonAsync(_apiUriSettings.Logout, null);
         }
     }
 }

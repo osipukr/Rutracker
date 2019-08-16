@@ -1,25 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
-using Rutracker.Client.Blazor.Extensions;
 
 namespace Rutracker.Client.Blazor.Services
 {
     public class ApiAuthenticationStateProvider : AuthenticationStateProvider
     {
-        private readonly HttpClient _httpClient;
+        private readonly HttpClientService _httpClientService;
         private readonly ILocalStorageService _localStorageService;
 
         private const string TokenKey = "authToken";
         private const string AuthenticationType = "jwt";
 
-        public ApiAuthenticationStateProvider(HttpClient httpClient, ILocalStorageService localStorageService)
+        public ApiAuthenticationStateProvider(HttpClientService httpClientService, ILocalStorageService localStorageService)
         {
-            _httpClient = httpClient;
+            _httpClientService = httpClientService;
             _localStorageService = localStorageService;
         }
 
@@ -29,12 +27,12 @@ namespace Rutracker.Client.Blazor.Services
 
             if (string.IsNullOrWhiteSpace(token))
             {
-                _httpClient.RemoveAuthorizationToken();
+                _httpClientService.RemoveAuthorizationToken();
 
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
 
-            _httpClient.SetAuthorizationToken(token);
+            _httpClientService.SetAuthorizationToken(token);
 
             var identity = new ClaimsIdentity(ParseClaimsFromJwt(token), AuthenticationType);
 

@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-using Rutracker.Client.Blazor.Extensions;
+﻿using System.Threading.Tasks;
 using Rutracker.Client.Blazor.Interfaces;
 using Rutracker.Client.Blazor.Settings;
 using Rutracker.Shared.Models.ViewModels.User;
@@ -9,28 +7,28 @@ namespace Rutracker.Client.Blazor.Services
 {
     public class UserService : IUserService
     {
-        private readonly HttpClient _httpClient;
+        private readonly HttpClientService _httpClientService;
         private readonly ApiUriSettings _apiUriSettings;
 
-        public UserService(HttpClient httpClient, ApiUriSettings uriSettings)
+        public UserService(HttpClientService httpClientService, ApiUriSettings uriSettings)
         {
-            _httpClient = httpClient;
+            _httpClientService = httpClientService;
             _apiUriSettings = uriSettings;
         }
 
         public async Task<UserViewModel[]> Users()
         {
-            return await _httpClient.ApiGetAsync<UserViewModel[]>(_apiUriSettings.Users);
+            return await _httpClientService.GetJsonAsync<UserViewModel[]>(_apiUriSettings.Users);
         }
 
         public async Task<UserDetailsViewModel> UserDetails()
         {
-            return await _httpClient.ApiGetAsync<UserDetailsViewModel>(_apiUriSettings.UserDetails);
+            return await _httpClientService.GetJsonAsync<UserDetailsViewModel>(_apiUriSettings.UserDetails);
         }
 
         public async Task UpdateUser(EditUserViewModel model)
         {
-            await _httpClient.ApiPutAsync(_apiUriSettings.UpdateUser, model);
+            await _httpClientService.PutJsonAsync(_apiUriSettings.UpdateUser, model);
         }
     }
 }

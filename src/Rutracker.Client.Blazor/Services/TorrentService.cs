@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-using Rutracker.Client.Blazor.Extensions;
+﻿using System.Threading.Tasks;
 using Rutracker.Client.Blazor.Interfaces;
 using Rutracker.Client.Blazor.Settings;
 using Rutracker.Shared.Models.ViewModels.Shared;
@@ -10,12 +8,12 @@ namespace Rutracker.Client.Blazor.Services
 {
     public class TorrentService : ITorrentService
     {
-        private readonly HttpClient _httpClient;
+        private readonly HttpClientService _httpClientService;
         private readonly ApiUriSettings _apiUriSettings;
 
-        public TorrentService(HttpClient httpClient, ApiUriSettings uriSettings)
+        public TorrentService(HttpClientService httpClientService, ApiUriSettings uriSettings)
         {
-            _httpClient = httpClient;
+            _httpClientService = httpClientService;
             _apiUriSettings = uriSettings;
         }
 
@@ -23,21 +21,21 @@ namespace Rutracker.Client.Blazor.Services
         {
             var url = string.Format(_apiUriSettings.TorrentsIndex, page.ToString(), pageSize.ToString());
 
-            return await _httpClient.ApiPostAsync<PaginationResult<TorrentViewModel>>(url, filter);
+            return await _httpClientService.PostJsonAsync<PaginationResult<TorrentViewModel>>(url, filter);
         }
 
         public async Task<TorrentDetailsViewModel> Torrent(long id)
         {
             var url = string.Format(_apiUriSettings.TorrentIndex, id.ToString());
 
-            return await _httpClient.ApiGetAsync<TorrentDetailsViewModel>(url);
+            return await _httpClientService.GetJsonAsync<TorrentDetailsViewModel>(url);
         }
 
         public async Task<FacetResult<string>> TitleFacet(int count)
         {
             var url = string.Format(_apiUriSettings.Titles, count.ToString());
 
-            return await _httpClient.ApiGetAsync<FacetResult<string>>(url);
+            return await _httpClientService.GetJsonAsync<FacetResult<string>>(url);
         }
     }
 }
