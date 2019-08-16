@@ -71,7 +71,7 @@
         {
             await AppState.Register(RegisterModel);
 
-            UriHelper.NavigateTo(Constants.Path.Home, forceLoad: true);
+            UriHelper.NavigateTo(Constants.Path.Home);
         }
         catch (Exception ex)
         {
