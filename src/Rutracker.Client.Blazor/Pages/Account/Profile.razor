@@ -49,7 +49,7 @@ else
 
         <div class="profile-body">
             <MatTabGroup>
-                <UserInfoTab UserModel="@UserDetailsModel" OnUpdateClick="@UpdateUserAsync" />
+                <UserInfoTab UserModel="@UserDetailsModel" OnUpdateClick="@UpdateUserClicked" />
             </MatTabGroup>
         </div>
     </div>
@@ -73,7 +73,7 @@ else
         }
     }
 
-    private async Task UpdateUserAsync(EditUserViewModel model)
+    private async Task UpdateUserClicked(EditUserViewModel model)
     {
         try
         {

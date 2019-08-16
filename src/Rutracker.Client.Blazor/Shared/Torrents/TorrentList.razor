@@ -6,7 +6,7 @@
         <span>Loading torrents, please wait...</span>
     </LoadingBackground>
 }
-else if (Items == null || Items.Length == 0)
+else if (Items?.Length == 0)
 {
     <LoadingBackground ShowLoader="false">
         <span>Sorry, but torrent list is empty...</span>

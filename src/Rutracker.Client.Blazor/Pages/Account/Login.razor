@@ -8,40 +8,38 @@
 
 <MatCard>
     <EditForm Model="@LoginModel" OnValidSubmit="@LoginClicked">
-        <fieldset>
-            <div class="form-group">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
-            </div>
+        <div class="form-group">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+        </div>
 
-            <div class="form-group">
-                <MatTextField @bind-value="@LoginModel.UserName"
-                               Label="User Name"
-                               Icon="@MatIconNames.Person"
-                               IconTrailing="true"
-                               FullWidth="true"
-                               Required="true" />
-            </div>
+        <div class="form-group">
+            <MatTextField @bind-value="@LoginModel.UserName"
+                          Label="User Name"
+                          Icon="@MatIconNames.Person"
+                          IconTrailing="true"
+                          FullWidth="true"
+                          Required="true" />
+        </div>
 
-            <div class="form-group">
-                <MatTextField @bind-value="@LoginModel.Password"
-                               Label="Password"
-                               Icon="@MatIconNames.Lock_open"
-                               IconTrailing="true"
-                               FullWidth="true"
-                               Required="true"
-                               Type="password" />
-            </div>
+        <div class="form-group">
+            <MatTextField @bind-value="@LoginModel.Password"
+                          Label="Password"
+                          Icon="@MatIconNames.Lock_open"
+                          IconTrailing="true"
+                          FullWidth="true"
+                          Required="true"
+                          Type="password" />
+        </div>
 
-            <div class="form-group text-right">
-                <MatCheckbox @bind-Checked="@LoginModel.RememberMe" class="filled-in chk-col-blue" Label="Remember Me" />
-                <MatButton Type="submit" Raised="true" Label="Login" />
-            </div>
+        <div class="form-group text-right">
+            <MatCheckbox @bind-Checked="@LoginModel.RememberMe" class="filled-in chk-col-blue" Label="Remember Me ?" />
+            <MatButton Type="submit" Raised="true" Label="Login" />
+        </div>
 
-            <hr />
+        <hr />
 
-            <MatButton Link="@Constants.Path.Register" Outlined="true" Label="Create account" />
-        </fieldset>
+        <MatButton Link="@Constants.Path.Register" Outlined="true" Label="Create account" />
     </EditForm>
 </MatCard>
 

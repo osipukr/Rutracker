@@ -22,7 +22,7 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
             _dbSet = _context.Set<TEntity>();
         }
 
-        public virtual IQueryable<TEntity> GetAll() => _dbSet.AsQueryable();
+        public virtual IQueryable<TEntity> GetAll() => _dbSet;
 
         public virtual IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> expression) => _dbSet.Where(expression);
 
