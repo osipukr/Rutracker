@@ -52,6 +52,7 @@ namespace Rutracker.Server.WebApi
             services.Configure<JwtSettings>(_configuration.GetSection(nameof(JwtSettings)));
             services.Configure<StorageSettings>(_configuration.GetSection(nameof(StorageSettings)));
             services.Configure<EmailSettings>(_configuration.GetSection(nameof(EmailSettings)));
+            services.Configure<SmsSettings>(_configuration.GetSection(nameof(SmsSettings)));
 
             services.AddResponseCompression(options =>
             {
@@ -141,6 +142,7 @@ namespace Rutracker.Server.WebApi
 
             services.AddSingleton<IJwtFactory, JwtFactory>();
             services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddSingleton<ISmsSender, SmsSender>();
             services.AddScoped<ITorrentRepository, TorrentRepository>();
             services.AddScoped<IStorageService, StorageService>();
             services.AddScoped<IAccountService, AccountService>();
