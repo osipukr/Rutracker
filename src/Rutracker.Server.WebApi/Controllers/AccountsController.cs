@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Interfaces;
@@ -27,6 +28,7 @@ namespace Rutracker.Server.WebApi.Controllers
         [HttpPost(nameof(Register))]
         public async Task<JwtToken> Register(RegisterViewModel model) => await _accountViewModelService.RegisterAsync(model);
 
+        [Authorize]
         [HttpPost(nameof(Logout))]
         public async Task Logout() => await _accountViewModelService.LogoutAsync();
     }

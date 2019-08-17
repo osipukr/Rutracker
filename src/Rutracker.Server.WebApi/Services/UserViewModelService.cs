@@ -68,5 +68,12 @@ namespace Rutracker.Server.WebApi.Services
 
             await _userService.UpdateAsync(user);
         }
+
+        public async Task ChangePasswordAsync(ClaimsPrincipal principal, ChangePasswordViewModel model)
+        {
+            var userId = principal.GetUserId();
+
+            await _userService.ChangedPasswordAsync(userId, model.OldPassword, model.NewPassword);
+        }
     }
 }

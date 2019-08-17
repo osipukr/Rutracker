@@ -32,5 +32,8 @@ namespace Rutracker.Server.WebApi.Controllers
 
         [HttpPut(nameof(Update))]
         public async Task Update(EditUserViewModel model) => await _userViewModelService.UpdateAsync(User, model);
+
+        [HttpPost(nameof(ChangePassword))]
+        public async Task ChangePassword(ChangePasswordViewModel model) => await _userViewModelService.ChangePasswordAsync(User, model);
     }
 }

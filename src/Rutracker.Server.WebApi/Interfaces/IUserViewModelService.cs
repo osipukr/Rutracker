@@ -9,5 +9,6 @@ namespace Rutracker.Server.WebApi.Interfaces
         Task<UserViewModel[]> UsersAsync();
         Task<UserDetailsViewModel> UserAsync(ClaimsPrincipal principal);
         Task UpdateAsync(ClaimsPrincipal principal, EditUserViewModel model);
+        Task ChangePasswordAsync(ClaimsPrincipal principal, ChangePasswordViewModel model);
     }
 }

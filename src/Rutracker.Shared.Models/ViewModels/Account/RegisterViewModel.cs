@@ -29,6 +29,7 @@ namespace Rutracker.Shared.Models.ViewModels.Account
         public string Password { get; set; }
 
         [Required]
+        [DataType(DataType.Password)]
         [Display(Name = nameof(RegisterViewModelResource.ConfirmPasswordDisplayName), ResourceType = typeof(RegisterViewModelResource))]
         [Compare(nameof(Password),
             ErrorMessageResourceName = nameof(RegisterViewModelResource.ConfirmPasswordErrorMessage),

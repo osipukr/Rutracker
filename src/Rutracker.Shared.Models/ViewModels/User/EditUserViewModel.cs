@@ -6,6 +6,7 @@ namespace Rutracker.Shared.Models.ViewModels.User
     {
         [Required]
         [EmailAddress]
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
         public string FirstName { get; set; }

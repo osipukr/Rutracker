@@ -79,5 +79,44 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             return roles;
         }
+
+        public async Task<User> ChangedPasswordAsync(string userId, string oldPassword, string newPassword)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new RutrackerException($"The {nameof(userId)} not valid.", ExceptionEventType.NotValidParameters);
+            }
+
+            if (string.IsNullOrWhiteSpace(oldPassword))
+            {
+                throw new RutrackerException($"The {nameof(oldPassword)} not valid.", ExceptionEventType.NotValidParameters);
+            }
+
+            if (string.IsNullOrWhiteSpace(newPassword))
+            {
+                throw new RutrackerException($"The {nameof(newPassword)} not valid.", ExceptionEventType.NotValidParameters);
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new RutrackerException("User not found.", ExceptionEventType.NotFound);
+            }
+
+            if (!await _userManager.CheckPasswordAsync(user, oldPassword))
+            {
+                throw new RutrackerException("Old password is not correct.", ExceptionEventType.NotValidParameters);
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+
+            if (!result.Succeeded)
+            {
+                throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
+            }
+
+            return user;
+        }
     }
 }
