@@ -1,4 +1,6 @@
-﻿@inject IModalService ModalService
+﻿@inject AppState AppState
+@inject IMatToaster MatToaster
+@inject IModalService ModalService
 
 <MatTab>
     <LabelContent>Personal info</LabelContent>
@@ -30,7 +32,7 @@
         </div>
 
         <div class="form-group mt-4 d-flex justify-content-end">
-            <MatButton OnClick="@EditUserClicked" Raised="true" Label="Edit profile" Class="mx-2" />
+            <MatButton OnClick="@EditUserClicked" Raised="true" Label="Edit profile" />
         </div>
     </ChildContent>
 </MatTab>
@@ -38,7 +40,7 @@
 @code
 {
     [Parameter] private UserDetailsViewModel UserModel { get; set; }
-    [Parameter] private EventCallback<EditUserViewModel> OnUpdateClick { get; set; }
+    [Parameter] private EventCallback OnUpdate { get; set; }
 
     private void EditUserClicked()
     {
@@ -61,9 +63,22 @@
     {
         if (!result.Cancelled && result.Data is EditUserViewModel model)
         {
-            await OnUpdateClick.InvokeAsync(model);
+            await UpdateUserClicked(model);
+            await OnUpdate.InvokeAsync(EventArgs.Empty);
         }
 
         ModalService.OnClose -= ModalClosed;
+    }
+
+    private async Task UpdateUserClicked(EditUserViewModel model)
+    {
+        try
+        {
+            await AppState.UpdateUser(model);
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "User update");
+        }
     }
 }

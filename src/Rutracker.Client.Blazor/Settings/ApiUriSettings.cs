@@ -16,5 +16,6 @@
         public string Users { get; set; }
         public string UserDetails { get; set; }
         public string UpdateUser { get; set; }
+        public string ChangePassword { get; set; }
     }
 }

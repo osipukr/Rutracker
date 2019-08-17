@@ -8,5 +8,6 @@ namespace Rutracker.Client.Blazor.Interfaces
         Task<UserViewModel[]> Users();
         Task<UserDetailsViewModel> UserDetails();
         Task UpdateUser(EditUserViewModel model);
+        Task ChangePassword(ChangePasswordViewModel model);
     }
 }

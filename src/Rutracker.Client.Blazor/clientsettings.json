@@ -8,7 +8,8 @@
     "Logout": "api/accounts/logout",
     "Users": "api/users",
     "UserDetails": "api/users/details",
-    "UpdateUser": "api/users/update"
+    "UpdateUser": "api/users/update",
+    "ChangePassword": "api/users/changepassword"
   },
   "ViewSettings": {
     "ServiceName": "Rutracker",

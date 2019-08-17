@@ -73,6 +73,11 @@ namespace Rutracker.Client.Blazor.Services
             await _userService.UpdateUser(model);
         }
 
+        public async Task ChangePassword(ChangePasswordViewModel model)
+        {
+            await _userService.ChangePassword(model);
+        }
+
         #endregion
 
         #region Torrents
