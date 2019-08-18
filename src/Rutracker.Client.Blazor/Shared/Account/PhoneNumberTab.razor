@@ -1,0 +1,38 @@
+﻿<MatTab>
+    <LabelContent>Phone</LabelContent>
+    <ChildContent>
+        <div class="form-group">
+            <MatTextField Value="@UserModel.PhoneNumber"
+                          Label="Phone number"
+                          Icon="@MatIconNames.Phone"
+                          IconTrailing="true"
+                          FullWidth="true"
+                          ReadOnly="true" />
+        </div>
+
+        <div class="form-group mt-4 d-flex justify-content-end">
+            <MatButton OnClick="@ConfirmPhoneNumberClicked"
+                       Disabled="@UserModel.PhoneNumberConfirmed"
+                       Raised="true"
+                       Label="Confirm phone"
+                       Class="mx-2" />
+
+            <MatButton OnClick="@ChangePhoneNumberClicked" Raised="true" Label="Change phone" Class="ml-2" />
+        </div>
+    </ChildContent>
+</MatTab>
+
+@code
+{
+    [Parameter] private UserDetailsViewModel UserModel { get; set; }
+
+    private async Task ChangePhoneNumberClicked()
+    {
+        await Task.CompletedTask;
+    }
+
+    private async Task ConfirmPhoneNumberClicked()
+    {
+        await Task.CompletedTask;
+    }
+}

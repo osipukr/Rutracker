@@ -118,5 +118,48 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             return user;
         }
+
+        public async Task<string> EmailConfirmationTokenAsync(User user)
+        {
+            if (user == null)
+            {
+                throw new RutrackerException("Not valid user", ExceptionEventType.NotValidParameters);
+            }
+
+            return await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        }
+
+
+        public async Task ConfirmEmailAsync(string userId, string token)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new RutrackerException($"The {nameof(userId)} not valid.", ExceptionEventType.NotValidParameters);
+            }
+
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                throw new RutrackerException($"The {nameof(token)} not valid.", ExceptionEventType.NotValidParameters);
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new RutrackerException("User not found.", ExceptionEventType.NotFound);
+            }
+
+            if (user.EmailConfirmed)
+            {
+                throw new RutrackerException("Email is already verified.", ExceptionEventType.NotValidParameters);
+            }
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+
+            if (!result.Succeeded)
+            {
+                throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
+            }
+        }
     }
 }

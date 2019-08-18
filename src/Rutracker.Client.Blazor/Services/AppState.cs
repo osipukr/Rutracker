@@ -78,6 +78,16 @@ namespace Rutracker.Client.Blazor.Services
             await _userService.ChangePassword(model);
         }
 
+        public async Task ChangeEmail(ChangeEmailViewModel model)
+        {
+            await _userService.ChangeEmail(model);
+        }
+
+        public async Task SendConfirmationEmail()
+        {
+            await _userService.SendConfirmationEmail();
+        }
+
         #endregion
 
         #region Torrents

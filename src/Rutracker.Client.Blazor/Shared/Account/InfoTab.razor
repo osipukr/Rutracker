@@ -1,9 +1,9 @@
-﻿@inject AppState AppState
+﻿@inject IUserService UserService
 @inject IMatToaster MatToaster
 @inject IModalService ModalService
 
 <MatTab>
-    <LabelContent>Personal info</LabelContent>
+    <LabelContent>Info</LabelContent>
     <ChildContent>
         <div class="form-group">
             <MatTextField Value="@UserModel.UserName"
@@ -40,7 +40,7 @@
 @code
 {
     [Parameter] private UserDetailsViewModel UserModel { get; set; }
-    [Parameter] private EventCallback OnUpdate { get; set; }
+    [Parameter] private EventCallback OnChange { get; set; }
 
     private void EditUserClicked()
     {
@@ -48,7 +48,6 @@
 
         parameters.Add(nameof(EditUserViewModel), new EditUserViewModel
         {
-            Email = UserModel.Email,
             FirstName = UserModel.FirstName,
             LastName = UserModel.LastName,
             ImageUrl = UserModel.ImageUrl
@@ -56,7 +55,7 @@
 
         ModalService.OnClose += ModalClosed;
 
-        ModalService.Show("Edit profile", typeof(EditProfile), parameters);
+        ModalService.Show("Edit profile", typeof(EditProfileModal), parameters);
     }
 
     private async void ModalClosed(ModalResult result)
@@ -64,7 +63,7 @@
         if (!result.Cancelled && result.Data is EditUserViewModel model)
         {
             await UpdateUserClicked(model);
-            await OnUpdate.InvokeAsync(EventArgs.Empty);
+            await OnChange.InvokeAsync(EventArgs.Empty);
         }
 
         ModalService.OnClose -= ModalClosed;
@@ -74,7 +73,7 @@
     {
         try
         {
-            await AppState.UpdateUser(model);
+            await UserService.UpdateUser(model);
         }
         catch (Exception ex)
         {

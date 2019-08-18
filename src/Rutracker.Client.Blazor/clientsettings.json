@@ -9,7 +9,9 @@
     "Users": "api/users",
     "UserDetails": "api/users/details",
     "UpdateUser": "api/users/update",
-    "ChangePassword": "api/users/changepassword"
+    "ChangePassword": "api/users/changepassword",
+    "ChangeEmail": "api/users/changeemail",
+    "SendConfirmationEmail": "api/users/sendconfirmationemail"
   },
   "ViewSettings": {
     "ServiceName": "Rutracker",
@@ -23,6 +25,6 @@
     "ShowProgressBar": false,
     "ShowCloseButton": true,
     "MaximumOpacity": 100,
-    "VisibleStateDuration": 3000
+    "VisibleStateDuration": 5000
   }
 }

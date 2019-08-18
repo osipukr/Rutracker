@@ -19,7 +19,38 @@ namespace Rutracker.Server.BusinessLayer.Services
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
         }
 
-        public async Task<User> CreateAsync(string userName, string email, string password)
+        public async Task<User> LoginAsync(string userName, string password, bool rememberMe)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new RutrackerException($"The {nameof(userName)} not valid.", ExceptionEventType.NotValidParameters);
+            }
+
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                throw new RutrackerException($"The {nameof(password)} not valid.", ExceptionEventType.NotValidParameters);
+            }
+
+            var user = await _userManager.FindByNameAsync(userName);
+
+            if (user == null)
+            {
+                throw new RutrackerException($"User with name '{userName}' does not exist.", ExceptionEventType.NotFound);
+            }
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: false);
+
+            if (!result.Succeeded)
+            {
+                throw new RutrackerException("Not valid password.", ExceptionEventType.NotValidParameters);
+            }
+
+            await _signInManager.SignInAsync(user, rememberMe);
+
+            return user;
+        }
+
+        public async Task<User> RegisterAsync(string userName, string email, string password)
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -64,37 +95,6 @@ namespace Rutracker.Server.BusinessLayer.Services
             }
 
             await _signInManager.SignInAsync(user, isPersistent: true);
-
-            return user;
-        }
-
-        public async Task<User> LoginAsync(string userName, string password, bool rememberMe)
-        {
-            if (string.IsNullOrWhiteSpace(userName))
-            {
-                throw new RutrackerException($"The {nameof(userName)} not valid.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new RutrackerException($"The {nameof(password)} not valid.", ExceptionEventType.NotValidParameters);
-            }
-
-            var user = await _userManager.FindByNameAsync(userName);
-
-            if (user == null)
-            {
-                throw new RutrackerException($"User with name '{userName}' does not exist.", ExceptionEventType.NotFound);
-            }
-
-            var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: false);
-
-            if (!result.Succeeded)
-            {
-                throw new RutrackerException("Not valid password.", ExceptionEventType.NotValidParameters);
-            }
-
-            await _signInManager.SignInAsync(user, rememberMe);
 
             return user;
         }

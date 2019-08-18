@@ -1,0 +1,70 @@
+﻿@inject IUserService UserService
+@inject IMatToaster MatToaster
+
+<MatTab>
+    <LabelContent>Email</LabelContent>
+    <ChildContent>
+        <EditForm Model="@ChangeEmailModel" OnValidSubmit="@ChangeEmailClicked">
+            <div class="form-group">
+                <MatTextField @bind-Value="@ChangeEmailModel.Email"
+                              Label="Email"
+                              Icon="@MatIconNames.Mail_outline"
+                              IconTrailing="true"
+                              FullWidth="true" />
+            </div>
+
+            <div class="form-group mt-4 d-flex justify-content-end">
+                <MatButton OnClick="@ConfirmEmailClicked" Disabled="@UserModel.EmailConfirmed" Raised="true" Label="Confirm email" Class="mx-2" />
+                <MatButton Type="submit" Raised="true" Label="Change email" Class="ml-2" />
+            </div>
+        </EditForm>
+    </ChildContent>
+</MatTab>
+
+@code
+{
+    [Parameter] private UserDetailsViewModel UserModel { get; set; }
+    [Parameter] private EventCallback OnChange { get; set; }
+
+    private ChangeEmailViewModel ChangeEmailModel { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        ChangeEmailModel = new ChangeEmailViewModel
+        {
+            Email = UserModel.Email
+        };
+    }
+
+    private async Task ChangeEmailClicked()
+    {
+        if (UserModel.Email == ChangeEmailModel.Email)
+        {
+            return;
+        }
+
+        try
+        {
+            await UserService.ChangeEmail(ChangeEmailModel);
+            await OnChange.InvokeAsync(EventArgs.Empty);
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Email change");
+        }
+    }
+
+    private async Task ConfirmEmailClicked()
+    {
+        try
+        {
+            await UserService.SendConfirmationEmail();
+
+            MatToaster.Add("Check your email to complete.", MatToastType.Success, "Send confirmation code");
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Send confirmation code");
+        }
+    }
+}

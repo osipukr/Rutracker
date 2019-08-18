@@ -53,6 +53,8 @@ namespace Rutracker.Server.WebApi
             services.Configure<StorageSettings>(_configuration.GetSection(nameof(StorageSettings)));
             services.Configure<EmailSettings>(_configuration.GetSection(nameof(EmailSettings)));
             services.Configure<SmsSettings>(_configuration.GetSection(nameof(SmsSettings)));
+            services.Configure<HostSettings>(_configuration.GetSection(nameof(HostSettings)));
+            services.Configure<EmailConfirmationSettings>(_configuration.GetSection(nameof(EmailConfirmationSettings)));
 
             services.AddResponseCompression(options =>
             {
@@ -86,10 +88,8 @@ namespace Rutracker.Server.WebApi
 
             services.AddIdentity<User, Role>(config =>
             {
-                // User
                 config.User.RequireUniqueEmail = true;
 
-                // Password
                 config.Password.RequireNonAlphanumeric = false;
                 config.Password.RequireUppercase = false;
                 config.Password.RequireDigit = false;
@@ -143,6 +143,7 @@ namespace Rutracker.Server.WebApi
             services.AddSingleton<IJwtFactory, JwtFactory>();
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddSingleton<ISmsSender, SmsSender>();
+            services.AddSingleton<IEmailService, EmailService>();
             services.AddScoped<ITorrentRepository, TorrentRepository>();
             services.AddScoped<IStorageService, StorageService>();
             services.AddScoped<IAccountService, AccountService>();

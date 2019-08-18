@@ -4,11 +4,6 @@ namespace Rutracker.Shared.Models.ViewModels.User
 {
     public class EditUserViewModel
     {
-        [Required]
-        [EmailAddress]
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
-
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
@@ -18,6 +13,5 @@ namespace Rutracker.Shared.Models.ViewModels.User
 
         [DataType(DataType.Upload)]
         public byte[] ImageBytes { get; set; }
-
     }
 }

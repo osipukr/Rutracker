@@ -14,7 +14,7 @@
         </div>
 
         <div class="form-group">
-            <MatTextField @bind-value="@LoginModel.UserName"
+            <MatTextField @bind-Value="@LoginModel.UserName"
                           Label="User Name"
                           Icon="@MatIconNames.Person"
                           IconTrailing="true"
@@ -23,7 +23,7 @@
         </div>
 
         <div class="form-group">
-            <MatTextField @bind-value="@LoginModel.Password"
+            <MatTextField @bind-Value="@LoginModel.Password"
                           Label="Password"
                           Icon="@MatIconNames.Lock_open"
                           IconTrailing="true"
@@ -33,7 +33,7 @@
         </div>
 
         <div class="form-group text-right">
-            <MatCheckbox @bind-Checked="@LoginModel.RememberMe" class="filled-in chk-col-blue" Label="Remember Me ?" />
+            <MatCheckbox @bind-Checked="@LoginModel.RememberMe" Class="filled-in chk-col-blue" Label="Remember Me ?" />
             <MatButton Type="submit" Raised="true" Label="Login" />
         </div>
 

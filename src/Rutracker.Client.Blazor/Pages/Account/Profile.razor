@@ -1,20 +1,14 @@
 ﻿@attribute [Authorize]
 
-@inject AppState AppState
+@inject IUserService UserService
 @inject IMatToaster MatToaster
 
 @page "/account/profile"
 
-@if (AppState.SearchInProgress)
+@if (UserDetailsModel == null)
 {
     <LoadingBackground>
         <span>Loading user list, please wait...</span>
-    </LoadingBackground>
-}
-else if (UserDetailsModel == null)
-{
-    <LoadingBackground ShowLoader="false">
-        <p>Error load profile, sorry</p>
     </LoadingBackground>
 }
 else
@@ -49,8 +43,10 @@ else
 
         <div class="profile-body">
             <MatTabGroup>
-                <UserInfoTab UserModel="@UserDetailsModel" OnUpdate="@UserInfoChanged" />
-                <ChangePasswordTab OnChangePassword="@PasswordChanged" />
+                <InfoTab UserModel="@UserDetailsModel" OnChange="@UserInfoChanged" />
+                <ChangePasswordTab OnChange="@PasswordChanged" />
+                <EmailTab UserModel="@UserDetailsModel" OnChange="@EmailChanged" />
+                <PhoneNumberTab UserModel="@UserDetailsModel" />
             </MatTabGroup>
         </div>
     </div>
@@ -66,7 +62,8 @@ else
     {
         try
         {
-            UserDetailsModel = await AppState.UserDetails();
+            UserDetailsModel = await UserService.UserDetails();
+            StateHasChanged();
         }
         catch (Exception ex)
         {
@@ -82,6 +79,13 @@ else
     }
 
     private void PasswordChanged() => MatToaster.Add("Password changed successfully.", MatToastType.Success, "Password change");
+
+    private async Task EmailChanged()
+    {
+        MatToaster.Add("Email changed successfully.", MatToastType.Success, "Email change");
+
+        await LoadUserModelAsync();
+    }
 
     private bool IsValidUserImage() => !string.IsNullOrWhiteSpace(UserDetailsModel.ImageUrl);
 }

@@ -35,5 +35,15 @@ namespace Rutracker.Server.WebApi.Controllers
 
         [HttpPost(nameof(ChangePassword))]
         public async Task ChangePassword(ChangePasswordViewModel model) => await _userViewModelService.ChangePasswordAsync(User, model);
+
+        [HttpPost(nameof(ChangeEmail))]
+        public async Task ChangeEmail(ChangeEmailViewModel model) => await _userViewModelService.ChangeEmailAsync(User, model);
+
+        [HttpPost(nameof(SendConfirmationEmail))]
+        public async Task SendConfirmationEmail() => await _userViewModelService.SendConfirmationEmailAsync(User);
+
+        [AllowAnonymous]
+        [HttpGet(nameof(ConfirmEmail))]
+        public async Task ConfirmEmail([FromQuery] ConfirmEmailViewModel model) => await _userViewModelService.ConfirmEmailAsync(model);
     }
 }

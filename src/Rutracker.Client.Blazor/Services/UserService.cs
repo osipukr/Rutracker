@@ -35,5 +35,15 @@ namespace Rutracker.Client.Blazor.Services
         {
             await _httpClientService.PostJsonAsync(_apiUriSettings.ChangePassword, model);
         }
+
+        public async Task ChangeEmail(ChangeEmailViewModel model)
+        {
+            await _httpClientService.PostJsonAsync(_apiUriSettings.ChangeEmail, model);
+        }
+
+        public async Task SendConfirmationEmail()
+        {
+            await _httpClientService.PostJsonAsync(_apiUriSettings.SendConfirmationEmail, null);
+        }
     }
 }
