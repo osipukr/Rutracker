@@ -45,6 +45,12 @@ namespace Rutracker.Server.WebApi.Controllers
         [HttpPut(nameof(ChangePhoneNumber))]
         public async Task ChangePhoneNumber(ChangePhoneNumberViewModel model) => await _userViewModelService.ChangePhoneNumberAsync(User, model);
 
+        [HttpDelete(nameof(DeleteImage))]
+        public async Task DeleteImage() => await _userViewModelService.DeleteImageAsync(User);
+
+        [HttpDelete(nameof(DeletePhoneNumber))]
+        public async Task DeletePhoneNumber() => await _userViewModelService.DeletePhoneNumber(User);
+
         [HttpPost(nameof(SendConfirmationEmail))]
         public async Task SendConfirmationEmail() => await _userViewModelService.SendConfirmationEmailAsync(User);
 

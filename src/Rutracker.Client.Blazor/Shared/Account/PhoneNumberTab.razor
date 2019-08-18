@@ -12,7 +12,6 @@
 
             <div class="form-group">
                 <MatTextField @bind-Value="@ChangePhoneNumberModel.PhoneNumber"
-                              Type="tel"
                               Label="Phone number"
                               Icon="@MatIconNames.Phone"
                               IconTrailing="true"
@@ -24,9 +23,8 @@
                 <MatButton OnClick="@ConfirmPhoneNumberClicked"
                            Disabled="@UserModel.PhoneNumberConfirmed"
                            Raised="true"
-                           Label="Confirm phone"
-                           Class="mx-2" />
-
+                           Label="Confirm phone" />
+                <MatButton OnClick="@DeletePhoneNumberClicked" Raised="true" Label="Delete phone" Class="ml-2" />
                 <MatButton Type="submit" Raised="true" Label="Change phone" Class="ml-2" />
             </div>
         </EditForm>
@@ -38,12 +36,9 @@
     [Parameter] private UserDetailsViewModel UserModel { get; set; }
     [Parameter] private EventCallback OnChange { get; set; }
 
-    private ChangePhoneNumberViewModel ChangePhoneNumberModel { get; set; }
+    private ChangePhoneNumberViewModel ChangePhoneNumberModel { get; set; } = new ChangePhoneNumberViewModel();
 
-    protected override void OnParametersSet() => ChangePhoneNumberModel = new ChangePhoneNumberViewModel
-    {
-        PhoneNumber = UserModel.PhoneNumber
-    };
+    protected override void OnParametersSet() => ChangePhoneNumberModel.PhoneNumber = UserModel.PhoneNumber;
 
     private async Task ChangePhoneNumberClicked()
     {
@@ -63,6 +58,27 @@
         catch (Exception ex)
         {
             MatToaster.Add(ex.Message, MatToastType.Warning, "Phone number change");
+        }
+    }
+
+    private async Task DeletePhoneNumberClicked()
+    {
+        if (UserModel.PhoneNumber == null)
+        {
+            return;
+        }
+
+        try
+        {
+            await UserService.DeletePhoneNumber();
+
+            MatToaster.Add("Phone number is deleted successfully.", MatToastType.Success, "Phone number delete");
+
+            await OnChange.InvokeAsync(EventArgs.Empty);
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Phone number delete");
         }
     }
 

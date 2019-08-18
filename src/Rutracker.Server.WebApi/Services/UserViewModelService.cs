@@ -80,7 +80,7 @@ namespace Rutracker.Server.WebApi.Services
                 await using var stream = new MemoryStream(model.ImageBytes);
 
                 var containerName = user.UserName;
-                var fileName = $"profile-image-{Guid.NewGuid()}";
+                var fileName = $"profile-image-{Guid.NewGuid()}.{model.FileType.Split('/')[1]}";
 
                 await _storageService.UploadFileAsync(containerName, fileName, stream);
 
@@ -116,6 +116,27 @@ namespace Rutracker.Server.WebApi.Services
             var user = await _userService.FindAsync(principal.GetUserId());
 
             user.PhoneNumber = model.PhoneNumber;
+            user.PhoneNumberConfirmed = false;
+
+            await _userService.UpdateAsync(user);
+        }
+
+        public async Task DeleteImageAsync(ClaimsPrincipal principal)
+        {
+            var user = await _userService.FindAsync(principal.GetUserId());
+
+            await _storageService.DeleteContainerAsync(user.UserName);
+
+            user.ImageUrl = null;
+
+            await _userService.UpdateAsync(user);
+        }
+
+        public async Task DeletePhoneNumber(ClaimsPrincipal principal)
+        {
+            var user = await _userService.FindAsync(principal.GetUserId());
+
+            user.PhoneNumber = null;
             user.PhoneNumberConfirmed = false;
 
             await _userService.UpdateAsync(user);

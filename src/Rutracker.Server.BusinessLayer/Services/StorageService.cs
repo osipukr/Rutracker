@@ -57,6 +57,13 @@ namespace Rutracker.Server.BusinessLayer.Services
             return await blockBlob.DeleteIfExistsAsync();
         }
 
+        public async Task<bool> DeleteContainerAsync(string containerName)
+        {
+            var container = GetBlobContainer(containerName);
+
+            return await container.DeleteIfExistsAsync();
+        }
+
         public async Task<string> PathToFileAsync(string containerName, string fileName)
         {
             var blockBlob = await GetBlockBlobAsync(containerName, fileName);
@@ -64,19 +71,19 @@ namespace Rutracker.Server.BusinessLayer.Services
             return blockBlob.Uri.AbsoluteUri;
         }
 
-        private async Task<CloudBlockBlob> GetBlockBlobAsync(string containerName, string fileName, bool createIfNotExists = false)
+        private CloudBlobContainer GetBlobContainer(string containerName)
         {
             if (string.IsNullOrWhiteSpace(containerName))
             {
                 throw new RutrackerException($"The {nameof(containerName)} not valid.", ExceptionEventType.NotValidParameters);
             }
 
-            if (string.IsNullOrWhiteSpace(fileName))
-            {
-                throw new RutrackerException($"The {nameof(fileName)} not valid.", ExceptionEventType.NotValidParameters);
-            }
+            return _client.GetContainerReference(containerName);
+        }
 
-            var container = _client.GetContainerReference(containerName);
+        private async Task<CloudBlockBlob> GetBlockBlobAsync(string containerName, string fileName, bool createIfNotExists = false)
+        {
+            var container = GetBlobContainer(containerName);
 
             if (createIfNotExists)
             {
@@ -85,6 +92,11 @@ namespace Rutracker.Server.BusinessLayer.Services
                 {
                     PublicAccess = BlobContainerPublicAccessType.Container
                 });
+            }
+
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                throw new RutrackerException($"The {nameof(fileName)} not valid.", ExceptionEventType.NotValidParameters);
             }
 
             var blockBlob = container.GetBlockBlobReference(fileName);

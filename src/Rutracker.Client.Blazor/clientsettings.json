@@ -13,6 +13,8 @@
     "ChangePassword": "api/users/changepassword",
     "ChangeEmail": "api/users/changeemail",
     "ChangePhoneNumber": "api/users/changephonenumber",
+    "DeleteImage": "api/users/deleteimage",
+    "DeletePhoneNumber": "api/users/deletephonenumber",
     "SendConfirmationEmail": "api/users/sendconfirmationemail"
   },
   "ViewSettings": {

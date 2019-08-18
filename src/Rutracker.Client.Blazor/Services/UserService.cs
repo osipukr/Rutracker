@@ -51,6 +51,16 @@ namespace Rutracker.Client.Blazor.Services
             await _httpClientService.PutJsonAsync(_apiUriSettings.ChangePhoneNumber, model);
         }
 
+        public async Task DeleteImage()
+        {
+            await _httpClientService.DeleteJsonAsync(_apiUriSettings.DeleteImage);
+        }
+
+        public async Task DeletePhoneNumber()
+        {
+            await _httpClientService.DeleteJsonAsync(_apiUriSettings.DeletePhoneNumber);
+        }
+
         public async Task SendConfirmationEmail()
         {
             await _httpClientService.PostJsonAsync(_apiUriSettings.SendConfirmationEmail, null);

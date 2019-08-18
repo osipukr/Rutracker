@@ -15,15 +15,16 @@
         <MatTextField @bind-Value="@ChangeImageModel.ImageUrl" Label="Image Url" FullWidth="true" />
     </div>
 
-    <div class="form-group">or</div>
+    <div class="form-group text-center">or</div>
 
     <div class="form-group">
         Select image from computer: <input type="file" @ref="_inputTypeFileElement" />
     </div>
 
     <div class="form-group mt-4 d-flex justify-content-end">
-        <MatButton OnClick="@CancelClicked" Raised="true" Label="Cancel" Class="mx-2" />
-        <MatButton Type="submit" Raised="true" Label="Update" Class="mx-2" />
+        <MatButton OnClick="@CancelClicked" Raised="true" Label="Cancel" Class="mr-2" />
+        <MatButton Type="button" OnClick="@DeleteImageClicked" Raised="true" Label="Delete" Class="ml-2" />
+        <MatButton Type="submit" Raised="true" Label="Update" Class="ml-2" />
     </div>
 </EditForm>
 
@@ -85,6 +86,22 @@
         catch (Exception ex)
         {
             MatToaster.Add(ex.Message, MatToastType.Warning, "Image change");
+        }
+    }
+
+    private async Task DeleteImageClicked()
+    {
+        try
+        {
+            await UserService.DeleteImage();
+
+            MatToaster.Add("Image deleted successfully.", MatToastType.Success, "Image delete");
+
+            ModalService.Close(ModalResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Image delete");
         }
     }
 

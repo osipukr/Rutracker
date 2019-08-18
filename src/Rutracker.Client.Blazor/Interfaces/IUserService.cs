@@ -12,6 +12,8 @@ namespace Rutracker.Client.Blazor.Interfaces
         Task ChangePassword(ChangePasswordViewModel model);
         Task ChangeEmail(ChangeEmailViewModel model);
         Task ChangePhoneNumber(ChangePhoneNumberViewModel model);
+        Task DeleteImage();
+        Task DeletePhoneNumber();
         Task SendConfirmationEmail();
     }
 }

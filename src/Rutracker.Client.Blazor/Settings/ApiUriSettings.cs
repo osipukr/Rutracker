@@ -20,6 +20,8 @@
         public string ChangePassword { get; set; }
         public string ChangeEmail { get; set; }
         public string ChangePhoneNumber { get; set; }
+        public string DeleteImage { get; set; }
+        public string DeletePhoneNumber { get; set; }
         public string SendConfirmationEmail { get; set; }
     }
 }
