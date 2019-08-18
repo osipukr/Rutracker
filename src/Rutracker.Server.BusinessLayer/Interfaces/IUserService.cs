@@ -10,8 +10,8 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
         Task<User> FindAsync(string userId);
         Task UpdateAsync(User user);
         Task<IEnumerable<string>> RolesAsync(User user);
-        Task<User> ChangedPasswordAsync(string userId, string oldPassword, string newPassword);
+        Task<User> ChangePasswordAsync(User user, string oldPassword, string newPassword);
         Task<string> EmailConfirmationTokenAsync(User user);
-        Task ConfirmEmailAsync(string userId, string token);
+        Task ConfirmEmailAsync(User user, string token);
     }
 }

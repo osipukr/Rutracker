@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
@@ -15,6 +16,16 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task SendConfirmationEmailAsync(string email, string confirmationUrl)
         {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                throw new RutrackerException("Not valid email.", ExceptionEventType.NotValidParameters);
+            }
+
+            if (string.IsNullOrWhiteSpace(confirmationUrl))
+            {
+                throw new RutrackerException("Not valid confirmation url.", ExceptionEventType.NotValidParameters);
+            }
+
             await _emailSender.SendAsync(
                 email: email,
                 subject: "Confirm your account",

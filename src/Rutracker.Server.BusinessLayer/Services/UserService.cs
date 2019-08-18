@@ -80,11 +80,11 @@ namespace Rutracker.Server.BusinessLayer.Services
             return roles;
         }
 
-        public async Task<User> ChangedPasswordAsync(string userId, string oldPassword, string newPassword)
+        public async Task<User> ChangePasswordAsync(User user, string oldPassword, string newPassword)
         {
-            if (string.IsNullOrWhiteSpace(userId))
+            if (user == null)
             {
-                throw new RutrackerException($"The {nameof(userId)} not valid.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("User not valid.", ExceptionEventType.NotValidParameters);
             }
 
             if (string.IsNullOrWhiteSpace(oldPassword))
@@ -95,13 +95,6 @@ namespace Rutracker.Server.BusinessLayer.Services
             if (string.IsNullOrWhiteSpace(newPassword))
             {
                 throw new RutrackerException($"The {nameof(newPassword)} not valid.", ExceptionEventType.NotValidParameters);
-            }
-
-            var user = await _userManager.FindByIdAsync(userId);
-
-            if (user == null)
-            {
-                throw new RutrackerException("User not found.", ExceptionEventType.NotFound);
             }
 
             if (!await _userManager.CheckPasswordAsync(user, oldPassword))
@@ -129,23 +122,16 @@ namespace Rutracker.Server.BusinessLayer.Services
             return await _userManager.GenerateEmailConfirmationTokenAsync(user);
         }
 
-        public async Task ConfirmEmailAsync(string userId, string token)
+        public async Task ConfirmEmailAsync(User user, string token)
         {
-            if (string.IsNullOrWhiteSpace(userId))
+            if (user == null)
             {
-                throw new RutrackerException($"The {nameof(userId)} not valid.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("User not valid.", ExceptionEventType.NotValidParameters);
             }
 
             if (string.IsNullOrWhiteSpace(token))
             {
                 throw new RutrackerException($"The {nameof(token)} not valid.", ExceptionEventType.NotValidParameters);
-            }
-
-            var user = await _userManager.FindByIdAsync(userId);
-
-            if (user == null)
-            {
-                throw new RutrackerException("User not found.", ExceptionEventType.NotFound);
             }
 
             if (user.EmailConfirmed)

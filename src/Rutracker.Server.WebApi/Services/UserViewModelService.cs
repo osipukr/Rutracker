@@ -96,9 +96,9 @@ namespace Rutracker.Server.WebApi.Services
 
         public async Task ChangePasswordAsync(ClaimsPrincipal principal, ChangePasswordViewModel model)
         {
-            var userId = principal.GetUserId();
+            var user = await _userService.FindAsync(principal.GetUserId());
 
-            await _userService.ChangedPasswordAsync(userId, model.OldPassword, model.NewPassword);
+            await _userService.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
         }
 
         public async Task ChangeEmailAsync(ClaimsPrincipal principal, ChangeEmailViewModel model)
@@ -166,7 +166,9 @@ namespace Rutracker.Server.WebApi.Services
 
         public async Task ConfirmEmailAsync(ConfirmEmailViewModel model)
         {
-            await _userService.ConfirmEmailAsync(model.UserId, model.Token);
+            var user = await _userService.FindAsync(model.UserId);
+
+            await _userService.ConfirmEmailAsync(user, model.Token);
         }
 
         private static void ThrowIfInvalidFileType(string fileType)
