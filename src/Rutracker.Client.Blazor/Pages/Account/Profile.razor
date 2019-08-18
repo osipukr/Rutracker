@@ -43,10 +43,10 @@ else
 
         <div class="profile-body">
             <MatTabGroup>
-                <InfoTab UserModel="@UserDetailsModel" OnChange="@UserInfoChanged" />
-                <ChangePasswordTab OnChange="@PasswordChanged" />
-                <EmailTab UserModel="@UserDetailsModel" OnChange="@EmailChanged" />
-                <PhoneNumberTab UserModel="@UserDetailsModel" />
+                <InfoTab UserModel="@UserDetailsModel" OnChange="@LoadUserModelAsync" />
+                <PasswordTab />
+                <EmailTab UserModel="@UserDetailsModel" OnChange="@LoadUserModelAsync" />
+                <PhoneNumberTab UserModel="@UserDetailsModel" OnChange="@LoadUserModelAsync" />
             </MatTabGroup>
         </div>
     </div>
@@ -63,28 +63,13 @@ else
         try
         {
             UserDetailsModel = await UserService.UserDetails();
+
             StateHasChanged();
         }
         catch (Exception ex)
         {
             MatToaster.Add(ex.Message, MatToastType.Warning, "User info load");
         }
-    }
-
-    private async Task UserInfoChanged()
-    {
-        MatToaster.Add("User information changed successfully.", MatToastType.Success, "User update");
-
-        await LoadUserModelAsync();
-    }
-
-    private void PasswordChanged() => MatToaster.Add("Password changed successfully.", MatToastType.Success, "Password change");
-
-    private async Task EmailChanged()
-    {
-        MatToaster.Add("Email changed successfully.", MatToastType.Success, "Email change");
-
-        await LoadUserModelAsync();
     }
 
     private bool IsValidUserImage() => !string.IsNullOrWhiteSpace(UserDetailsModel.ImageUrl);

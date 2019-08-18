@@ -1,6 +1,6 @@
 ﻿@layout LoginLayout
 
-@inject AppState AppState
+@inject IAccountService AccountService
 @inject IUriHelper UriHelper
 @inject IMatToaster MatToaster
 
@@ -51,7 +51,7 @@
     {
         try
         {
-            await AppState.Login(LoginModel);
+            await AccountService.Login(LoginModel);
 
             UriHelper.NavigateTo(Constants.Path.Home);
         }

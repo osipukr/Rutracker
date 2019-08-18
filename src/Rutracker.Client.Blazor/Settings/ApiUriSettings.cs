@@ -18,6 +18,7 @@
         public string UpdateUser { get; set; }
         public string ChangePassword { get; set; }
         public string ChangeEmail { get; set; }
+        public string ChangePhoneNumber { get; set; }
         public string SendConfirmationEmail { get; set; }
     }
 }

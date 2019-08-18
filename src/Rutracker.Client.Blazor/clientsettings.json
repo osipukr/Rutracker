@@ -11,6 +11,7 @@
     "UpdateUser": "api/users/update",
     "ChangePassword": "api/users/changepassword",
     "ChangeEmail": "api/users/changeemail",
+    "ChangePhoneNumber": "api/users/changephonenumber",
     "SendConfirmationEmail": "api/users/sendconfirmationemail"
   },
   "ViewSettings": {
@@ -20,7 +21,7 @@
   },
   "MatToasterSettings": {
     "Position": "BottomRight",
-    "PreventDuplicates": true,
+    "PreventDuplicates": false,
     "NewestOnTop": true,
     "ShowProgressBar": false,
     "ShowCloseButton": true,

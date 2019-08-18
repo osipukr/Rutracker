@@ -10,26 +10,36 @@ namespace Rutracker.Client.Blazor.Services
     {
         private readonly HttpClientService _httpClientService;
         private readonly ApiUriSettings _apiUriSettings;
+        private readonly ApiAuthenticationStateProvider _apiAuthenticationState;
 
-        public AccountService(HttpClientService httpClientService, ApiUriSettings apiUri)
+        public AccountService(
+            HttpClientService httpClientService,
+            ApiUriSettings apiUri,
+            ApiAuthenticationStateProvider apiAuthenticationState)
         {
             _httpClientService = httpClientService;
             _apiUriSettings = apiUri;
+            _apiAuthenticationState = apiAuthenticationState;
         }
 
-        public async Task<JwtToken> Login(LoginViewModel model)
+        public async Task Login(LoginViewModel model)
         {
-            return await _httpClientService.PostJsonAsync<JwtToken>(_apiUriSettings.Login, model);
+            var token = await _httpClientService.PostJsonAsync<JwtToken>(_apiUriSettings.Login, model);
+
+            await _apiAuthenticationState.MarkUserAsAuthenticated(token.Token);
         }
 
-        public async Task<JwtToken> Register(RegisterViewModel model)
+        public async Task Register(RegisterViewModel model)
         {
-            return await _httpClientService.PostJsonAsync<JwtToken>(_apiUriSettings.Register, model);
+            var token = await _httpClientService.PostJsonAsync<JwtToken>(_apiUriSettings.Register, model);
+
+            await _apiAuthenticationState.MarkUserAsAuthenticated(token.Token);
         }
 
         public async Task Logout()
         {
             await _httpClientService.PostJsonAsync(_apiUriSettings.Logout, null);
+            await _apiAuthenticationState.MarkUserAsLoggedOut();
         }
     }
 }

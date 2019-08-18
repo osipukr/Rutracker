@@ -39,6 +39,9 @@ namespace Rutracker.Server.WebApi.Controllers
         [HttpPost(nameof(ChangeEmail))]
         public async Task ChangeEmail(ChangeEmailViewModel model) => await _userViewModelService.ChangeEmailAsync(User, model);
 
+        [HttpPost(nameof(ChangePhoneNumber))]
+        public async Task ChangePhoneNumber(ChangePhoneNumberViewModel model) => await _userViewModelService.ChangePhoneNumberAsync(User, model);
+
         [HttpPost(nameof(SendConfirmationEmail))]
         public async Task SendConfirmationEmail() => await _userViewModelService.SendConfirmationEmailAsync(User);
 

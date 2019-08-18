@@ -129,7 +129,6 @@ namespace Rutracker.Server.BusinessLayer.Services
             return await _userManager.GenerateEmailConfirmationTokenAsync(user);
         }
 
-
         public async Task ConfirmEmailAsync(string userId, string token)
         {
             if (string.IsNullOrWhiteSpace(userId))

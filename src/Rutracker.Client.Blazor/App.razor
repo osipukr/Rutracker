@@ -2,7 +2,7 @@
 @inject AppState AppState
 
 <CascadingAuthenticationState>
-    <MatThemeProvider Theme="@_theme">
+    <MatThemeProvider Theme="@Theme">
         <Router AppAssembly="typeof(Program).Assembly">
             <NotFoundContent>
                 <Error />
@@ -18,7 +18,7 @@
 
 @code
 {
-    private readonly MatTheme _theme = new MatTheme
+    private MatTheme Theme { get; set; } = new MatTheme
     {
         Primary = MatThemeColors.Purple._900.Value,
         Secondary = MatThemeColors.Purple._900.Value

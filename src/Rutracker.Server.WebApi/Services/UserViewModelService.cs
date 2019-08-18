@@ -93,11 +93,20 @@ namespace Rutracker.Server.WebApi.Services
 
         public async Task ChangeEmailAsync(ClaimsPrincipal principal, ChangeEmailViewModel model)
         {
-            var userId = principal.GetUserId();
-            var user = await _userService.FindAsync(userId);
+            var user = await _userService.FindAsync(principal.GetUserId());
 
             user.Email = model.Email;
             user.EmailConfirmed = false;
+
+            await _userService.UpdateAsync(user);
+        }
+
+        public async Task ChangePhoneNumberAsync(ClaimsPrincipal principal, ChangePhoneNumberViewModel model)
+        {
+            var user = await _userService.FindAsync(principal.GetUserId());
+
+            user.PhoneNumber = model.PhoneNumber;
+            user.PhoneNumberConfirmed = false;
 
             await _userService.UpdateAsync(user);
         }

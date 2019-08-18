@@ -24,6 +24,15 @@
         </div>
 
         <div class="form-group">
+            <MatTextField Value="@UserModel.PhoneNumber"
+                          Label="Phone number"
+                          Icon="@MatIconNames.Phone"
+                          IconTrailing="true"
+                          FullWidth="true"
+                          ReadOnly="true" />
+        </div>
+
+        <div class="form-group">
             <MatTextField Value="@UserModel.FirstName" Label="User Name" FullWidth="true" ReadOnly="true" />
         </div>
 
@@ -63,6 +72,9 @@
         if (!result.Cancelled && result.Data is EditUserViewModel model)
         {
             await UpdateUserClicked(model);
+
+            MatToaster.Add("User information changed successfully.", MatToastType.Success, "User update");
+
             await OnChange.InvokeAsync(EventArgs.Empty);
         }
 
