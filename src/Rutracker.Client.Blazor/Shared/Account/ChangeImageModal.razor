@@ -1,26 +1,21 @@
 ﻿@using global::Blazor.FileReader
 
+@inject IUserService UserService
 @inject IMatToaster MatToaster
 @inject IModalService ModalService
 @inject IFileReaderService FileReaderService
 
-<EditForm Model="@EditModel" OnValidSubmit="@UpdateClicked">
+<EditForm Model="@ChangeImageModel" OnValidSubmit="@ChangeImageClicked">
     <div class="form-group">
         <DataAnnotationsValidator />
         <ValidationSummary />
     </div>
 
     <div class="form-group">
-        <MatTextField @bind-Value="@EditModel.FirstName" Label="Fist Name" FullWidth="true" />
+        <MatTextField @bind-Value="@ChangeImageModel.ImageUrl" Label="Image Url" FullWidth="true" />
     </div>
 
-    <div class="form-group">
-        <MatTextField @bind-Value="@EditModel.LastName" Label="Last Name" FullWidth="true" />
-    </div>
-
-    <div class="form-group">
-        <MatTextField @bind-Value="@EditModel.ImageUrl" Label="Image Url" FullWidth="true" />
-    </div>
+    <div class="form-group">or</div>
 
     <div class="form-group">
         Select image from computer: <input type="file" @ref="_inputTypeFileElement" />
@@ -34,15 +29,8 @@
 
 @code
 {
-    [CascadingParameter] private ModalParameters Parameters { get; set; }
-
-    private EditUserViewModel EditModel { get; set; }
+    private ChangeImageViewModel ChangeImageModel { get; set; } = new ChangeImageViewModel();
     private ElementRef _inputTypeFileElement;
-
-    protected override void OnInit()
-    {
-        EditModel = Parameters.Get<EditUserViewModel>(nameof(EditUserViewModel));
-    }
 
     private async Task ReadFileAsync()
     {
@@ -53,6 +41,14 @@
             return;
         }
 
+        var type = (await file.ReadFileInfoAsync()).Type;
+        var types = new[] { "image/png", "image/svg", "image/jpeg", "image/gif", "image/jpg" };
+
+        if (!types.Contains(type))
+        {
+            throw new Exception("Not valid file type.");
+        }
+
         using var stream = await file.OpenReadAsync();
 
         if (stream.Length > Constants.File.MaxImageSize)
@@ -60,7 +56,8 @@
             throw new Exception("File size too large.");
         }
 
-        EditModel.ImageBytes = new byte[stream.Length];
+        ChangeImageModel.ImageBytes = new byte[stream.Length];
+        ChangeImageModel.FileType = type;
 
         var buffer = new byte[4 * 1024];
         var length = 0;
@@ -68,23 +65,26 @@
 
         while ((count = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
         {
-            Array.Copy(buffer, 0, EditModel.ImageBytes, length, count);
+            Array.Copy(buffer, 0, ChangeImageModel.ImageBytes, length, count);
 
             length += count;
         }
     }
 
-    private async Task UpdateClicked()
+    private async Task ChangeImageClicked()
     {
         try
         {
             await ReadFileAsync();
+            await UserService.ChangeImage(ChangeImageModel);
 
-            ModalService.Close(ModalResult.Ok(EditModel));
+            MatToaster.Add("Image changed successfully.", MatToastType.Success, "Image change");
+
+            ModalService.Close(ModalResult.Ok(true));
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Read image file");
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Image change");
         }
     }
 

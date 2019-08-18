@@ -26,24 +26,29 @@ namespace Rutracker.Client.Blazor.Services
             return await _httpClientService.GetJsonAsync<UserDetailsViewModel>(_apiUriSettings.UserDetails);
         }
 
-        public async Task UpdateUser(EditUserViewModel model)
+        public async Task ChangeUser(ChangeUserViewModel model)
         {
-            await _httpClientService.PutJsonAsync(_apiUriSettings.UpdateUser, model);
+            await _httpClientService.PutJsonAsync(_apiUriSettings.ChangeUser, model);
+        }
+
+        public async Task ChangeImage(ChangeImageViewModel model)
+        {
+            await _httpClientService.PutJsonAsync(_apiUriSettings.ChangeImage, model);
         }
 
         public async Task ChangePassword(ChangePasswordViewModel model)
         {
-            await _httpClientService.PostJsonAsync(_apiUriSettings.ChangePassword, model);
+            await _httpClientService.PutJsonAsync(_apiUriSettings.ChangePassword, model);
         }
 
         public async Task ChangeEmail(ChangeEmailViewModel model)
         {
-            await _httpClientService.PostJsonAsync(_apiUriSettings.ChangeEmail, model);
+            await _httpClientService.PutJsonAsync(_apiUriSettings.ChangeEmail, model);
         }
 
         public async Task ChangePhoneNumber(ChangePhoneNumberViewModel model)
         {
-            await _httpClientService.PostJsonAsync(_apiUriSettings.ChangePhoneNumber, model);
+            await _httpClientService.PutJsonAsync(_apiUriSettings.ChangePhoneNumber, model);
         }
 
         public async Task SendConfirmationEmail()

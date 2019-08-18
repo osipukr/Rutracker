@@ -28,6 +28,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ChangePhoneNumberViewModelResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\ChangeUserViewModelResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ChangeUserViewModelResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\FilterViewModelResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -57,6 +62,10 @@
     <EmbeddedResource Update="Resources\ChangePhoneNumberViewModelResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ChangePhoneNumberViewModelResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ChangeUserViewModelResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ChangeUserViewModelResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\FilterViewModelResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

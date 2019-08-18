@@ -30,16 +30,19 @@ namespace Rutracker.Server.WebApi.Controllers
         [HttpGet(nameof(Details))]
         public async Task<UserViewModel> Details() => await _userViewModelService.UserAsync(User);
 
-        [HttpPut(nameof(Update))]
-        public async Task Update(EditUserViewModel model) => await _userViewModelService.UpdateAsync(User, model);
+        [HttpPut(nameof(ChangeUser))]
+        public async Task ChangeUser(ChangeUserViewModel model) => await _userViewModelService.ChangeUserAsync(User, model);
 
-        [HttpPost(nameof(ChangePassword))]
+        [HttpPut(nameof(ChangeImage))]
+        public async Task ChangeImage(ChangeImageViewModel model) => await _userViewModelService.ChangeImageAsync(User, model);
+
+        [HttpPut(nameof(ChangePassword))]
         public async Task ChangePassword(ChangePasswordViewModel model) => await _userViewModelService.ChangePasswordAsync(User, model);
 
-        [HttpPost(nameof(ChangeEmail))]
+        [HttpPut(nameof(ChangeEmail))]
         public async Task ChangeEmail(ChangeEmailViewModel model) => await _userViewModelService.ChangeEmailAsync(User, model);
 
-        [HttpPost(nameof(ChangePhoneNumber))]
+        [HttpPut(nameof(ChangePhoneNumber))]
         public async Task ChangePhoneNumber(ChangePhoneNumberViewModel model) => await _userViewModelService.ChangePhoneNumberAsync(User, model);
 
         [HttpPost(nameof(SendConfirmationEmail))]

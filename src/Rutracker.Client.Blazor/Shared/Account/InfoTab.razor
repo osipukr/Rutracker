@@ -1,6 +1,4 @@
-﻿@inject IUserService UserService
-@inject IMatToaster MatToaster
-@inject IModalService ModalService
+﻿@inject IModalService ModalService
 
 <MatTab>
     <LabelContent>Info</LabelContent>
@@ -41,7 +39,7 @@
         </div>
 
         <div class="form-group mt-4 d-flex justify-content-end">
-            <MatButton OnClick="@EditUserClicked" Raised="true" Label="Edit profile" />
+            <MatButton OnClick="@ChangeUserModalOpenClicked" Raised="true" Label="Edit profile" />
         </div>
     </ChildContent>
 </MatTab>
@@ -51,45 +49,27 @@
     [Parameter] private UserDetailsViewModel UserModel { get; set; }
     [Parameter] private EventCallback OnChange { get; set; }
 
-    private void EditUserClicked()
+    private void ChangeUserModalOpenClicked()
     {
         var parameters = new ModalParameters();
 
-        parameters.Add(nameof(EditUserViewModel), new EditUserViewModel
+        parameters.Add(nameof(ChangeUserViewModel), new ChangeUserViewModel
         {
             FirstName = UserModel.FirstName,
-            LastName = UserModel.LastName,
-            ImageUrl = UserModel.ImageUrl
+            LastName = UserModel.LastName
         });
 
         ModalService.OnClose += ModalClosed;
-
-        ModalService.Show("Edit profile", typeof(EditProfileModal), parameters);
+        ModalService.Show("Change user info", typeof(ChangeUserModal), parameters);
     }
 
     private async void ModalClosed(ModalResult result)
     {
-        if (!result.Cancelled && result.Data is EditUserViewModel model)
+        if (!result.Cancelled && result.Data is bool isSuccess && isSuccess)
         {
-            await UpdateUserClicked(model);
-
-            MatToaster.Add("User information changed successfully.", MatToastType.Success, "User update");
-
             await OnChange.InvokeAsync(EventArgs.Empty);
         }
 
         ModalService.OnClose -= ModalClosed;
-    }
-
-    private async Task UpdateUserClicked(EditUserViewModel model)
-    {
-        try
-        {
-            await UserService.UpdateUser(model);
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "User update");
-        }
     }
 }

@@ -8,7 +8,8 @@ namespace Rutracker.Server.WebApi.Interfaces
     {
         Task<UserViewModel[]> UsersAsync();
         Task<UserDetailsViewModel> UserAsync(ClaimsPrincipal principal);
-        Task UpdateAsync(ClaimsPrincipal principal, EditUserViewModel model);
+        Task ChangeUserAsync(ClaimsPrincipal principal, ChangeUserViewModel model);
+        Task ChangeImageAsync(ClaimsPrincipal principal, ChangeImageViewModel model);
         Task ChangePasswordAsync(ClaimsPrincipal principal, ChangePasswordViewModel model);
         Task ChangeEmailAsync(ClaimsPrincipal principal, ChangeEmailViewModel model);
         Task ChangePhoneNumberAsync(ClaimsPrincipal principal, ChangePhoneNumberViewModel model);

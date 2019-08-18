@@ -10,6 +10,7 @@ using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.WebApi.Extensions;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Settings;
+using Rutracker.Shared.Infrastructure.Exceptions;
 using Rutracker.Shared.Models.ViewModels.User;
 
 namespace Rutracker.Server.WebApi.Services
@@ -58,15 +59,24 @@ namespace Rutracker.Server.WebApi.Services
             return userResult;
         }
 
-        public async Task UpdateAsync(ClaimsPrincipal principal, EditUserViewModel model)
+        public async Task ChangeUserAsync(ClaimsPrincipal principal, ChangeUserViewModel model)
         {
             var user = await _userService.FindAsync(principal.GetUserId());
 
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
 
+            await _userService.UpdateAsync(user);
+        }
+
+        public async Task ChangeImageAsync(ClaimsPrincipal principal, ChangeImageViewModel model)
+        {
+            var user = await _userService.FindAsync(principal.GetUserId());
+
             if (model.ImageBytes?.Length > 0)
             {
+                ThrowIfInvalidFileType(model.FileType);
+
                 await using var stream = new MemoryStream(model.ImageBytes);
 
                 var containerName = user.UserName;
@@ -136,6 +146,17 @@ namespace Rutracker.Server.WebApi.Services
         public async Task ConfirmEmailAsync(ConfirmEmailViewModel model)
         {
             await _userService.ConfirmEmailAsync(model.UserId, model.Token);
+        }
+
+        private static void ThrowIfInvalidFileType(string fileType)
+        {
+            var types = new[] { "image/png", "image/svg", "image/jpeg", "image/gif", "image/jpg" };
+            var type = fileType.ToLower();
+
+            if (!types.Contains(type))
+            {
+                throw new RutrackerException("Invalid file type.", ExceptionEventType.NotValidParameters);
+            }
         }
     }
 }
