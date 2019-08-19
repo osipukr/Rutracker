@@ -12,12 +12,12 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
         Task<IEnumerable<string>> RolesAsync(User user);
         Task<string> UploadProfileImageAsync(User user, byte[] imageBytes, string fileType);
         Task DeleteProfileImageAsync(User user);
+        Task<string> EmailConfirmationTokenAsync(User user);
         Task<string> ChangeEmailTokenAsync(User user, string email);
         Task<string> ChangePhoneNumberTokenAsync(User user, string phone);
-        Task<User> ChangePasswordAsync(User user, string oldPassword, string newPassword);
-        Task<User> ChangeEmailAsync(User user, string email, string token);
-        Task<User> ChangePhoneNumberAsync(User user, string phone, string token);
-        Task<string> EmailConfirmationTokenAsync(User user);
+        Task ChangePasswordAsync(User user, string oldPassword, string newPassword);
+        Task ChangeEmailAsync(User user, string email, string token);
+        Task ChangePhoneNumberAsync(User user, string phone, string token);
         Task ConfirmEmailAsync(User user, string token);
     }
 }

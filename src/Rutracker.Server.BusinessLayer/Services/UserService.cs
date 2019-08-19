@@ -123,6 +123,16 @@ namespace Rutracker.Server.BusinessLayer.Services
             await _storageService.DeleteContainerAsync(user.UserName);
         }
 
+        public async Task<string> EmailConfirmationTokenAsync(User user)
+        {
+            if (user == null)
+            {
+                throw new RutrackerException("Not valid user.", ExceptionEventType.NotValidParameters);
+            }
+
+            return await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        }
+
         public async Task<string> ChangeEmailTokenAsync(User user, string email)
         {
             if (user == null)
@@ -168,7 +178,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             return await _userManager.GenerateChangePhoneNumberTokenAsync(user, phone);
         }
 
-        public async Task<User> ChangePasswordAsync(User user, string oldPassword, string newPassword)
+        public async Task ChangePasswordAsync(User user, string oldPassword, string newPassword)
         {
             if (user == null)
             {
@@ -196,11 +206,9 @@ namespace Rutracker.Server.BusinessLayer.Services
             {
                 throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
             }
-
-            return user;
         }
 
-        public async Task<User> ChangeEmailAsync(User user, string email, string token)
+        public async Task ChangeEmailAsync(User user, string email, string token)
         {
             if (user == null)
             {
@@ -223,11 +231,9 @@ namespace Rutracker.Server.BusinessLayer.Services
             {
                 throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
             }
-
-            return user;
         }
 
-        public async Task<User> ChangePhoneNumberAsync(User user, string phone, string token)
+        public async Task ChangePhoneNumberAsync(User user, string phone, string token)
         {
             if (user == null)
             {
@@ -250,18 +256,6 @@ namespace Rutracker.Server.BusinessLayer.Services
             {
                 throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
             }
-
-            return user;
-        }
-
-        public async Task<string> EmailConfirmationTokenAsync(User user)
-        {
-            if (user == null)
-            {
-                throw new RutrackerException("Not valid user.", ExceptionEventType.NotValidParameters);
-            }
-
-            return await _userManager.GenerateEmailConfirmationTokenAsync(user);
         }
 
         public async Task ConfirmEmailAsync(User user, string token)

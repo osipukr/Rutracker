@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Rutracker.Server.WebApi.Extensions
+namespace Rutracker.Server.BusinessLayer.Extensions
 {
     public static class MemoryCacheExtensions
     {
