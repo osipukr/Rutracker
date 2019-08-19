@@ -12,10 +12,10 @@
     "ChangeImage": "api/users/changeimage",
     "ChangePassword": "api/users/changepassword",
     "ChangeEmail": "api/users/changeemail",
-    "ChangePhoneNumber": "api/users/changephonenumber",
-    "DeleteImage": "api/users/deleteimage",
-    "DeletePhoneNumber": "api/users/deletephonenumber",
-    "SendConfirmationEmail": "api/users/sendconfirmationemail"
+    "ChangePhoneNumber": "api/users/changePhoneNumber",
+    "DeleteImage": "api/users/deleteImage",
+    "ConfirmChangeEmail": "api/users/confirmChangeEmail",
+    "ConfirmChangePhoneNumber": "api/users/confirmChangePhoneNumber"
   },
   "ViewSettings": {
     "ServiceName": "Rutracker",

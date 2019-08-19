@@ -31,9 +31,7 @@ namespace Rutracker.Client.Blazor.Services
 
         public async Task Register(RegisterViewModel model)
         {
-            var token = await _httpClientService.PostJsonAsync<JwtToken>(_apiUriSettings.Register, model);
-
-            await _apiAuthenticationState.MarkUserAsAuthenticated(token.Token);
+            await _httpClientService.PostJsonAsync(_apiUriSettings.Register, model);
         }
 
         public async Task Logout()

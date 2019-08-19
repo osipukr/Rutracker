@@ -69,11 +69,13 @@
         {
             await AccountService.Register(RegisterModel);
 
-            UriHelper.NavigateTo(Constants.Path.Home);
+            MatToaster.Add("To complete registration, check the email.", MatToastType.Success, "Confirm email");
+
+            UriHelper.NavigateTo(Constants.Path.Login);
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Error creating account");
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Creating account");
         }
     }
 }

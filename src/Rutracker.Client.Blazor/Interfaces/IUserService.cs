@@ -13,7 +13,7 @@ namespace Rutracker.Client.Blazor.Interfaces
         Task ChangeEmail(ChangeEmailViewModel model);
         Task ChangePhoneNumber(ChangePhoneNumberViewModel model);
         Task DeleteImage();
-        Task DeletePhoneNumber();
-        Task SendConfirmationEmail();
+        Task ConfirmChangeEmail(ConfirmChangeEmailViewModel model);
+        Task ConfirmChangePhoneNumber(ConfirmChangePhoneNumberViewModel model);
     }
 }

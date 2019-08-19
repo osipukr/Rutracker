@@ -20,25 +20,28 @@ namespace Rutracker.Server.WebApi.Services
         private readonly IUserService _userService;
         private readonly IStorageService _storageService;
         private readonly IEmailService _emailService;
+        private readonly ISmsService _smsService;
         private readonly IMapper _mapper;
 
         private readonly HostSettings _hostSettings;
-        private readonly EmailConfirmationSettings _emailConfirmationSettings;
+        private readonly EmailChangeConfirmationSettings _emailChangeConfirmationSettings;
 
         public UserViewModelService(
             IUserService userService,
             IStorageService storageService,
             IEmailService emailService,
+            ISmsService smsService,
             IMapper mapper,
             IOptions<HostSettings> hostOptions,
-            IOptions<EmailConfirmationSettings> emailOptions)
+            IOptions<EmailChangeConfirmationSettings> emailOptions)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+            _smsService = smsService ?? throw new ArgumentNullException(nameof(smsService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _hostSettings = hostOptions?.Value ?? throw new ArgumentNullException(nameof(hostOptions));
-            _emailConfirmationSettings = emailOptions?.Value ?? throw new ArgumentNullException(nameof(emailOptions));
+            _emailChangeConfirmationSettings = emailOptions?.Value ?? throw new ArgumentNullException(nameof(emailOptions));
         }
 
         public async Task<UserViewModel[]> UsersAsync()
@@ -80,7 +83,8 @@ namespace Rutracker.Server.WebApi.Services
                 await using var stream = new MemoryStream(model.ImageBytes);
 
                 var containerName = user.UserName;
-                var fileName = $"profile-image-{Guid.NewGuid()}.{model.FileType.Split('/')[1]}";
+                var fileType = model.FileType.Split('/')[1];
+                var fileName = $"profile-image-{Guid.NewGuid()}.{fileType}";
 
                 await _storageService.UploadFileAsync(containerName, fileName, stream);
 
@@ -103,22 +107,34 @@ namespace Rutracker.Server.WebApi.Services
 
         public async Task ChangeEmailAsync(ClaimsPrincipal principal, ChangeEmailViewModel model)
         {
-            var user = await _userService.FindAsync(principal.GetUserId());
+            var userId = principal.GetUserId();
+            var user = await _userService.FindAsync(userId);
+            var token = await _userService.ChangeEmailTokenAsync(user, model.Email);
 
-            user.Email = model.Email;
-            user.EmailConfirmed = false;
+            var parameters = HttpUtility.ParseQueryString(string.Empty);
 
-            await _userService.UpdateAsync(user);
+            parameters.Add(nameof(ConfirmChangeEmailViewModel.UserId), userId);
+            parameters.Add(nameof(ConfirmChangeEmailViewModel.Email), model.Email);
+            parameters.Add(nameof(ConfirmChangeEmailViewModel.Token), token);
+
+            var urlBuilder = new UriBuilder(_hostSettings.BaseUrl)
+            {
+                Path = _emailChangeConfirmationSettings.Path,
+                Query = parameters.ToString()
+            };
+
+            var callbackUrl = urlBuilder.Uri.ToString();
+
+            await _emailService.SendEmailChangeConfirmation(user.Email, callbackUrl);
         }
 
         public async Task ChangePhoneNumberAsync(ClaimsPrincipal principal, ChangePhoneNumberViewModel model)
         {
             var user = await _userService.FindAsync(principal.GetUserId());
+            var token = await _userService.ChangePhoneNumberTokenAsync(user, model.PhoneNumber);
+            var phone = user.PhoneNumber ?? model.PhoneNumber;
 
-            user.PhoneNumber = model.PhoneNumber;
-            user.PhoneNumberConfirmed = false;
-
-            await _userService.UpdateAsync(user);
+            await _smsService.SendConfirmationPhoneAsync(phone, token);
         }
 
         public async Task DeleteImageAsync(ClaimsPrincipal principal)
@@ -132,43 +148,19 @@ namespace Rutracker.Server.WebApi.Services
             await _userService.UpdateAsync(user);
         }
 
-        public async Task DeletePhoneNumber(ClaimsPrincipal principal)
-        {
-            var user = await _userService.FindAsync(principal.GetUserId());
-
-            user.PhoneNumber = null;
-            user.PhoneNumberConfirmed = false;
-
-            await _userService.UpdateAsync(user);
-        }
-
-        public async Task SendConfirmationEmailAsync(ClaimsPrincipal principal)
-        {
-            var userId = principal.GetUserId();
-            var user = await _userService.FindAsync(userId);
-            var token = await _userService.EmailConfirmationTokenAsync(user);
-
-            var parameters = HttpUtility.ParseQueryString(string.Empty);
-
-            parameters.Add(nameof(ConfirmEmailViewModel.UserId), userId);
-            parameters.Add(nameof(ConfirmEmailViewModel.Token), token);
-
-            var urlBuilder = new UriBuilder(_hostSettings.BaseUrl)
-            {
-                Path = _emailConfirmationSettings.Path,
-                Query = parameters.ToString()
-            };
-
-            var callbackUrl = urlBuilder.Uri.ToString();
-
-            await _emailService.SendConfirmationEmailAsync(user.Email, callbackUrl);
-        }
-
-        public async Task ConfirmEmailAsync(ConfirmEmailViewModel model)
+        public async Task ConfirmChangeEmailAsync(ConfirmChangeEmailViewModel model)
         {
             var user = await _userService.FindAsync(model.UserId);
 
-            await _userService.ConfirmEmailAsync(user, model.Token);
+            await _userService.ChangeEmailAsync(user, model.Email, model.Token);
+        }
+
+
+        public async Task ConfirmChangePhoneNumber(ClaimsPrincipal principal, ConfirmChangePhoneNumberViewModel model)
+        {
+            var user = await _userService.FindAsync(principal.GetUserId());
+
+            await _userService.ChangePhoneNumberAsync(user, model.Phone, model.Token);
         }
 
         private static void ThrowIfInvalidFileType(string fileType)

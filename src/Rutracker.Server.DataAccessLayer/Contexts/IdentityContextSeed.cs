@@ -60,9 +60,11 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
             var admin = new User
             {
                 UserName = "admin",
-                Email = "admin@gmail.com",
+                Email = "fredstone624@gmail.com",
                 FirstName = "Admin",
-                LastName = "Admin"
+                LastName = "Admin",
+                EmailConfirmed = true,
+                ImageUrl = "https://avatars1.githubusercontent.com/u/40744739?s=300&v=4"
             };
 
             await userManager.CreateAsync(admin, "Admin_Password_123");

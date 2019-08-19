@@ -21,57 +21,47 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<User> LoginAsync(string userName, string password, bool rememberMe)
         {
-            if (string.IsNullOrWhiteSpace(userName))
-            {
-                throw new RutrackerException($"The {nameof(userName)} not valid.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new RutrackerException($"The {nameof(password)} not valid.", ExceptionEventType.NotValidParameters);
-            }
-
             var user = await _userManager.FindByNameAsync(userName);
 
             if (user == null)
             {
-                throw new RutrackerException($"User with name '{userName}' does not exist.", ExceptionEventType.NotFound);
+                throw new RutrackerException("User not found.", ExceptionEventType.NotFound);
             }
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: false);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: true);
 
-            if (!result.Succeeded)
+            if (result.Succeeded)
             {
-                throw new RutrackerException("Not valid password.", ExceptionEventType.NotValidParameters);
+                await _signInManager.SignInAsync(user, rememberMe);
+
+                return user;
             }
 
-            await _signInManager.SignInAsync(user, rememberMe);
+            if (result.IsLockedOut)
+            {
+                throw new RutrackerException("Too many login attempts, try again later.", ExceptionEventType.NotValidParameters);
+            }
+
+            if (result.IsNotAllowed)
+            {
+                throw new RutrackerException("This user is not allowed to log in.", ExceptionEventType.NotValidParameters);
+            }
+
+            if (result.RequiresTwoFactor)
+            {
+                // RequiresTwoFactor
+            }
 
             return user;
         }
 
         public async Task<User> RegisterAsync(string userName, string email, string password)
         {
-            if (string.IsNullOrWhiteSpace(userName))
-            {
-                throw new RutrackerException($"The {nameof(userName)} not valid.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                throw new RutrackerException($"The {nameof(email)} not valid.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new RutrackerException($"The {nameof(password)} not valid.", ExceptionEventType.NotValidParameters);
-            }
-
             var user = await _userManager.FindByNameAsync(userName);
 
             if (user != null)
             {
-                throw new RutrackerException($"User name '{userName}' is already.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("A user with this name is already.", ExceptionEventType.NotValidParameters);
             }
 
             user = new User
@@ -87,14 +77,12 @@ namespace Rutracker.Server.BusinessLayer.Services
                 throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
             }
 
-            var roleResult = await _userManager.AddToRoleAsync(user, UserRoles.Names.User);
+            result = await _userManager.AddToRoleAsync(user, UserRoles.Names.User);
 
-            if (!roleResult.Succeeded)
+            if (!result.Succeeded)
             {
-                throw new RutrackerException(roleResult.GetError(), ExceptionEventType.NotValidParameters);
+                throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
             }
-
-            await _signInManager.SignInAsync(user, isPersistent: true);
 
             return user;
         }

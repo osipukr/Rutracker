@@ -29,21 +29,29 @@ namespace Rutracker.Server.WebApi.Controllers
         /// <param name="pageSize">Number of items per page.</param>
         /// <param name="filter">Information to filter elements.</param>
         [HttpPost(nameof(Pagination))]
-        public async Task<PaginationResult<TorrentViewModel>> Pagination(int page, int pageSize, FilterViewModel filter) =>
-            await _torrentViewModelService.TorrentsAsync(page, pageSize, filter);
+        public async Task<PaginationResult<TorrentViewModel>> Pagination(int page, int pageSize, FilterViewModel filter)
+        {
+            return await _torrentViewModelService.TorrentsAsync(page, pageSize, filter);
+        }
 
         /// <summary>
         ///     Get information about the item.
         /// </summary>
         /// <param name="id">ID of the element.</param>
         [HttpGet]
-        public async Task<TorrentDetailsViewModel> Get(long id) => await _torrentViewModelService.TorrentAsync(id);
+        public async Task<TorrentDetailsViewModel> Get(long id)
+        {
+            return await _torrentViewModelService.TorrentAsync(id);
+        }
 
         /// <summary>
         ///     Get information about the facet for the title.
         /// </summary>
         /// <param name="count">Number of elements.</param>
         [HttpGet(nameof(Titles))]
-        public async Task<FacetResult<string>> Titles(int count) => await _torrentViewModelService.ForumFacetAsync(count);
+        public async Task<FacetResult<string>> Titles(int count)
+        {
+            return await _torrentViewModelService.ForumFacetAsync(count);
+        }
     }
 }

@@ -7,7 +7,8 @@ namespace Rutracker.Server.WebApi.Interfaces
     public interface IAccountViewModelService
     {
         Task<JwtToken> LoginAsync(LoginViewModel model);
-        Task<JwtToken> RegisterAsync(RegisterViewModel model);
+        Task RegisterAsync(RegisterViewModel model);
         Task LogoutAsync();
+        Task ConfirmEmailAsync(ConfirmEmailViewModel model);
     }
 }

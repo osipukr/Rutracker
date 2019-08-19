@@ -19,8 +19,7 @@
             </div>
 
             <div class="form-group mt-4 d-flex justify-content-end">
-                <MatButton OnClick="@ConfirmEmailClicked" Disabled="@UserModel.EmailConfirmed" Raised="true" Label="Confirm email" Class="mx-2" />
-                <MatButton Type="submit" Raised="true" Label="Change email" Class="ml-2" />
+                <MatButton Type="submit" Raised="true" Label="Change email" />
             </div>
         </EditForm>
     </ChildContent>
@@ -52,27 +51,11 @@
         {
             await UserService.ChangeEmail(ChangeEmailModel);
 
-            MatToaster.Add("Email changed successfully.", MatToastType.Success, "Email change");
-
-            await OnChange.InvokeAsync(EventArgs.Empty);
+            MatToaster.Add("To complete, check your email.", MatToastType.Success, "Email change");
         }
         catch (Exception ex)
         {
             MatToaster.Add(ex.Message, MatToastType.Warning, "Email change");
-        }
-    }
-
-    private async Task ConfirmEmailClicked()
-    {
-        try
-        {
-            await UserService.SendConfirmationEmail();
-
-            MatToaster.Add("Check your email to complete.", MatToastType.Success, "Send confirmation code");
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Send confirmation code");
         }
     }
 }

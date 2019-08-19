@@ -1,5 +1,6 @@
 ﻿@inject IUserService UserService
 @inject IMatToaster MatToaster
+@inject IModalService ModalService
 
 <MatTab>
     <LabelContent>Phone</LabelContent>
@@ -20,11 +21,6 @@
             </div>
 
             <div class="form-group mt-4 d-flex justify-content-end">
-                <MatButton OnClick="@ConfirmPhoneNumberClicked"
-                           Disabled="@UserModel.PhoneNumberConfirmed"
-                           Raised="true"
-                           Label="Confirm phone" />
-                <MatButton OnClick="@DeletePhoneNumberClicked" Raised="true" Label="Delete phone" Class="ml-2" />
                 <MatButton Type="submit" Raised="true" Label="Change phone" Class="ml-2" />
             </div>
         </EditForm>
@@ -51,9 +47,9 @@
         {
             await UserService.ChangePhoneNumber(ChangePhoneNumberModel);
 
-            MatToaster.Add("Phone number changed successfully.", MatToastType.Success, "Phone number change");
+            MatToaster.Add("Verification code sent to phone number.", MatToastType.Success, "Phone number change");
 
-            await OnChange.InvokeAsync(EventArgs.Empty);
+            ConfirmPhoneNumberModalOpenClicked("Confirm phone number", ChangePhoneNumberModel.PhoneNumber);
         }
         catch (Exception ex)
         {
@@ -61,29 +57,26 @@
         }
     }
 
-    private async Task DeletePhoneNumberClicked()
+    private void ConfirmPhoneNumberModalOpenClicked(string title, string phone)
     {
-        if (UserModel.PhoneNumber == null)
-        {
-            return;
-        }
+        var parameters = new ModalParameters();
 
-        try
+        parameters.Add(nameof(ConfirmChangePhoneNumberViewModel), new ConfirmChangePhoneNumberViewModel
         {
-            await UserService.DeletePhoneNumber();
+            Phone = phone
+        });
 
-            MatToaster.Add("Phone number is deleted successfully.", MatToastType.Success, "Phone number delete");
-
-            await OnChange.InvokeAsync(EventArgs.Empty);
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Phone number delete");
-        }
+        ModalService.OnClose += ConfirmPhoneNumberModalClosed;
+        ModalService.Show(title, typeof(PhoneNumberConfirmModal), parameters);
     }
 
-    private async Task ConfirmPhoneNumberClicked()
+    private async void ConfirmPhoneNumberModalClosed(ModalResult result)
     {
-        await Task.CompletedTask;
+        if (!result.Cancelled && result.Data is bool isSuccess && isSuccess)
+        {
+            await OnChange.InvokeAsync(EventArgs.Empty);
+        }
+
+        ModalService.OnClose -= ConfirmPhoneNumberModalClosed;
     }
 }

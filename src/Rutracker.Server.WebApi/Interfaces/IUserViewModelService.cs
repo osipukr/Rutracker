@@ -14,8 +14,7 @@ namespace Rutracker.Server.WebApi.Interfaces
         Task ChangeEmailAsync(ClaimsPrincipal principal, ChangeEmailViewModel model);
         Task ChangePhoneNumberAsync(ClaimsPrincipal principal, ChangePhoneNumberViewModel model);
         Task DeleteImageAsync(ClaimsPrincipal principal);
-        Task DeletePhoneNumber(ClaimsPrincipal principal);
-        Task SendConfirmationEmailAsync(ClaimsPrincipal principal);
-        Task ConfirmEmailAsync(ConfirmEmailViewModel model);
+        Task ConfirmChangeEmailAsync(ConfirmChangeEmailViewModel model);
+        Task ConfirmChangePhoneNumber(ClaimsPrincipal principal, ConfirmChangePhoneNumberViewModel model);
     }
 }

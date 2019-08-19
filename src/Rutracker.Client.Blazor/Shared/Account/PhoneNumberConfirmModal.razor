@@ -1,1 +1,49 @@
-﻿
+﻿@inject IUserService UserService
+@inject IMatToaster MatToaster
+@inject IModalService ModalService
+
+<EditForm Model="@ConfirmPhoneNumberModel" OnValidSubmit="@ConfirmPhoneNumberClicked">
+    <div class="form-group">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+    </div>
+
+    <div class="form-group">
+        <MatTextField @bind-Value="@ConfirmPhoneNumberModel.Token" Label="Code" FullWidth="true" />
+    </div>
+
+    <div class="form-group mt-4 d-flex justify-content-end">
+        <MatButton OnClick="@CancelClicked" Raised="true" Label="Cancel" />
+        <MatButton Type="submit" Raised="true" Label="Confrim" Class="ml-2" />
+    </div>
+</EditForm>
+
+@code
+{
+    [CascadingParameter] private ModalParameters Parameters { get; set; }
+
+    private ConfirmChangePhoneNumberViewModel ConfirmPhoneNumberModel { get; set; }
+
+    protected override void OnInit()
+    {
+        ConfirmPhoneNumberModel = Parameters.Get<ConfirmChangePhoneNumberViewModel>(nameof(ConfirmChangePhoneNumberViewModel));
+    }
+
+    private async Task ConfirmPhoneNumberClicked()
+    {
+        try
+        {
+            await UserService.ConfirmChangePhoneNumber(ConfirmPhoneNumberModel);
+
+            MatToaster.Add("The action was successfully confirmed", MatToastType.Success, "Phone number");
+
+            ModalService.Close(ModalResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Phone number");
+        }
+    }
+
+    private void CancelClicked() => ModalService.Cancel();
+}

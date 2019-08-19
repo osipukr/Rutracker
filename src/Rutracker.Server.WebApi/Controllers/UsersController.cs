@@ -25,37 +25,63 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<UserViewModel[]> GetAll() => await _userViewModelService.UsersAsync();
+        public async Task<UserViewModel[]> GetAll()
+        {
+            return await _userViewModelService.UsersAsync();
+        }
 
         [HttpGet(nameof(Details))]
-        public async Task<UserViewModel> Details() => await _userViewModelService.UserAsync(User);
+        public async Task<UserViewModel> Details()
+        {
+            return await _userViewModelService.UserAsync(User);
+        }
 
         [HttpPut(nameof(ChangeUser))]
-        public async Task ChangeUser(ChangeUserViewModel model) => await _userViewModelService.ChangeUserAsync(User, model);
+        public async Task ChangeUser(ChangeUserViewModel model)
+        {
+            await _userViewModelService.ChangeUserAsync(User, model);
+        }
 
         [HttpPut(nameof(ChangeImage))]
-        public async Task ChangeImage(ChangeImageViewModel model) => await _userViewModelService.ChangeImageAsync(User, model);
+        public async Task ChangeImage(ChangeImageViewModel model)
+        {
+            await _userViewModelService.ChangeImageAsync(User, model);
+        }
 
         [HttpPut(nameof(ChangePassword))]
-        public async Task ChangePassword(ChangePasswordViewModel model) => await _userViewModelService.ChangePasswordAsync(User, model);
+        public async Task ChangePassword(ChangePasswordViewModel model)
+        {
+            await _userViewModelService.ChangePasswordAsync(User, model);
+        }
 
         [HttpPut(nameof(ChangeEmail))]
-        public async Task ChangeEmail(ChangeEmailViewModel model) => await _userViewModelService.ChangeEmailAsync(User, model);
+        public async Task ChangeEmail(ChangeEmailViewModel model)
+        {
+            await _userViewModelService.ChangeEmailAsync(User, model);
+        }
 
         [HttpPut(nameof(ChangePhoneNumber))]
-        public async Task ChangePhoneNumber(ChangePhoneNumberViewModel model) => await _userViewModelService.ChangePhoneNumberAsync(User, model);
+        public async Task ChangePhoneNumber(ChangePhoneNumberViewModel model)
+        {
+            await _userViewModelService.ChangePhoneNumberAsync(User, model);
+        }
 
         [HttpDelete(nameof(DeleteImage))]
-        public async Task DeleteImage() => await _userViewModelService.DeleteImageAsync(User);
+        public async Task DeleteImage()
+        {
+            await _userViewModelService.DeleteImageAsync(User);
+        }
 
-        [HttpDelete(nameof(DeletePhoneNumber))]
-        public async Task DeletePhoneNumber() => await _userViewModelService.DeletePhoneNumber(User);
+        [AllowAnonymous, HttpGet(nameof(ConfirmChangeEmail))]
+        public async Task ConfirmChangeEmail([FromQuery] ConfirmChangeEmailViewModel model)
+        {
+            await _userViewModelService.ConfirmChangeEmailAsync(model);
+        }
 
-        [HttpPost(nameof(SendConfirmationEmail))]
-        public async Task SendConfirmationEmail() => await _userViewModelService.SendConfirmationEmailAsync(User);
-
-        [AllowAnonymous]
-        [HttpGet(nameof(ConfirmEmail))]
-        public async Task ConfirmEmail([FromQuery] ConfirmEmailViewModel model) => await _userViewModelService.ConfirmEmailAsync(model);
+        [HttpPost(nameof(ConfirmChangePhoneNumber))]
+        public async Task ConfirmChangePhoneNumber(ConfirmChangePhoneNumberViewModel model)
+        {
+            await _userViewModelService.ConfirmChangePhoneNumber(User, model);
+        }
     }
 }

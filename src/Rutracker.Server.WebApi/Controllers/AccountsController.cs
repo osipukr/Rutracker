@@ -23,13 +23,27 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpPost(nameof(Login))]
-        public async Task<JwtToken> Login(LoginViewModel model) => await _accountViewModelService.LoginAsync(model);
+        public async Task<JwtToken> Login(LoginViewModel model)
+        {
+            return await _accountViewModelService.LoginAsync(model);
+        }
 
         [HttpPost(nameof(Register))]
-        public async Task<JwtToken> Register(RegisterViewModel model) => await _accountViewModelService.RegisterAsync(model);
+        public async Task Register(RegisterViewModel model)
+        {
+            await _accountViewModelService.RegisterAsync(model);
+        }
 
-        [Authorize]
-        [HttpPost(nameof(Logout))]
-        public async Task Logout() => await _accountViewModelService.LogoutAsync();
+        [Authorize, HttpPost(nameof(Logout))]
+        public async Task Logout()
+        {
+            await _accountViewModelService.LogoutAsync();
+        }
+
+        [AllowAnonymous, HttpGet(nameof(ConfirmEmail))]
+        public async Task ConfirmEmail([FromQuery] ConfirmEmailViewModel model)
+        {
+            await _accountViewModelService.ConfirmEmailAsync(model);
+        }
     }
 }
