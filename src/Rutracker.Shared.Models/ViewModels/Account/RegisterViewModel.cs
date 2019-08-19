@@ -13,7 +13,6 @@ namespace Rutracker.Shared.Models.ViewModels.Account
         public string UserName { get; set; }
 
         [Required]
-        [DataType(DataType.EmailAddress)]
         [EmailAddress(ErrorMessageResourceName = nameof(RegisterViewModelResource.EmailErrorMessage), 
             ErrorMessageResourceType = typeof(RegisterViewModelResource))]
         [Display(Name = nameof(RegisterViewModelResource.EmailDisplayName),

@@ -39,14 +39,8 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
         {
             var roles = new[]
             {
-                new Role
-                {
-                    Name = UserRoles.Names.User
-                },
-                new Role
-                {
-                    Name = UserRoles.Names.Admin
-                }
+                new Role { Name = UserRoles.User },
+                new Role { Name = UserRoles.Admin }
             };
 
             foreach (var role in roles)
@@ -70,8 +64,8 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
             await userManager.CreateAsync(admin, "Admin_Password_123");
             await userManager.AddToRolesAsync(admin, new[]
             {
-                UserRoles.Names.User,
-                UserRoles.Names.Admin
+                UserRoles.User,
+                UserRoles.Admin
             });
         }
     }

@@ -155,9 +155,6 @@ namespace Rutracker.Server.WebApi
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITorrentService, TorrentService>();
-            services.AddScoped<IAccountViewModelService, AccountViewModelService>();
-            services.AddScoped<IUserViewModelService, UserViewModelService>();
-            services.AddScoped<ITorrentViewModelService, TorrentViewModelService>();
         }
 
         public void Configure(IApplicationBuilder app)

@@ -102,7 +102,7 @@ namespace Rutracker.Server.BusinessLayer.Services
                 throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
             }
 
-            result = await _userManager.AddToRoleAsync(user, UserRoles.Names.User);
+            result = await _userManager.AddToRoleAsync(user, UserRoles.User);
 
             if (!result.Succeeded)
             {
