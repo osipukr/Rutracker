@@ -21,6 +21,16 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<User> LoginAsync(string userName, string password, bool rememberMe)
         {
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new RutrackerException("Not valid user name.", ExceptionEventType.NotValidParameters);
+            }
+
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                throw new RutrackerException("Not valid password.", ExceptionEventType.NotValidParameters);
+            }
+
             var user = await _userManager.FindByNameAsync(userName);
 
             if (user == null)
@@ -52,11 +62,26 @@ namespace Rutracker.Server.BusinessLayer.Services
                 // RequiresTwoFactor
             }
 
-            return user;
+            throw new RutrackerException("Not valid password.", ExceptionEventType.NotValidParameters);
         }
 
         public async Task<User> RegisterAsync(string userName, string email, string password)
         {
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new RutrackerException("Not valid user name.", ExceptionEventType.NotValidParameters);
+            }
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                throw new RutrackerException("Not valid email.", ExceptionEventType.NotValidParameters);
+            }
+
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                throw new RutrackerException("Not valid password.", ExceptionEventType.NotValidParameters);
+            }
+
             var user = await _userManager.FindByNameAsync(userName);
 
             if (user != null)

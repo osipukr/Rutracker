@@ -41,7 +41,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (torrents == null)
             {
-                throw new RutrackerException($"The {nameof(torrents)} not found.", ExceptionEventType.NotFound);
+                throw new RutrackerException("The torrents not found.", ExceptionEventType.NotFound);
             }
 
             return torrents;
@@ -58,7 +58,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (torrent == null)
             {
-                throw new RutrackerException($"The {nameof(torrent)} not found.", ExceptionEventType.NotFound);
+                throw new RutrackerException("The torrent not found.", ExceptionEventType.NotFound);
             }
 
             if (!string.IsNullOrWhiteSpace(torrent.Content))
@@ -87,7 +87,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (forums == null)
             {
-                throw new RutrackerException($"The {nameof(forums)} not found.", ExceptionEventType.NotFound);
+                throw new RutrackerException("The forums not found.", ExceptionEventType.NotFound);
             }
 
             return forums;

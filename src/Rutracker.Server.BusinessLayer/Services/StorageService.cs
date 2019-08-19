@@ -75,7 +75,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             if (string.IsNullOrWhiteSpace(containerName))
             {
-                throw new RutrackerException($"The {nameof(containerName)} not valid.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("The container name not valid.", ExceptionEventType.NotValidParameters);
             }
 
             return _client.GetContainerReference(containerName);
@@ -96,14 +96,14 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (string.IsNullOrWhiteSpace(fileName))
             {
-                throw new RutrackerException($"The {nameof(fileName)} not valid.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("The file name not valid.", ExceptionEventType.NotValidParameters);
             }
 
             var blockBlob = container.GetBlockBlobReference(fileName);
 
             if (blockBlob == null)
             {
-                throw new RutrackerException($"The {nameof(blockBlob)} not found.", ExceptionEventType.NotFound);
+                throw new RutrackerException("The block blob not found.", ExceptionEventType.NotFound);
             }
 
             return blockBlob;

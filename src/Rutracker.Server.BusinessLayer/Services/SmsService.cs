@@ -18,7 +18,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             if (string.IsNullOrWhiteSpace(phone))
             {
-                throw new RutrackerException("Not valid email.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("Not valid phone.", ExceptionEventType.NotValidParameters);
             }
 
             if (string.IsNullOrWhiteSpace(code))
