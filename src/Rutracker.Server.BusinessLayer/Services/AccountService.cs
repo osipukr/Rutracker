@@ -54,7 +54,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (result.IsNotAllowed)
             {
-                throw new RutrackerException("This user is not allowed to log in.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("Confirm your account before logging in.", ExceptionEventType.NotValidParameters);
             }
 
             if (result.RequiresTwoFactor)
@@ -97,19 +97,17 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var result = await _userManager.CreateAsync(user, password);
 
-            if (!result.Succeeded)
+            if (result.Succeeded)
             {
-                throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
+                result = await _userManager.AddToRoleAsync(user, UserRoles.User);
+
+                if (result.Succeeded)
+                {
+                    return user;
+                }
             }
 
-            result = await _userManager.AddToRoleAsync(user, UserRoles.User);
-
-            if (!result.Succeeded)
-            {
-                throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
-            }
-
-            return user;
+            throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
         }
 
         public async Task LogoutAsync() => await _signInManager.SignOutAsync();

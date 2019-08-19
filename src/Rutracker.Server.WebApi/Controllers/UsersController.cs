@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -11,7 +10,6 @@ using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Extensions;
 using Rutracker.Server.WebApi.Settings;
-using Rutracker.Shared.Infrastructure.Exceptions;
 using Rutracker.Shared.Models.ViewModels.User;
 
 namespace Rutracker.Server.WebApi.Controllers
@@ -26,7 +24,6 @@ namespace Rutracker.Server.WebApi.Controllers
     public class UsersController : BaseApiController
     {
         private readonly IUserService _userService;
-        private readonly IStorageService _storageService;
         private readonly IEmailService _emailService;
         private readonly ISmsService _smsService;
         private readonly IMapper _mapper;
@@ -36,7 +33,6 @@ namespace Rutracker.Server.WebApi.Controllers
 
         public UsersController(
             IUserService userService,
-            IStorageService storageService,
             IEmailService emailService,
             ISmsService smsService,
             IMapper mapper,
@@ -44,7 +40,6 @@ namespace Rutracker.Server.WebApi.Controllers
             IOptions<EmailChangeConfirmationSettings> emailOptions)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             _smsService = smsService ?? throw new ArgumentNullException(nameof(smsService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -90,17 +85,9 @@ namespace Rutracker.Server.WebApi.Controllers
 
             if (model.ImageBytes?.Length > 0)
             {
-                ThrowIfInvalidFileType(model.FileType);
+                var path = await _userService.UploadProfileImageAsync(user, model.ImageBytes, model.FileType);
 
-                await using var stream = new MemoryStream(model.ImageBytes);
-
-                var containerName = user.UserName;
-                var fileType = model.FileType.Split('/')[1];
-                var fileName = $"profile-image-{Guid.NewGuid()}.{fileType}";
-
-                await _storageService.UploadFileAsync(containerName, fileName, stream);
-
-                user.ImageUrl = await _storageService.PathToFileAsync(containerName, fileName);
+                user.ImageUrl = path;
             }
             else
             {
@@ -157,7 +144,7 @@ namespace Rutracker.Server.WebApi.Controllers
         {
             var user = await _userService.FindAsync(User.GetUserId());
 
-            await _storageService.DeleteContainerAsync(user.UserName);
+            await _userService.DeleteProfileImageAsync(user);
 
             user.ImageUrl = null;
 
@@ -178,17 +165,6 @@ namespace Rutracker.Server.WebApi.Controllers
             var user = await _userService.FindAsync(User.GetUserId());
 
             await _userService.ChangePhoneNumberAsync(user, model.Phone, model.Token);
-        }
-
-        private static void ThrowIfInvalidFileType(string fileType)
-        {
-            var types = new[] { "image/png", "image/svg", "image/jpeg", "image/gif", "image/jpg" };
-            var type = fileType.ToLower();
-
-            if (!types.Contains(type))
-            {
-                throw new RutrackerException("Invalid file type.", ExceptionEventType.NotValidParameters);
-            }
         }
     }
 }
