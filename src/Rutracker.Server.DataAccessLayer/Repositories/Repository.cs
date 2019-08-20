@@ -13,10 +13,10 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
         where TEntity : BaseEntity<TPrimaryKey>
         where TPrimaryKey : IEquatable<TPrimaryKey>
     {
-        protected readonly TorrentContext _context;
+        protected readonly RutrackerContext _context;
         protected readonly DbSet<TEntity> _dbSet;
 
-        public Repository(TorrentContext context)
+        public Repository(RutrackerContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _dbSet = _context.Set<TEntity>();

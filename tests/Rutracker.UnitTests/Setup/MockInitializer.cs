@@ -21,10 +21,10 @@ namespace Rutracker.UnitTests.Setup
 {
     public static class MockInitializer
     {
-        public static TorrentContext GetTorrentContext()
+        public static RutrackerContext GetRutrackerContext()
         {
-            var options = new DbContextOptionsBuilder<TorrentContext>().Options;
-            var mockContext = new DbContextMock<TorrentContext>(options);
+            var options = new DbContextOptionsBuilder<RutrackerContext>().Options;
+            var mockContext = new DbContextMock<RutrackerContext>(options);
 
             mockContext.CreateDbSetMock(x => x.Forums, DataInitializer.GetTestForums());
             mockContext.CreateDbSetMock(x => x.Torrents, DataInitializer.GeTestTorrents());

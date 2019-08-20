@@ -13,7 +13,7 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
 
         public TorrentRepositoryTests()
         {
-            var context = MockInitializer.GetTorrentContext();
+            var context = MockInitializer.GetRutrackerContext();
 
             _torrentRepository = new TorrentRepository(context);
         }

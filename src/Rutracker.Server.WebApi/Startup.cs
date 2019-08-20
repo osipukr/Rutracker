@@ -44,7 +44,12 @@ namespace Rutracker.Server.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            AddDatabaseContext(services);
+            services.AddDbContext<RutrackerContext>(options => options
+                .UseSqlServer(
+                    _configuration.GetConnectionString("RutrackerConnection"),
+                    sqlServerOptions => sqlServerOptions.EnableRetryOnFailure())
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                .UseLazyLoadingProxies());
 
             services.AddMemoryCache();
 
@@ -93,7 +98,7 @@ namespace Rutracker.Server.WebApi
                 config.Password.RequireDigit = false;
             })
             .AddRoles<Role>()
-            .AddEntityFrameworkStores<IdentityContext>()
+            .AddEntityFrameworkStores<RutrackerContext>()
             .AddDefaultTokenProviders();
 
             services.AddAuthentication(options =>
@@ -179,45 +184,17 @@ namespace Rutracker.Server.WebApi
                 endpoints.MapFallbackToClientSideBlazor<Client.Blazor.Startup>(filePath: "index.html");
             });
 
-            SeedDatabase(app);
-        }
-
-        private void AddDatabaseContext(IServiceCollection services)
-        {
-            services.AddDbContext<TorrentContext>(options => options
-                    .UseSqlServer(
-                        _configuration.GetConnectionString("TorrentConnection"),
-                        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure())
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                    .UseLazyLoadingProxies());
-
-            services.AddDbContext<IdentityContext>(options => options
-                    .UseSqlServer(
-                        _configuration.GetConnectionString("IdentityConnection"),
-                        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure())
-                    .UseLazyLoadingProxies());
-        }
-
-        private void SeedDatabase(IApplicationBuilder app)
-        {
             using var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
             var provider = scope.ServiceProvider;
-            var torrentContext = provider.GetRequiredService<TorrentContext>();
-            var identityContext = provider.GetRequiredService<IdentityContext>();
+            var context = provider.GetRequiredService<RutrackerContext>();
+            var userManager = provider.GetService<UserManager<User>>();
+            var roleManager = provider.GetService<RoleManager<Role>>();
             var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
 
-            if (torrentContext.Database.EnsureCreated())
+            if (context.Database.EnsureCreated())
             {
-                TorrentContextSeed.SeedAsync(torrentContext, loggerFactory).Wait();
-            }
-
-            if (identityContext.Database.EnsureCreated())
-            {
-                var userManager = provider.GetService<UserManager<User>>();
-                var roleManager = provider.GetService<RoleManager<Role>>();
-
-                IdentityContextSeed.SeedAsync(identityContext, userManager, roleManager, loggerFactory).Wait();
+                RutrackerContextSeed.SeedAsync(context, userManager, roleManager, loggerFactory).Wait();
             }
         }
     }
