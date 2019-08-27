@@ -1,6 +1,6 @@
 ﻿@layout LoginLayout
 
-@inject AppState AppState
+@inject IAccountService AccountService
 @inject IUriHelper UriHelper
 @inject IMatToaster MatToaster
 
@@ -14,7 +14,7 @@
         </div>
 
         <div class="form-group">
-            <MatTextField @bind-value="@RegisterModel.UserName"
+            <MatTextField @bind-Value="@RegisterModel.UserName"
                           Label="User Name"
                           Icon="@MatIconNames.Person"
                           IconTrailing="true"
@@ -23,7 +23,7 @@
         </div>
 
         <div class="form-group">
-            <MatTextField @bind-value="@RegisterModel.Email"
+            <MatTextField @bind-Value="@RegisterModel.Email"
                           Label="Email"
                           Icon="@MatIconNames.Mail_outline"
                           IconTrailing="true"
@@ -32,7 +32,7 @@
         </div>
 
         <div class="form-group">
-            <MatTextField @bind-value="@RegisterModel.Password"
+            <MatTextField @bind-Value="@RegisterModel.Password"
                           Label="Password"
                           Icon="@MatIconNames.Lock_open"
                           IconTrailing="true"
@@ -42,7 +42,7 @@
         </div>
 
         <div class="form-group">
-            <MatTextField @bind-value="@RegisterModel.ConfirmPassword"
+            <MatTextField @bind-Value="@RegisterModel.ConfirmPassword"
                           Label="Password Confirmation"
                           Icon="@MatIconNames.Lock_open"
                           IconTrailing="true"
@@ -67,13 +67,15 @@
     {
         try
         {
-            await AppState.Register(RegisterModel);
+            await AccountService.Register(RegisterModel);
 
-            UriHelper.NavigateTo(Constants.Path.Home);
+            MatToaster.Add("To complete registration, check the email.", MatToastType.Success, "Confirm email");
+
+            UriHelper.NavigateTo(Constants.Path.Login);
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Error creating account");
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Creating account");
         }
     }
 }

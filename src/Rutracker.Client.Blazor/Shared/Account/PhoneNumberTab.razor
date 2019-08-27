@@ -1,0 +1,82 @@
+﻿@inject IUserService UserService
+@inject IMatToaster MatToaster
+@inject IModalService ModalService
+
+<MatTab>
+    <LabelContent>Phone</LabelContent>
+    <ChildContent>
+        <EditForm Model="@ChangePhoneNumberModel" OnValidSubmit="@ChangePhoneNumberClicked">
+            <div class="form-group">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+            </div>
+
+            <div class="form-group">
+                <MatTextField @bind-Value="@ChangePhoneNumberModel.PhoneNumber"
+                              Label="Phone number"
+                              Icon="@MatIconNames.Phone"
+                              IconTrailing="true"
+                              FullWidth="true"
+                              Required="true" />
+            </div>
+
+            <div class="form-group mt-4 d-flex justify-content-end">
+                <MatButton Type="submit" Raised="true" Label="Change phone" Class="ml-2" />
+            </div>
+        </EditForm>
+    </ChildContent>
+</MatTab>
+
+@code
+{
+    [Parameter] private UserDetailsViewModel UserModel { get; set; }
+    [Parameter] private EventCallback OnChange { get; set; }
+
+    private ChangePhoneNumberViewModel ChangePhoneNumberModel { get; set; } = new ChangePhoneNumberViewModel();
+
+    protected override void OnParametersSet() => ChangePhoneNumberModel.PhoneNumber = UserModel.PhoneNumber;
+
+    private async Task ChangePhoneNumberClicked()
+    {
+        if (UserModel.PhoneNumber == ChangePhoneNumberModel.PhoneNumber)
+        {
+            return;
+        }
+
+        try
+        {
+            await UserService.ChangePhoneNumber(ChangePhoneNumberModel);
+
+            MatToaster.Add("Verification code sent to phone number.", MatToastType.Success, "Phone number change");
+
+            ConfirmPhoneNumberModalOpenClicked("Confirm phone number", ChangePhoneNumberModel.PhoneNumber);
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Phone number change");
+        }
+    }
+
+    private void ConfirmPhoneNumberModalOpenClicked(string title, string phone)
+    {
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(ConfirmChangePhoneNumberViewModel), new ConfirmChangePhoneNumberViewModel
+        {
+            Phone = phone
+        });
+
+        ModalService.OnClose += ConfirmPhoneNumberModalClosed;
+        ModalService.Show(title, typeof(PhoneNumberConfirmModal), parameters);
+    }
+
+    private async void ConfirmPhoneNumberModalClosed(ModalResult result)
+    {
+        if (!result.Cancelled && result.Data is bool isSuccess && isSuccess)
+        {
+            await OnChange.InvokeAsync(EventArgs.Empty);
+        }
+
+        ModalService.OnClose -= ConfirmPhoneNumberModalClosed;
+    }
+}

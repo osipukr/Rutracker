@@ -1,7 +1,7 @@
 ﻿@inject IModalService ModalService
 
 <MatTab>
-    <LabelContent>Personal info</LabelContent>
+    <LabelContent>Info</LabelContent>
     <ChildContent>
         <div class="form-group">
             <MatTextField Value="@UserModel.UserName"
@@ -22,6 +22,15 @@
         </div>
 
         <div class="form-group">
+            <MatTextField Value="@UserModel.PhoneNumber"
+                          Label="Phone number"
+                          Icon="@MatIconNames.Phone"
+                          IconTrailing="true"
+                          FullWidth="true"
+                          ReadOnly="true" />
+        </div>
+
+        <div class="form-group">
             <MatTextField Value="@UserModel.FirstName" Label="User Name" FullWidth="true" ReadOnly="true" />
         </div>
 
@@ -30,7 +39,7 @@
         </div>
 
         <div class="form-group mt-4 d-flex justify-content-end">
-            <MatButton OnClick="@EditUserClicked" Raised="true" Label="Edit profile" Class="mx-2" />
+            <MatButton OnClick="@ChangeUserModalOpenClicked" Raised="true" Label="Edit profile" />
         </div>
     </ChildContent>
 </MatTab>
@@ -38,30 +47,27 @@
 @code
 {
     [Parameter] private UserDetailsViewModel UserModel { get; set; }
-    [Parameter] private EventCallback<EditUserViewModel> OnUpdateClick { get; set; }
+    [Parameter] private EventCallback OnChange { get; set; }
 
-    private void EditUserClicked()
+    private void ChangeUserModalOpenClicked()
     {
         var parameters = new ModalParameters();
 
-        parameters.Add(nameof(EditUserViewModel), new EditUserViewModel
+        parameters.Add(nameof(ChangeUserViewModel), new ChangeUserViewModel
         {
-            Email = UserModel.Email,
             FirstName = UserModel.FirstName,
-            LastName = UserModel.LastName,
-            ImageUrl = UserModel.ImageUrl
+            LastName = UserModel.LastName
         });
 
         ModalService.OnClose += ModalClosed;
-
-        ModalService.Show("Edit profile", typeof(EditProfile), parameters);
+        ModalService.Show("Change user info", typeof(ChangeUserModal), parameters);
     }
 
     private async void ModalClosed(ModalResult result)
     {
-        if (!result.Cancelled && result.Data is EditUserViewModel model)
+        if (!result.Cancelled && result.Data is bool isSuccess && isSuccess)
         {
-            await OnUpdateClick.InvokeAsync(model);
+            await OnChange.InvokeAsync(EventArgs.Empty);
         }
 
         ModalService.OnClose -= ModalClosed;

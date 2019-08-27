@@ -13,7 +13,6 @@ namespace Rutracker.Shared.Models.ViewModels.Account
         public string UserName { get; set; }
 
         [Required]
-        [DataType(DataType.EmailAddress)]
         [EmailAddress(ErrorMessageResourceName = nameof(RegisterViewModelResource.EmailErrorMessage), 
             ErrorMessageResourceType = typeof(RegisterViewModelResource))]
         [Display(Name = nameof(RegisterViewModelResource.EmailDisplayName),
@@ -29,6 +28,7 @@ namespace Rutracker.Shared.Models.ViewModels.Account
         public string Password { get; set; }
 
         [Required]
+        [DataType(DataType.Password)]
         [Display(Name = nameof(RegisterViewModelResource.ConfirmPasswordDisplayName), ResourceType = typeof(RegisterViewModelResource))]
         [Compare(nameof(Password),
             ErrorMessageResourceName = nameof(RegisterViewModelResource.ConfirmPasswordErrorMessage),

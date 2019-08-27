@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rutracker.Server.WebApi.Settings
+namespace Rutracker.Server.BusinessLayer.Options
 {
     public class CacheSettings
     {

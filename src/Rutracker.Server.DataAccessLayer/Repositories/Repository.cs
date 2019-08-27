@@ -18,7 +18,7 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
 
         public Repository(TorrentContext context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _context = context;
             _dbSet = _context.Set<TEntity>();
         }
 
