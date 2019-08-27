@@ -8,7 +8,6 @@ using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Settings;
-using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.Account;
 
 namespace Rutracker.Server.WebApi.Controllers
@@ -45,7 +44,7 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpPost(nameof(Login))]
-        public async Task<JwtToken> Login(LoginViewModel model)
+        public async Task<string> Login(LoginViewModel model)
         {
             var user = await _accountService.LoginAsync(model.UserName, model.Password, model.RememberMe);
             var roles = await _userService.RolesAsync(user);

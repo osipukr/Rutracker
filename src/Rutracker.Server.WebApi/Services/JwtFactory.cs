@@ -8,7 +8,6 @@ using Microsoft.Extensions.Options;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Settings;
-using Rutracker.Shared.Models;
 
 namespace Rutracker.Server.WebApi.Services
 {
@@ -36,7 +35,7 @@ namespace Rutracker.Server.WebApi.Services
             }
         }
 
-        public async Task<JwtToken> GenerateTokenAsync(User user, IEnumerable<string> roles)
+        public async Task<string> GenerateTokenAsync(User user, IEnumerable<string> roles)
         {
             var claims = new[]
             {
@@ -57,13 +56,7 @@ namespace Rutracker.Server.WebApi.Services
                 expires: _jwtOptions.Expiration,
                 signingCredentials: _jwtOptions.SigningCredentials);
 
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-            return new JwtToken
-            {
-                Token = encodedJwt,
-                ExpiresIn = (long)_jwtOptions.ValidFor.TotalSeconds
-            };
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
         /// <returns>Date converted to seconds since Unix epoch (Jan 1, 1970, midnight UTC).</returns>
