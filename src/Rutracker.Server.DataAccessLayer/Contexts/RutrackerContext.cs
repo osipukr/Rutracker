@@ -1,12 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.DataAccessLayer.Configurations;
 using Rutracker.Server.DataAccessLayer.Entities;
 
 namespace Rutracker.Server.DataAccessLayer.Contexts
 {
-    public class TorrentContext : DbContext
+    public class RutrackerContext : IdentityDbContext<User, Role, string>
     {
-        public TorrentContext(DbContextOptions<TorrentContext> options)
+        public RutrackerContext(DbContextOptions<RutrackerContext> options)
             : base(options)
         {
         }

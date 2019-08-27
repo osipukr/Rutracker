@@ -10,7 +10,7 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
 {
     public class TorrentRepository : Repository<Torrent, long>, ITorrentRepository
     {
-        public TorrentRepository(TorrentContext context)
+        public TorrentRepository(RutrackerContext context)
             : base(context)
         {
         }

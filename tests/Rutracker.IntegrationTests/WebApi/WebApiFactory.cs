@@ -23,12 +23,7 @@ namespace Rutracker.IntegrationTests.WebApi
                                            .BuildServiceProvider();
 
                     services
-                        .AddDbContext<TorrentContext>(options => options
-                            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                            .UseLazyLoadingProxies()
-                            .UseInternalServiceProvider(provider),
-                            contextLifetime: ServiceLifetime.Singleton)
-                        .AddDbContext<IdentityContext>(options => options
+                        .AddDbContext<RutrackerContext>(options => options
                             .UseInMemoryDatabase(Guid.NewGuid().ToString())
                             .UseLazyLoadingProxies()
                             .UseInternalServiceProvider(provider),
@@ -36,21 +31,14 @@ namespace Rutracker.IntegrationTests.WebApi
 
                     using var scope = services.BuildServiceProvider().CreateScope();
 
-                    var torrentContext = scope.ServiceProvider.GetRequiredService<TorrentContext>();
-                    var identityContext = scope.ServiceProvider.GetRequiredService<IdentityContext>();
+                    var context = scope.ServiceProvider.GetRequiredService<RutrackerContext>();
+                    var userManager = provider.GetService<UserManager<User>>();
+                    var roleManager = provider.GetService<RoleManager<Role>>();
                     var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
 
-                    if (torrentContext.Database.EnsureCreated())
+                    if (context.Database.EnsureCreated())
                     {
-                        TorrentContextSeed.SeedAsync(torrentContext, loggerFactory).Wait();
-                    }
-
-                    if (identityContext.Database.EnsureCreated())
-                    {
-                        var userManager = provider.GetService<UserManager<User>>();
-                        var roleManager = provider.GetService<RoleManager<Role>>();
-
-                        IdentityContextSeed.SeedAsync(identityContext, userManager, roleManager, loggerFactory).Wait();
+                        RutrackerContextSeed.SeedAsync(context, userManager, roleManager, loggerFactory).Wait();
                     }
                 })
                 .ConfigureWebHostDefaults(builder =>
