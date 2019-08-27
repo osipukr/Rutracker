@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Shared.Infrastructure.Exceptions;
 
@@ -11,7 +10,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public EmailService(IEmailSender emailSender)
         {
-            _emailSender = emailSender ?? throw new ArgumentNullException(nameof(emailSender));
+            _emailSender = emailSender;
         }
 
         public async Task SendConfirmationEmailAsync(string email, string confirmationUrl)

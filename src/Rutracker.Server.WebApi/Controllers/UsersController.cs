@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -112,11 +112,12 @@ namespace Rutracker.Server.WebApi.Controllers
             var user = await _userService.FindAsync(userId);
             var token = await _userService.ChangeEmailTokenAsync(user, model.Email);
 
-            var parameters = HttpUtility.ParseQueryString(string.Empty);
-
-            parameters.Add(nameof(ConfirmChangeEmailViewModel.UserId), userId);
-            parameters.Add(nameof(ConfirmChangeEmailViewModel.Email), model.Email);
-            parameters.Add(nameof(ConfirmChangeEmailViewModel.Token), token);
+            var parameters = new NameValueCollection
+            {
+                {nameof(ConfirmChangeEmailViewModel.UserId), userId},
+                {nameof(ConfirmChangeEmailViewModel.Email), model.Email},
+                {nameof(ConfirmChangeEmailViewModel.Token), token}
+            };
 
             var urlBuilder = new UriBuilder(_hostSettings.BaseUrl)
             {
@@ -124,9 +125,7 @@ namespace Rutracker.Server.WebApi.Controllers
                 Query = parameters.ToString()
             };
 
-            var callbackUrl = urlBuilder.Uri.ToString();
-
-            await _emailService.SendEmailChangeConfirmation(user.Email, callbackUrl);
+            await _emailService.SendEmailChangeConfirmation(user.Email, urlBuilder.Uri.ToString());
         }
 
         [HttpPut(nameof(ChangePhoneNumber))]
