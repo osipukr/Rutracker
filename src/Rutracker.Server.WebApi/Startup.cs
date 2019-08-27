@@ -38,8 +38,8 @@ namespace Rutracker.Server.WebApi
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            _environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            _configuration = configuration;
+            _environment = environment;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -56,6 +56,11 @@ namespace Rutracker.Server.WebApi
             services.Configure<CacheSettings>(_configuration.GetSection(nameof(CacheSettings)));
             services.Configure<JwtSettings>(_configuration.GetSection(nameof(JwtSettings)));
             services.Configure<StorageSettings>(_configuration.GetSection(nameof(StorageSettings)));
+            services.Configure<EmailSettings>(_configuration.GetSection(nameof(EmailSettings)));
+            services.Configure<SmsSettings>(_configuration.GetSection(nameof(SmsSettings)));
+            services.Configure<HostSettings>(_configuration.GetSection(nameof(HostSettings)));
+            services.Configure<EmailConfirmationSettings>(_configuration.GetSection(nameof(EmailConfirmationSettings)));
+            services.Configure<EmailChangeConfirmationSettings>(_configuration.GetSection(nameof(EmailChangeConfirmationSettings)));
 
             services.AddResponseCompression(options =>
             {
@@ -89,10 +94,12 @@ namespace Rutracker.Server.WebApi
 
             services.AddIdentity<User, Role>(config =>
             {
-                // User
+                config.SignIn.RequireConfirmedEmail = true;
+
+                config.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
+
                 config.User.RequireUniqueEmail = true;
 
-                // Password
                 config.Password.RequireNonAlphanumeric = false;
                 config.Password.RequireUppercase = false;
                 config.Password.RequireDigit = false;
@@ -100,6 +107,12 @@ namespace Rutracker.Server.WebApi
             .AddRoles<Role>()
             .AddEntityFrameworkStores<RutrackerContext>()
             .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromDays(1);
+                options.SlidingExpiration = true;
+            });
 
             services.AddAuthentication(options =>
             {
@@ -144,14 +157,15 @@ namespace Rutracker.Server.WebApi
             });
 
             services.AddSingleton<IJwtFactory, JwtFactory>();
+            services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddSingleton<ISmsSender, SmsSender>();
+            services.AddSingleton<IEmailService, EmailService>();
+            services.AddSingleton<ISmsService, SmsService>();
             services.AddScoped<ITorrentRepository, TorrentRepository>();
             services.AddScoped<IStorageService, StorageService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITorrentService, TorrentService>();
-            services.AddScoped<IAccountViewModelService, AccountViewModelService>();
-            services.AddScoped<IUserViewModelService, UserViewModelService>();
-            services.AddScoped<ITorrentViewModelService, TorrentViewModelService>();
         }
 
         public void Configure(IApplicationBuilder app)

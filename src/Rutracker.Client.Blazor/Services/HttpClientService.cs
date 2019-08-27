@@ -84,6 +84,18 @@ namespace Rutracker.Client.Blazor.Services
             }
         }
 
+        public async Task DeleteJsonAsync(string url)
+        {
+            using var response = await _httpClient.DeleteAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+
+                throw new Exception(DeserializeJsonError(json));
+            }
+        }
+
         public void SetAuthorizationToken(string token)
         {
             if (!string.IsNullOrWhiteSpace(token))

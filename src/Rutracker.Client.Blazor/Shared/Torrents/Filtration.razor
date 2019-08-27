@@ -1,5 +1,6 @@
 ﻿@inject AppState AppState
 @inject ViewSettings ViewSettings
+@inject ITorrentService TorrentService
 @inject IMatToaster MatToaster
 
 <div class="mat-layout-grid px-0">
@@ -98,7 +99,7 @@
     {
         try
         {
-            TitleFacet = await AppState.TitleFacet(TitleCount);
+            TitleFacet = await TorrentService.TitleFacet(TitleCount);
         }
         catch (Exception ex)
         {

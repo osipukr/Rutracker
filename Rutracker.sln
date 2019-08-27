@@ -33,7 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{DC31B6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{327F4B87-575C-4C6B-92E6-C85D89D7DFC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rutracker.Shared.Infrastructure", "src\Rutracker.Shared.Infrastructure\Rutracker.Shared.Infrastructure.csproj", "{DB242510-79CC-43FA-8F29-90AC92A5A903}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Shared.Infrastructure", "src\Rutracker.Shared.Infrastructure\Rutracker.Shared.Infrastructure.csproj", "{DB242510-79CC-43FA-8F29-90AC92A5A903}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

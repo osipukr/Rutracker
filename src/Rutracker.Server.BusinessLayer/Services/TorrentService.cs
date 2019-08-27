@@ -17,7 +17,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public TorrentService(ITorrentRepository torrentRepository)
         {
-            _torrentRepository = torrentRepository ?? throw new ArgumentNullException(nameof(torrentRepository));
+            _torrentRepository = torrentRepository;
         }
 
         public async Task<IEnumerable<Torrent>> ListAsync(int page, int pageSize, string search, IEnumerable<string> selectedForumIds, long? sizeFrom, long? sizeTo)
@@ -41,7 +41,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (torrents == null)
             {
-                throw new RutrackerException($"The {nameof(torrents)} not found.", ExceptionEventType.NotFound);
+                throw new RutrackerException("The torrents not found.", ExceptionEventType.NotFound);
             }
 
             return torrents;
@@ -58,7 +58,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (torrent == null)
             {
-                throw new RutrackerException($"The {nameof(torrent)} not found.", ExceptionEventType.NotFound);
+                throw new RutrackerException("The torrent not found.", ExceptionEventType.NotFound);
             }
 
             if (!string.IsNullOrWhiteSpace(torrent.Content))
@@ -87,7 +87,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (forums == null)
             {
-                throw new RutrackerException($"The {nameof(forums)} not found.", ExceptionEventType.NotFound);
+                throw new RutrackerException("The forums not found.", ExceptionEventType.NotFound);
             }
 
             return forums;

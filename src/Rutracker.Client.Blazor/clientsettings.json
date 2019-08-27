@@ -8,7 +8,14 @@
     "Logout": "api/accounts/logout",
     "Users": "api/users",
     "UserDetails": "api/users/details",
-    "UpdateUser": "api/users/update"
+    "ChangeUser": "api/users/changeuser",
+    "ChangeImage": "api/users/changeimage",
+    "ChangePassword": "api/users/changepassword",
+    "ChangeEmail": "api/users/changeemail",
+    "ChangePhoneNumber": "api/users/changePhoneNumber",
+    "DeleteImage": "api/users/deleteImage",
+    "ConfirmChangeEmail": "api/users/confirmChangeEmail",
+    "ConfirmChangePhoneNumber": "api/users/confirmChangePhoneNumber"
   },
   "ViewSettings": {
     "ServiceName": "Rutracker",
@@ -17,11 +24,11 @@
   },
   "MatToasterSettings": {
     "Position": "BottomRight",
-    "PreventDuplicates": true,
+    "PreventDuplicates": false,
     "NewestOnTop": true,
     "ShowProgressBar": false,
     "ShowCloseButton": true,
     "MaximumOpacity": 100,
-    "VisibleStateDuration": 3000
+    "VisibleStateDuration": 5000
   }
 }

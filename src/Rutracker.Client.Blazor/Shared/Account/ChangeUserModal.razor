@@ -1,0 +1,50 @@
+﻿@inject IUserService UserService
+@inject IMatToaster MatToaster
+@inject IModalService ModalService
+
+<EditForm Model="@ChangeUserModel" OnValidSubmit="@ChangeUserClicked">
+    <div class="form-group">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+    </div>
+
+    <div class="form-group">
+        <MatTextField @bind-Value="@ChangeUserModel.FirstName" Label="Fist Name" FullWidth="true" />
+    </div>
+
+    <div class="form-group">
+        <MatTextField @bind-Value="@ChangeUserModel.LastName" Label="Last Name" FullWidth="true" />
+    </div>
+
+    <div class="form-group mt-4 d-flex justify-content-end">
+        <MatButton OnClick="@CancelClicked" Raised="true" Label="Cancel" Class="mx-2" />
+        <MatButton Type="submit" Raised="true" Label="Update" Class="mx-2" />
+    </div>
+</EditForm>
+
+@code
+{
+    [CascadingParameter] private ModalParameters Parameters { get; set; }
+
+    private ChangeUserViewModel ChangeUserModel { get; set; }
+
+    protected override void OnInit() => ChangeUserModel = Parameters.Get<ChangeUserViewModel>(nameof(ChangeUserViewModel));
+
+    private async Task ChangeUserClicked()
+    {
+        try
+        {
+            await UserService.ChangeUser(ChangeUserModel);
+
+            MatToaster.Add("User information changed successfully.", MatToastType.Success, "User change");
+
+            ModalService.Close(ModalResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "User change");
+        }
+    }
+
+    private void CancelClicked() => ModalService.Cancel();
+}

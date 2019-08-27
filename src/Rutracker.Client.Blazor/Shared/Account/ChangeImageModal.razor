@@ -1,0 +1,109 @@
+﻿@using global::Blazor.FileReader
+
+@inject IUserService UserService
+@inject IMatToaster MatToaster
+@inject IModalService ModalService
+@inject IFileReaderService FileReaderService
+
+<EditForm Model="@ChangeImageModel" OnValidSubmit="@ChangeImageClicked">
+    <div class="form-group">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+    </div>
+
+    <div class="form-group">
+        <MatTextField @bind-Value="@ChangeImageModel.ImageUrl" Label="Image Url" FullWidth="true" />
+    </div>
+
+    <div class="form-group text-center">or</div>
+
+    <div class="form-group">
+        Select image from computer: <input type="file" @ref="_inputTypeFileElement" />
+    </div>
+
+    <div class="form-group mt-4 d-flex justify-content-end">
+        <MatButton OnClick="@CancelClicked" Raised="true" Label="Cancel" Class="mr-2" />
+        <MatButton Type="button" OnClick="@DeleteImageClicked" Raised="true" Label="Delete" Class="ml-2" />
+        <MatButton Type="submit" Raised="true" Label="Update" Class="ml-2" />
+    </div>
+</EditForm>
+
+@code
+{
+    private ChangeImageViewModel ChangeImageModel { get; set; } = new ChangeImageViewModel();
+    private ElementRef _inputTypeFileElement;
+
+    private async Task ReadFileAsync()
+    {
+        var file = (await FileReaderService.CreateReference(_inputTypeFileElement).EnumerateFilesAsync()).FirstOrDefault();
+
+        if (file == null)
+        {
+            return;
+        }
+
+        var type = (await file.ReadFileInfoAsync()).Type;
+        var types = new[] { "image/png", "image/svg", "image/jpeg", "image/gif", "image/jpg" };
+
+        if (!types.Contains(type))
+        {
+            throw new Exception("Not valid file type.");
+        }
+
+        using var stream = await file.OpenReadAsync();
+
+        if (stream.Length > Constants.File.MaxImageSize)
+        {
+            throw new Exception("File size too large.");
+        }
+
+        ChangeImageModel.ImageBytes = new byte[stream.Length];
+        ChangeImageModel.FileType = type;
+
+        var buffer = new byte[4 * 1024];
+        var length = 0;
+        int count;
+
+        while ((count = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+        {
+            Array.Copy(buffer, 0, ChangeImageModel.ImageBytes, length, count);
+
+            length += count;
+        }
+    }
+
+    private async Task ChangeImageClicked()
+    {
+        try
+        {
+            await ReadFileAsync();
+            await UserService.ChangeImage(ChangeImageModel);
+
+            MatToaster.Add("Image changed successfully.", MatToastType.Success, "Image change");
+
+            ModalService.Close(ModalResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Image change");
+        }
+    }
+
+    private async Task DeleteImageClicked()
+    {
+        try
+        {
+            await UserService.DeleteImage();
+
+            MatToaster.Add("Image deleted successfully.", MatToastType.Success, "Image delete");
+
+            ModalService.Close(ModalResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Image delete");
+        }
+    }
+
+    private void CancelClicked() => ModalService.Cancel();
+}

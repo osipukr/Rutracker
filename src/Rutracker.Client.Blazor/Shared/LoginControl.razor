@@ -1,11 +1,11 @@
-﻿@inject AppState AppState
+﻿@inject IAccountService AccountService
 @inject IUriHelper UriHelper
 @inject IMatToaster MatToaster
 
 <AuthorizeView Context="AuthorizeContext">
     <Authorized>
         <MatTooltip Tooltip="Logout" Wrap="true">
-            <MatIconButton Icon="@MatIconNames.Exit_to_app" OnClick="@(async () => await LogoutClicked())" />
+            <MatIconButton Icon="@MatIconNames.Exit_to_app" OnClick="@LogoutClicked" />
         </MatTooltip>
     </Authorized>
     <NotAuthorized>
@@ -25,7 +25,7 @@
     {
         try
         {
-            await AppState.Logout();
+            await AccountService.Logout();
 
             UriHelper.NavigateTo(Constants.Path.Home);
         }

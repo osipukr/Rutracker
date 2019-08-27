@@ -1,0 +1,61 @@
+﻿@inject IUserService UserService
+@inject IMatToaster MatToaster
+
+<MatTab>
+    <LabelContent>Email</LabelContent>
+    <ChildContent>
+        <EditForm Model="@ChangeEmailModel" OnValidSubmit="@ChangeEmailClicked">
+            <div class="form-group">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+            </div>
+
+            <div class="form-group">
+                <MatTextField @bind-Value="@ChangeEmailModel.Email"
+                              Label="Email"
+                              Icon="@MatIconNames.Mail_outline"
+                              IconTrailing="true"
+                              FullWidth="true" />
+            </div>
+
+            <div class="form-group mt-4 d-flex justify-content-end">
+                <MatButton Type="submit" Raised="true" Label="Change email" />
+            </div>
+        </EditForm>
+    </ChildContent>
+</MatTab>
+
+@code
+{
+    [Parameter] private UserDetailsViewModel UserModel { get; set; }
+    [Parameter] private EventCallback OnChange { get; set; }
+
+    private ChangeEmailViewModel ChangeEmailModel { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        ChangeEmailModel = new ChangeEmailViewModel
+        {
+            Email = UserModel.Email
+        };
+    }
+
+    private async Task ChangeEmailClicked()
+    {
+        if (UserModel.Email == ChangeEmailModel.Email)
+        {
+            return;
+        }
+
+        try
+        {
+            await UserService.ChangeEmail(ChangeEmailModel);
+
+            MatToaster.Add("To complete, check your email.", MatToastType.Success, "Email change");
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Email change");
+        }
+    }
+}

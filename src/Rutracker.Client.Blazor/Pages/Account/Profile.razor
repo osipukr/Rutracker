@@ -1,20 +1,15 @@
 ﻿@attribute [Authorize]
 
-@inject AppState AppState
+@inject IUserService UserService
 @inject IMatToaster MatToaster
+@inject IModalService ModalService
 
 @page "/account/profile"
 
-@if (AppState.SearchInProgress)
+@if (UserDetailsModel == null)
 {
     <LoadingBackground>
         <span>Loading user list, please wait...</span>
-    </LoadingBackground>
-}
-else if (UserDetailsModel == null)
-{
-    <LoadingBackground ShowLoader="false">
-        <p>Error load profile, sorry</p>
     </LoadingBackground>
 }
 else
@@ -22,7 +17,9 @@ else
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-header__image">
-                <MatRipple Class="rounded-circle w-100 h-100 mat-elevation-z5" Style="cursor: pointer;">
+                <MatButton Class="m-0 p-0 rounded-circle w-100 h-100 mat-elevation-z5" 
+                           OnClick="@ChangeImageModalOpened"
+                           title="Click to change image">
                     @if (IsValidUserImage())
                     {
                         <img class="w-100 h-100" src="@UserDetailsModel.ImageUrl" alt="User image" />
@@ -31,7 +28,7 @@ else
                     {
                         <img class="w-100 h-100" src="img/profile-bg.jpg" alt="Default user image" />
                     }
-                </MatRipple>
+                </MatButton>
             </div>
 
             <h1 class="profile-header__name">@UserDetailsModel.UserName</h1>
@@ -49,7 +46,10 @@ else
 
         <div class="profile-body">
             <MatTabGroup>
-                <UserInfoTab UserModel="@UserDetailsModel" OnUpdateClick="@UpdateUserClicked" />
+                <InfoTab UserModel="@UserDetailsModel" OnChange="@LoadUserModelAsync" />
+                <PasswordTab />
+                <EmailTab UserModel="@UserDetailsModel" OnChange="@LoadUserModelAsync" />
+                <PhoneNumberTab UserModel="@UserDetailsModel" OnChange="@LoadUserModelAsync" />
             </MatTabGroup>
         </div>
     </div>
@@ -65,27 +65,30 @@ else
     {
         try
         {
-            UserDetailsModel = await AppState.UserDetails();
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Error load user");
-        }
-    }
-
-    private async Task UpdateUserClicked(EditUserViewModel model)
-    {
-        try
-        {
-            await AppState.UpdateUser(model);
-            await LoadUserModelAsync();
+            UserDetailsModel = await UserService.UserDetails();
 
             StateHasChanged();
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Error update user");
+            MatToaster.Add(ex.Message, MatToastType.Warning, "User info load");
         }
+    }
+
+    private void ChangeImageModalOpened()
+    {
+        ModalService.OnClose += ChangeImageModalClosed;
+        ModalService.Show("Change image", typeof(ChangeImageModal));
+    }
+
+    private async void ChangeImageModalClosed(ModalResult result)
+    {
+        if (!result.Cancelled && result.Data is bool isSuccess && isSuccess)
+        {
+            await LoadUserModelAsync();
+        }
+
+        ModalService.OnClose -= ChangeImageModalClosed;
     }
 
     private bool IsValidUserImage() => !string.IsNullOrWhiteSpace(UserDetailsModel.ImageUrl);
