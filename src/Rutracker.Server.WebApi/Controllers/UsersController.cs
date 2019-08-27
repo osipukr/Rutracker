@@ -39,12 +39,12 @@ namespace Rutracker.Server.WebApi.Controllers
             IOptions<HostSettings> hostOptions,
             IOptions<EmailChangeConfirmationSettings> emailOptions)
         {
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
-            _smsService = smsService ?? throw new ArgumentNullException(nameof(smsService));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _hostSettings = hostOptions?.Value ?? throw new ArgumentNullException(nameof(hostOptions));
-            _emailChangeConfirmationSettings = emailOptions?.Value ?? throw new ArgumentNullException(nameof(emailOptions));
+            _userService = userService;
+            _emailService = emailService;
+            _smsService = smsService;
+            _mapper = mapper;
+            _hostSettings = hostOptions.Value;
+            _emailChangeConfirmationSettings = emailOptions.Value;
         }
 
         [HttpGet]

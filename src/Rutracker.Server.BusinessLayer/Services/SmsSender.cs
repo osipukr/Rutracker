@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.BusinessLayer.Options;
@@ -15,7 +14,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public SmsSender(IOptions<SmsSettings> smsOptions)
         {
-            _smsSettings = smsOptions?.Value ?? throw new ArgumentNullException(nameof(smsOptions));
+            _smsSettings = smsOptions.Value;
         }
 
         public async Task SendAsync(string phone, string message)

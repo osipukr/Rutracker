@@ -22,8 +22,8 @@ namespace Rutracker.Server.WebApi.Controllers
 
         public TorrentsController(ITorrentService torrentService, IMapper mapper)
         {
-            _torrentService = torrentService ?? throw new ArgumentNullException(nameof(torrentService));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _torrentService = torrentService;
+            _mapper = mapper;
         }
 
         /// <summary>

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Shared.Infrastructure.Exceptions;
 
@@ -11,7 +10,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public SmsService(ISmsSender smsSender)
         {
-            _smsSender = smsSender ?? throw new ArgumentNullException(nameof(smsSender));
+            _smsSender = smsSender;
         }
 
         public async Task SendConfirmationPhoneAsync(string phone, string code)

@@ -17,22 +17,9 @@ namespace Rutracker.Server.WebApi.Services
 
         public JwtFactory(IOptions<JwtSettings> jwtOptions)
         {
-            _jwtOptions = jwtOptions?.Value ?? throw new ArgumentNullException(nameof(jwtOptions));
+            _jwtOptions = jwtOptions.Value;
 
-            if (_jwtOptions.ValidFor <= TimeSpan.Zero)
-            {
-                throw new ArgumentException("Must be a non-zero TimeSpan.", nameof(_jwtOptions.ValidFor));
-            }
-
-            if (_jwtOptions.SigningCredentials == null)
-            {
-                throw new ArgumentNullException(nameof(_jwtOptions.SigningCredentials));
-            }
-
-            if (_jwtOptions.JtiGenerator == null)
-            {
-                throw new ArgumentNullException(nameof(_jwtOptions.JtiGenerator));
-            }
+            ThrowIfInvalidOptions(_jwtOptions);
         }
 
         public async Task<string> GenerateTokenAsync(User user, IEnumerable<string> roles)
@@ -62,5 +49,28 @@ namespace Rutracker.Server.WebApi.Services
         /// <returns>Date converted to seconds since Unix epoch (Jan 1, 1970, midnight UTC).</returns>
         private static long ToUnixEpochDate(DateTime date) =>
             (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
+
+        private static void ThrowIfInvalidOptions(JwtSettings options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(_jwtOptions));
+            }
+
+            if (options.ValidFor <= TimeSpan.Zero)
+            {
+                throw new ArgumentException("Must be a non-zero TimeSpan.", nameof(options.ValidFor));
+            }
+
+            if (options.SigningCredentials == null)
+            {
+                throw new ArgumentNullException(nameof(options.SigningCredentials));
+            }
+
+            if (options.JtiGenerator == null)
+            {
+                throw new ArgumentNullException(nameof(options.JtiGenerator));
+            }
+        }
     }
 }

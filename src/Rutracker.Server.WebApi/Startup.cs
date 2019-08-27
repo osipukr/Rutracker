@@ -38,8 +38,8 @@ namespace Rutracker.Server.WebApi
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            _environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            _configuration = configuration;
+            _environment = environment;
         }
 
         public void ConfigureServices(IServiceCollection services)

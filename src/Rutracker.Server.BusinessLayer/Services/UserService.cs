@@ -19,8 +19,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public UserService(UserManager<User> userManager, IStorageService storageService)
         {
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-            _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
+            _userManager = userManager;
+            _storageService = storageService;
         }
 
         public async Task<IEnumerable<User>> ListAsync()

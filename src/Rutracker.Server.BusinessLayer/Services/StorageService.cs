@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
@@ -17,19 +16,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public StorageService(IOptions<StorageSettings> storageOptions)
         {
-            _storageSettings = storageOptions?.Value ?? throw new ArgumentNullException(nameof(storageOptions));
-
-            if (string.IsNullOrWhiteSpace(_storageSettings.ConnectionString))
-            {
-                throw new ArgumentException("ConnectionString can't be null.", nameof(_storageSettings.ConnectionString));
-            }
-
+            _storageSettings = storageOptions.Value;
             _client = CloudStorageAccount.Parse(_storageSettings.ConnectionString).CreateCloudBlobClient();
-
-            if (_client == null)
-            {
-                throw new ArgumentException("Not valid blob client.", nameof(_client));
-            }
         }
 
         public async Task UploadFileAsync(string containerName, string fileName, Stream stream)

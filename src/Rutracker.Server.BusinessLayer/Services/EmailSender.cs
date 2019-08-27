@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -14,7 +13,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public EmailSender(IOptions<EmailSettings> emailOptions)
         {
-            _emailSettings = emailOptions?.Value ?? throw new ArgumentNullException(nameof(emailOptions));
+            _emailSettings = emailOptions.Value;
         }
 
         public async Task SendAsync(string email, string subject, string message)

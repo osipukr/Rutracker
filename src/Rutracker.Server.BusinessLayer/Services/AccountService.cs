@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
@@ -15,8 +14,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public AccountService(UserManager<User> userManager, SignInManager<User> signInManager)
         {
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-            _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public async Task<User> LoginAsync(string userName, string password, bool rememberMe)

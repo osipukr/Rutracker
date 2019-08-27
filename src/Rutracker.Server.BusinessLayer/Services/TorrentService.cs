@@ -17,7 +17,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public TorrentService(ITorrentRepository torrentRepository)
         {
-            _torrentRepository = torrentRepository ?? throw new ArgumentNullException(nameof(torrentRepository));
+            _torrentRepository = torrentRepository;
         }
 
         public async Task<IEnumerable<Torrent>> ListAsync(int page, int pageSize, string search, IEnumerable<string> selectedForumIds, long? sizeFrom, long? sizeTo)
