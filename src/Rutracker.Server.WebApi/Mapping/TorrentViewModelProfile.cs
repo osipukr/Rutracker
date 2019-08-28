@@ -6,6 +6,11 @@ namespace Rutracker.Server.WebApi.Mapping
 {
     public class TorrentViewModelProfile : Profile
     {
-        public TorrentViewModelProfile() => CreateMap<Torrent, TorrentViewModel>();
+        public TorrentViewModelProfile()
+        {
+            CreateMap<Torrent, TorrentViewModel>()
+                .ForMember(x => x.CommentsCount,
+                    x => x.MapFrom(y => y.Comments.Count));
+        }
     }
 }

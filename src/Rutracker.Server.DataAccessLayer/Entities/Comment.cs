@@ -10,7 +10,6 @@ namespace Rutracker.Server.DataAccessLayer.Entities
         public DateTime CreatedAt { get; set; }
         public bool IsModified { get; set; }
         public DateTime? LastModifiedAt { get; set; }
-        public int LikesCount => Likes.Count;
         public int TorrentId { get; set; }
         public string UserId { get; set; }
 

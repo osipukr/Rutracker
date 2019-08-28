@@ -23,7 +23,7 @@ else
                         <MatList TwoLine="true">
                             <MatListItem Href="@GetTorrentDetailsLink(torrent.Id)">
                                 <MatIcon Icon="@MatIconNames.Date_range" Class="pr-2" />
-                                <span class="mat-button font-weight-bold">@torrent.Date.ToShortDateString()</span>
+                                <span class="mat-button font-weight-bold">@torrent.CreatedAt.ToShortDateString()</span>
                             </MatListItem>
 
                             <MatListItem>
@@ -36,7 +36,7 @@ else
                             <MatListItem>
                                 <MatListItemText>
                                     <MatListItemPrimaryText>Title</MatListItemPrimaryText>
-                                    <MatListItemSecondaryText>@torrent.Title</MatListItemSecondaryText>
+                                    <MatListItemSecondaryText>@torrent.Name</MatListItemSecondaryText>
                                 </MatListItemText>
                             </MatListItem>
                         </MatList>

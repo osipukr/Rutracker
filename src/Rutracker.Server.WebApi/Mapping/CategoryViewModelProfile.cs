@@ -4,8 +4,8 @@ using Rutracker.Shared.Models.ViewModels.Torrent;
 
 namespace Rutracker.Server.WebApi.Mapping
 {
-    public class ForumViewModelProfile : Profile
+    public class CategoryViewModelProfile : Profile
     {
-        public ForumViewModelProfile() => CreateMap<Forum, ForumViewModel>();
+        public CategoryViewModelProfile() => CreateMap<Category, CategoryViewModel>();
     }
 }

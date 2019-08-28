@@ -16,9 +16,9 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
         public override async Task<Torrent> GetAsync(int id)
         {
             return await GetAll()
-                .Include(x => x.Comments)
-                .ThenInclude(x => x.Likes)
+                .Include(x => x.Subcategory)
                 .Include(x => x.Files)
+                .Include(x => x.Comments)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
@@ -32,7 +32,8 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
             return GetAll(torrent =>
                 (string.IsNullOrWhiteSpace(search) || torrent.Name.Contains(search)) &&
                 (!sizeFrom.HasValue || torrent.Size >= sizeFrom) &&
-                (!sizeTo.HasValue || torrent.Size <= sizeTo));
+                (!sizeTo.HasValue || torrent.Size <= sizeTo))
+                .Include(x => x.Comments);
         }
     }
 }

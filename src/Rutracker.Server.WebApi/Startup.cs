@@ -49,7 +49,8 @@ namespace Rutracker.Server.WebApi
                     _configuration.GetConnectionString("RutrackerConnection"),
                     sqlServerOptions => sqlServerOptions.EnableRetryOnFailure())
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                .UseLazyLoadingProxies());
+                //.UseLazyLoadingProxies()
+            );
 
             services.AddMemoryCache();
 

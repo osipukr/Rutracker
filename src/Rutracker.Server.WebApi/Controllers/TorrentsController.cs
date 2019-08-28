@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -35,8 +34,8 @@ namespace Rutracker.Server.WebApi.Controllers
         [HttpPost(nameof(Pagination))]
         public async Task<PaginationResult<TorrentViewModel>> Pagination(int page, int pageSize, FilterViewModel filter)
         {
-            var torrents = await _torrentService.ListAsync(page, pageSize, filter.Search, filter.SelectedForumIds, filter.SizeFrom, filter.SizeTo);
-            var count = await _torrentService.CountAsync(filter.Search, filter.SelectedForumIds, filter.SizeFrom, filter.SizeTo);
+            var torrents = await _torrentService.ListAsync(page, pageSize, filter.Search, filter.SizeFrom, filter.SizeTo);
+            var count = await _torrentService.CountAsync(filter.Search, filter.SizeFrom, filter.SizeTo);
 
             return new PaginationResult<TorrentViewModel>
             {
@@ -52,31 +51,11 @@ namespace Rutracker.Server.WebApi.Controllers
         /// </summary>
         /// <param name="id">ID of the element.</param>
         [HttpGet]
-        public async Task<TorrentDetailsViewModel> Get(long id)
+        public async Task<TorrentDetailsViewModel> Get(int id)
         {
             var torrent = await _torrentService.FindAsync(id);
 
             return _mapper.Map<TorrentDetailsViewModel>(torrent);
-        }
-
-        /// <summary>
-        ///     Get information about the facet for the title.
-        /// </summary>
-        /// <param name="count">Number of elements.</param>
-        [HttpGet(nameof(Titles))]
-        public async Task<FacetResult<string>> Titles(int count)
-        {
-            var facets = await _torrentService.ForumsAsync(count);
-
-            return new FacetResult<string>
-            {
-                Items = facets.Select(x => new FacetViewModel<string>
-                {
-                    Id = x.Item1.ToString(),
-                    Value = x.Item2,
-                    Count = x.Item3
-                }).ToArray()
-            };
         }
     }
 }

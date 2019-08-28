@@ -5,8 +5,9 @@ namespace Rutracker.Shared.Models.ViewModels.Torrent
 {
     public class TorrentViewModel : BaseViewModel
     {
-        public DateTime Date { get; set; }
+        public DateTime CreatedAt { get; set; }
         public long Size { get; set; }
-        public string Title { get; set; }
+        public string Name { get; set; }
+        public int CommentsCount { get; set; }
     }
 }

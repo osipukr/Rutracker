@@ -17,7 +17,7 @@
                 <MatListItem>
                     <MatListItemText>
                         <MatListItemPrimaryText>Title</MatListItemPrimaryText>
-                        <MatListItemSecondaryText>@Model.Title</MatListItemSecondaryText>
+                        <MatListItemSecondaryText>@Model.Name</MatListItemSecondaryText>
                     </MatListItemText>
                 </MatListItem>
 
@@ -31,7 +31,7 @@
                 <MatListItem>
                     <MatListItemText>
                         <MatListItemPrimaryText>Date</MatListItemPrimaryText>
-                        <MatListItemSecondaryText>@Model.Date.ToLongDateString()</MatListItemSecondaryText>
+                        <MatListItemSecondaryText>@Model.CreatedAt.ToLongDateString()</MatListItemSecondaryText>
                     </MatListItemText>
                 </MatListItem>
 
@@ -41,44 +41,9 @@
                         <MatListItemSecondaryText>@Model.Hash</MatListItemSecondaryText>
                     </MatListItemText>
                 </MatListItem>
-
-                <MatListItem>
-                    <MatListItemText>
-                        <MatListItemPrimaryText>Is deleted</MatListItemPrimaryText>
-                        <MatListItemSecondaryText>@Model.IsDeleted</MatListItemSecondaryText>
-                    </MatListItemText>
-                </MatListItem>
             </MatList>
         </ChildContent>
     </MatTab>
-
-    @if (Model.Forum != null)
-    {
-        <MatTab>
-            <LabelContent>
-                <MatIcon Icon="@MatIconNames.Forum" />
-                <p class="m-0">Forum</p>
-            </LabelContent>
-
-            <ChildContent>
-                <MatList TwoLine="true">
-                    <MatListItem>
-                        <MatListItemText>
-                            <MatListItemPrimaryText>Id</MatListItemPrimaryText>
-                            <MatListItemSecondaryText>@Model.Forum.Id</MatListItemSecondaryText>
-                        </MatListItemText>
-                    </MatListItem>
-
-                    <MatListItem>
-                        <MatListItemText>
-                            <MatListItemPrimaryText>Title</MatListItemPrimaryText>
-                            <MatListItemSecondaryText>@Model.Forum.Title</MatListItemSecondaryText>
-                        </MatListItemText>
-                    </MatListItem>
-                </MatList>
-            </ChildContent>
-        </MatTab>
-    }
 
     @if (Model.Files != null && Model.Files.Length != 0)
     {
@@ -96,12 +61,10 @@
                           SearchTermFieldLabel="Name"
                           SearchTermFieldPlaceHolder="Input the name">
                     <MatTableHeader>
-                        <th>Id</th>
                         <th>Size</th>
                         <th>Name</th>
                     </MatTableHeader>
                     <MatTableRow Context="torrent">
-                        <td>@torrent.Id</td>
                         <td>@torrent.Size</td>
                         <td>@torrent.Name</td>
                     </MatTableRow>

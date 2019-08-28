@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Rutracker.Shared.Models.Resources;
 
 namespace Rutracker.Shared.Models.ViewModels.Torrent
@@ -23,8 +22,5 @@ namespace Rutracker.Shared.Models.ViewModels.Torrent
             ErrorMessageResourceName = nameof(FilterViewModelResource.SizeToErrorMessage),
             ErrorMessageResourceType = typeof(FilterViewModelResource))]
         public long? SizeTo { get; set; }
-
-        [Display(Name = nameof(FilterViewModelResource.SelectedForumIdsDisplayName), ResourceType = typeof(FilterViewModelResource))]
-        public IEnumerable<string> SelectedForumIds { get; set; }
     }
 }
