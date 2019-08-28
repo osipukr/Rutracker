@@ -17,8 +17,10 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
         {
             return await GetAll()
                 .Include(x => x.Subcategory)
+                .Include(x => x.User)
                 .Include(x => x.Files)
-                .Include(x => x.Comments)
+                .Include(x => x.Comments).ThenInclude(x => x.User)
+                .Include(x => x.Comments).ThenInclude(x => x.Likes)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
@@ -34,6 +36,19 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
                 (!sizeFrom.HasValue || torrent.Size >= sizeFrom) &&
                 (!sizeTo.HasValue || torrent.Size <= sizeTo))
                 .Include(x => x.Comments);
+        }
+
+        public IQueryable<Torrent> PopularTorrents(int count)
+        {
+            return _context.Comments.GroupBy(x => x.TorrentId,
+                    (key, items) => new
+                    {
+                        Key = key,
+                        Count = items.Count()
+                    })
+                .OrderByDescending(x => x.Count)
+                .Take(count)
+                .Join(_dbSet, g => g.Key, t => t.Id, (g, t) => t);
         }
     }
 }
