@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -22,16 +23,70 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
             _dbSet = _context.Set<TEntity>();
         }
 
-        public virtual IQueryable<TEntity> GetAll() => _dbSet;
+        public virtual IQueryable<TEntity> GetAll()
+        {
+            return _dbSet;
+        }
 
-        public virtual IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> expression) => _dbSet.Where(expression);
+        public virtual IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> expression)
+        {
+            return _dbSet.Where(expression);
+        }
 
-        public virtual async Task<TEntity> GetAsync(TPrimaryKey id) => await _dbSet.SingleOrDefaultAsync(x => x.Id.Equals(id));
+        public virtual async Task<TEntity> GetAsync(TPrimaryKey id)
+        {
+            return await _dbSet.SingleOrDefaultAsync(x => x.Id.Equals(id));
+        }
 
-        public virtual async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression) => await _dbSet.SingleOrDefaultAsync(expression);
+        public virtual async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression)
+        {
+            return await _dbSet.SingleOrDefaultAsync(expression);
+        }
 
-        public virtual async Task<int> CountAsync() => await _dbSet.CountAsync();
+        public virtual async Task<int> CountAsync()
+        {
+            return await _dbSet.CountAsync();
+        }
 
-        public virtual async Task<int> CountAsync(Expression<Func<TEntity, bool>> expression) => await _dbSet.CountAsync(expression);
+        public virtual async Task<int> CountAsync(Expression<Func<TEntity, bool>> expression)
+        {
+            return await _dbSet.CountAsync(expression);
+        }
+
+        public virtual async Task AddAsync(TEntity entity)
+        {
+            await _dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
+        {
+            await _dbSet.AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
+        }
+
+        public virtual async Task UpdateAsync(TEntity entity)
+        {
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public virtual async Task UpdateRangeAsync(IEnumerable<TEntity> entities)
+        {
+            _dbSet.UpdateRange(entities);
+            await _context.SaveChangesAsync();
+        }
+
+        public virtual async Task RemoveAsync(TEntity entity)
+        {
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public virtual async Task RemoveRangeAsync(IEnumerable<TEntity> entities)
+        {
+            _dbSet.RemoveRange(entities);
+            await _context.SaveChangesAsync();
+        }
     }
 }

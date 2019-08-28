@@ -6,7 +6,7 @@ namespace Rutracker.Server.DataAccessLayer.Entities
 {
     public class Torrent : BaseEntity<int>
     {
-        public DateTime RegisteredAt { get; set; }
+        public DateTime CreatedAt { get; set; }
         public long Size { get; set; }
         public string Name { get; set; }
         public string Hash { get; set; }

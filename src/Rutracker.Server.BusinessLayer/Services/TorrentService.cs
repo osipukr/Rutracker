@@ -34,7 +34,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var forumIds = ConvertForumIds(selectedForumIds);
             var torrents = await _torrentRepository.Search(search, forumIds, sizeFrom, sizeTo)
-                .OrderBy(torrent => torrent.RegisteredAt)
+                .OrderBy(torrent => torrent.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

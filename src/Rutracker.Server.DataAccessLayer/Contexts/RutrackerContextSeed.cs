@@ -113,7 +113,7 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
             Enumerable.Range(1, TorrentMaxCount).Select(id => new Torrent
             {
                 Id = id,
-                RegisteredAt = DateTime.Now,
+                CreatedAt = DateTime.Now,
                 Size = Random.Next(1, int.MaxValue),
                 Name = Guid.NewGuid().ToString(),
                 Hash = Guid.NewGuid().ToString(),
