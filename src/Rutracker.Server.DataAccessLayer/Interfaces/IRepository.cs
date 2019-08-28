@@ -19,9 +19,9 @@ namespace Rutracker.Server.DataAccessLayer.Interfaces
         Task<int> CountAsync(Expression<Func<TEntity, bool>> expression);
         Task AddAsync(TEntity entity);
         Task AddRangeAsync(IEnumerable<TEntity> entities);
-        Task UpdateAsync(TEntity entity);
-        Task UpdateRangeAsync(IEnumerable<TEntity> entities);
-        Task RemoveAsync(TEntity entity);
-        Task RemoveRangeAsync(IEnumerable<TEntity> entities);
+        void Update(TEntity entity);
+        void UpdateRange(IEnumerable<TEntity> entities);
+        void Remove(TEntity entity);
+        void RemoveRange(IEnumerable<TEntity> entities);
     }
 }

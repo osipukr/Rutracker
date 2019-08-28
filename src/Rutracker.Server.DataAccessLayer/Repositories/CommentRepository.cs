@@ -35,12 +35,12 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
             return base.AddAsync(entity);
         }
 
-        public override Task UpdateAsync(Comment entity)
+        public override void Update(Comment entity)
         {
             entity.IsModified = true;
             entity.LastModifiedAt = DateTime.Now;
 
-            return base.UpdateAsync(entity);
+            base.Update(entity);
         }
     }
 }
