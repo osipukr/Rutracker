@@ -18,16 +18,16 @@ namespace Rutracker.UnitTests.Setup
         public static IEnumerable<Torrent> GeTestTorrents() =>
             new[]
             {
-                new Torrent { Id = 1, Title = "Torrent Titles 1", ForumId = 1, Size = 100 },
-                new Torrent { Id = 2, Title = "Torrent Titles 12", ForumId = 1, Size = 100 },
-                new Torrent { Id = 3, Title = "Torrent Titles 123", ForumId = 1, Size = 1000 },
-                new Torrent { Id = 4, Title = "Torrent Titles 1234", ForumId = 2, Size = 1000 },
-                new Torrent { Id = 5, Title = "Torrent Titles 12345", ForumId = 2, Size = 10000 },
-                new Torrent { Id = 6, Title = "Torrent Titles 123456", ForumId = 3, Size = 10000 },
-                new Torrent { Id = 7, Title = "Torrent Titles 1234567", ForumId = 4, Size = 100000 },
-                new Torrent { Id = 8, Title = "Torrent Titles 12345678", ForumId = 5, Size = 100000 },
-                new Torrent { Id = 9, Title = "Torrent Titles 123456789", ForumId = 5, Size = 100000 },
-                new Torrent { Id = 10, Title = "Torrent Titles 123456789", ForumId = 5, Size = 100000 }
+                new Torrent { Id = 1, Name = "Torrent Titles 1", ForumId = 1, Size = 100 },
+                new Torrent { Id = 2, Name = "Torrent Titles 12", ForumId = 1, Size = 100 },
+                new Torrent { Id = 3, Name = "Torrent Titles 123", ForumId = 1, Size = 1000 },
+                new Torrent { Id = 4, Name = "Torrent Titles 1234", ForumId = 2, Size = 1000 },
+                new Torrent { Id = 5, Name = "Torrent Titles 12345", ForumId = 2, Size = 10000 },
+                new Torrent { Id = 6, Name = "Torrent Titles 123456", ForumId = 3, Size = 10000 },
+                new Torrent { Id = 7, Name = "Torrent Titles 1234567", ForumId = 4, Size = 100000 },
+                new Torrent { Id = 8, Name = "Torrent Titles 12345678", ForumId = 5, Size = 100000 },
+                new Torrent { Id = 9, Name = "Torrent Titles 123456789", ForumId = 5, Size = 100000 },
+                new Torrent { Id = 10, Name = "Torrent Titles 123456789", ForumId = 5, Size = 100000 }
             };
 
         public static IEnumerable<File> GetTestFiles() =>

@@ -48,7 +48,7 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
         public async Task GetAsync_5_ReturnsValidTorrent()
         {
             // Arrange
-            const long expectedId = 5;
+            const int expectedId = 5;
 
             // Act
             var torrentId = (await _torrentRepository.GetAsync(expectedId)).Id;

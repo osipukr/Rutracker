@@ -34,7 +34,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var forumIds = ConvertForumIds(selectedForumIds);
             var torrents = await _torrentRepository.Search(search, forumIds, sizeFrom, sizeTo)
-                .OrderBy(torrent => torrent.Date)
+                .OrderBy(torrent => torrent.RegisteredAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -47,7 +47,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             return torrents;
         }
 
-        public async Task<Torrent> FindAsync(long id)
+        public async Task<Torrent> FindAsync(int id)
         {
             if (id < 1)
             {

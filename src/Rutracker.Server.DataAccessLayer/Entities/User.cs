@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace Rutracker.Server.DataAccessLayer.Entities
 {
@@ -7,5 +8,7 @@ namespace Rutracker.Server.DataAccessLayer.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string ImageUrl { get; set; }
+
+        public virtual ICollection<Torrent> Torrents { get; set; }
     }
 }

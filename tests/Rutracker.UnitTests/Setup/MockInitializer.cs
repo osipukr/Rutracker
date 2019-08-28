@@ -43,7 +43,7 @@ namespace Rutracker.UnitTests.Setup
             mockTorrentRepository.Setup(x => x.GetAll(It.IsAny<Expression<Func<Torrent, bool>>>()))
                 .Returns<Expression<Func<Torrent, bool>>>(torrents.Where);
 
-            mockTorrentRepository.Setup(x => x.GetAsync(It.IsAny<long>()))
+            mockTorrentRepository.Setup(x => x.GetAsync(It.IsAny<int>()))
                 .ReturnsAsync((long id) => torrents.FirstOrDefault(x => x.Id == id));
 
             mockTorrentRepository.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Torrent, bool>>>()))
@@ -74,7 +74,7 @@ namespace Rutracker.UnitTests.Setup
                     long? sizeFrom, long? sizeTo) => new Torrent[pageSize]);
 
             mockTorrentService.Setup(x => x.FindAsync(It.IsInRange(0, long.MaxValue, Range.Exclusive)))
-                .ReturnsAsync((long x) => new Torrent { Id = x });
+                .ReturnsAsync((int x) => new Torrent { Id = x });
 
             mockTorrentService.Setup(x => x.CountAsync(null, null, null, null))
                 .ReturnsAsync(DataInitializer.GeTestTorrents().Count());
