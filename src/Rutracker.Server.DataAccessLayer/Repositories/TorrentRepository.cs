@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
@@ -13,17 +11,6 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
         {
         }
 
-        public override async Task<Torrent> GetAsync(int id)
-        {
-            return await GetAll()
-                .Include(x => x.Subcategory)
-                .Include(x => x.User)
-                .Include(x => x.Files)
-                .Include(x => x.Comments).ThenInclude(x => x.User)
-                .Include(x => x.Comments).ThenInclude(x => x.Likes)
-                .SingleOrDefaultAsync(x => x.Id == id);
-        }
-
         public IQueryable<Torrent> GetAll(string userId)
         {
             return GetAll(x => x.UserId == userId);
@@ -34,8 +21,7 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
             return GetAll(torrent =>
                 (string.IsNullOrWhiteSpace(search) || torrent.Name.Contains(search)) &&
                 (!sizeFrom.HasValue || torrent.Size >= sizeFrom) &&
-                (!sizeTo.HasValue || torrent.Size <= sizeTo))
-                .Include(x => x.Comments);
+                (!sizeTo.HasValue || torrent.Size <= sizeTo));
         }
 
         public IQueryable<Torrent> PopularTorrents(int count)
@@ -48,7 +34,7 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
                     })
                 .OrderByDescending(x => x.Count)
                 .Take(count)
-                .Join(_dbSet, g => g.Key, t => t.Id, (g, t) => t);
+                .Join(_dbSet, group => group.Key, torrent => torrent.Id, (group, torrent) => torrent);
         }
     }
 }
