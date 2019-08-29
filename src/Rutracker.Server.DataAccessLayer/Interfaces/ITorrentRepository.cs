@@ -5,7 +5,6 @@ namespace Rutracker.Server.DataAccessLayer.Interfaces
 {
     public interface ITorrentRepository : IRepository<Torrent, int>
     {
-        IQueryable<Torrent> GetAll(string userId);
         IQueryable<Torrent> Search(string search, long? sizeFrom, long? sizeTo);
         IQueryable<Torrent> PopularTorrents(int count);
     }

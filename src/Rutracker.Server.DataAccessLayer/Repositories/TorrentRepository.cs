@@ -11,11 +11,6 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
         {
         }
 
-        public IQueryable<Torrent> GetAll(string userId)
-        {
-            return GetAll(x => x.UserId == userId);
-        }
-
         public IQueryable<Torrent> Search(string search, long? sizeFrom, long? sizeTo)
         {
             return GetAll(torrent =>

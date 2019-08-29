@@ -2,7 +2,7 @@
 
 namespace Rutracker.Server.DataAccessLayer.Interfaces
 {
-    public interface ISubcategoryRepository : IRepository<Subcategory, int>
+    public interface ILikeRepository : IRepository<Like, int>
     {
     }
 }

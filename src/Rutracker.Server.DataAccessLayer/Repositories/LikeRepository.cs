@@ -4,9 +4,9 @@ using Rutracker.Server.DataAccessLayer.Interfaces;
 
 namespace Rutracker.Server.DataAccessLayer.Repositories
 {
-    public class CommentRepository : Repository<Comment, int>, ICommentRepository
+    public class LikeRepository : Repository<Like, int>, ILikeRepository
     {
-        public CommentRepository(RutrackerContext context) : base(context)
+        public LikeRepository(RutrackerContext context) : base(context)
         {
         }
     }
