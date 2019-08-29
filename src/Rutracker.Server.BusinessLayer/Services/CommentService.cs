@@ -12,11 +12,13 @@ namespace Rutracker.Server.BusinessLayer.Services
     public class CommentService : ICommentService
     {
         private readonly ICommentRepository _commentRepository;
+        private readonly ITorrentRepository _torrentRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CommentService(ICommentRepository commentRepository, IUnitOfWork unitOfWork)
+        public CommentService(ICommentRepository commentRepository, ITorrentRepository torrentRepository, IUnitOfWork unitOfWork)
         {
             _commentRepository = commentRepository;
+            _torrentRepository = torrentRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -100,25 +102,25 @@ namespace Rutracker.Server.BusinessLayer.Services
                 throw new RutrackerException("Not valid comment.", ExceptionEventType.NotValidParameters);
             }
 
+            if (!await _torrentRepository.ExistAsync(comment.TorrentId))
+            {
+                throw new RutrackerException($"Error adding comment. Torrent with id {comment.TorrentId} not found.", ExceptionEventType.NotValidParameters);
+            }
+
             comment.CreatedAt = DateTime.Now;
 
             await _commentRepository.AddAsync(comment);
             await _unitOfWork.CompleteAsync();
         }
 
-        public async Task UpdateAsync(int commentId, Comment comment)
+        public async Task UpdateAsync(int commentId, string userId, Comment comment)
         {
-            if (commentId < 1)
-            {
-                throw new RutrackerException($"The {nameof(commentId)} is less than 1.", ExceptionEventType.NotValidParameters);
-            }
-
             if (comment == null)
             {
                 throw new RutrackerException("Not valid comment.", ExceptionEventType.NotValidParameters);
             }
 
-            var result = await FindAsync(commentId);
+            var result = await FindAsync(commentId, userId);
 
             result.Text = comment.Text;
             result.IsModified = true;

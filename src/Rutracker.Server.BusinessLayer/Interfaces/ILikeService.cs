@@ -8,9 +8,9 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
     {
         Task<IEnumerable<Like>> ListAsync(string userId);
         Task<IEnumerable<Like>> ListAsync(int commentId);
-        Task<Like> FindAsync(int likeId);
-        Task<Like> FindAsync(int likeId, string userId);
+        Task<Like> FindAsync(int commentId, string userId);
+        Task<bool> IsUserLiked(int commentId, string userId);
         Task AddAsync(Like like);
-        Task DeleteAsync(int likeId, string userId);
+        Task DeleteAsync(int commentId, string userId);
     }
 }

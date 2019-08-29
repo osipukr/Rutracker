@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Interfaces;
@@ -11,11 +12,13 @@ namespace Rutracker.Server.BusinessLayer.Services
     public class LikeService : ILikeService
     {
         private readonly ILikeRepository _likeRepository;
+        private readonly ICommentRepository _commentRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public LikeService(ILikeRepository likeRepository, IUnitOfWork unitOfWork)
+        public LikeService(ILikeRepository likeRepository, ICommentRepository commentRepository, IUnitOfWork unitOfWork)
         {
             _likeRepository = likeRepository;
+            _commentRepository = commentRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -53,14 +56,19 @@ namespace Rutracker.Server.BusinessLayer.Services
             return likes;
         }
 
-        public async Task<Like> FindAsync(int likeId)
+        public async Task<Like> FindAsync(int commentId, string userId)
         {
-            if (likeId < 1)
+            if (commentId < 1)
             {
-                throw new RutrackerException($"The {nameof(likeId)} is less than 1.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"The {nameof(commentId)} is less than 1.", ExceptionEventType.NotValidParameters);
             }
 
-            var like = await _likeRepository.GetAsync(likeId);
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new RutrackerException($"The {nameof(userId)} is null or white space.", ExceptionEventType.NotValidParameters);
+            }
+
+            var like = await _likeRepository.GetAsync(x => x.CommentId == commentId && x.UserId == userId);
 
             if (like == null)
             {
@@ -70,11 +78,11 @@ namespace Rutracker.Server.BusinessLayer.Services
             return like;
         }
 
-        public async Task<Like> FindAsync(int likeId, string userId)
+        public async Task<bool> IsUserLiked(int commentId, string userId)
         {
-            if (likeId < 1)
+            if (commentId < 1)
             {
-                throw new RutrackerException($"The {nameof(likeId)} is less than 1.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"The {nameof(commentId)} is less than 1.", ExceptionEventType.NotValidParameters);
             }
 
             if (string.IsNullOrWhiteSpace(userId))
@@ -82,14 +90,7 @@ namespace Rutracker.Server.BusinessLayer.Services
                 throw new RutrackerException($"The {nameof(userId)} is null or white space.", ExceptionEventType.NotValidParameters);
             }
 
-            var like = await _likeRepository.GetAsync(x => x.Id == likeId && x.UserId == userId);
-
-            if (like == null)
-            {
-                throw new RutrackerException("Like not found.", ExceptionEventType.NotFound);
-            }
-
-            return like;
+            return await _likeRepository.ExistAsync(x => x.CommentId == commentId && x.UserId == userId);
         }
 
         public async Task AddAsync(Like like)
@@ -99,13 +100,18 @@ namespace Rutracker.Server.BusinessLayer.Services
                 throw new RutrackerException("Not valid like.", ExceptionEventType.NotValidParameters);
             }
 
+            if (!await _commentRepository.ExistAsync(like.CommentId))
+            {
+                throw new RutrackerException($"Error adding like. Not found comment with id {like.CommentId}.", ExceptionEventType.NotValidParameters);
+            }
+
             await _likeRepository.AddAsync(like);
             await _unitOfWork.CompleteAsync();
         }
 
-        public async Task DeleteAsync(int likeId, string userId)
+        public async Task DeleteAsync(int commentId, string userId)
         {
-            var like = await FindAsync(likeId, userId);
+            var like = await FindAsync(commentId, userId);
 
             _likeRepository.Remove(like);
 
