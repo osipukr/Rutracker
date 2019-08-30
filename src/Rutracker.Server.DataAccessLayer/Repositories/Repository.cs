@@ -48,6 +48,11 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
             return await _dbSet.AnyAsync(x => x.Id.Equals(id));
         }
 
+        public async Task<bool> ExistAsync(Expression<Func<TEntity, bool>> expression)
+        {
+            return await _dbSet.AnyAsync(expression);
+        }
+
         public virtual async Task<int> CountAsync()
         {
             return await _dbSet.CountAsync();

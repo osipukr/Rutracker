@@ -27,26 +27,22 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var like = await _likeRepository.GetAsync(x => x.CommentId == commentId && x.UserId == userId);
 
-            if (like == null)
-            {
-                if (await _commentRepository.GetAsync(commentId) == null)
-                {
-                    throw new RutrackerException($"Not valid {commentId}.", ExceptionEventType.NotValidParameters);
-                }
-
-                like = new Like
-                {
-                    CommentId = commentId,
-                    UserId = userId
-                };
-
-                await _likeRepository.AddAsync(like);
-            }
-            else
+            if (like != null)
             {
                 _likeRepository.Remove(like);
             }
+            else if (!await _commentRepository.ExistAsync(commentId))
+            {
+                throw new RutrackerException($"Not valid {commentId}.", ExceptionEventType.NotValidParameters);
+            }
 
+            like = new Like
+            {
+                CommentId = commentId,
+                UserId = userId
+            };
+
+            await _likeRepository.AddAsync(like);
             await _unitOfWork.CompleteAsync();
 
             return like;

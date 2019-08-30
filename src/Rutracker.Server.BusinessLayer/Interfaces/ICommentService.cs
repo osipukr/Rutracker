@@ -8,7 +8,7 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
     {
         Task<IEnumerable<Comment>> ListAsync(int torrentId, int count);
         Task<Comment> FindAsync(int commentId, string userId);
-        Task<Comment>  AddAsync(Comment comment);
+        Task<Comment> AddAsync(Comment comment);
         Task<Comment> UpdateAsync(int commentId, string userId, Comment comment);
         Task<Comment> DeleteAsync(int commentId, string userId);
     }
