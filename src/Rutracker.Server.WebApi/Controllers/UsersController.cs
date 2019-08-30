@@ -11,6 +11,8 @@ using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Extensions;
 using Rutracker.Server.WebApi.Settings;
 using Rutracker.Shared.Models.ViewModels.User;
+using Rutracker.Shared.Models.ViewModels.User.Change;
+using Rutracker.Shared.Models.ViewModels.User.Confirm;
 
 namespace Rutracker.Server.WebApi.Controllers
 {

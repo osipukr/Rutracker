@@ -17,7 +17,13 @@ namespace Rutracker.Server.BusinessLayer.Services
         public StorageService(IOptions<StorageSettings> storageOptions)
         {
             _storageSettings = storageOptions.Value;
+
+            Guard.Against.Null(_storageSettings, nameof(_storageSettings));
+            Guard.Against.NullOrWhiteSpace(_storageSettings.ConnectionString, parameterName: nameof(_storageSettings.ConnectionString));
+
             _client = CloudStorageAccount.Parse(_storageSettings.ConnectionString).CreateCloudBlobClient();
+
+            Guard.Against.Null(_client, nameof(_client));
         }
 
         public async Task UploadFileAsync(string containerName, string fileName, Stream stream)

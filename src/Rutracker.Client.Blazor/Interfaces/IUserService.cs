@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Rutracker.Shared.Models.ViewModels.User;
+using Rutracker.Shared.Models.ViewModels.User.Change;
+using Rutracker.Shared.Models.ViewModels.User.Confirm;
 
 namespace Rutracker.Client.Blazor.Interfaces
 {

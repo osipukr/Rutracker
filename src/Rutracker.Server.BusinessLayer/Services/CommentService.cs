@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.EntityFrameworkCore;
@@ -14,52 +15,28 @@ namespace Rutracker.Server.BusinessLayer.Services
     {
         private readonly ICommentRepository _commentRepository;
         private readonly ITorrentRepository _torrentRepository;
-        private readonly ILikeRepository _likeRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CommentService(
-            ICommentRepository commentRepository,
-            ITorrentRepository torrentRepository,
-            ILikeRepository likeRepository,
-            IUnitOfWork unitOfWork)
+        public CommentService(ICommentRepository commentRepository, ITorrentRepository torrentRepository, IUnitOfWork unitOfWork)
         {
             _commentRepository = commentRepository;
             _torrentRepository = torrentRepository;
-            _likeRepository = likeRepository;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<Comment>> ListAsync(int torrentId)
+        public async Task<IEnumerable<Comment>> ListAsync(int torrentId, int count)
         {
             Guard.Against.LessOne(torrentId, $"The {nameof(torrentId)} is less than 1.");
+            Guard.Against.LessOne(count, $"The {nameof(count)} is less than 1.");
 
-            var comments = await _commentRepository.GetAll(x => x.TorrentId == torrentId).ToListAsync();
-
-            Guard.Against.NullNotFound(comments, "Comments not found.");
-
-            return comments;
-        }
-
-        public async Task<IEnumerable<Comment>> ListAsync(string userId)
-        {
-            Guard.Against.NullOrWhiteSpace(userId, message: $"The {nameof(userId)} is null or white space.");
-
-            var comments = await _commentRepository.GetAll(x => x.UserId == userId).ToListAsync();
+            var comments = await _commentRepository.GetAll(x => x.TorrentId == torrentId)
+                .OrderByDescending(x => x.Likes.Count)
+                .Take(count)
+                .ToListAsync();
 
             Guard.Against.NullNotFound(comments, "Comments not found.");
 
             return comments;
-        }
-
-        public async Task<Comment> FindAsync(int commentId)
-        {
-            Guard.Against.LessOne(commentId, $"The {nameof(commentId)} is less than 1.");
-
-            var comment = await _commentRepository.GetAsync(commentId);
-
-            Guard.Against.NullNotFound(comment, "Comment not found.");
-
-            return comment;
         }
 
         public async Task<Comment> FindAsync(int commentId, string userId)
@@ -111,27 +88,15 @@ namespace Rutracker.Server.BusinessLayer.Services
             return result;
         }
 
-        public async Task LikeCommentAsync(int commentId, string userId)
+        public async Task<Comment> DeleteAsync(int commentId, string userId)
         {
-            Guard.Against.LessOne(commentId, $"The {nameof(commentId)} is less than 1.");
-            Guard.Against.NullOrWhiteSpace(userId, message: $"The {nameof(userId)} is null or white space.");
+            var comment = await FindAsync(commentId, userId);
 
-            var like = await _likeRepository.GetAsync(x => x.CommentId == commentId && x.UserId == userId);
-
-            if (like == null)
-            {
-                await _likeRepository.AddAsync(new Like
-                {
-                    CommentId = commentId,
-                    UserId = userId
-                });
-            }
-            else
-            {
-                _likeRepository.Remove(like);
-            }
+            _commentRepository.Remove(comment);
 
             await _unitOfWork.CompleteAsync();
+
+            return comment;
         }
     }
 }

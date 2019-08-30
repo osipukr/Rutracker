@@ -77,7 +77,7 @@ namespace Rutracker.Server.WebApi.Controllers
             await _accountService.LogoutAsync();
         }
 
-        [AllowAnonymous, HttpGet(nameof(ConfirmEmail))]
+        [HttpGet(nameof(ConfirmEmail))]
         public async Task ConfirmEmail([FromQuery] ConfirmEmailViewModel model)
         {
             var user = await _userService.FindAsync(model.UserId);

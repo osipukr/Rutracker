@@ -11,6 +11,6 @@ namespace Rutracker.Shared.Models.ViewModels.Torrent
         public bool IsModified { get; set; }
         public DateTime? LastModifiedAt { get; set; }
         public int LikesCount { get; set; }
-        public UserViewModel User { get; set; }
+        public UserShortViewModel User { get; set; }
     }
 }

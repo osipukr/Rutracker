@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.BusinessLayer.Options;
@@ -15,6 +16,11 @@ namespace Rutracker.Server.BusinessLayer.Services
         public SmsSender(IOptions<SmsSettings> smsOptions)
         {
             _smsSettings = smsOptions.Value;
+
+            Guard.Against.Null(_smsSettings, nameof(_smsSettings));
+            Guard.Against.NullOrWhiteSpace(_smsSettings.AccountSid, parameterName: nameof(_smsSettings.AccountSid));
+            Guard.Against.NullOrWhiteSpace(_smsSettings.AccountFrom, parameterName: nameof(_smsSettings.AccountFrom));
+            Guard.Against.NullOrWhiteSpace(_smsSettings.AccountToken, parameterName: nameof(_smsSettings.AccountToken));
         }
 
         public async Task SendAsync(string phone, string message)
