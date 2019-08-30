@@ -10,7 +10,8 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
         Task<IEnumerable<Comment>> ListAsync(string userId);
         Task<Comment> FindAsync(int commentId);
         Task<Comment> FindAsync(int commentId, string userId);
-        Task AddAsync(Comment comment);
-        Task UpdateAsync(int commentId, string userId, Comment comment);
+        Task<Comment>  AddAsync(Comment comment);
+        Task<Comment> UpdateAsync(int commentId, string userId, Comment comment);
+        Task LikeCommentAsync(int commentId, string userId);
     }
 }

@@ -26,21 +26,25 @@ namespace Rutracker.Server.WebApi.Controllers
         [HttpPost(nameof(Add))]
         public async Task Add(CommentCreateViewModel model)
         {
-            var userId = User.GetUserId();
             var comment = _mapper.Map<Comment>(model);
 
-            comment.UserId = userId;
+            comment.UserId = User.GetUserId();
 
             await _commentService.AddAsync(comment);
         }
 
         [HttpPut(nameof(Update))]
-        public async Task Update(int commentId, CommentUpdateViewModel model)
+        public async Task Update(CommentUpdateViewModel model)
         {
-            var userId = User.GetUserId();
             var comment = _mapper.Map<Comment>(model);
 
-            await _commentService.UpdateAsync(commentId, userId, comment);
+            await _commentService.UpdateAsync(comment.Id, User.GetUserId(), comment);
+        }
+
+        [HttpPost(nameof(Like))]
+        public async Task Like(LikeCreateViewModel model)
+        {
+            await _commentService.LikeCommentAsync(model.CommentId, User.GetUserId());
         }
     }
 }

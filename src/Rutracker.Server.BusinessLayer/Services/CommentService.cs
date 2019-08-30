@@ -13,12 +13,18 @@ namespace Rutracker.Server.BusinessLayer.Services
     {
         private readonly ICommentRepository _commentRepository;
         private readonly ITorrentRepository _torrentRepository;
+        private readonly ILikeRepository _likeRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CommentService(ICommentRepository commentRepository, ITorrentRepository torrentRepository, IUnitOfWork unitOfWork)
+        public CommentService(
+            ICommentRepository commentRepository,
+            ITorrentRepository torrentRepository,
+            ILikeRepository likeRepository,
+            IUnitOfWork unitOfWork)
         {
             _commentRepository = commentRepository;
             _torrentRepository = torrentRepository;
+            _likeRepository = likeRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -95,11 +101,26 @@ namespace Rutracker.Server.BusinessLayer.Services
             return comment;
         }
 
-        public async Task AddAsync(Comment comment)
+        public async Task<Comment> AddAsync(Comment comment)
         {
             if (comment == null)
             {
                 throw new RutrackerException("Not valid comment.", ExceptionEventType.NotValidParameters);
+            }
+
+            if (string.IsNullOrWhiteSpace(comment.Text))
+            {
+                throw new RutrackerException("The comment must contain text.", ExceptionEventType.NotValidParameters);
+            }
+
+            if (comment.TorrentId < 1)
+            {
+                throw new RutrackerException("Invalid torrent ID for comment.", ExceptionEventType.NotValidParameters);
+            }
+
+            if (string.IsNullOrWhiteSpace(comment.UserId))
+            {
+                throw new RutrackerException("Invalid user ID for comment.", ExceptionEventType.NotValidParameters);
             }
 
             if (!await _torrentRepository.ExistAsync(comment.TorrentId))
@@ -111,9 +132,11 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             await _commentRepository.AddAsync(comment);
             await _unitOfWork.CompleteAsync();
+
+            return comment;
         }
 
-        public async Task UpdateAsync(int commentId, string userId, Comment comment)
+        public async Task<Comment> UpdateAsync(int commentId, string userId, Comment comment)
         {
             if (comment == null)
             {
@@ -127,6 +150,38 @@ namespace Rutracker.Server.BusinessLayer.Services
             result.LastModifiedAt = DateTime.Now;
 
             _commentRepository.Update(result);
+
+            await _unitOfWork.CompleteAsync();
+
+            return result;
+        }
+
+        public async Task LikeCommentAsync(int commentId, string userId)
+        {
+            if (commentId < 1)
+            {
+                throw new RutrackerException($"The {nameof(commentId)} is less than 1.", ExceptionEventType.NotValidParameters);
+            }
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new RutrackerException($"The {nameof(userId)} is null or white space.", ExceptionEventType.NotValidParameters);
+            }
+
+            var like = await _likeRepository.GetAsync(x => x.CommentId == commentId && x.UserId == userId);
+
+            if (like == null)
+            {
+                await _likeRepository.AddAsync(new Like
+                {
+                    CommentId = commentId,
+                    UserId = userId
+                });
+            }
+            else
+            {
+                _likeRepository.Remove(like);
+            }
 
             await _unitOfWork.CompleteAsync();
         }

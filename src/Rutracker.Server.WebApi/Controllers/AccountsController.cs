@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Specialized;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -57,12 +57,10 @@ namespace Rutracker.Server.WebApi.Controllers
         {
             var user = await _accountService.RegisterAsync(model.UserName, model.Email, model.Password);
             var token = await _userService.EmailConfirmationTokenAsync(user);
+            var parameters = HttpUtility.ParseQueryString(string.Empty);
 
-            var parameters = new NameValueCollection
-            {
-                {nameof(ConfirmEmailViewModel.UserId), user.Id},
-                {nameof(ConfirmEmailViewModel.Token), token}
-            };
+            parameters.Add(nameof(ConfirmEmailViewModel.UserId), user.Id);
+            parameters.Add(nameof(ConfirmEmailViewModel.Token), token);
 
             var urlBuilder = new UriBuilder(_hostSettings.BaseUrl)
             {

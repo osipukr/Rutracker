@@ -16,7 +16,6 @@ namespace Rutracker.Server.DataAccessLayer.Interfaces
         Task<TEntity> GetAsync(TPrimaryKey id);
         Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression);
         Task<bool> ExistAsync(TPrimaryKey id);
-        Task<bool> ExistAsync(Expression<Func<TEntity, bool>> expression);
         Task<int> CountAsync();
         Task<int> CountAsync(Expression<Func<TEntity, bool>> expression);
         Task AddAsync(TEntity entity);
