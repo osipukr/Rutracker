@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -44,6 +45,14 @@ namespace Rutracker.Server.WebApi.Controllers
                 TotalPages = (int)Math.Ceiling(count / (double)pageSize),
                 Items = _mapper.Map<TorrentViewModel[]>(torrents)
             };
+        }
+
+        [HttpGet(nameof(Popular))]
+        public async Task<IEnumerable<TorrentShortViewModel>> Popular(int count)
+        {
+            var torrents = await _torrentService.PopularTorrentsAsync(count);
+
+            return _mapper.Map<IEnumerable<TorrentShortViewModel>>(torrents);
         }
 
         /// <summary>

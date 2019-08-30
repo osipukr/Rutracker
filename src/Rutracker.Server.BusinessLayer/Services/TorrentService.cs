@@ -35,6 +35,17 @@ namespace Rutracker.Server.BusinessLayer.Services
             return torrents;
         }
 
+        public async Task<IEnumerable<Torrent>> PopularTorrentsAsync(int count)
+        {
+            Guard.Against.OutOfRange(count, rangeFrom: 1, rangeTo: 100, $"The {nameof(count)} is out of range (1 - 100).");
+
+            var torrents = await _torrentRepository.PopularTorrents(count).ToListAsync();
+
+            Guard.Against.NullNotFound(torrents, "The torrents not found.");
+
+            return torrents;
+        }
+
         public async Task<Torrent> FindAsync(int id)
         {
             Guard.Against.LessOne(id, $"The {nameof(id)} is less than 1.");
