@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
-using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
@@ -21,27 +21,18 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var categories = await _categoryRepository.GetAll().ToListAsync();
 
-            if (categories == null)
-            {
-                throw new RutrackerException("Categories not found.", ExceptionEventType.NotFound);
-            }
+            Guard.Against.NullNotFound(categories, "Categories not found.");
 
             return categories;
         }
 
         public async Task<Category> FindAsync(int categoryId)
         {
-            if (categoryId < 1)
-            {
-                throw new RutrackerException($"The {nameof(categoryId)} is less than 1.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.LessOne(categoryId, $"The {nameof(categoryId)} is less than 1.");
 
             var category = await _categoryRepository.GetAsync(categoryId);
 
-            if (category == null)
-            {
-                throw new RutrackerException("Category not found.", ExceptionEventType.NotFound);
-            }
+            Guard.Against.NullNotFound(category, "Category not found.");
 
             return category;
         }

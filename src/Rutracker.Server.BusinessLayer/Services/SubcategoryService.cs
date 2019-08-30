@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
-using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
@@ -19,34 +19,22 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<IEnumerable<Subcategory>> ListAsync(int categoryId)
         {
-            if (categoryId < 1)
-            {
-                throw new RutrackerException($"The {nameof(categoryId)} is less than 1.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.LessOne(categoryId, $"The {nameof(categoryId)} is less than 1.");
 
             var subcategories = await _subcategoryRepository.GetAll(x => x.CategoryId == categoryId).ToListAsync();
 
-            if (subcategories == null)
-            {
-                throw new RutrackerException("Subcategories not found.", ExceptionEventType.NotFound);
-            }
+            Guard.Against.NullNotFound(subcategories, "Subcategories not found.");
 
             return subcategories;
         }
 
         public async Task<Subcategory> FindAsync(int subcategoryId)
         {
-            if (subcategoryId < 1)
-            {
-                throw new RutrackerException($"The {nameof(subcategoryId)} is less than 1.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.LessOne(subcategoryId, $"The {nameof(subcategoryId)} is less than 1.");
 
             var subcategory = await _subcategoryRepository.GetAsync(subcategoryId);
 
-            if (subcategory == null)
-            {
-                throw new RutrackerException("Subcategory not found.", ExceptionEventType.NotFound);
-            }
+            Guard.Against.NullNotFound(subcategory, "Subcategory not found.");
 
             return subcategory;
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
@@ -30,98 +31,55 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<IEnumerable<Comment>> ListAsync(int torrentId)
         {
-            if (torrentId < 1)
-            {
-                throw new RutrackerException($"The {nameof(torrentId)} is less than 1.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.LessOne(torrentId, $"The {nameof(torrentId)} is less than 1.");
 
             var comments = await _commentRepository.GetAll(x => x.TorrentId == torrentId).ToListAsync();
 
-            if (comments == null)
-            {
-                throw new RutrackerException("Comments not found.", ExceptionEventType.NotFound);
-            }
+            Guard.Against.NullNotFound(comments, "Comments not found.");
 
             return comments;
         }
 
         public async Task<IEnumerable<Comment>> ListAsync(string userId)
         {
-            if (string.IsNullOrWhiteSpace(userId))
-            {
-                throw new RutrackerException($"The {nameof(userId)} is null or white space.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullOrWhiteSpace(userId, message: $"The {nameof(userId)} is null or white space.");
 
             var comments = await _commentRepository.GetAll(x => x.UserId == userId).ToListAsync();
 
-            if (comments == null)
-            {
-                throw new RutrackerException("Comments not found.", ExceptionEventType.NotFound);
-            }
+            Guard.Against.NullNotFound(comments, "Comments not found.");
 
             return comments;
         }
 
         public async Task<Comment> FindAsync(int commentId)
         {
-            if (commentId < 1)
-            {
-                throw new RutrackerException($"The {nameof(commentId)} is less than 1.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.LessOne(commentId, $"The {nameof(commentId)} is less than 1.");
 
             var comment = await _commentRepository.GetAsync(commentId);
 
-            if (comment == null)
-            {
-                throw new RutrackerException("Comment not found.", ExceptionEventType.NotFound);
-            }
+            Guard.Against.NullNotFound(comment, "Comment not found.");
 
             return comment;
         }
 
         public async Task<Comment> FindAsync(int commentId, string userId)
         {
-            if (commentId < 1)
-            {
-                throw new RutrackerException($"The {nameof(commentId)} is less than 1.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(userId))
-            {
-                throw new RutrackerException($"The {nameof(userId)} is null or white space.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.LessOne(commentId, $"The {nameof(commentId)} is less than 1.");
+            Guard.Against.NullOrWhiteSpace(userId, message: $"The {nameof(userId)} is null or white space.");
 
             var comment = await _commentRepository.GetAsync(x => x.Id == commentId && x.UserId == userId);
 
-            if (comment == null)
-            {
-                throw new RutrackerException("Comment not found.", ExceptionEventType.NotFound);
-            }
+            Guard.Against.NullNotFound(comment, "Comment not found.");
 
             return comment;
         }
 
         public async Task<Comment> AddAsync(Comment comment)
         {
-            if (comment == null)
-            {
-                throw new RutrackerException("Not valid comment.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(comment.Text))
-            {
-                throw new RutrackerException("The comment must contain text.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (comment.TorrentId < 1)
-            {
-                throw new RutrackerException("Invalid torrent ID for comment.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(comment.UserId))
-            {
-                throw new RutrackerException("Invalid user ID for comment.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullNotValid(comment, "Not valid comment.");
+            Guard.Against.NullOrWhiteSpace(comment.Text, message: "The comment must contain text.");
+            Guard.Against.LessOne(comment.TorrentId, "Invalid torrent ID for comment.");
+            Guard.Against.NullOrWhiteSpace(comment.UserId, message: "Invalid user ID for comment.");
 
             if (!await _torrentRepository.ExistAsync(comment.TorrentId))
             {
@@ -138,10 +96,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Comment> UpdateAsync(int commentId, string userId, Comment comment)
         {
-            if (comment == null)
-            {
-                throw new RutrackerException("Not valid comment.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullNotValid(comment, "Not valid comment.");
 
             var result = await FindAsync(commentId, userId);
 
@@ -158,15 +113,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task LikeCommentAsync(int commentId, string userId)
         {
-            if (commentId < 1)
-            {
-                throw new RutrackerException($"The {nameof(commentId)} is less than 1.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(userId))
-            {
-                throw new RutrackerException($"The {nameof(userId)} is null or white space.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.LessOne(commentId, $"The {nameof(commentId)} is less than 1.");
+            Guard.Against.NullOrWhiteSpace(userId, message: $"The {nameof(userId)} is null or white space.");
 
             var like = await _likeRepository.GetAsync(x => x.CommentId == commentId && x.UserId == userId);
 

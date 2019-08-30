@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using CodeKicker.BBCode;
 using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
-using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
@@ -21,15 +21,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<IEnumerable<Torrent>> ListAsync(int page, int pageSize, string search, long? sizeFrom, long? sizeTo)
         {
-            if (page < 1)
-            {
-                throw new RutrackerException($"The {nameof(page)} is less than 1.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (pageSize < 1 || pageSize > 100)
-            {
-                throw new RutrackerException($"The {nameof(pageSize)} is out of range (1 - 100).", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.LessOne(page, $"The {nameof(page)} is less than 1.");
+            Guard.Against.OutOfRange(pageSize, rangeFrom: 1, rangeTo: 100, $"The {nameof(pageSize)} is out of range (1 - 100).");
 
             var torrents = await _torrentRepository.Search(search, sizeFrom, sizeTo)
                 .OrderBy(torrent => torrent.CreatedAt)
@@ -37,27 +30,18 @@ namespace Rutracker.Server.BusinessLayer.Services
                 .Take(pageSize)
                 .ToListAsync();
 
-            if (torrents == null)
-            {
-                throw new RutrackerException("The torrents not found.", ExceptionEventType.NotFound);
-            }
+            Guard.Against.NullNotFound(torrents, "The torrents not found.");
 
             return torrents;
         }
 
         public async Task<Torrent> FindAsync(int id)
         {
-            if (id < 1)
-            {
-                throw new RutrackerException($"The {nameof(id)} is less than 1.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.LessOne(id, $"The {nameof(id)} is less than 1.");
 
             var torrent = await _torrentRepository.GetAsync(id);
 
-            if (torrent == null)
-            {
-                throw new RutrackerException("The torrent not found.", ExceptionEventType.NotFound);
-            }
+            Guard.Against.NullNotFound(torrent, "The torrent not found.");
 
             if (!string.IsNullOrWhiteSpace(torrent.Content))
             {
