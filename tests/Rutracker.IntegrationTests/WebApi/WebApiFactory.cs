@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -19,13 +18,8 @@ namespace Rutracker.IntegrationTests.WebApi
                 .ConfigureServices(services =>
                 {
                     services
-                        .AddEntityFrameworkProxies()
                         .AddEntityFrameworkInMemoryDatabase()
-                        .AddDbContext<RutrackerContext>((provider, options) => options
-                            .UseInternalServiceProvider(provider)
-                            .UseLazyLoadingProxies()
-                            .UseInMemoryDatabase(Guid.NewGuid().ToString()),
-                            contextLifetime: ServiceLifetime.Singleton);
+                        .AddDbContext<RutrackerContext>(options => options.UseInMemoryDatabase(nameof(WebApiFactory)));
 
                     using var scope = services.BuildServiceProvider().CreateScope();
 
@@ -39,9 +33,6 @@ namespace Rutracker.IntegrationTests.WebApi
                         RutrackerContextSeed.SeedAsync(context, userManager, roleManager, loggerFactory).Wait();
                     }
                 })
-                .ConfigureWebHostDefaults(builder =>
-                {
-                    builder.UseStartup<Startup>();
-                });
+                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
     }
 }

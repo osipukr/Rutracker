@@ -16,18 +16,17 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
 
         public TorrentsControllerTests(WebApiFactory factory) => _client = factory.CreateClient();
 
-        [Fact(DisplayName = "Pagination() with valid parameters should return 200OK status")]
+        [Fact(DisplayName = "Pagination() with valid parameters should return 200OK status.")]
         public async Task Pagination_1_5_ReturnsStatus200OK()
         {
             // Arrange
             const int page = 1;
             const int pageSize = 5;
             const int expectedCount = 5;
-            var filter = new FilterViewModel();
 
             // Act
             var torrents = await _client.PostJsonAsync<PaginationResult<TorrentViewModel>>(
-                $"api/torrents/pagination/?page={page}&pageSize={pageSize}", filter);
+                $"api/torrents/pagination/?page={page}&pageSize={pageSize}", new FilterViewModel());
 
             // Assert
             Assert.NotNull(torrents);
@@ -37,7 +36,7 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
             Assert.Equal(expectedCount, torrents.Items.Length);
         }
 
-        [Fact(DisplayName = "Popular() with valid parameters should return 200OK status")]
+        [Fact(DisplayName = "Popular() with valid parameters should return 200OK status.")]
         public async Task Popular_10_ReturnsStatus200OK()
         {
             // Arrange
@@ -52,7 +51,7 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
             Assert.Equal(expectedCount, torrents.Count());
         }
 
-        [Fact(DisplayName = "Get() with valid parameters should return 200OK status")]
+        [Fact(DisplayName = "Get() with valid parameters should return 200OK status.")]
         public async Task Get_5_ReturnsStatus200OK()
         {
             // Arrange
@@ -66,7 +65,7 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
             Assert.Equal(expectedId, torrent.Id);
         }
 
-        [Fact(DisplayName = "Pagination() with an invalid parameters should return 400BadRequest status")]
+        [Fact(DisplayName = "Pagination() with an invalid parameters should return 400BadRequest status.")]
         public async Task Pagination_NegativeNumbers_ReturnsStatus400BadRequest()
         {
             // Act & Assert
@@ -76,18 +75,17 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
             Assert.Contains(StatusCodes.Status400BadRequest.ToString(), exception.Message);
         }
 
-        [Fact(DisplayName = "Popular() with an invalid parameters should return 400BadRequest status")]
+        [Fact(DisplayName = "Popular() with an invalid parameters should return 400BadRequest status.")]
         public async Task Popular_NegativeNumbers_ReturnsStatus400BadRequest()
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.PostJsonAsync<PaginationResult<TorrentViewModel>>(
-                    "api/torrents/pagination/?page=-10&pageSize=-10", null));
+                await _client.GetJsonAsync<IEnumerable<TorrentShortViewModel>>("api/torrents/popular/?count=-10"));
 
             Assert.Contains(StatusCodes.Status400BadRequest.ToString(), exception.Message);
         }
 
-        [Fact(DisplayName = "Get() with an invalid parameter should return 400BadRequest status")]
+        [Fact(DisplayName = "Get() with an invalid parameter should return 400BadRequest status.")]
         public async Task Get_NegativeNumber_ReturnsStatus400BadRequest()
         {
             // Act & Assert
@@ -97,7 +95,7 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
             Assert.Contains(StatusCodes.Status400BadRequest.ToString(), exception.Message);
         }
 
-        [Fact(DisplayName = "Get() with an invalid parameter should return 404NotFound status")]
+        [Fact(DisplayName = "Get() with an invalid parameter should return 404NotFound status.")]
         public async Task Get_10000_ReturnsStatus404NotFound()
         {
             // Act & Assert
