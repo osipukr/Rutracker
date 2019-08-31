@@ -18,21 +18,20 @@ namespace Rutracker.IntegrationTests.WebApi
             Host.CreateDefaultBuilder(null)
                 .ConfigureServices(services =>
                 {
-                    var provider = services.AddEntityFrameworkInMemoryDatabase()
-                                           .AddEntityFrameworkProxies()
-                                           .BuildServiceProvider();
-
-                    services.AddDbContext<RutrackerContext>(options => options
-                            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                    services
+                        .AddEntityFrameworkProxies()
+                        .AddEntityFrameworkInMemoryDatabase()
+                        .AddDbContext<RutrackerContext>((provider, options) => options
+                            .UseInternalServiceProvider(provider)
                             .UseLazyLoadingProxies()
-                            .UseInternalServiceProvider(provider),
+                            .UseInMemoryDatabase(Guid.NewGuid().ToString()),
                             contextLifetime: ServiceLifetime.Singleton);
 
                     using var scope = services.BuildServiceProvider().CreateScope();
 
                     var context = scope.ServiceProvider.GetRequiredService<RutrackerContext>();
-                    var userManager = provider.GetService<UserManager<User>>();
-                    var roleManager = provider.GetService<RoleManager<Role>>();
+                    var userManager = scope.ServiceProvider.GetService<UserManager<User>>();
+                    var roleManager = scope.ServiceProvider.GetService<RoleManager<Role>>();
                     var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
 
                     if (context.Database.EnsureCreated())

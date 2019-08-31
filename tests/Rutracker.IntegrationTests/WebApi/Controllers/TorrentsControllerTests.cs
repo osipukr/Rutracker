@@ -38,10 +38,10 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
         }
 
         [Fact(DisplayName = "Popular() with valid parameters should return 200OK status")]
-        public async Task Popular_2_ReturnsStatus200OK()
+        public async Task Popular_10_ReturnsStatus200OK()
         {
             // Arrange
-            const int expectedCount = 2;
+            const int expectedCount = 10;
 
             // Act
             var torrents = await _client.GetJsonAsync<IEnumerable<TorrentShortViewModel>>(
