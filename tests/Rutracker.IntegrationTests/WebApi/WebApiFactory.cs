@@ -22,8 +22,7 @@ namespace Rutracker.IntegrationTests.WebApi
                                            .AddEntityFrameworkProxies()
                                            .BuildServiceProvider();
 
-                    services
-                        .AddDbContext<RutrackerContext>(options => options
+                    services.AddDbContext<RutrackerContext>(options => options
                             .UseInMemoryDatabase(Guid.NewGuid().ToString())
                             .UseLazyLoadingProxies()
                             .UseInternalServiceProvider(provider),

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using AutoMapper;
@@ -26,9 +25,12 @@ namespace Rutracker.UnitTests.Setup
             var options = new DbContextOptionsBuilder<RutrackerContext>().Options;
             var mockContext = new DbContextMock<RutrackerContext>(options);
 
-            mockContext.CreateDbSetMock(x => x.Forums, DataInitializer.GetTestForums());
+            mockContext.CreateDbSetMock(x => x.Categories, DataInitializer.GetTestCategories());
+            mockContext.CreateDbSetMock(x => x.Subcategories, DataInitializer.GetTestSubcategories());
             mockContext.CreateDbSetMock(x => x.Torrents, DataInitializer.GeTestTorrents());
             mockContext.CreateDbSetMock(x => x.Files, DataInitializer.GetTestFiles());
+            mockContext.CreateDbSetMock(x => x.Comments, DataInitializer.GetTestComments());
+            mockContext.CreateDbSetMock(x => x.Likes, DataInitializer.GetTestLikes());
 
             return mockContext.Object;
         }
@@ -54,11 +56,8 @@ namespace Rutracker.UnitTests.Setup
             mockTorrentRepository.Setup(x => x.CountAsync(It.IsAny<Expression<Func<Torrent, bool>>>()))
                 .ReturnsAsync(torrents.Count);
 
-            mockTorrentRepository.Setup(x => x.GetForums(It.IsAny<int>()))
-                .Returns<int>(x => new DbQueryMock<Tuple<long, string, int>>(new Tuple<long, string, int>[x]).Object);
-
-            mockTorrentRepository.Setup(x => x.Search(null, null, null, null))
-                .Returns<string, long[], long?, long?>((search, forumIds, sizeFrom, sizeTo) => torrents);
+            mockTorrentRepository.Setup(x => x.Search(null, null, null))
+                .Returns<string, long?, long?>((search, sizeFrom, sizeTo) => torrents);
 
             return mockTorrentRepository.Object;
         }
@@ -69,36 +68,36 @@ namespace Rutracker.UnitTests.Setup
 
             mockTorrentService.Setup(x =>
                     x.ListAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive),
-                        It.IsInRange(0, int.MaxValue, Range.Exclusive), null, null, null, null))
-                .ReturnsAsync((int page, int pageSize, string search, IEnumerable<string> titles,
-                    long? sizeFrom, long? sizeTo) => new Torrent[pageSize]);
+                        It.IsInRange(0, int.MaxValue, Range.Exclusive), null, null, null))
+                .ReturnsAsync((int page, int pageSize, string search, long? sizeFrom, long? sizeTo) => new Torrent[pageSize]);
 
-            mockTorrentService.Setup(x => x.FindAsync(It.IsInRange(0, long.MaxValue, Range.Exclusive)))
+            mockTorrentService.Setup(x => x.FindAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive)))
                 .ReturnsAsync((int x) => new Torrent { Id = x });
 
-            mockTorrentService.Setup(x => x.CountAsync(null, null, null, null))
+            mockTorrentService.Setup(x => x.CountAsync(null, null, null))
                 .ReturnsAsync(DataInitializer.GeTestTorrents().Count());
 
-            mockTorrentService.Setup(x => x.ForumsAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive)))
-                .ReturnsAsync((int x) => Enumerable.Range(0, x)
-                    .Select(t => new Tuple<long, string, int>(long.MinValue, string.Empty, int.MinValue)));
+            mockTorrentService.Setup(x => x.PopularTorrentsAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive)))
+                .ReturnsAsync((int x) => new Torrent[x]);
 
             mockTorrentService.Setup(x =>
                     x.ListAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive),
-                        It.IsInRange(int.MinValue, 0, Range.Inclusive), null, null, null, null))
+                        It.IsInRange(int.MinValue, 0, Range.Inclusive), null, null, null))
                 .ThrowsAsync(new RutrackerException(string.Empty, ExceptionEventType.NotValidParameters));
 
-            mockTorrentService.Setup(x => x.FindAsync(It.IsInRange(long.MinValue, 0, Range.Inclusive)))
+            mockTorrentService.Setup(x => x.FindAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive)))
                 .ThrowsAsync(new RutrackerException(string.Empty, ExceptionEventType.NotValidParameters));
 
-            mockTorrentService.Setup(x => x.ForumsAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive)))
+            mockTorrentService.Setup(x => x.PopularTorrentsAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive)))
                 .ThrowsAsync(new RutrackerException(string.Empty, ExceptionEventType.NotValidParameters));
 
             return mockTorrentService.Object;
         }
 
-        public static IMemoryCache GetMemoryCache() =>
-            new Mock<MemoryCache>(new Mock<MemoryCacheOptions>().Object).Object;
+        public static IMemoryCache GetMemoryCache()
+        {
+            return new Mock<MemoryCache>(new Mock<MemoryCacheOptions>().Object).Object;
+        }
 
         public static IOptions<CacheSettings> GetCacheOptions()
         {

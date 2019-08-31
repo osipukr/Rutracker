@@ -1,4 +1,6 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
@@ -35,11 +37,26 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
             Assert.Equal(expectedCount, torrents.Items.Length);
         }
 
+        [Fact(DisplayName = "Popular() with valid parameters should return 200OK status")]
+        public async Task Popular_2_ReturnsStatus200OK()
+        {
+            // Arrange
+            const int expectedCount = 2;
+
+            // Act
+            var torrents = await _client.GetJsonAsync<IEnumerable<TorrentShortViewModel>>(
+                $"api/torrents/popular/?count={expectedCount}");
+
+            // Assert
+            Assert.NotNull(torrents);
+            Assert.Equal(expectedCount, torrents.Count());
+        }
+
         [Fact(DisplayName = "Get() with valid parameters should return 200OK status")]
         public async Task Get_5_ReturnsStatus200OK()
         {
             // Arrange
-            const long expectedId = 5;
+            const int expectedId = 5;
 
             // Act
             var torrent = await _client.GetJsonAsync<TorrentDetailsViewModel>($"api/torrents/?id={expectedId}");
@@ -49,24 +66,18 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
             Assert.Equal(expectedId, torrent.Id);
         }
 
-        [Fact(DisplayName = "Titles() with valid parameters should return 200OK status")]
-        public async Task Titles_5_ReturnsStatus200OK()
-        {
-            // Arrange
-            const int expectedCount = 5;
-
-            // Act
-            var forumFacets = await _client.GetJsonAsync<FacetResult<string>>(
-                $"api/torrents/titles/?count={expectedCount}");
-
-            // Assert
-            Assert.NotNull(forumFacets);
-            Assert.NotNull(forumFacets.Items);
-            Assert.Equal(expectedCount, forumFacets.Items.Length);
-        }
-
         [Fact(DisplayName = "Pagination() with an invalid parameters should return 400BadRequest status")]
         public async Task Pagination_NegativeNumbers_ReturnsStatus400BadRequest()
+        {
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
+                await _client.GetJsonAsync<PaginationResult<TorrentViewModel>>("api/torrents/popular/?count=-10"));
+
+            Assert.Contains(StatusCodes.Status400BadRequest.ToString(), exception.Message);
+        }
+
+        [Fact(DisplayName = "Popular() with an invalid parameters should return 400BadRequest status")]
+        public async Task Popular_NegativeNumbers_ReturnsStatus400BadRequest()
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
@@ -87,23 +98,13 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
         }
 
         [Fact(DisplayName = "Get() with an invalid parameter should return 404NotFound status")]
-        public async Task Get_1000_ReturnsStatus404NotFound()
+        public async Task Get_10000_ReturnsStatus404NotFound()
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.GetJsonAsync<TorrentDetailsViewModel>("api/torrents/?id=1000"));
+                await _client.GetJsonAsync<TorrentDetailsViewModel>("api/torrents/?id=10000"));
 
             Assert.Contains(StatusCodes.Status404NotFound.ToString(), exception.Message);
-        }
-
-        [Fact(DisplayName = "Titles() with an invalid parameter should return 400BadRequest status")]
-        public async Task Titles_NegativeNumber_ReturnsStatus400BadRequest()
-        {
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.GetJsonAsync<FacetResult<string>>("api/torrents/titles/?count=-10"));
-
-            Assert.Contains(StatusCodes.Status400BadRequest.ToString(), exception.Message);
         }
     }
 }
