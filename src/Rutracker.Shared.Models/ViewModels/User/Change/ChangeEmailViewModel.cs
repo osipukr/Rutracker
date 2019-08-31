@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Rutracker.Shared.Models.Resources;
 
-namespace Rutracker.Shared.Models.ViewModels.User
+namespace Rutracker.Shared.Models.ViewModels.User.Change
 {
     public class ChangeEmailViewModel
     {

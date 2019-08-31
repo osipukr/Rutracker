@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
 using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
@@ -20,22 +21,12 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<User> LoginAsync(string userName, string password, bool rememberMe)
         {
-            if (string.IsNullOrWhiteSpace(userName))
-            {
-                throw new RutrackerException("Not valid user name.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new RutrackerException("Not valid password.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullOrWhiteSpace(userName, message: "Not valid user name.");
+            Guard.Against.NullOrWhiteSpace(password, message: "Not valid password.");
 
             var user = await _userManager.FindByNameAsync(userName);
 
-            if (user == null)
-            {
-                throw new RutrackerException("User not found.", ExceptionEventType.NotFound);
-            }
+            Guard.Against.NullNotFound(user, "User not found.");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: true);
 
@@ -66,20 +57,9 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<User> RegisterAsync(string userName, string email, string password)
         {
-            if (string.IsNullOrWhiteSpace(userName))
-            {
-                throw new RutrackerException("Not valid user name.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                throw new RutrackerException("Not valid email.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new RutrackerException("Not valid password.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullOrWhiteSpace(userName, message: "Not valid user name.");
+            Guard.Against.NullOrWhiteSpace(email, message: "Not valid email.");
+            Guard.Against.NullOrWhiteSpace(password, message: "Not valid password.");
 
             var user = await _userManager.FindByNameAsync(userName);
 

@@ -5,7 +5,6 @@
         // Torrent
         public string TorrentsIndex { get; set; }
         public string TorrentIndex { get; set; }
-        public string Titles { get; set; }
 
         // Account
         public string Login { get; set; }

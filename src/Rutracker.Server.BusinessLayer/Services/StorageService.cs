@@ -1,11 +1,11 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.BusinessLayer.Options;
-using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
@@ -17,7 +17,13 @@ namespace Rutracker.Server.BusinessLayer.Services
         public StorageService(IOptions<StorageSettings> storageOptions)
         {
             _storageSettings = storageOptions.Value;
+
+            Guard.Against.Null(_storageSettings, nameof(_storageSettings));
+            Guard.Against.NullOrWhiteSpace(_storageSettings.ConnectionString, parameterName: nameof(_storageSettings.ConnectionString));
+
             _client = CloudStorageAccount.Parse(_storageSettings.ConnectionString).CreateCloudBlobClient();
+
+            Guard.Against.Null(_client, nameof(_client));
         }
 
         public async Task UploadFileAsync(string containerName, string fileName, Stream stream)
@@ -61,10 +67,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         private CloudBlobContainer GetBlobContainer(string containerName)
         {
-            if (string.IsNullOrWhiteSpace(containerName))
-            {
-                throw new RutrackerException("The container name not valid.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullOrWhiteSpace(containerName, message: "The container name not valid.");
 
             return _client.GetContainerReference(containerName);
         }
@@ -82,17 +85,11 @@ namespace Rutracker.Server.BusinessLayer.Services
                 });
             }
 
-            if (string.IsNullOrWhiteSpace(fileName))
-            {
-                throw new RutrackerException("The file name not valid.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullOrWhiteSpace(fileName, message: "The file name not valid.");
 
             var blockBlob = container.GetBlockBlobReference(fileName);
 
-            if (blockBlob == null)
-            {
-                throw new RutrackerException("The block blob not found.", ExceptionEventType.NotFound);
-            }
+            Guard.Against.NullNotFound(blockBlob, "The block blob not found.");
 
             return blockBlob;
         }

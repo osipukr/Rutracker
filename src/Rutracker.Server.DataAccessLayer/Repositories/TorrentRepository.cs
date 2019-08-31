@@ -1,34 +1,27 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
 using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
 
 namespace Rutracker.Server.DataAccessLayer.Repositories
 {
-    public class TorrentRepository : Repository<Torrent, long>, ITorrentRepository
+    public class TorrentRepository : Repository<Torrent, int>, ITorrentRepository
     {
-        public TorrentRepository(RutrackerContext context)
-            : base(context)
+        public TorrentRepository(RutrackerContext context) : base(context)
         {
         }
 
-        public override async Task<Torrent> GetAsync(long id) =>
-            await _dbSet.Include(x => x.Forum)
-                .Include(x => x.Files)
-                .SingleOrDefaultAsync(x => x.Id == id);
-
-        public IQueryable<Torrent> Search(string search, long[] forumIds, long? sizeFrom, long? sizeTo) =>
-            GetAll(torrent =>
-                (string.IsNullOrWhiteSpace(search) || torrent.Title.Contains(search)) &&
-                (forumIds == null || forumIds.Length == 0 || forumIds.Contains(torrent.ForumId)) &&
+        public IQueryable<Torrent> Search(string search, long? sizeFrom, long? sizeTo)
+        {
+            return GetAll(torrent =>
+                (string.IsNullOrWhiteSpace(search) || torrent.Name.Contains(search)) &&
                 (!sizeFrom.HasValue || torrent.Size >= sizeFrom) &&
                 (!sizeTo.HasValue || torrent.Size <= sizeTo));
+        }
 
-        public IQueryable<Tuple<long, string, int>> GetForums(int count) =>
-            _dbSet.GroupBy(x => x.ForumId,
+        public IQueryable<Torrent> PopularTorrents(int count)
+        {
+            return _context.Comments.GroupBy(x => x.TorrentId,
                     (key, items) => new
                     {
                         Key = key,
@@ -36,9 +29,7 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
                     })
                 .OrderByDescending(x => x.Count)
                 .Take(count)
-                .Join(_context.Forums,
-                    g => g.Key,
-                    f => f.Id,
-                    (g, f) => Tuple.Create(g.Key, f.Title, g.Count));
+                .Join(_dbSet, group => group.Key, torrent => torrent.Id, (group, torrent) => torrent);
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using Rutracker.Server.BusinessLayer.Interfaces;
-using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
@@ -15,15 +15,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task SendConfirmationPhoneAsync(string phone, string code)
         {
-            if (string.IsNullOrWhiteSpace(phone))
-            {
-                throw new RutrackerException("Not valid phone.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(code))
-            {
-                throw new RutrackerException("Not valid code.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullOrWhiteSpace(phone, message: "Not valid phone.");
+            Guard.Against.NullOrWhiteSpace(code, message: "Not valid code.");
 
             await _smsSender.SendAsync(phone, $"Confirmation code: {code}");
         }

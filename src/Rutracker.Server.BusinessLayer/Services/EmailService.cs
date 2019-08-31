@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using Rutracker.Server.BusinessLayer.Interfaces;
-using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
@@ -15,15 +15,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task SendConfirmationEmailAsync(string email, string confirmationUrl)
         {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                throw new RutrackerException("Not valid user name.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(confirmationUrl))
-            {
-                throw new RutrackerException("Not valid confirmation url.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullOrWhiteSpace(email, message: "Not valid user name.");
+            Guard.Against.NullOrWhiteSpace(confirmationUrl, message: "Not valid confirmation url.");
 
             await _emailSender.SendAsync(
                 email: email,
@@ -33,15 +26,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task SendEmailChangeConfirmation(string email, string confirmationUrl)
         {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                throw new RutrackerException("Not valid user name.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(confirmationUrl))
-            {
-                throw new RutrackerException("Not valid confirmation url.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullOrWhiteSpace(email, message: "Not valid user name.");
+            Guard.Against.NullOrWhiteSpace(confirmationUrl, message: "Not valid confirmation url.");
 
             await _emailSender.SendAsync(
                 email: email,

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using CodeKicker.BBCode;
 using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
-using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
@@ -20,46 +19,40 @@ namespace Rutracker.Server.BusinessLayer.Services
             _torrentRepository = torrentRepository;
         }
 
-        public async Task<IEnumerable<Torrent>> ListAsync(int page, int pageSize, string search, IEnumerable<string> selectedForumIds, long? sizeFrom, long? sizeTo)
+        public async Task<IEnumerable<Torrent>> ListAsync(int page, int pageSize, string search, long? sizeFrom, long? sizeTo)
         {
-            if (page < 1)
-            {
-                throw new RutrackerException($"The {nameof(page)} is less than 1.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.LessOne(page, $"The {nameof(page)} is less than 1.");
+            Guard.Against.OutOfRange(pageSize, rangeFrom: 1, rangeTo: 100, $"The {nameof(pageSize)} is out of range (1 - 100).");
 
-            if (pageSize < 1 || pageSize > 100)
-            {
-                throw new RutrackerException($"The {nameof(pageSize)} is out of range (1 - 100).", ExceptionEventType.NotValidParameters);
-            }
-
-            var forumIds = ConvertForumIds(selectedForumIds);
-            var torrents = await _torrentRepository.Search(search, forumIds, sizeFrom, sizeTo)
-                .OrderBy(torrent => torrent.Date)
+            var torrents = await _torrentRepository.Search(search, sizeFrom, sizeTo)
+                .OrderBy(torrent => torrent.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
-            if (torrents == null)
-            {
-                throw new RutrackerException("The torrents not found.", ExceptionEventType.NotFound);
-            }
+            Guard.Against.NullNotFound(torrents, "The torrents not found.");
 
             return torrents;
         }
 
-        public async Task<Torrent> FindAsync(long id)
+        public async Task<IEnumerable<Torrent>> PopularTorrentsAsync(int count)
         {
-            if (id < 1)
-            {
-                throw new RutrackerException($"The {nameof(id)} is less than 1.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.OutOfRange(count, rangeFrom: 1, rangeTo: 100, $"The {nameof(count)} is out of range (1 - 100).");
+
+            var torrents = await _torrentRepository.PopularTorrents(count).ToListAsync();
+
+            Guard.Against.NullNotFound(torrents, "The torrents not found.");
+
+            return torrents;
+        }
+
+        public async Task<Torrent> FindAsync(int id)
+        {
+            Guard.Against.LessOne(id, $"The {nameof(id)} is less than 1.");
 
             var torrent = await _torrentRepository.GetAsync(id);
 
-            if (torrent == null)
-            {
-                throw new RutrackerException("The torrent not found.", ExceptionEventType.NotFound);
-            }
+            Guard.Against.NullNotFound(torrent, "The torrent not found.");
 
             if (!string.IsNullOrWhiteSpace(torrent.Content))
             {
@@ -69,38 +62,9 @@ namespace Rutracker.Server.BusinessLayer.Services
             return torrent;
         }
 
-        public async Task<int> CountAsync(string search, IEnumerable<string> selectedForumIds, long? sizeFrom, long? sizeTo)
+        public async Task<int> CountAsync(string search, long? sizeFrom, long? sizeTo)
         {
-            var forumIds = ConvertForumIds(selectedForumIds);
-
-            return await _torrentRepository.Search(search, forumIds, sizeFrom, sizeTo).CountAsync();
+            return await _torrentRepository.Search(search, sizeFrom, sizeTo).CountAsync();
         }
-
-        public async Task<IEnumerable<Tuple<long, string, int>>> ForumsAsync(int count)
-        {
-            if (count < 1 || count > 100)
-            {
-                throw new RutrackerException($"The {nameof(count)} is out of range (1 - 100).", ExceptionEventType.NotValidParameters);
-            }
-
-            var forums = await _torrentRepository.GetForums(count).ToListAsync();
-
-            if (forums == null)
-            {
-                throw new RutrackerException("The forums not found.", ExceptionEventType.NotFound);
-            }
-
-            return forums;
-        }
-
-        private static long[] ConvertForumIds(IEnumerable<string> selectedForumIds) =>
-            selectedForumIds?.Select(x => new
-            {
-                Success = long.TryParse(x, out var value),
-                Value = value
-            })
-            .Where(x => x.Success)
-            .Select(x => x.Value)
-            .ToArray();
     }
 }

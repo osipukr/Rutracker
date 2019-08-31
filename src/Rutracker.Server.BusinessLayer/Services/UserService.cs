@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Extensions;
@@ -27,37 +28,25 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var users = await _userManager.Users.ToListAsync();
 
-            if (users == null)
-            {
-                throw new RutrackerException("The users not found.", ExceptionEventType.NotFound);
-            }
+            Guard.Against.NullNotFound(users, "The users not found.");
 
             return users;
         }
 
         public async Task<User> FindAsync(string userId)
         {
-            if (string.IsNullOrWhiteSpace(userId))
-            {
-                throw new RutrackerException("Not valid user id.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullOrWhiteSpace(userId, message: "Not valid user id.");
 
             var user = await _userManager.FindByIdAsync(userId);
 
-            if (user == null)
-            {
-                throw new RutrackerException("The user not found.", ExceptionEventType.NotFound);
-            }
+            Guard.Against.NullNotFound(user, "The user not found.");
 
             return user;
         }
 
         public async Task UpdateAsync(User user)
         {
-            if (user == null)
-            {
-                throw new RutrackerException("Not valid user.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullNotValid(user, "Not valid user.");
 
             var result = await _userManager.UpdateAsync(user);
 
@@ -69,10 +58,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<IEnumerable<string>> RolesAsync(User user)
         {
-            if (user == null)
-            {
-                throw new RutrackerException("Not valid user.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullNotValid(user, "Not valid user.");
 
             var roles = await _userManager.GetRolesAsync(user);
 
@@ -86,15 +72,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<string> UploadProfileImageAsync(User user, byte[] imageBytes, string fileType)
         {
-            if (user == null)
-            {
-                throw new RutrackerException("Not valid user.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (imageBytes == null)
-            {
-                throw new RutrackerException("Not valid image bytes.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullNotValid(user, "Not valid user.");
+            Guard.Against.NullNotValid(imageBytes, "Not valid image bytes.");
 
             var types = new[] { "image/png", "image/svg", "image/jpeg", "image/gif", "image/jpg" };
 
@@ -115,35 +94,22 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task DeleteProfileImageAsync(User user)
         {
-            if (user == null)
-            {
-                throw new RutrackerException("Not valid user.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullNotValid(user, "Not valid user.");
 
             await _storageService.DeleteContainerAsync(user.UserName);
         }
 
         public async Task<string> EmailConfirmationTokenAsync(User user)
         {
-            if (user == null)
-            {
-                throw new RutrackerException("Not valid user.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullNotValid(user, "Not valid user.");
 
             return await _userManager.GenerateEmailConfirmationTokenAsync(user);
         }
 
         public async Task<string> ChangeEmailTokenAsync(User user, string email)
         {
-            if (user == null)
-            {
-                throw new RutrackerException("Not valid user.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                throw new RutrackerException("Not valid email.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullNotValid(user, "Not valid user.");
+            Guard.Against.NullOrWhiteSpace(email, message: "Not valid email.");
 
             if (await _userManager.FindByEmailAsync(email) != null)
             {
@@ -160,15 +126,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<string> ChangePhoneNumberTokenAsync(User user, string phone)
         {
-            if (user == null)
-            {
-                throw new RutrackerException("Not valid user.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(phone))
-            {
-                throw new RutrackerException("Not valid phone.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullNotValid(user, "Not valid user.");
+            Guard.Against.NullOrWhiteSpace(phone, message: "Not valid phone.");
 
             if (user.PhoneNumber != null && !user.PhoneNumberConfirmed)
             {
@@ -180,20 +139,9 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task ChangePasswordAsync(User user, string oldPassword, string newPassword)
         {
-            if (user == null)
-            {
-                throw new RutrackerException("Not valid user.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(oldPassword))
-            {
-                throw new RutrackerException("Not valid old password.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(newPassword))
-            {
-                throw new RutrackerException("Not valid new password.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullNotValid(user, "Not valid user.");
+            Guard.Against.NullOrWhiteSpace(oldPassword, message: "Not valid old password.");
+            Guard.Against.NullOrWhiteSpace(newPassword, message: "Not valid new password.");
 
             if (!await _userManager.CheckPasswordAsync(user, oldPassword))
             {
@@ -210,20 +158,9 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task ChangeEmailAsync(User user, string email, string token)
         {
-            if (user == null)
-            {
-                throw new RutrackerException("Not valid user.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                throw new RutrackerException("Not valid email.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                throw new RutrackerException("Not valid token.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullNotValid(user, "Not valid user.");
+            Guard.Against.NullOrWhiteSpace(email, message: "Not valid email.");
+            Guard.Against.NullOrWhiteSpace(token, message: "Not valid token.");
 
             var result = await _userManager.ChangeEmailAsync(user, email, token);
 
@@ -235,20 +172,9 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task ChangePhoneNumberAsync(User user, string phone, string token)
         {
-            if (user == null)
-            {
-                throw new RutrackerException("Not valid user.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(phone))
-            {
-                throw new RutrackerException("Not valid phone.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                throw new RutrackerException("Not valid token.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullNotValid(user, "Not valid user.");
+            Guard.Against.NullOrWhiteSpace(phone, message: "Not valid phone.");
+            Guard.Against.NullOrWhiteSpace(token, message: "Not valid token.");
 
             var result = await _userManager.ChangePhoneNumberAsync(user, phone, token);
 
@@ -260,15 +186,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task ConfirmEmailAsync(User user, string token)
         {
-            if (user == null)
-            {
-                throw new RutrackerException("Not valid user.", ExceptionEventType.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                throw new RutrackerException("Not valid token.", ExceptionEventType.NotValidParameters);
-            }
+            Guard.Against.NullNotValid(user, "Not valid user.");
+            Guard.Against.NullOrWhiteSpace(token, message: "Not valid token.");
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
 

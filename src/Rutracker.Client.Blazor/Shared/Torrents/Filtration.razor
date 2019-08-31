@@ -1,6 +1,5 @@
 ﻿@inject AppState AppState
 @inject ViewSettings ViewSettings
-@inject ITorrentService TorrentService
 @inject IMatToaster MatToaster
 
 <div class="mat-layout-grid px-0">
@@ -39,28 +38,6 @@
                             </div>
                         </MatExpansionPanelDetails>
                     </MatExpansionPanel>
-
-                    <MatExpansionPanel>
-                        <MatExpansionPanelSummary Class="no-select">
-                            <MatExpansionPanelHeader>Forum titles category</MatExpansionPanelHeader>
-                        </MatExpansionPanelSummary>
-
-                        <MatExpansionPanelDetails>
-                            @if (TitleFacet?.Items != null)
-                            {
-                                foreach (var facet in TitleFacet.Items)
-                                {
-                                    <MatCheckbox @bind-Checked="@facet.IsSelected">
-                                        @facet.Value
-
-                                        <span class="badge badge-pill text-white" style="background-color: var(--mdc-theme-primary);">
-                                            @facet.Count
-                                        </span>
-                                    </MatCheckbox>
-                                }
-                            }
-                        </MatExpansionPanelDetails>
-                    </MatExpansionPanel>
                 </MatAccordion>
 
                 <div class="d-flex justify-content-end">
@@ -90,37 +67,11 @@
     [Parameter] private FilterViewModel Model { get; set; }
     [Parameter] private EventCallback FilterChanged { get; set; }
 
-    private int TitleCount => ViewSettings.ForumTitlesCount;
-    private FacetResult<string> TitleFacet { get; set; }
-
-    protected override async Task OnInitAsync() => await LoadTitleFacetsAsync();
-
-    private async Task LoadTitleFacetsAsync()
-    {
-        try
-        {
-            TitleFacet = await TorrentService.TitleFacet(TitleCount);
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Failed load titles");
-        }
-    }
-
     private void ResetFiltration()
     {
         Model.Search = null;
         Model.SizeFrom = null;
         Model.SizeTo = null;
-        Model.SelectedForumIds = null;
-
-        if (TitleFacet?.Items != null)
-        {
-            foreach (var facet in TitleFacet.Items)
-            {
-                facet.IsSelected = false;
-            }
-        }
     }
 
     private void ResetButtonClicked()
@@ -129,10 +80,5 @@
         OnValidSubmitClicked();
     }
 
-    private void OnValidSubmitClicked()
-    {
-        Model.SelectedForumIds = TitleFacet?.Items?.Where(x => x.IsSelected).Select(x => x.Id);
-
-        FilterChanged.InvokeAsync(EventArgs.Empty);
-    }
+    private void OnValidSubmitClicked() => FilterChanged.InvokeAsync(EventArgs.Empty);
 }

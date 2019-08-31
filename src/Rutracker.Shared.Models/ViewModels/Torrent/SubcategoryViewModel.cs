@@ -2,8 +2,8 @@
 
 namespace Rutracker.Shared.Models.ViewModels.Torrent
 {
-    public class ForumViewModel : BaseViewModel
+    public class SubcategoryViewModel : BaseViewModel
     {
-        public string Title { get; set; }
+        public string Name { get; set; }
     }
 }

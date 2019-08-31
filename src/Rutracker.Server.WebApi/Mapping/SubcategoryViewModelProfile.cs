@@ -4,8 +4,8 @@ using Rutracker.Shared.Models.ViewModels.Torrent;
 
 namespace Rutracker.Server.WebApi.Mapping
 {
-    public class TorrentDetailsViewModelProfile : Profile
+    public class SubcategoryViewModelProfile : Profile
     {
-        public TorrentDetailsViewModelProfile() => CreateMap<Torrent, TorrentDetailsViewModel>();
+        public SubcategoryViewModelProfile() => CreateMap<Subcategory, SubcategoryViewModel>();
     }
 }

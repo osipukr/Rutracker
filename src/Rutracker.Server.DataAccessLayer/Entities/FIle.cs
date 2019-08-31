@@ -2,11 +2,11 @@
 
 namespace Rutracker.Server.DataAccessLayer.Entities
 {
-    public class File : BaseEntity<long>
+    public class File : BaseEntity<int>
     {
         public long Size { get; set; }
         public string Name { get; set; }
-        public long TorrentId { get; set; }
+        public int TorrentId { get; set; }
 
         public virtual Torrent Torrent { get; set; }
     }

@@ -38,7 +38,7 @@ namespace Rutracker.Client.Blazor.Services
             return await IndexActionAsync(() => _torrentService.Torrents(page, pageSize, filter));
         }
 
-        public async Task<TorrentDetailsViewModel> Torrent(long id)
+        public async Task<TorrentDetailsViewModel> Torrent(int id)
         {
             return await IndexActionAsync(() => _torrentService.Torrent(id));
         }

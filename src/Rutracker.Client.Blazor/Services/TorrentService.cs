@@ -24,18 +24,11 @@ namespace Rutracker.Client.Blazor.Services
             return await _httpClientService.PostJsonAsync<PaginationResult<TorrentViewModel>>(url, filter);
         }
 
-        public async Task<TorrentDetailsViewModel> Torrent(long id)
+        public async Task<TorrentDetailsViewModel> Torrent(int id)
         {
             var url = string.Format(_apiUriSettings.TorrentIndex, id.ToString());
 
             return await _httpClientService.GetJsonAsync<TorrentDetailsViewModel>(url);
-        }
-
-        public async Task<FacetResult<string>> TitleFacet(int count)
-        {
-            var url = string.Format(_apiUriSettings.Titles, count.ToString());
-
-            return await _httpClientService.GetJsonAsync<FacetResult<string>>(url);
         }
     }
 }

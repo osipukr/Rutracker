@@ -2,7 +2,6 @@
   "ApiUriSettings": {
     "TorrentsIndex": "api/torrents/pagination/?page={0}&pageSize={1}",
     "TorrentIndex": "api/torrents/?id={0}",
-    "Titles": "api/torrents/titles/?count={0}",
     "Login": "api/accounts/login",
     "Register": "api/accounts/register",
     "Logout": "api/accounts/logout",
@@ -19,8 +18,7 @@
   },
   "ViewSettings": {
     "ServiceName": "Rutracker",
-    "TorrentsPerPageCount": 6,
-    "ForumTitlesCount": 5
+    "TorrentsPerPageCount": 6
   },
   "MatToasterSettings": {
     "Position": "BottomRight",

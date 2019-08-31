@@ -6,6 +6,11 @@ namespace Rutracker.Server.WebApi.Mapping
 {
     public class UserViewModelProfile : Profile
     {
-        public UserViewModelProfile() => CreateMap<User, UserViewModel>();
+        public UserViewModelProfile()
+        {
+            CreateMap<User, UserViewModel>();
+            CreateMap<User, UserShortViewModel>();
+            CreateMap<User, UserDetailsViewModel>();
+        }
     }
 }

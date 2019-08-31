@@ -48,7 +48,6 @@ namespace Rutracker.Server.WebApi
                 .UseSqlServer(
                     _configuration.GetConnectionString("RutrackerConnection"),
                     sqlServerOptions => sqlServerOptions.EnableRetryOnFailure())
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
                 .UseLazyLoadingProxies());
 
             services.AddMemoryCache();
@@ -161,11 +160,20 @@ namespace Rutracker.Server.WebApi
             services.AddSingleton<ISmsSender, SmsSender>();
             services.AddSingleton<IEmailService, EmailService>();
             services.AddSingleton<ISmsService, SmsService>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
             services.AddScoped<ITorrentRepository, TorrentRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<ILikeRepository, LikeRepository>();
             services.AddScoped<IStorageService, StorageService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<ISubcategoryService, SubcategoryService>();
             services.AddScoped<ITorrentService, TorrentService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<ILikeService, LikeService>();
         }
 
         public void Configure(IApplicationBuilder app)
