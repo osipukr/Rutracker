@@ -60,8 +60,8 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             Assert.Equal(expectedCount, count);
         }
 
-        [Fact(DisplayName = "PopularTorrentsAsync() with valid parameters should return the torrent forums.")]
-        public async Task PopularTorrentsAsync_5_ReturnsValidForumTitles()
+        [Fact(DisplayName = "PopularTorrentsAsync() with valid parameters should return the popular torrents.")]
+        public async Task PopularTorrentsAsync_5_ReturnsValidTorrents()
         {
             // Arrange
             const int expectedCount = 5;

@@ -68,26 +68,26 @@ namespace Rutracker.UnitTests.Setup
         public static IEnumerable<Comment> GetTestComments() =>
             new[]
             {
-                new Comment { Id = 1, TorrentId = 1, UserId = "1" },
-                new Comment { Id = 2, TorrentId = 1, UserId = "2" },
-                new Comment { Id = 3, TorrentId = 1, UserId = "3" },
-                new Comment { Id = 4, TorrentId = 2, UserId = "4" },
-                new Comment { Id = 5, TorrentId = 2, UserId = "5" },
-                new Comment { Id = 6, TorrentId = 3, UserId = "6" },
-                new Comment { Id = 7, TorrentId = 4, UserId = "7" },
-                new Comment { Id = 8, TorrentId = 6, UserId = "8" },
-                new Comment { Id = 9, TorrentId = 8, UserId = "9" },
-                new Comment { Id = 10, TorrentId = 10, UserId = "10" },
+                new Comment { Id = 1, TorrentId = 1, UserId = "1", Likes = new List<Like>() },
+                new Comment { Id = 2, TorrentId = 1, UserId = "1", Likes = new List<Like>() },
+                new Comment { Id = 3, TorrentId = 1, UserId = "1", Likes = new List<Like>() },
+                new Comment { Id = 4, TorrentId = 2, UserId = "4", Likes = new List<Like>() },
+                new Comment { Id = 5, TorrentId = 2, UserId = "5", Likes = new List<Like>() },
+                new Comment { Id = 6, TorrentId = 3, UserId = "6", Likes = new List<Like>() },
+                new Comment { Id = 7, TorrentId = 4, UserId = "7", Likes = new List<Like>() },
+                new Comment { Id = 8, TorrentId = 6, UserId = "8", Likes = new List<Like>() },
+                new Comment { Id = 9, TorrentId = 8, UserId = "9", Likes = new List<Like>() },
+                new Comment { Id = 10, TorrentId = 10, UserId = "10", Likes = new List<Like>() }
             };
 
         public static IEnumerable<Like> GetTestLikes() =>
             new[]
             {
                 new Like { Id = 1, CommentId = 1, UserId = "1" },
-                new Like { Id = 2, CommentId = 1, UserId = "1" },
-                new Like { Id = 3, CommentId = 1, UserId = "1" },
-                new Like { Id = 4, CommentId = 1, UserId = "2" },
-                new Like { Id = 5, CommentId = 1, UserId = "2" },
+                new Like { Id = 2, CommentId = 1, UserId = "2" },
+                new Like { Id = 3, CommentId = 1, UserId = "3" },
+                new Like { Id = 4, CommentId = 1, UserId = "4" },
+                new Like { Id = 5, CommentId = 1, UserId = "5" }
             };
     }
 }
