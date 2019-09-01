@@ -1,7 +1,17 @@
 {
-  "ApiUriSettings": {
-    "TorrentsIndex": "api/torrents/pagination/?page={0}&pageSize={1}",
-    "TorrentIndex": "api/torrents/?id={0}",
+  "ApiUrlSettings": {
+    "Categories": "api/categories",
+    "Category": "api/categories/find/?id={0}",
+    "Subcategories": "api/subcategories/?categoryId={0}",
+    "Subcategory": "api/subcategories/find/?id={0}",
+    "Torrents": "api/torrents/pagination/?page={0}&pageSize={1}",
+    "PopularTorrents": "api/torrents/popular/?count={0}",
+    "Torrent": "api/torrents/?id={0}",
+    "Comments": "api/comments/?torrentId={0}&count={1}",
+    "AddComment": "api/comments/add",
+    "UpdateComment": "api/comments/update/?id={0}",
+    "DeleteComment": "api/comments/delete/?id={0}",
+    "LikeComment": "api/comments/like/?id={0}",
     "Login": "api/accounts/login",
     "Register": "api/accounts/register",
     "Logout": "api/accounts/logout",
@@ -18,7 +28,8 @@
   },
   "ViewSettings": {
     "ServiceName": "Rutracker",
-    "TorrentsPerPageCount": 6
+    "TorrentsPerPageCount": 6,
+    "PopularTorrentsCount": 10
   },
   "MatToasterSettings": {
     "Position": "BottomRight",

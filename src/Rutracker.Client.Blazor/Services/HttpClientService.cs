@@ -13,7 +13,7 @@ namespace Rutracker.Client.Blazor.Services
 
         public HttpClientService(HttpClient httpClient) => _httpClient = httpClient;
 
-        public async Task TaskGetJsonAsync(string url)
+        public async Task GetJsonAsync(string url)
         {
             using var response = await _httpClient.GetAsync(url);
 

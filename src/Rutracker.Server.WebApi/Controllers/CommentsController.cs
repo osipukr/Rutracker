@@ -46,23 +46,23 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpPut(nameof(Update))]
-        public async Task Update(int commentId, CommentUpdateViewModel model)
+        public async Task Update(int id, CommentUpdateViewModel model)
         {
             var comment = _mapper.Map<Comment>(model);
 
-            await _commentService.UpdateAsync(commentId, User.GetUserId(), comment);
+            await _commentService.UpdateAsync(id, User.GetUserId(), comment);
         }
 
         [HttpDelete(nameof(Delete))]
-        public async Task Delete(int commentId)
+        public async Task Delete(int id)
         {
-            await _commentService.DeleteAsync(commentId, User.GetUserId());
+            await _commentService.DeleteAsync(id, User.GetUserId());
         }
 
         [HttpGet(nameof(Like))]
-        public async Task Like(int commentId)
+        public async Task Like(int id)
         {
-            await _likeService.LikeCommentAsync(commentId, User.GetUserId());
+            await _likeService.LikeCommentAsync(id, User.GetUserId());
         }
     }
 }

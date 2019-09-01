@@ -37,9 +37,9 @@ else
     private int Page { get; set; } = 1;
     private int PageSize => ViewSettings.TorrentsPerPageCount;
 
-    protected override async Task OnInitAsync() => await LoadTorrentsIndexAsync(Page, PageSize, FilterModel);
+    protected override async Task OnInitAsync() => await LoadTorrentsAsync(Page, PageSize, FilterModel);
 
-    private async Task LoadTorrentsIndexAsync(int page, int pageSize, FilterViewModel filter)
+    private async Task LoadTorrentsAsync(int page, int pageSize, FilterViewModel filter)
     {
         try
         {
@@ -47,13 +47,13 @@ else
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Failed load torrent list");
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Load torrents");
         }
     }
 
-    private async Task ReloadClicked() => await LoadTorrentsIndexAsync(Page, PageSize, FilterModel);
+    private async Task ReloadClicked() => await LoadTorrentsAsync(Page, PageSize, FilterModel);
 
-    private async Task PageChanged(int page) => await LoadTorrentsIndexAsync(Page = page, PageSize, FilterModel);
+    private async Task PageChanged(int page) => await LoadTorrentsAsync(Page = page, PageSize, FilterModel);
 
     private async Task FilterChanged() => await PageChanged(1);
 }
