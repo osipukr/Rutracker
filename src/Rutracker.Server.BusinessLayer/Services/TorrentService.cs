@@ -19,12 +19,22 @@ namespace Rutracker.Server.BusinessLayer.Services
             _torrentRepository = torrentRepository;
         }
 
-        public async Task<IEnumerable<Torrent>> ListAsync(int page, int pageSize, string search, long? sizeFrom, long? sizeTo)
+        public async Task<IEnumerable<Torrent>> ListAsync(int page, int pageSize, int? categoryId, int? subcategoryId, string search)
         {
             Guard.Against.LessOne(page, $"The {nameof(page)} is less than 1.");
             Guard.Against.OutOfRange(pageSize, rangeFrom: 1, rangeTo: 100, $"The {nameof(pageSize)} is out of range (1 - 100).");
 
-            var torrents = await _torrentRepository.Search(search, sizeFrom, sizeTo)
+            if (categoryId.HasValue)
+            {
+                Guard.Against.LessOne(categoryId.Value, $"The {nameof(subcategoryId)} is less than 1.");
+            }
+
+            if (subcategoryId.HasValue)
+            {
+                Guard.Against.LessOne(subcategoryId.Value, $"The {nameof(subcategoryId)} is less than 1.");
+            }
+
+            var torrents = await _torrentRepository.Search(categoryId, subcategoryId, search)
                 .OrderBy(torrent => torrent.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -62,9 +72,9 @@ namespace Rutracker.Server.BusinessLayer.Services
             return torrent;
         }
 
-        public async Task<int> CountAsync(string search, long? sizeFrom, long? sizeTo)
+        public async Task<int> CountAsync(int? categoryId, int? subcategoryId, string search)
         {
-            return await _torrentRepository.Search(search, sizeFrom, sizeTo).CountAsync();
+            return await _torrentRepository.Search(categoryId, subcategoryId, search).CountAsync();
         }
     }
 }

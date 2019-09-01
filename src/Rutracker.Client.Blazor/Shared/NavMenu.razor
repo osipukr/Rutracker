@@ -11,8 +11,16 @@
         <MatIcon Icon="@MatIconNames.Supervisor_account" /> <span class="miniHover">Users</span>
     </MatNavItem>
 
+    <MatNavItem Href="@Constants.Path.Categories" Disabled="@(!_isAdmin)">
+        <MatIcon Icon="@MatIconNames.Bar_chart" /> <span class="miniHover">Categories</span>
+    </MatNavItem>
+
     <MatNavItem Href="@Constants.Path.Torrents">
         <MatIcon Icon="@MatIconNames.Bar_chart" /> <span class="miniHover">Torrents</span>
+    </MatNavItem>
+
+    <MatNavItem Href="@Constants.Path.PopularTorrents">
+        <MatIcon Icon="@MatIconNames.Bar_chart" /> <span class="miniHover">Popular torrents</span>
     </MatNavItem>
 
     <MatNavItem Href="@Constants.Path.Contributors">
@@ -22,14 +30,16 @@
 
 @code
 {
-    [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask  { get; set; }
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
     private bool _isAuthenticated;
+    private bool _isAdmin;
 
     protected override async Task OnParametersSetAsync()
     {
         var state = await AuthenticationStateTask;
 
         _isAuthenticated = state.User.Identity.IsAuthenticated;
+        _isAdmin = state.User.IsInRole("admin");
     }
 }

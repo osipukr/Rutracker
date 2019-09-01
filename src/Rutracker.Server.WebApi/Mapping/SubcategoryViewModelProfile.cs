@@ -6,6 +6,11 @@ namespace Rutracker.Server.WebApi.Mapping
 {
     public class SubcategoryViewModelProfile : Profile
     {
-        public SubcategoryViewModelProfile() => CreateMap<Subcategory, SubcategoryViewModel>();
+        public SubcategoryViewModelProfile()
+        {
+            CreateMap<Subcategory, SubcategoryViewModel>()
+                .ForMember(x => x.TorrentsCount,
+                    x => x.MapFrom(y => y.Torrents.Count));
+        }
     }
 }

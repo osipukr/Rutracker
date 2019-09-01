@@ -11,12 +11,12 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
         {
         }
 
-        public IQueryable<Torrent> Search(string search, long? sizeFrom, long? sizeTo)
+        public IQueryable<Torrent> Search(int? categoryId, int? subcategoryId, string search)
         {
             return GetAll(torrent =>
-                (string.IsNullOrWhiteSpace(search) || torrent.Name.Contains(search)) &&
-                (!sizeFrom.HasValue || torrent.Size >= sizeFrom) &&
-                (!sizeTo.HasValue || torrent.Size <= sizeTo));
+                (!subcategoryId.HasValue || torrent.SubcategoryId == subcategoryId) &&
+                (!categoryId.HasValue || torrent.Subcategory.CategoryId == categoryId) &&
+                (string.IsNullOrWhiteSpace(search) || torrent.Name.Contains(search)));
         }
 
         public IQueryable<Torrent> PopularTorrents(int count)

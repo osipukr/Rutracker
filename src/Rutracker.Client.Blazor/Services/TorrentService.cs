@@ -25,11 +25,11 @@ namespace Rutracker.Client.Blazor.Services
             return await _httpClientService.PostJsonAsync<PaginationResult<TorrentViewModel>>(url, filter);
         }
 
-        public async Task<IEnumerable<TorrentShortViewModel>> Popular(int count)
+        public async Task<IEnumerable<TorrentViewModel>> Popular(int count)
         {
             var url = string.Format(_apiUrls.PopularTorrents, count.ToString());
 
-            return await _httpClientService.GetJsonAsync<IEnumerable<TorrentShortViewModel>>(url);
+            return await _httpClientService.GetJsonAsync<IEnumerable<TorrentViewModel>>(url);
         }
 
         public async Task<TorrentDetailsViewModel> Torrent(int id)

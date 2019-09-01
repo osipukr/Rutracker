@@ -1,0 +1,38 @@
+﻿<h1 class="my-3">Categories list</h1>
+
+<MatAccordion Multi="true">
+    @foreach (var category in Items)
+    {
+        <MatExpansionPanel>
+            <MatExpansionPanelSummary Class="no-select">
+                <MatExpansionPanelHeader>
+                    <p class="m-0">
+                        <a class="text-dark" href="@CategoryDetailsLink(category.Id)">
+                            @category.Name (@category.Subcategories.Length)
+                        </a>
+                    </p>
+                </MatExpansionPanelHeader>
+            </MatExpansionPanelSummary>
+
+            <MatExpansionPanelDetails>
+                @if (category.Subcategories != null)
+                {
+                    foreach (var subcategory in category.Subcategories)
+                    {
+                        <p class="d-flex justify-content-between align-items-center">
+                            <span>@subcategory.Name</span>
+                            <MatChip Label="@subcategory.TorrentsCount.ToString()" />
+                        </p>
+                    }
+                }
+            </MatExpansionPanelDetails>
+        </MatExpansionPanel>
+    }
+</MatAccordion>
+
+@code
+{
+    [Parameter] private IEnumerable<CategoryViewModel> Items { get; set; }
+
+    private static string CategoryDetailsLink(int id) => string.Format(Constants.Path.Category, id.ToString());
+}

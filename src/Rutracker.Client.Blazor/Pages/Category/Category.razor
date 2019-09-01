@@ -1,8 +1,53 @@
-﻿@page "/categories/{id:int}"
+﻿@attribute [Authorize(Roles = "admin")]
 
-<h3>Category</h3>
+@inject AppState AppState
+@inject IMatToaster MatToaster
+
+@page "/categories/{id:int}"
+
+@if (AppState.SearchInProgress)
+{
+    <LoadingBackground>
+        <span>Loading page model, please wait...</span>
+    </LoadingBackground>
+}
+else if (CategoryItem == null)
+{
+    <LoadingBackground ShowLoader="false">
+        <p>Category with id=@Id not found</p>
+        <MatButton Link="@Constants.Path.Categories" Raised="true" Label="Return to full categories list" />
+    </LoadingBackground>
+}
+else
+{
+    <div class="mat-layout-grid px-0 pb-5">
+        <div class="mat-layout-grid-inner">
+            <div class="mat-layout-grid-cell">
+                <MatIconButton Icon="@MatIconNames.Arrow_back" Link="@Constants.Path.Categories" />
+            </div>
+        </div>
+    </div>
+
+    <CategoryDetails Value="@CategoryItem" />
+}
 
 @code
 {
     [Parameter] private int Id { get; set; }
+
+    private CategoryViewModel CategoryItem { get; set; }
+
+    protected override async Task OnInitAsync() => await LoadCategoryAsync();
+
+    private async Task LoadCategoryAsync()
+    {
+        try
+        {
+            CategoryItem = await AppState.Category(Id);
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Load category");
+        }
+    }
 }

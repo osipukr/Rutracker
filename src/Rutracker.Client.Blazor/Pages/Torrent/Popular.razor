@@ -1,8 +1,43 @@
-﻿@page "/torrents/popular"
+﻿@inject ViewSettings ViewSettings
+@inject AppState AppState
+@inject IMatToaster MatToaster
 
-<h3>Popular</h3>
+@page "/torrents/popular"
+
+@if (AppState.SearchInProgress)
+{
+    <LoadingBackground>
+        <span>Loading page model, please wait...</span>
+    </LoadingBackground>
+}
+else if (Torrents == null || !Torrents.Any())
+{
+    <LoadingBackground ShowLoader="false">
+        <p>Failed to load page model</p>
+        <MatButton Link="@Constants.Path.Home" Raised="true" Label="Return to home" />
+    </LoadingBackground>
+}
+else
+{
+    <TorrentList Items="@Torrents.ToArray()" />
+}
 
 @code
 {
+    private IEnumerable<TorrentViewModel> Torrents { get; set; }
+    private int Count => ViewSettings.PopularTorrentsCount;
 
+    protected override async Task OnInitAsync() => await LoadTorrentsAsync();
+
+    private async Task LoadTorrentsAsync()
+    {
+        try
+        {
+            Torrents = await AppState.Popular(Count);
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Load torrents");
+        }
+    }
 }

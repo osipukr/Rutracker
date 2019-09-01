@@ -1,8 +1,43 @@
-﻿@page "/categories"
+﻿@attribute [Authorize(Roles = "admin")]
 
-<h3>Categories</h3>
+@inject AppState AppState
+@inject IMatToaster MatToaster
+
+@page "/categories"
+
+@if (AppState.SearchInProgress)
+{
+    <LoadingBackground>
+        <span>Loading page model, please wait...</span>
+    </LoadingBackground>
+}
+else if (CategoriesItems == null || !CategoriesItems.Any())
+{
+    <LoadingBackground ShowLoader="false">
+        <p>Failed to load page model</p>
+        <MatButton Link="@Constants.Path.Home" Raised="true" Label="Return to home" />
+    </LoadingBackground>
+}
+else
+{
+    <CategoryList Items="@CategoriesItems" />
+}
 
 @code
 {
+    private IEnumerable<CategoryViewModel> CategoriesItems { get; set; }
 
+    protected override async Task OnInitAsync() => await LoadCategoriesAsync();
+
+    private async Task LoadCategoriesAsync()
+    {
+        try
+        {
+            CategoriesItems = await AppState.Categories();
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Load categories");
+        }
+    }
 }

@@ -35,8 +35,8 @@ namespace Rutracker.Server.WebApi.Controllers
         [HttpPost(nameof(Pagination))]
         public async Task<PaginationResult<TorrentViewModel>> Pagination(int page, int pageSize, FilterViewModel filter)
         {
-            var torrents = await _torrentService.ListAsync(page, pageSize, filter.Search, filter.SizeFrom, filter.SizeTo);
-            var count = await _torrentService.CountAsync(filter.Search, filter.SizeFrom, filter.SizeTo);
+            var torrents = await _torrentService.ListAsync(page, pageSize, filter.CategoryId, filter.SubcategoryId, filter.Search);
+            var count = await _torrentService.CountAsync(filter.CategoryId, filter.SubcategoryId, filter.Search);
 
             return new PaginationResult<TorrentViewModel>
             {
@@ -48,11 +48,11 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpGet(nameof(Popular))]
-        public async Task<IEnumerable<TorrentShortViewModel>> Popular(int count)
+        public async Task<IEnumerable<TorrentViewModel>> Popular(int count)
         {
             var torrents = await _torrentService.PopularTorrentsAsync(count);
 
-            return _mapper.Map<IEnumerable<TorrentShortViewModel>>(torrents);
+            return _mapper.Map<IEnumerable<TorrentViewModel>>(torrents);
         }
 
         /// <summary>

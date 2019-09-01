@@ -11,16 +11,7 @@ namespace Rutracker.Shared.Models.ViewModels.Torrent
             ErrorMessageResourceType = typeof(FilterViewModelResource))]
         public string Search { get; set; }
 
-        [Display(Name = nameof(FilterViewModelResource.SizeFromDisplayName), ResourceType = typeof(FilterViewModelResource))]
-        [Range(minimum: 0, maximum: long.MaxValue,
-            ErrorMessageResourceName = nameof(FilterViewModelResource.SizeFromErrorMessage),
-            ErrorMessageResourceType = typeof(FilterViewModelResource))]
-        public long? SizeFrom { get; set; }
-
-        [Display(Name = nameof(FilterViewModelResource.SizeToDisplayName), ResourceType = typeof(FilterViewModelResource))]
-        [Range(minimum: 0, maximum: long.MaxValue,
-            ErrorMessageResourceName = nameof(FilterViewModelResource.SizeToErrorMessage),
-            ErrorMessageResourceType = typeof(FilterViewModelResource))]
-        public long? SizeTo { get; set; }
+        public int? CategoryId { get; set; }
+        public int? SubcategoryId { get; set; }
     }
 }

@@ -7,10 +7,8 @@
             public const string Home = "/";
             public const string Categories = "/categories";
             public const string Category = "/categories/{0}";
-            public const string Subcategories = "/subcategories/{0}";
-            public const string Subcategory = "/subcategories/details/{0}";
             public const string Torrents = "/torrents";
-            public const string PopularTorrents = "/torrnets/popular";
+            public const string PopularTorrents = "/torrents/popular";
             public const string Torrent = "/torrents/{0}";
             public const string Users = "/users";
             public const string Contributors = "/contributors";
