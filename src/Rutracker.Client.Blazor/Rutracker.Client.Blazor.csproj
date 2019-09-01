@@ -29,4 +29,9 @@
     <EmbeddedResource Include="clientsettings.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Shared\Category\" />
+    <Folder Include="Shared\Subcategory\" />
+  </ItemGroup>
+
 </Project>
