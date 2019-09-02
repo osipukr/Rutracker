@@ -27,11 +27,11 @@ else if (CategoriesItems.Count == 0)
 }
 else
 {
-    <MatButton Icon="@MatIconNames.Playlist_add" Label="Add category" OnClick="@DialogChanged" Raised="true" />
-    <br />
+    <div class="d-flex justify-content-end mt-3">
+        <MatButton Icon="@MatIconNames.Playlist_add" Label="Add category" OnClick="@DialogChanged" Raised="true" />
+    </div>
 
     <CategoryList Items="@CategoriesItems" DeleteClicked="@DeleteCategoryAsync" />
-
     <CategoryAdd DialogIsOpen="@_dialogCreateIsOpen" Created="@CreateCategoryAsync" Closed="@DialogChanged" />
 }
 

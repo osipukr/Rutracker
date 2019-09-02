@@ -1,35 +1,23 @@
 ﻿<h1 class="my-3">Categories list</h1>
 
-<MatAccordion Multi="true">
-    @foreach (var category in Items)
-    {
-        <MatExpansionPanel>
-            <MatExpansionPanelSummary Class="no-select">
-                <MatExpansionPanelHeader>
-                    <div class="m-0 d-flex justify-content-between align-items-center">
-                        <a class="text-dark" href="@CategoryDetailsLink(category.Id)" title="Category name">
-                            @category.Name (@category.Subcategories.Length)
-                        </a>
-
-                        <MatIconButton Icon="@MatIconNames.Delete" OnClick="@(_ => Deleted(category))" />
-                    </div>
-                </MatExpansionPanelHeader>
-            </MatExpansionPanelSummary>
-            <MatExpansionPanelDetails>
-                @if (category.Subcategories != null)
-                {
-                    foreach (var subcategory in category.Subcategories)
-                    {
-                        <p class="d-flex justify-content-between align-items-center">
-                            <span title="Subcategory name">@subcategory.Name</span>
-                            <MatChip Label="@subcategory.TorrentsCount.ToString()" title="Torrents count" />
-                        </p>
-                    }
-                }
-            </MatExpansionPanelDetails>
-        </MatExpansionPanel>
-    }
-</MatAccordion>
+<MatTable Items="@Items" Class="mat-elevation-z5">
+    <MatTableHeader>
+        <th></th>
+        <th>Id</th>
+        <th>Count</th>
+        <th>Name</th>
+    </MatTableHeader>
+    <MatTableRow>
+        <td>
+            <MatIconButton Icon="@MatIconNames.Delete" OnClick="@(_ => Deleted(context))" />
+        </td>
+        <td>@context.Id</td>
+        <td>@context.Subcategories.Length</td>
+        <td>
+            <a class="text-dark" href="@CategoryDetailsLink(context.Id)">@context.Name</a>
+        </td>
+    </MatTableRow>
+</MatTable>
 
 @code
 {
