@@ -3,8 +3,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Shared.Models.ViewModels.Torrent;
+using Rutracker.Shared.Models.ViewModels.Torrent.Create;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
@@ -33,6 +35,21 @@ namespace Rutracker.Server.WebApi.Controllers
             var category = await _categoryService.FindAsync(id);
 
             return _mapper.Map<CategoryViewModel>(category);
+        }
+
+        [HttpPost(nameof(Add))]
+        public async Task<CategoryViewModel> Add(CategoryCreateViewModel model)
+        {
+            var category = _mapper.Map<Category>(model);
+            var result = await _categoryService.AddAsync(category);
+
+            return _mapper.Map<CategoryViewModel>(result);
+        }
+
+        [HttpDelete(nameof(Delete))]
+        public async Task Delete(int id)
+        {
+            await _categoryService.DeleteAsync(id);
         }
     }
 }

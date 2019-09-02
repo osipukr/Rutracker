@@ -2,6 +2,8 @@
   "ApiUrlSettings": {
     "Categories": "api/categories",
     "Category": "api/categories/find/?id={0}",
+    "CategoryAdd": "api/categories/add",
+    "CategoryDelete": "api/categories/delete/?id={0}",
     "Subcategories": "api/subcategories/?categoryId={0}",
     "Subcategory": "api/subcategories/find/?id={0}",
     "Torrents": "api/torrents/pagination/?page={0}&pageSize={1}",

@@ -5,6 +5,8 @@
         // Torrent
         public string Categories { get; set; }
         public string Category { get; set; }
+        public string CategoryAdd { get; set; }
+        public string CategoryDelete { get; set; }
         public string Subcategories { get; set; }
         public string Subcategory { get; set; }
         public string Torrents { get; set; }

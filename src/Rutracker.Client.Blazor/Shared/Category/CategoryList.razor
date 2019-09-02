@@ -6,22 +6,23 @@
         <MatExpansionPanel>
             <MatExpansionPanelSummary Class="no-select">
                 <MatExpansionPanelHeader>
-                    <p class="m-0">
-                        <a class="text-dark" href="@CategoryDetailsLink(category.Id)">
+                    <div class="m-0 d-flex justify-content-between align-items-center">
+                        <a class="text-dark" href="@CategoryDetailsLink(category.Id)" title="Category name">
                             @category.Name (@category.Subcategories.Length)
                         </a>
-                    </p>
+
+                        <MatIconButton Icon="@MatIconNames.Delete" OnClick="@(_ => Deleted(category))" />
+                    </div>
                 </MatExpansionPanelHeader>
             </MatExpansionPanelSummary>
-
             <MatExpansionPanelDetails>
                 @if (category.Subcategories != null)
                 {
                     foreach (var subcategory in category.Subcategories)
                     {
                         <p class="d-flex justify-content-between align-items-center">
-                            <span>@subcategory.Name</span>
-                            <MatChip Label="@subcategory.TorrentsCount.ToString()" />
+                            <span title="Subcategory name">@subcategory.Name</span>
+                            <MatChip Label="@subcategory.TorrentsCount.ToString()" title="Torrents count" />
                         </p>
                     }
                 }
@@ -33,6 +34,9 @@
 @code
 {
     [Parameter] private IEnumerable<CategoryViewModel> Items { get; set; }
+    [Parameter] private EventCallback<CategoryViewModel> DeleteClicked { get; set; }
+
+    private async Task Deleted(CategoryViewModel model) => await DeleteClicked.InvokeAsync(model);
 
     private static string CategoryDetailsLink(int id) => string.Format(Constants.Path.Category, id.ToString());
 }

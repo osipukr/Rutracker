@@ -1,6 +1,7 @@
 ﻿@attribute [Authorize(Roles = "admin")]
 
 @inject AppState AppState
+@inject ICategoryService CategoryService
 @inject IMatToaster MatToaster
 
 @page "/categories"
@@ -11,21 +12,33 @@
         <span>Loading page model, please wait...</span>
     </LoadingBackground>
 }
-else if (CategoriesItems == null || !CategoriesItems.Any())
+else if (CategoriesItems == null)
 {
     <LoadingBackground ShowLoader="false">
         <p>Failed to load page model</p>
         <MatButton Link="@Constants.Path.Home" Raised="true" Label="Return to home" />
     </LoadingBackground>
 }
+else if (CategoriesItems.Count == 0)
+{
+    <LoadingBackground ShowLoader="false">
+        <p class="m-0">Sorry, but category list is empty</p>
+    </LoadingBackground>
+}
 else
 {
-    <CategoryList Items="@CategoriesItems" />
+    <MatButton Icon="@MatIconNames.Playlist_add" Label="Add category" OnClick="@DialogChanged" Raised="true" />
+    <br />
+
+    <CategoryList Items="@CategoriesItems" DeleteClicked="@DeleteCategoryAsync" />
+
+    <CategoryAdd DialogIsOpen="@_dialogCreateIsOpen" Created="@CreateCategoryAsync" Closed="@DialogChanged" />
 }
 
 @code
 {
-    private IEnumerable<CategoryViewModel> CategoriesItems { get; set; }
+    private List<CategoryViewModel> CategoriesItems { get; set; }
+    private bool _dialogCreateIsOpen = false;
 
     protected override async Task OnInitAsync() => await LoadCategoriesAsync();
 
@@ -33,11 +46,48 @@ else
     {
         try
         {
-            CategoriesItems = await AppState.Categories();
+            CategoriesItems = (await AppState.Categories()).ToList();
         }
         catch (Exception ex)
         {
             MatToaster.Add(ex.Message, MatToastType.Warning, "Load categories");
         }
     }
+
+    private async Task CreateCategoryAsync(CategoryCreateViewModel model)
+    {
+        try
+        {
+            var category = await CategoryService.CreateAsync(model);
+
+            DialogChanged();
+            MatToaster.Add("Category successfully created.", MatToastType.Success, "Create category");
+
+            CategoriesItems.Add(category);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Create category");
+        }
+    }
+
+    private async Task DeleteCategoryAsync(CategoryViewModel model)
+    {
+        try
+        {
+            await CategoryService.DeleteAsync(model.Id);
+
+            MatToaster.Add("Category successfully deleted.", MatToastType.Success, "Delete category");
+
+            CategoriesItems.Remove(model);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Delete category");
+        }
+    }
+
+    private void DialogChanged() => _dialogCreateIsOpen = !_dialogCreateIsOpen;
 }

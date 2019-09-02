@@ -1,46 +1,31 @@
-﻿<h1 class="my-3">@Value.Name</h1>
+﻿<h1 class="mb-3">@Value.Name</h1>
 
-@if (Value.Subcategories != null)
+@if (Value.Subcategories == null)
 {
-    <div class="mat-layout-grid px-0">
-        <div class="mat-layout-grid-inner">
-            @foreach (var subcategory in Value.Subcategories)
-            {
-                <div class="mat-layout-grid-cell">
-                    <MatCard Class="no-select mat-elevation-z5">
-                        <MatCardContent>
-                            <MatBody2 class="m-0 p-0">
-                                <MatList SingleSelection="true" TwoLine="true" Class="p-0">
-                                    <MatListItem>
-                                        <MatListItemText>
-                                            <MatListItemPrimaryText>Id</MatListItemPrimaryText>
-                                            <MatListItemSecondaryText>@subcategory.Id</MatListItemSecondaryText>
-                                        </MatListItemText>
-                                    </MatListItem>
-
-                                    <MatListItem>
-                                        <MatListItemText>
-                                            <MatListItemPrimaryText>Name</MatListItemPrimaryText>
-                                            <MatListItemSecondaryText>@subcategory.Name</MatListItemSecondaryText>
-                                        </MatListItemText>
-                                    </MatListItem>
-                                </MatList>
-                            </MatBody2>
-                        </MatCardContent>
-
-                        <MatCardActions>
-                            <MatCardActionIcons>
-                                <div class="m-0 p-0 d-flex justify-content-center align-items-center" title="Torrents count">
-                                    <span>@subcategory.TorrentsCount</span>
-                                    <MatIconButton Icon="@MatIconNames.List" Class="ml-1" />
-                                </div>
-                            </MatCardActionIcons>
-                        </MatCardActions>
-                    </MatCard>
-                </div>
-            }
-        </div>
-    </div>
+    <LoadingBackground ShowLoader="false">
+        <p class="m-0">Sorry, but subcategories not found</p>
+    </LoadingBackground>
+}
+else if (Value.Subcategories.Length == 0)
+{
+    <LoadingBackground ShowLoader="false">
+        <p class="m-0">Sorry, but subcategory list is empty</p>
+    </LoadingBackground>
+}
+else
+{
+    <MatTable Items="@Value.Subcategories" Class="mat-elevation-z5" PageSize="3">
+        <MatTableHeader>
+            <th>Id</th>
+            <th>Torrent Count</th>
+            <th>Name</th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.Id</td>
+            <td>@context.TorrentsCount</td>
+            <td>@context.Name</td>
+        </MatTableRow>
+    </MatTable>
 }
 
 @code
