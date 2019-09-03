@@ -33,7 +33,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             }
             else if (!await _commentRepository.ExistAsync(commentId))
             {
-                throw new RutrackerException($"Not valid {commentId}.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"Not valid {nameof(commentId)}.", ExceptionEventType.NotValidParameters);
             }
 
             like = new Like
