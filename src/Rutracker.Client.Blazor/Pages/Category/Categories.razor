@@ -27,18 +27,12 @@ else if (CategoriesItems.Count == 0)
 }
 else
 {
-    <div class="d-flex justify-content-end mt-3">
-        <MatButton Icon="@MatIconNames.Playlist_add" Label="Add category" OnClick="@DialogChanged" Raised="true" />
-    </div>
-
-    <CategoryList Items="@CategoriesItems" DeleteClicked="@DeleteCategoryAsync" />
-    <CategoryAdd DialogIsOpen="@_dialogCreateIsOpen" Created="@CreateCategoryAsync" Closed="@DialogChanged" />
+    <CategoryList Items="@CategoriesItems" OnCreate="@CreateCategoryAsync" OnDelete="@DeleteCategoryAsync" />
 }
 
 @code
 {
     private List<CategoryViewModel> CategoriesItems { get; set; }
-    private bool _dialogCreateIsOpen = false;
 
     protected override async Task OnInitAsync() => await LoadCategoriesAsync();
 
@@ -60,7 +54,6 @@ else
         {
             var category = await CategoryService.CreateAsync(model);
 
-            DialogChanged();
             MatToaster.Add("Category successfully created.", MatToastType.Success, "Create category");
 
             CategoriesItems.Add(category);
@@ -88,6 +81,4 @@ else
             MatToaster.Add(ex.Message, MatToastType.Warning, "Delete category");
         }
     }
-
-    private void DialogChanged() => _dialogCreateIsOpen = !_dialogCreateIsOpen;
 }

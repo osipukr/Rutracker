@@ -1,0 +1,23 @@
+﻿@inject IModalService ModalService
+
+<div class="form-group">
+    <p>Do you want to remove a category with name <strong>@Category.Name</strong> ?</p>
+    <p class="m-0">This category contains <strong>@Category.Subcategories.Length</strong> subcategories.</p>
+</div>
+
+<div class="form-group mb-0 mt-4 d-flex justify-content-end">
+    <MatButton OnClick="@CancelClicked">Cancel</MatButton>
+    <MatButton OnClick="@DeleteClicked">Delete category</MatButton>
+</div>
+
+@code
+{
+    [CascadingParameter] private ModalParameters Parameters { get; set; }
+
+    private CategoryViewModel Category { get; set; }
+
+    protected override void OnInit() => Category = Parameters.Get<CategoryViewModel>(nameof(CategoryViewModel));
+
+    private void DeleteClicked() => ModalService.Close(ModalResult.Ok(Category));
+    private void CancelClicked() => ModalService.Cancel();
+}

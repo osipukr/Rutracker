@@ -1,15 +1,21 @@
-﻿<h1 class="my-3">Categories list</h1>
+﻿@inject IModalService ModalService
+
+<div class="d-flex justify-content-end mt-3">
+    <MatButton Icon="@MatIconNames.Playlist_add" Label="Add category" OnClick="@CreateClicked" Raised="true" />
+</div>
+
+<h1 class="my-3">Categories list</h1>
 
 <MatTable Items="@Items" Class="mat-elevation-z5">
     <MatTableHeader>
         <th></th>
-        <th>Id</th>
-        <th>Count</th>
-        <th>Name</th>
+        <th title="Category id">Id</th>
+        <th title="Subcategory count">Count</th>
+        <th title="Category name">Name</th>
     </MatTableHeader>
     <MatTableRow>
         <td>
-            <MatIconButton Icon="@MatIconNames.Delete" OnClick="@(_ => Deleted(context))" />
+            <MatIconButton Icon="@MatIconNames.Delete" OnClick="@(_ => DeleteClicked(context))" />
         </td>
         <td>@context.Id</td>
         <td>@context.Subcategories.Length</td>
@@ -22,9 +28,43 @@
 @code
 {
     [Parameter] private IEnumerable<CategoryViewModel> Items { get; set; }
-    [Parameter] private EventCallback<CategoryViewModel> DeleteClicked { get; set; }
+    [Parameter] private EventCallback<CategoryCreateViewModel> OnCreate { get; set; }
+    [Parameter] private EventCallback<CategoryViewModel> OnDelete { get; set; }
 
-    private async Task Deleted(CategoryViewModel model) => await DeleteClicked.InvokeAsync(model);
+    private void CreateClicked()
+    {
+        ModalService.OnClose += CategoryAddModalClosed;
+        ModalService.Show("Create category", typeof(CategoryAddModal));
+    }
+
+    private void DeleteClicked(CategoryViewModel model)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(CategoryViewModel), model);
+
+        ModalService.OnClose += CategoryDeleteModalClosed;
+        ModalService.Show("Delete category", typeof(CategoryDeleteModal), parameters);
+    }
+
+    private async void CategoryAddModalClosed(ModalResult result)
+    {
+        if (!result.Cancelled && result.Data is CategoryCreateViewModel model)
+        {
+            await OnCreate.InvokeAsync(model);
+        }
+
+        ModalService.OnClose -= CategoryAddModalClosed;
+    }
+
+    private async void CategoryDeleteModalClosed(ModalResult result)
+    {
+        if (!result.Cancelled && result.Data is CategoryViewModel model)
+        {
+            await OnDelete.InvokeAsync(model);
+        }
+
+        ModalService.OnClose -= CategoryDeleteModalClosed;
+    }
 
     private static string CategoryDetailsLink(int id) => string.Format(Constants.Path.Category, id.ToString());
 }
