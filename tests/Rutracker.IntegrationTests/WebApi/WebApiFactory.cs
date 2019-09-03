@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -18,22 +17,15 @@ namespace Rutracker.IntegrationTests.WebApi
             Host.CreateDefaultBuilder(null)
                 .ConfigureServices(services =>
                 {
-                    var provider = services.AddEntityFrameworkInMemoryDatabase()
-                                           .AddEntityFrameworkProxies()
-                                           .BuildServiceProvider();
-
                     services
-                        .AddDbContext<RutrackerContext>(options => options
-                            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                            .UseLazyLoadingProxies()
-                            .UseInternalServiceProvider(provider),
-                            contextLifetime: ServiceLifetime.Singleton);
+                        .AddEntityFrameworkInMemoryDatabase()
+                        .AddDbContext<RutrackerContext>(options => options.UseInMemoryDatabase(nameof(WebApiFactory)));
 
                     using var scope = services.BuildServiceProvider().CreateScope();
 
                     var context = scope.ServiceProvider.GetRequiredService<RutrackerContext>();
-                    var userManager = provider.GetService<UserManager<User>>();
-                    var roleManager = provider.GetService<RoleManager<Role>>();
+                    var userManager = scope.ServiceProvider.GetService<UserManager<User>>();
+                    var roleManager = scope.ServiceProvider.GetService<RoleManager<Role>>();
                     var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
 
                     if (context.Database.EnsureCreated())
@@ -41,9 +33,6 @@ namespace Rutracker.IntegrationTests.WebApi
                         RutrackerContextSeed.SeedAsync(context, userManager, roleManager, loggerFactory).Wait();
                     }
                 })
-                .ConfigureWebHostDefaults(builder =>
-                {
-                    builder.UseStartup<Startup>();
-                });
+                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
     }
 }

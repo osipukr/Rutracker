@@ -61,7 +61,7 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
         public async Task GetAsync_5_ReturnsValidTorrentByExpression()
         {
             // Arrange
-            const long expectedId = 5;
+            const int expectedId = 5;
 
             // Act
             var torrentId = (await _torrentRepository.GetAsync(x => x.Id == expectedId)).Id;
@@ -96,29 +96,53 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
             Assert.Equal(expectedCount, count);
         }
 
-        [Fact(DisplayName = "Search() with valid parameter should return the number of items.")]
-        public void Search_5_ReturnsValidCount()
+        [Fact(DisplayName = "ExistAsync() with valid parameters should return whether the object exists.")]
+        public async Task ExistAsync_10_ReturnsValidIsExist()
         {
             // Arrange
-            var search = "Torrent";
-            var forumIds = new[] { 5L };
-            const int expectedCount = 3;
+            const bool expected = true;
 
             // Act
-            var count = _torrentRepository.Search(search, forumIds, null, null).Count();
+            var result = await _torrentRepository.ExistAsync(10);
+
+            // Assert
+            Assert.Equal(expected, result);
+        }
+
+        [Fact(DisplayName = "ExistAsync() with valid parameters should return whether the object exists.")]
+        public async Task ExistAsync_10_ReturnsValidIsExistByExpression()
+        {
+            // Arrange
+            const bool expected = true;
+
+            // Act
+            var result = await _torrentRepository.ExistAsync(x => x.Id == 10);
+
+            // Assert
+            Assert.Equal(expected, result);
+        }
+
+        [Fact(DisplayName = "Search() with valid parameter should return the number of items.")]
+        public void Search_4_ReturnsValidCount()
+        {
+            // Arrange
+            const int expectedCount = 4;
+
+            // Act
+            var count = _torrentRepository.Search("1234567", null, null).Count();
 
             // Assert
             Assert.Equal(expectedCount, count);
         }
 
-        [Fact(DisplayName = "GetForums() with valid parameter should return the popular forum title count.")]
-        public void GetForums_5_ReturnsValidForumTitles()
+        [Fact(DisplayName = "PopularTorrents() with valid parameter should return the popular torrent count.")]
+        public void PopularTorrents_5_ReturnsValidPopularTorrents()
         {
             // Arrange
             const int expectedCount = 5;
 
             // Act
-            var count = _torrentRepository.GetForums(expectedCount).Count();
+            var count = _torrentRepository.PopularTorrents(expectedCount).Count();
 
             // Assert
             Assert.Equal(expectedCount, count);

@@ -6,7 +6,6 @@ using System.Reflection;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -34,9 +33,9 @@ namespace Rutracker.Server.WebApi
     public class Startup
     {
         private readonly IConfiguration _configuration;
-        private readonly IWebHostEnvironment _environment;
+        private readonly IHostEnvironment _environment;
 
-        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
+        public Startup(IConfiguration configuration, IHostEnvironment environment)
         {
             _configuration = configuration;
             _environment = environment;
@@ -208,11 +207,10 @@ namespace Rutracker.Server.WebApi
 
             using var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
-            var provider = scope.ServiceProvider;
-            var context = provider.GetRequiredService<RutrackerContext>();
-            var userManager = provider.GetService<UserManager<User>>();
-            var roleManager = provider.GetService<RoleManager<Role>>();
-            var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
+            var context = scope.ServiceProvider.GetRequiredService<RutrackerContext>();
+            var userManager = scope.ServiceProvider.GetService<UserManager<User>>();
+            var roleManager = scope.ServiceProvider.GetService<RoleManager<Role>>();
+            var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
 
             if (context.Database.EnsureCreated())
             {

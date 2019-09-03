@@ -1,21 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using AutoMapper;
+using System.Threading.Tasks;
 using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
 using Moq;
-using Rutracker.Server.BusinessLayer.Interfaces;
-using Rutracker.Server.BusinessLayer.Options;
 using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
-using Rutracker.Shared.Infrastructure.Exceptions;
-using Rutracker.Shared.Models.ViewModels.Torrent;
-using Range = Moq.Range;
 
 namespace Rutracker.UnitTests.Setup
 {
@@ -26,103 +18,108 @@ namespace Rutracker.UnitTests.Setup
             var options = new DbContextOptionsBuilder<RutrackerContext>().Options;
             var mockContext = new DbContextMock<RutrackerContext>(options);
 
-            mockContext.CreateDbSetMock(x => x.Forums, DataInitializer.GetTestForums());
+            mockContext.CreateDbSetMock(x => x.Categories, DataInitializer.GetTestCategories());
+            mockContext.CreateDbSetMock(x => x.Subcategories, DataInitializer.GetTestSubcategories());
             mockContext.CreateDbSetMock(x => x.Torrents, DataInitializer.GeTestTorrents());
             mockContext.CreateDbSetMock(x => x.Files, DataInitializer.GetTestFiles());
+            mockContext.CreateDbSetMock(x => x.Comments, DataInitializer.GetTestComments());
+            mockContext.CreateDbSetMock(x => x.Likes, DataInitializer.GetTestLikes());
 
             return mockContext.Object;
         }
 
+        public static ICategoryRepository GetCategoryRepository()
+        {
+            var repositoryMock = new Mock<ICategoryRepository>();
+            var categories = new DbQueryMock<Category>(DataInitializer.GetTestCategories()).Object;
+
+            repositoryMock.Setup(x => x.GetAll()).Returns(categories);
+
+            repositoryMock.Setup(x => x.GetAsync(It.IsAny<int>()))
+                .ReturnsAsync((int id) => categories.SingleOrDefault(x => x.Id == id));
+
+            return repositoryMock.Object;
+        }
+
+        public static ISubcategoryRepository GetSubcategoryRepository()
+        {
+            var repositoryMock = new Mock<ISubcategoryRepository>();
+            var subcategories = new DbQueryMock<Subcategory>(DataInitializer.GetTestSubcategories()).Object;
+
+            repositoryMock.Setup(x => x.GetAll(It.IsAny<Expression<Func<Subcategory, bool>>>()))
+                .Returns<Expression<Func<Subcategory, bool>>>(subcategories.Where);
+
+            repositoryMock.Setup(x => x.GetAsync(It.IsAny<int>()))
+                .ReturnsAsync((int id) => subcategories.SingleOrDefault(x => x.Id == id));
+
+            return repositoryMock.Object;
+        }
+
         public static ITorrentRepository GetTorrentRepository()
         {
-            var mockTorrentRepository = new Mock<ITorrentRepository>();
+            var repositoryMock = new Mock<ITorrentRepository>();
             var torrents = new DbQueryMock<Torrent>(DataInitializer.GeTestTorrents()).Object;
 
-            mockTorrentRepository.Setup(x => x.GetAll()).Returns(torrents);
+            repositoryMock.Setup(x => x.GetAll()).Returns(torrents);
 
-            mockTorrentRepository.Setup(x => x.GetAll(It.IsAny<Expression<Func<Torrent, bool>>>()))
+            repositoryMock.Setup(x => x.GetAll(It.IsAny<Expression<Func<Torrent, bool>>>()))
                 .Returns<Expression<Func<Torrent, bool>>>(torrents.Where);
 
-            mockTorrentRepository.Setup(x => x.GetAsync(It.IsAny<int>()))
-                .ReturnsAsync((long id) => torrents.FirstOrDefault(x => x.Id == id));
+            repositoryMock.Setup(x => x.GetAsync(It.IsAny<int>()))
+                .ReturnsAsync((int id) => torrents.SingleOrDefault(x => x.Id == id));
 
-            mockTorrentRepository.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Torrent, bool>>>()))
-                .ReturnsAsync(torrents.FirstOrDefault);
+            repositoryMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Torrent, bool>>>()))
+                .ReturnsAsync((Expression<Func<Torrent, bool>> expression) => torrents.SingleOrDefault(expression));
 
-            mockTorrentRepository.Setup(x => x.CountAsync()).ReturnsAsync(torrents.Count);
+            repositoryMock.Setup(x => x.CountAsync()).ReturnsAsync(torrents.Count);
 
-            mockTorrentRepository.Setup(x => x.CountAsync(It.IsAny<Expression<Func<Torrent, bool>>>()))
-                .ReturnsAsync(torrents.Count);
+            repositoryMock.Setup(x => x.CountAsync(It.IsAny<Expression<Func<Torrent, bool>>>()))
+                .ReturnsAsync((Expression<Func<Torrent, bool>> expression) => torrents.Count(expression));
 
-            mockTorrentRepository.Setup(x => x.GetForums(It.IsAny<int>()))
-                .Returns<int>(x => new DbQueryMock<Tuple<long, string, int>>(new Tuple<long, string, int>[x]).Object);
+            repositoryMock.Setup(x => x.ExistAsync(It.IsAny<int>()))
+                .ReturnsAsync((int id) => torrents.Any(x => x.Id == id));
 
-            mockTorrentRepository.Setup(x => x.Search(null, null, null, null))
-                .Returns<string, long[], long?, long?>((search, forumIds, sizeFrom, sizeTo) => torrents);
+            repositoryMock.Setup(x => x.Search(null, null, null))
+                .Returns<string, long?, long?>((search, sizeFrom, sizeTo) => torrents);
 
-            return mockTorrentRepository.Object;
+            repositoryMock.Setup(x => x.PopularTorrents(It.IsAny<int>()))
+                .Returns<int>(x => torrents.Take(x));
+
+            return repositoryMock.Object;
         }
 
-        public static ITorrentService GeTorrentService()
+        public static ICommentRepository GetCommentRepository()
         {
-            var mockTorrentService = new Mock<ITorrentService>();
+            var repositoryMock = new Mock<ICommentRepository>();
+            var comments = new DbQueryMock<Comment>(DataInitializer.GetTestComments()).Object;
 
-            mockTorrentService.Setup(x =>
-                    x.ListAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive),
-                        It.IsInRange(0, int.MaxValue, Range.Exclusive), null, null, null, null))
-                .ReturnsAsync((int page, int pageSize, string search, IEnumerable<string> titles,
-                    long? sizeFrom, long? sizeTo) => new Torrent[pageSize]);
+            repositoryMock.Setup(x => x.GetAll(It.IsAny<Expression<Func<Comment, bool>>>()))
+                .Returns<Expression<Func<Comment, bool>>>(comments.Where);
 
-            mockTorrentService.Setup(x => x.FindAsync(It.IsInRange(0, long.MaxValue, Range.Exclusive)))
-                .ReturnsAsync((int x) => new Torrent { Id = x });
+            repositoryMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Comment, bool>>>()))
+                .ReturnsAsync((Expression<Func<Comment, bool>> expression) => comments.SingleOrDefault(expression));
 
-            mockTorrentService.Setup(x => x.CountAsync(null, null, null, null))
-                .ReturnsAsync(DataInitializer.GeTestTorrents().Count());
-
-            mockTorrentService.Setup(x => x.ForumsAsync(It.IsInRange(0, int.MaxValue, Range.Exclusive)))
-                .ReturnsAsync((int x) => Enumerable.Range(0, x)
-                    .Select(t => new Tuple<long, string, int>(long.MinValue, string.Empty, int.MinValue)));
-
-            mockTorrentService.Setup(x =>
-                    x.ListAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive),
-                        It.IsInRange(int.MinValue, 0, Range.Inclusive), null, null, null, null))
-                .ThrowsAsync(new RutrackerException(string.Empty, ExceptionEventType.NotValidParameters));
-
-            mockTorrentService.Setup(x => x.FindAsync(It.IsInRange(long.MinValue, 0, Range.Inclusive)))
-                .ThrowsAsync(new RutrackerException(string.Empty, ExceptionEventType.NotValidParameters));
-
-            mockTorrentService.Setup(x => x.ForumsAsync(It.IsInRange(int.MinValue, 0, Range.Inclusive)))
-                .ThrowsAsync(new RutrackerException(string.Empty, ExceptionEventType.NotValidParameters));
-
-            return mockTorrentService.Object;
+            return repositoryMock.Object;
         }
 
-        public static IMemoryCache GetMemoryCache() =>
-            new Mock<MemoryCache>(new Mock<MemoryCacheOptions>().Object).Object;
-
-        public static IOptions<CacheSettings> GetCacheOptions()
+        public static ILikeRepository GetLikeRepository()
         {
-            var mockCacheSettings = new Mock<IOptions<CacheSettings>>();
+            var repositoryMock = new Mock<ILikeRepository>();
+            var likes = new DbQueryMock<Like>(DataInitializer.GetTestLikes()).Object;
 
-            mockCacheSettings.Setup(x => x.Value).Returns(new CacheSettings
-            {
-                CacheDuration = TimeSpan.MaxValue
-            });
+            repositoryMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Like, bool>>>()))
+                .ReturnsAsync((Expression<Func<Like, bool>> expression) => likes.SingleOrDefault(expression));
 
-            return mockCacheSettings.Object;
+            return repositoryMock.Object;
         }
 
-        public static IMapper GeMapper()
+        public static IUnitOfWork GetUnitOfWork()
         {
-            var mockMapper = new Mock<IMapper>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
 
-            mockMapper.Setup(x => x.Map<TorrentViewModel[]>(It.IsAny<Torrent[]>()))
-                .Returns<Torrent[]>(x => new TorrentViewModel[x.Length]);
+            unitOfWorkMock.Setup(x => x.CompleteAsync()).Returns(Task.CompletedTask);
 
-            mockMapper.Setup(x => x.Map<TorrentDetailsViewModel>(It.IsAny<Torrent>()))
-                .Returns<Torrent>(x => new TorrentDetailsViewModel { Id = x.Id });
-
-            return mockMapper.Object;
+            return unitOfWorkMock.Object;
         }
     }
 }

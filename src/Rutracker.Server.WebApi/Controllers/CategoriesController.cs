@@ -28,9 +28,9 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpGet(nameof(Find))]
-        public async Task<CategoryViewModel> Find(int categoryId)
+        public async Task<CategoryViewModel> Find(int id)
         {
-            var category = await _categoryService.FindAsync(categoryId);
+            var category = await _categoryService.FindAsync(id);
 
             return _mapper.Map<CategoryViewModel>(category);
         }
