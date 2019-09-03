@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Controllers.Base;
-using Rutracker.Shared.Models.ViewModels.Torrent;
-using Rutracker.Shared.Models.ViewModels.Torrent.Create;
+using Rutracker.Shared.Models.ViewModels.Category;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
@@ -29,7 +28,7 @@ namespace Rutracker.Server.WebApi.Controllers
             return _mapper.Map<IEnumerable<CategoryViewModel>>(categories);
         }
 
-        [HttpGet(nameof(Find))]
+        [HttpGet("{id}")]
         public async Task<CategoryViewModel> Find(int id)
         {
             var category = await _categoryService.FindAsync(id);
@@ -37,7 +36,7 @@ namespace Rutracker.Server.WebApi.Controllers
             return _mapper.Map<CategoryViewModel>(category);
         }
 
-        [HttpPost(nameof(Add))]
+        [HttpPost]
         public async Task<CategoryViewModel> Add(CategoryCreateViewModel model)
         {
             var category = _mapper.Map<Category>(model);
@@ -46,7 +45,16 @@ namespace Rutracker.Server.WebApi.Controllers
             return _mapper.Map<CategoryViewModel>(result);
         }
 
-        [HttpDelete(nameof(Delete))]
+        [HttpPut("{id}")]
+        public async Task<CategoryViewModel> Update(int id, CategoryUpdateViewModel model)
+        {
+            var category = _mapper.Map<Category>(model);
+            var result = await _categoryService.UpdateAsync(id, category);
+
+            return _mapper.Map<CategoryViewModel>(result);
+        }
+
+        [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
             await _categoryService.DeleteAsync(id);

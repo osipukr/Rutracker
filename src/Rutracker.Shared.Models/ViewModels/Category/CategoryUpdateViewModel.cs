@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Rutracker.Shared.Models.ViewModels.Torrent.Create
+namespace Rutracker.Shared.Models.ViewModels.Category
 {
-    public class CategoryCreateViewModel
+    public class CategoryUpdateViewModel
     {
         [Required] public string Name { get; set; }
     }

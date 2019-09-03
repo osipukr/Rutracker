@@ -1,6 +1,6 @@
-﻿using Rutracker.Shared.Models.ViewModels.Torrent.Base;
+﻿using Rutracker.Shared.Models.ViewModels.Subcategory;
 
-namespace Rutracker.Shared.Models.ViewModels.Torrent
+namespace Rutracker.Shared.Models.ViewModels.Category
 {
     public class CategoryViewModel : BaseViewModel
     {

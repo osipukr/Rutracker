@@ -4,7 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.WebApi.Controllers.Base;
-using Rutracker.Shared.Models.ViewModels.Torrent;
+using Rutracker.Shared.Models.ViewModels.Subcategory;
 
 namespace Rutracker.Server.WebApi.Controllers
 {

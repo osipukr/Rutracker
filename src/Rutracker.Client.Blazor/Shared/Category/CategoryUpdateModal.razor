@@ -1,6 +1,6 @@
 ﻿@inject IModalService ModalService
 
-<EditForm Model="@Category" OnValidSubmit="@CreateClicked">
+<EditForm Model="@Category" OnValidSubmit="@UpdateClicked">
     <DataAnnotationsValidator />
 
     <div class="form-group">
@@ -16,14 +16,18 @@
 
     <div class="form-group mb-0 mt-4 d-flex justify-content-end">
         <MatButton Label="Cancel" OnClick="@CancelClicked" />
-        <MatButton Label="Create" Type="submit" />
+        <MatButton Label="Update" Type="submit" />
     </div>
 </EditForm>
 
 @code
 {
-    private CategoryCreateViewModel Category { get; set; } = new CategoryCreateViewModel();
+    [CascadingParameter] private ModalParameters Parameters { get; set; }
 
-    private void CreateClicked() => ModalService.Close(ModalResult.Ok(Category));
+    private CategoryUpdateViewModel Category { get; set; }
+
+    protected override void OnInit() => Category = Parameters.Get<CategoryUpdateViewModel>(nameof(CategoryUpdateViewModel));
+
+    private void UpdateClicked() => ModalService.Close(ModalResult.Ok(Category));
     private void CancelClicked() => ModalService.Cancel();
 }

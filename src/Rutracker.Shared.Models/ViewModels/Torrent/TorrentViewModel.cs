@@ -1,5 +1,4 @@
 ﻿using System;
-using Rutracker.Shared.Models.ViewModels.Torrent.Base;
 
 namespace Rutracker.Shared.Models.ViewModels.Torrent
 {

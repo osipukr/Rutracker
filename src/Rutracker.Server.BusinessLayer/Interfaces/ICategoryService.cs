@@ -9,6 +9,7 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
         Task<IEnumerable<Category>> ListAsync();
         Task<Category> FindAsync(int id);
         Task<Category> AddAsync(Category category);
+        Task<Category> UpdateAsync(int id, Category category);
         Task<Category> DeleteAsync(int id);
     }
 }

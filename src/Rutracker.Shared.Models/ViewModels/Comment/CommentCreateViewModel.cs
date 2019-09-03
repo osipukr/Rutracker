@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Rutracker.Shared.Models.ViewModels.Torrent.Create
+namespace Rutracker.Shared.Models.ViewModels.Comment
 {
     public class CommentCreateViewModel
     {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.WebApi.Controllers.Base;
-using Rutracker.Shared.Models.ViewModels.Shared;
+using Rutracker.Shared.Models.ViewModels;
 using Rutracker.Shared.Models.ViewModels.Torrent;
 
 namespace Rutracker.Server.WebApi.Controllers
@@ -32,7 +32,7 @@ namespace Rutracker.Server.WebApi.Controllers
         /// <param name="page">Page number.</param>
         /// <param name="pageSize">Number of items per page.</param>
         /// <param name="filter">Information to filter elements.</param>
-        [HttpPost(nameof(Pagination))]
+        [HttpPost]
         public async Task<PaginationResult<TorrentViewModel>> Pagination(int page, int pageSize, FilterViewModel filter)
         {
             var torrents = await _torrentService.ListAsync(page, pageSize, filter.CategoryId, filter.SubcategoryId, filter.Search);
@@ -47,7 +47,7 @@ namespace Rutracker.Server.WebApi.Controllers
             };
         }
 
-        [HttpGet(nameof(Popular))]
+        [HttpGet("popular/{count}")]
         public async Task<IEnumerable<TorrentViewModel>> Popular(int count)
         {
             var torrents = await _torrentService.PopularTorrentsAsync(count);
@@ -59,7 +59,7 @@ namespace Rutracker.Server.WebApi.Controllers
         ///     Get information about the item.
         /// </summary>
         /// <param name="id">ID of the element.</param>
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<TorrentDetailsViewModel> Get(int id)
         {
             var torrent = await _torrentService.FindAsync(id);

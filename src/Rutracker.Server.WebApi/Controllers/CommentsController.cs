@@ -7,9 +7,7 @@ using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Extensions;
-using Rutracker.Shared.Models.ViewModels.Torrent;
-using Rutracker.Shared.Models.ViewModels.Torrent.Create;
-using Rutracker.Shared.Models.ViewModels.Torrent.Update;
+using Rutracker.Shared.Models.ViewModels.Comment;
 
 namespace Rutracker.Server.WebApi.Controllers
 {

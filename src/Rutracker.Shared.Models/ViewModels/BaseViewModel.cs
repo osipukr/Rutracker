@@ -1,4 +1,4 @@
-﻿namespace Rutracker.Shared.Models.ViewModels.Torrent.Base
+﻿namespace Rutracker.Shared.Models.ViewModels
 {
     public class BaseViewModel
     {

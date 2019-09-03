@@ -15,7 +15,10 @@
     </MatTableHeader>
     <MatTableRow>
         <td>
-            <MatIconButton Icon="@MatIconNames.Delete" OnClick="@(_ => DeleteClicked(context))" />
+            <div style="width:100px;">
+                <MatIconButton Icon="@MatIconNames.Edit" OnClick="@(_ => UpdateClicked(context))" />
+                <MatIconButton Icon="@MatIconNames.Delete" OnClick="@(_ => DeleteClicked(context))" />
+            </div>
         </td>
         <td>@context.Id</td>
         <td>@context.Subcategories.Length</td>
@@ -29,7 +32,10 @@
 {
     [Parameter] private IEnumerable<CategoryViewModel> Items { get; set; }
     [Parameter] private EventCallback<CategoryCreateViewModel> OnCreate { get; set; }
+    [Parameter] private Func<CategoryViewModel, CategoryUpdateViewModel, Task> OnUpdate { get; set; }
     [Parameter] private EventCallback<CategoryViewModel> OnDelete { get; set; }
+
+    private CategoryViewModel Category { get; set; }
 
     private void CreateClicked()
     {
@@ -37,9 +43,25 @@
         ModalService.Show("Create category", typeof(CategoryAddModal));
     }
 
+    private void UpdateClicked(CategoryViewModel model)
+    {
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(CategoryUpdateViewModel), new CategoryUpdateViewModel
+        {
+            Name = model.Name
+        });
+
+        Category = model;
+
+        ModalService.OnClose += CategoryUpdateModalClosed;
+        ModalService.Show("Update category", typeof(CategoryUpdateModal), parameters);
+    }
+
     private void DeleteClicked(CategoryViewModel model)
     {
         var parameters = new ModalParameters();
+
         parameters.Add(nameof(CategoryViewModel), model);
 
         ModalService.OnClose += CategoryDeleteModalClosed;
@@ -54,6 +76,16 @@
         }
 
         ModalService.OnClose -= CategoryAddModalClosed;
+    }
+
+    private async void CategoryUpdateModalClosed(ModalResult result)
+    {
+        if (!result.Cancelled && result.Data is CategoryUpdateViewModel model)
+        {
+            await OnUpdate.Invoke(Category, model);
+        }
+
+        ModalService.OnClose -= CategoryUpdateModalClosed;
     }
 
     private async void CategoryDeleteModalClosed(ModalResult result)

@@ -27,7 +27,10 @@ else if (CategoriesItems.Count == 0)
 }
 else
 {
-    <CategoryList Items="@CategoriesItems" OnCreate="@CreateCategoryAsync" OnDelete="@DeleteCategoryAsync" />
+    <CategoryList Items="@CategoriesItems"
+                  OnCreate="@CreateCategoryAsync"
+                  OnUpdate="@UpdateCategoryAsync"
+                  OnDelete="@DeleteCategoryAsync" />
 }
 
 @code
@@ -62,6 +65,24 @@ else
         catch (Exception ex)
         {
             MatToaster.Add(ex.Message, MatToastType.Warning, "Create category");
+        }
+    }
+
+    private async Task UpdateCategoryAsync(CategoryViewModel category, CategoryUpdateViewModel model)
+    {
+        try
+        {
+            var result = await CategoryService.UpdateAsync(category.Id, model);
+
+            MatToaster.Add("Category successfully updated.", MatToastType.Success, "Update category");
+
+            CategoriesItems.Remove(category);
+            CategoriesItems.Add(result);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Update category");
         }
     }
 

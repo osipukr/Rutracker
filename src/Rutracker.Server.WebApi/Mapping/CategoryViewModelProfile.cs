@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Rutracker.Server.DataAccessLayer.Entities;
-using Rutracker.Shared.Models.ViewModels.Torrent;
-using Rutracker.Shared.Models.ViewModels.Torrent.Create;
+using Rutracker.Shared.Models.ViewModels.Category;
 
 namespace Rutracker.Server.WebApi.Mapping
 {
@@ -11,6 +10,7 @@ namespace Rutracker.Server.WebApi.Mapping
         {
             CreateMap<Category, CategoryViewModel>();
             CreateMap<CategoryCreateViewModel, Category>();
+            CreateMap<CategoryUpdateViewModel, Category>();
         }
     }
 }

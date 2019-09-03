@@ -84,6 +84,21 @@ namespace Rutracker.Client.Blazor.Services
             }
         }
 
+        public async Task<TResult> PutJsonAsync<TResult>(string url, object jsonObject)
+        {
+            using var content = new StringContent(
+                content: JsonConvert.SerializeObject(jsonObject),
+                encoding: Encoding.UTF8,
+                mediaType: "application/json");
+
+            using var response = await _httpClient.PutAsync(url, content);
+            var json = await response.Content.ReadAsStringAsync();
+
+            return response.IsSuccessStatusCode
+                ? DeserializeJson<TResult>(json)
+                : throw new Exception(DeserializeJsonError(json));
+        }
+
         public async Task DeleteJsonAsync(string url)
         {
             using var response = await _httpClient.DeleteAsync(url);

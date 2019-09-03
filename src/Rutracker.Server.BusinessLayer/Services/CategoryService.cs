@@ -50,12 +50,25 @@ namespace Rutracker.Server.BusinessLayer.Services
             return category;
         }
 
+        public async Task<Category> UpdateAsync(int id, Category category)
+        {
+            var result = await FindAsync(id);
+
+            Guard.Against.NullOrWhiteSpace(category.Name, message: $"The {nameof(category.Name)} is null or white space.");
+
+            result.Name = category.Name;
+
+            _categoryRepository.Update(result);
+            await _unitOfWork.CompleteAsync();
+
+            return result;
+        }
+
         public async Task<Category> DeleteAsync(int id)
         {
             var category = await FindAsync(id);
 
             _categoryRepository.Remove(category);
-
             await _unitOfWork.CompleteAsync();
 
             return category;

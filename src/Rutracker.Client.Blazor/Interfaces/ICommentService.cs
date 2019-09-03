@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Rutracker.Shared.Models.ViewModels.Torrent;
-using Rutracker.Shared.Models.ViewModels.Torrent.Create;
-using Rutracker.Shared.Models.ViewModels.Torrent.Update;
+using Rutracker.Shared.Models.ViewModels.Comment;
 
 namespace Rutracker.Client.Blazor.Interfaces
 {

@@ -1,8 +1,7 @@
 ﻿using System;
-using Rutracker.Shared.Models.ViewModels.Torrent.Base;
 using Rutracker.Shared.Models.ViewModels.User;
 
-namespace Rutracker.Shared.Models.ViewModels.Torrent
+namespace Rutracker.Shared.Models.ViewModels.Comment
 {
     public class CommentViewModel : BaseViewModel
     {

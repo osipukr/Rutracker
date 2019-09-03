@@ -1,9 +1,8 @@
-﻿using Rutracker.Shared.Models.ViewModels.User.Base;
-
-namespace Rutracker.Shared.Models.ViewModels.User
+﻿namespace Rutracker.Shared.Models.ViewModels.User
 {
-    public class UserShortViewModel : BaseViewModel
+    public class UserShortViewModel
     {
+        public string Id { get; set; }
         public string UserName { get; set; }
     }
 }
