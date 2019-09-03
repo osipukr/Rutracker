@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Shared.Models.ViewModels.Subcategory;
 
@@ -27,12 +28,36 @@ namespace Rutracker.Server.WebApi.Controllers
             return _mapper.Map<IEnumerable<SubcategoryViewModel>>(subcategories);
         }
 
-        [HttpGet(nameof(Find))]
+        [HttpGet("{id}")]
         public async Task<SubcategoryViewModel> Find(int id)
         {
             var subcategory = await _subcategoryService.FindAsync(id);
 
             return _mapper.Map<SubcategoryViewModel>(subcategory);
+        }
+
+        [HttpPost]
+        public async Task<SubcategoryViewModel> Add(SubcategoryCreateViewModel model)
+        {
+            var subcategory = _mapper.Map<Subcategory>(model);
+            var result = await _subcategoryService.AddAsync(subcategory);
+
+            return _mapper.Map<SubcategoryViewModel>(result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<SubcategoryViewModel> Update(int id, SubcategoryUpdateViewModel model)
+        {
+            var subcategory = _mapper.Map<Subcategory>(model);
+            var result = await _subcategoryService.UpdateAsync(id, subcategory);
+
+            return _mapper.Map<SubcategoryViewModel>(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task Delete(int id)
+        {
+            await _subcategoryService.DeleteAsync(id);
         }
     }
 }

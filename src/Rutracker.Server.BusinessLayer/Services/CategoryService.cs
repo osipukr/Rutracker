@@ -41,8 +41,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Category> AddAsync(Category category)
         {
-            Guard.Against.NullNotValid(category, $"Not valid {nameof(category)}.");
-            Guard.Against.NullOrWhiteSpace(category.Name, message: $"The {nameof(category.Name)} is null or white space.");
+            ThrowIfInvalidCategoryModel(category);
 
             await _categoryRepository.AddAsync(category);
             await _unitOfWork.CompleteAsync();
@@ -52,9 +51,9 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Category> UpdateAsync(int id, Category category)
         {
-            var result = await FindAsync(id);
+            ThrowIfInvalidCategoryModel(category);
 
-            Guard.Against.NullOrWhiteSpace(category.Name, message: $"The {nameof(category.Name)} is null or white space.");
+            var result = await FindAsync(id);
 
             result.Name = category.Name;
 
@@ -72,6 +71,12 @@ namespace Rutracker.Server.BusinessLayer.Services
             await _unitOfWork.CompleteAsync();
 
             return category;
+        }
+
+        private static void ThrowIfInvalidCategoryModel(Category category)
+        {
+            Guard.Against.NullNotValid(category, $"Not valid {nameof(category)}.");
+            Guard.Against.NullOrWhiteSpace(category.Name, message: $"The {nameof(category.Name)} is null or white space.");
         }
     }
 }

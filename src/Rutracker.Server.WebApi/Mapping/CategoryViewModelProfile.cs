@@ -8,7 +8,10 @@ namespace Rutracker.Server.WebApi.Mapping
     {
         public CategoryViewModelProfile()
         {
-            CreateMap<Category, CategoryViewModel>();
+            CreateMap<Category, CategoryViewModel>()
+                .ForMember(x => x.SubcategoriesCount,
+                    x => x.MapFrom(y => y.Subcategories.Count));
+
             CreateMap<CategoryCreateViewModel, Category>();
             CreateMap<CategoryUpdateViewModel, Category>();
         }

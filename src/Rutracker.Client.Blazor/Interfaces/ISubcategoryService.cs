@@ -8,5 +8,8 @@ namespace Rutracker.Client.Blazor.Interfaces
     {
         Task<IEnumerable<SubcategoryViewModel>> ListAsync(int categoryId);
         Task<SubcategoryViewModel> FindAsync(int id);
+        Task<SubcategoryViewModel> CreateAsync(SubcategoryCreateViewModel model);
+        Task<SubcategoryViewModel> UpdateAsync(int id, SubcategoryUpdateViewModel model);
+        Task DeleteAsync(int id);
     }
 }

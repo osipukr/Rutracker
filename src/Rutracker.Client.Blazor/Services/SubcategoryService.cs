@@ -19,7 +19,7 @@ namespace Rutracker.Client.Blazor.Services
 
         public async Task<IEnumerable<SubcategoryViewModel>> ListAsync(int categoryId)
         {
-            var url = string.Format(_apiUriSettings.Subcategories, categoryId.ToString());
+            var url = $"{_apiUriSettings.Subcategories}?{nameof(categoryId)}={categoryId}";
 
             return await _httpClientService.GetJsonAsync<IEnumerable<SubcategoryViewModel>>(url);
         }
@@ -29,6 +29,25 @@ namespace Rutracker.Client.Blazor.Services
             var url = string.Format(_apiUriSettings.Subcategory, id.ToString());
 
             return await _httpClientService.GetJsonAsync<SubcategoryViewModel>(url);
+        }
+
+        public async Task<SubcategoryViewModel> CreateAsync(SubcategoryCreateViewModel model)
+        {
+            return await _httpClientService.PostJsonAsync<SubcategoryViewModel>(_apiUriSettings.Subcategories, model);
+        }
+
+        public async Task<SubcategoryViewModel> UpdateAsync(int id, SubcategoryUpdateViewModel model)
+        {
+            var url = string.Format(_apiUriSettings.Subcategory, id.ToString());
+
+            return await _httpClientService.PutJsonAsync<SubcategoryViewModel>(url, model);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var url = string.Format(_apiUriSettings.Subcategory, id.ToString());
+
+            await _httpClientService.DeleteJsonAsync(url);
         }
     }
 }

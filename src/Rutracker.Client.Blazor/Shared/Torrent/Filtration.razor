@@ -1,5 +1,6 @@
 ﻿@inject AppState AppState
 @inject ICategoryService CategoryService
+@inject ISubcategoryService SubcategoryService
 @inject IMatToaster MatToaster
 
 <div class="mat-layout-grid px-0">
@@ -96,15 +97,15 @@
             if (int.TryParse(value, out var id))
             {
                 Model.CategoryId = id;
-                Subcategories = Categories?.FirstOrDefault(x => x.Id == id)?.Subcategories;
+                LoadSubcategoriesAsync(id);
             }
             else
             {
                 Model.CategoryId = null;
-                SubcategoryId = null;
                 Subcategories = null;
             }
 
+            SubcategoryId = null;
             StateHasChanged();
         }
     }
@@ -126,6 +127,19 @@
         catch (Exception ex)
         {
             MatToaster.Add(ex.Message, MatToastType.Warning, "Load categories");
+        }
+    }
+
+    private async void LoadSubcategoriesAsync(int categoryId)
+    {
+        try
+        {
+            Subcategories = await SubcategoryService.ListAsync(categoryId);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Load subcategories");
         }
     }
 

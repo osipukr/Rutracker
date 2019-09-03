@@ -11,6 +11,9 @@ namespace Rutracker.Server.WebApi.Mapping
             CreateMap<Subcategory, SubcategoryViewModel>()
                 .ForMember(x => x.TorrentsCount,
                     x => x.MapFrom(y => y.Torrents.Count));
+
+            CreateMap<SubcategoryCreateViewModel, Subcategory>();
+            CreateMap<SubcategoryUpdateViewModel, Subcategory>();
         }
     }
 }
