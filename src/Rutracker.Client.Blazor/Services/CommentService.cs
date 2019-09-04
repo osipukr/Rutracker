@@ -17,37 +17,37 @@ namespace Rutracker.Client.Blazor.Services
             _apiUrls = apiUrls;
         }
 
-        public async Task<IEnumerable<CommentViewModel>> List(int torrentId, int count)
+        public async Task<IEnumerable<CommentViewModel>> ListAsync(int torrentId)
         {
-            var url = string.Format(_apiUrls.Comments, torrentId.ToString(), count.ToString());
+            var url = $"{_apiUrls.Comments}?{nameof(torrentId)}={torrentId}";
 
             return await _httpClientService.GetJsonAsync<IEnumerable<CommentViewModel>>(url);
         }
 
-        public async Task Add(CommentCreateViewModel model)
+        public async Task<CommentViewModel> AddAsync(CommentCreateViewModel model)
         {
-            await _httpClientService.PostJsonAsync(_apiUrls.AddComment, model);
+            return await _httpClientService.PostJsonAsync<CommentViewModel>(_apiUrls.Comments, model);
         }
 
-        public async Task Update(int id, CommentUpdateViewModel model)
+        public async Task<CommentViewModel> UpdateAsync(int id, CommentUpdateViewModel model)
         {
-            var url = string.Format(_apiUrls.UpdateComment, id.ToString());
+            var url = string.Format(_apiUrls.Comment, id.ToString());
 
-            await _httpClientService.PutJsonAsync(url, model);
+            return await _httpClientService.PutJsonAsync<CommentViewModel>(url, model);
         }
 
-        public async Task Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            var url = string.Format(_apiUrls.UpdateComment, id.ToString());
+            var url = string.Format(_apiUrls.Comment, id.ToString());
 
             await _httpClientService.DeleteJsonAsync(url);
         }
 
-        public async Task Like(int id)
+        public async Task<CommentViewModel> LikeCommentAsync(int id)
         {
-            var url = string.Format(_apiUrls.UpdateComment, id.ToString());
+            var url = string.Format(_apiUrls.LikeComment, id.ToString());
 
-            await _httpClientService.GetJsonAsync(url);
+            return await _httpClientService.GetJsonAsync<CommentViewModel>(url);
         }
     }
 }

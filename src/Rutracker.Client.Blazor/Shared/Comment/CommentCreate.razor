@@ -1,0 +1,48 @@
+﻿<EditForm Model="@Comment" OnValidSubmit="CreateCommentAsync" autocomplete="off">
+    <div class="card-footer">
+        <div class="input-group">
+            @if (Creating)
+            {
+                <button style="width:100%;" class="btn btn-light">
+                    <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Creating...
+                </button>
+            }
+            else
+            {
+                <InputText Class="form-control"
+                           placeholder="Type your message here..."
+                           aria-label="Message"
+                           required
+                           @bind-Value="@Comment.Text" />
+
+                <div class="input-group-append">
+                    <button class="btn btn-warning"
+                            ref="createButton"
+                            type="submit">
+                        Send
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</EditForm>
+
+@code
+{
+    [Parameter] private EventCallback<CommentCreateViewModel> OnCreate { get; set; }
+
+    private CommentCreateViewModel Comment { get; set; } = new CommentCreateViewModel();
+    private bool Creating { get; set; } = false;
+
+    private async Task CreateCommentAsync()
+    {
+        Creating = true;
+        StateHasChanged();
+
+        await OnCreate.InvokeAsync(Comment);
+
+        Comment = new CommentCreateViewModel();
+        Creating = false;
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,38 @@
+﻿<AuthorizeView>
+    <NotAuthorized>
+        <div class="alert alert-success">
+            <a href="@Constants.Path.Login">Log in</a> to post a message.
+        </div>
+    </NotAuthorized>
+    <Authorized>
+        <CommentCreate OnCreate="@CommentCreateAsync" />
+    </Authorized>
+</AuthorizeView>
+
+<MatList SingleSelection="true" TwoLine="true">
+    @if (Items == null || !Items.Any())
+    {
+        <MatListItem>
+            <MatListItemText>
+                Loading comments...
+            </MatListItemText>
+        </MatListItem>
+    }
+    else
+    {
+        foreach (var comment in Items)
+        {
+            <Comment Model="@comment" OnLike="@CommentLikeAsync" />
+        }
+    }
+</MatList>
+
+@code
+{
+    [Parameter] private IEnumerable<CommentViewModel> Items { get; set; }
+    [Parameter] private EventCallback<CommentCreateViewModel> OnCreate { get; set; }
+    [Parameter] private EventCallback<int> OnLike { get; set; }
+
+    private async Task CommentCreateAsync(CommentCreateViewModel model) => await OnCreate.InvokeAsync(model);
+    private async Task CommentLikeAsync(int id) => await OnLike.InvokeAsync(id);
+}

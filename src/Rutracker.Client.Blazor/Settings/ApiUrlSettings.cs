@@ -11,9 +11,7 @@
         public string PopularTorrents { get; set; }
         public string Torrent { get; set; }
         public string Comments { get; set; }
-        public string AddComment { get; set; }
-        public string UpdateComment { get; set; }
-        public string DeleteComment { get; set; }
+        public string Comment { get; set; }
         public string LikeComment { get; set; }
 
         // Account

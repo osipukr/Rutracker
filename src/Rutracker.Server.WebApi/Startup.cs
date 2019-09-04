@@ -172,7 +172,6 @@ namespace Rutracker.Server.WebApi
             services.AddScoped<ISubcategoryService, SubcategoryService>();
             services.AddScoped<ITorrentService, TorrentService>();
             services.AddScoped<ICommentService, CommentService>();
-            services.AddScoped<ILikeService, LikeService>();
         }
 
         public void Configure(IApplicationBuilder app)

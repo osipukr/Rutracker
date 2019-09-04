@@ -1,4 +1,5 @@
 ﻿@inject AppState AppState
+@inject ICommentService CommentService
 @inject IMatToaster MatToaster
 
 @page "/torrents/{id:int}"
@@ -26,7 +27,10 @@ else
         </div>
     </div>
 
-    <TorrentDetails Model="@TorrentDetailsModel" />
+    <TorrentDetails Torrent="@TorrentDetailsModel"
+                    Comments="@Comments"
+                    OnCommentCreate="@CreateCommentAsync"
+                    OnCommentLike="@CommentLikeAsync" />
 }
 
 @code
@@ -34,18 +38,65 @@ else
     [Parameter] private int Id { get; set; }
 
     private TorrentDetailsViewModel TorrentDetailsModel { get; set; }
+    private List<CommentViewModel> Comments { get; set; }
 
-    protected override async Task OnInitAsync() => await LoadTorrentIndexAsync();
+    protected override async Task OnInitAsync() => await LoadTorrentAsync();
 
-    private async Task LoadTorrentIndexAsync()
+    private async Task LoadTorrentAsync()
     {
         try
         {
             TorrentDetailsModel = await AppState.Torrent(Id);
+            await LoadCommentsAsync();
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Failed load torrent info");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
+        }
+    }
+
+    private async Task LoadCommentsAsync()
+    {
+        try
+        {
+            Comments = (await CommentService.ListAsync(TorrentDetailsModel.Id))?.ToList();
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning);
+        }
+    }
+
+    private async Task CreateCommentAsync(CommentCreateViewModel comment)
+    {
+        try
+        {
+            comment.TorrentId = TorrentDetailsModel.Id;
+
+            var result = await CommentService.AddAsync(comment);
+
+            Comments.Add(result);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning);
+        }
+    }
+
+    private async Task CommentLikeAsync(int commentId)
+    {
+        try
+        {
+            var comment = await CommentService.LikeCommentAsync(commentId);
+
+            Comments.RemoveAll(x => x.Id == commentId);
+            Comments.Add(comment);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 }

@@ -15,52 +15,63 @@ namespace Rutracker.Server.WebApi.Controllers
     public class CommentsController : BaseApiController
     {
         private readonly ICommentService _commentService;
-        private readonly ILikeService _likeService;
         private readonly IMapper _mapper;
 
-        public CommentsController(ICommentService commentService, ILikeService likeService, IMapper mapper)
+        public CommentsController(ICommentService commentService, IMapper mapper)
         {
             _commentService = commentService;
-            _likeService = likeService;
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<CommentViewModel>> List(int torrentId, int count)
+        [HttpGet, AllowAnonymous]
+        public async Task<IEnumerable<CommentViewModel>> List(int torrentId)
         {
-            var comments = await _commentService.ListAsync(torrentId, count);
+            var comments = await _commentService.ListAsync(torrentId);
 
             return _mapper.Map<IEnumerable<CommentViewModel>>(comments);
         }
 
-        [HttpPost(nameof(Add))]
-        public async Task Add(CommentCreateViewModel model)
+        [HttpGet("{id}")]
+        public async Task<CommentViewModel> Find(int id)
+        {
+            var comment = await _commentService.FindAsync(id, User.GetUserId());
+
+            return _mapper.Map<CommentViewModel>(comment);
+        }
+
+        [HttpPost]
+        public async Task<CommentViewModel> Add(CommentCreateViewModel model)
         {
             var comment = _mapper.Map<Comment>(model);
 
             comment.UserId = User.GetUserId();
 
-            await _commentService.AddAsync(comment);
+            var result = await _commentService.AddAsync(comment);
+
+            return _mapper.Map<CommentViewModel>(result);
         }
 
-        [HttpPut(nameof(Update))]
-        public async Task Update(int id, CommentUpdateViewModel model)
+        [HttpPut("{id}")]
+        public async Task<CommentViewModel> Update(int id, CommentUpdateViewModel model)
         {
             var comment = _mapper.Map<Comment>(model);
+            var result = await _commentService.UpdateAsync(id, User.GetUserId(), comment);
 
-            await _commentService.UpdateAsync(id, User.GetUserId(), comment);
+            return _mapper.Map<CommentViewModel>(result);
         }
 
-        [HttpDelete(nameof(Delete))]
+        [HttpDelete]
         public async Task Delete(int id)
         {
             await _commentService.DeleteAsync(id, User.GetUserId());
         }
 
-        [HttpGet(nameof(Like))]
-        public async Task Like(int id)
+        [HttpGet("like/{id}")]
+        public async Task<CommentViewModel> Like(int id)
         {
-            await _likeService.LikeCommentAsync(id, User.GetUserId());
+            var comment = await _commentService.LikeCommentAsync(id, User.GetUserId());
+
+            return _mapper.Map<CommentViewModel>(comment);
         }
     }
 }

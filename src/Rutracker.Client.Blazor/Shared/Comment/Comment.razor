@@ -1,0 +1,50 @@
+﻿<MatListItem>
+    <div>
+
+    </div>
+    <MatListItemText Style="width: 100%;">
+        <MatListItemPrimaryText>
+            @Model.User.UserName
+        </MatListItemPrimaryText>
+        <MatListItemSecondaryText>
+            @Model.Text
+        </MatListItemSecondaryText>
+    </MatListItemText>
+    <div class="m-0 p-0 d-flex justify-content-center align-items-center">
+        @Model.LikesCount
+        <MatIconButton Class="ml-1"
+                       Icon="@IconName"
+                       Disabled="@(!IsAuthenticated)"
+                       OnClick="@(_ => CommentLikeAsync(Model.Id))" />
+    </div>
+</MatListItem>
+<MatListDivider />
+
+@code
+{
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    [Parameter] private CommentViewModel Model { get; set; }
+    [Parameter] private EventCallback<int> OnLike { get; set; }
+
+    private bool IsAuthenticated { get; set; }
+    private string IconName { get; set; } = MatIconNames.Favorite;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var state = await AuthenticationStateTask;
+
+        IsAuthenticated = state.User.Identity.IsAuthenticated;
+
+        if (IsAuthenticated)
+        {
+        }
+    }
+
+    private async Task CommentLikeAsync(int id)
+    {
+        await OnLike.InvokeAsync(id);
+
+        IconName = MatIconNames.Favorite_border;
+        StateHasChanged();
+    }
+}

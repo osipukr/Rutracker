@@ -15,23 +15,27 @@ namespace Rutracker.Server.BusinessLayer.Services
     {
         private readonly ICommentRepository _commentRepository;
         private readonly ITorrentRepository _torrentRepository;
+        private readonly ILikeRepository _likeRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CommentService(ICommentRepository commentRepository, ITorrentRepository torrentRepository, IUnitOfWork unitOfWork)
+        public CommentService(
+            ICommentRepository commentRepository,
+            ITorrentRepository torrentRepository,
+            ILikeRepository likeRepository,
+            IUnitOfWork unitOfWork)
         {
             _commentRepository = commentRepository;
             _torrentRepository = torrentRepository;
+            _likeRepository = likeRepository;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<Comment>> ListAsync(int torrentId, int count)
+        public async Task<IEnumerable<Comment>> ListAsync(int torrentId)
         {
             Guard.Against.LessOne(torrentId, $"The {nameof(torrentId)} is less than 1.");
-            Guard.Against.LessOne(count, $"The {nameof(count)} is less than 1.");
 
             var comments = await _commentRepository.GetAll(x => x.TorrentId == torrentId)
                 .OrderByDescending(x => x.Likes.Count)
-                .Take(count)
                 .ToListAsync();
 
             Guard.Against.NullNotFound(comments, "Comments not found.");
@@ -39,12 +43,12 @@ namespace Rutracker.Server.BusinessLayer.Services
             return comments;
         }
 
-        public async Task<Comment> FindAsync(int commentId, string userId)
+        public async Task<Comment> FindAsync(int id, string userId)
         {
-            Guard.Against.LessOne(commentId, $"The {nameof(commentId)} is less than 1.");
+            Guard.Against.LessOne(id, $"The {nameof(id)} is less than 1.");
             Guard.Against.NullOrWhiteSpace(userId, message: $"The {nameof(userId)} is null or white space.");
 
-            var comment = await _commentRepository.GetAsync(x => x.Id == commentId && x.UserId == userId);
+            var comment = await _commentRepository.GetAsync(x => x.Id == id && x.UserId == userId);
 
             Guard.Against.NullNotFound(comment, "Comment not found.");
 
@@ -53,10 +57,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Comment> AddAsync(Comment comment)
         {
-            Guard.Against.NullNotValid(comment, "Not valid comment.");
-            Guard.Against.NullOrWhiteSpace(comment.Text, message: "The comment must contain text.");
-            Guard.Against.LessOne(comment.TorrentId, "Invalid torrent ID for comment.");
-            Guard.Against.NullOrWhiteSpace(comment.UserId, message: "Invalid user ID for comment.");
+            ThrowIfInvalidCommentModel(comment);
 
             if (!await _torrentRepository.ExistAsync(comment.TorrentId))
             {
@@ -71,11 +72,11 @@ namespace Rutracker.Server.BusinessLayer.Services
             return comment;
         }
 
-        public async Task<Comment> UpdateAsync(int commentId, string userId, Comment comment)
+        public async Task<Comment> UpdateAsync(int id, string userId, Comment comment)
         {
-            Guard.Against.NullNotValid(comment, "Not valid comment.");
+            ThrowIfInvalidCommentModel(comment);
 
-            var result = await FindAsync(commentId, userId);
+            var result = await FindAsync(id, userId);
 
             result.Text = comment.Text;
             result.IsModified = true;
@@ -88,15 +89,51 @@ namespace Rutracker.Server.BusinessLayer.Services
             return result;
         }
 
-        public async Task<Comment> DeleteAsync(int commentId, string userId)
+        public async Task<Comment> DeleteAsync(int id, string userId)
         {
-            var comment = await FindAsync(commentId, userId);
+            var comment = await FindAsync(id, userId);
 
             _commentRepository.Remove(comment);
 
             await _unitOfWork.CompleteAsync();
 
             return comment;
+        }
+
+        public async Task<Comment> LikeCommentAsync(int id, string userId)
+        {
+            Guard.Against.LessOne(id, $"The {nameof(id)} is less than 1.");
+            Guard.Against.NullOrWhiteSpace(userId, message: $"The {nameof(userId)} is null or white space.");
+
+            var comment = await _commentRepository.GetAsync(id);
+            var like = await _likeRepository.GetAsync(x => x.CommentId == id && x.UserId == userId);
+
+            if (like != null)
+            {
+                _likeRepository.Remove(like);
+            }
+            else if (comment == null)
+            {
+                throw new RutrackerException("Not valid comment ID.", ExceptionEventType.NotValidParameters);
+            }
+            else
+            {
+                await _likeRepository.AddAsync(new Like
+                {
+                    CommentId = id,
+                    UserId = userId
+                });
+            }
+
+            await _unitOfWork.CompleteAsync();
+
+            return comment;
+        }
+
+        private static void ThrowIfInvalidCommentModel(Comment comment)
+        {
+            Guard.Against.NullNotValid(comment, "Not valid comment.");
+            Guard.Against.NullOrWhiteSpace(comment.Text, message: "The comment must contain text.");
         }
     }
 }

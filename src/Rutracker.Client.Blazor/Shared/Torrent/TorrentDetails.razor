@@ -1,5 +1,5 @@
 <MatTabGroup>
-    <MatTab>
+    <MatTab Id="info">
         <LabelContent>
             <MatIcon Icon="@MatIconNames.Description" />
             <p class="m-0">Description</p>
@@ -10,44 +10,44 @@
                 <MatListItem>
                     <MatListItemText>
                         <MatListItemPrimaryText>Id</MatListItemPrimaryText>
-                        <MatListItemSecondaryText>@Model.Id</MatListItemSecondaryText>
+                        <MatListItemSecondaryText>@Torrent.Id</MatListItemSecondaryText>
                     </MatListItemText>
                 </MatListItem>
 
                 <MatListItem>
                     <MatListItemText>
                         <MatListItemPrimaryText>Title</MatListItemPrimaryText>
-                        <MatListItemSecondaryText>@Model.Name</MatListItemSecondaryText>
+                        <MatListItemSecondaryText>@Torrent.Name</MatListItemSecondaryText>
                     </MatListItemText>
                 </MatListItem>
 
                 <MatListItem>
                     <MatListItemText>
                         <MatListItemPrimaryText>Size (bytes)</MatListItemPrimaryText>
-                        <MatListItemSecondaryText>@Model.Size</MatListItemSecondaryText>
+                        <MatListItemSecondaryText>@Torrent.Size</MatListItemSecondaryText>
                     </MatListItemText>
                 </MatListItem>
 
                 <MatListItem>
                     <MatListItemText>
                         <MatListItemPrimaryText>Date</MatListItemPrimaryText>
-                        <MatListItemSecondaryText>@Model.CreatedAt.ToLongDateString()</MatListItemSecondaryText>
+                        <MatListItemSecondaryText>@Torrent.CreatedAt.ToLongDateString()</MatListItemSecondaryText>
                     </MatListItemText>
                 </MatListItem>
 
                 <MatListItem>
                     <MatListItemText>
                         <MatListItemPrimaryText>Hash</MatListItemPrimaryText>
-                        <MatListItemSecondaryText>@Model.Hash</MatListItemSecondaryText>
+                        <MatListItemSecondaryText>@Torrent.Hash</MatListItemSecondaryText>
                     </MatListItemText>
                 </MatListItem>
             </MatList>
         </ChildContent>
     </MatTab>
 
-    @if (Model.Files != null && Model.Files.Length != 0)
+    @if (Torrent.Files != null && Torrent.Files.Length != 0)
     {
-        <MatTab>
+        <MatTab Id="files">
             <LabelContent>
                 <MatIcon Icon="@MatIconNames.Folder_open" />
                 <p class="m-0">Files</p>
@@ -73,22 +73,39 @@
         </MatTab>
     }
 
-    @if (Model.Content != null)
+    @if (Torrent.Content != null)
     {
-        <MatTab>
+        <MatTab Id="content">
             <LabelContent>
                 <MatIcon Icon="@MatIconNames.Comment" />
                 <p class="m-0">Content</p>
             </LabelContent>
 
-            <ChildContent>@((MarkupString)Model.Content)</ChildContent>
+            <ChildContent>@((MarkupString)Torrent.Content)</ChildContent>
         </MatTab>
     }
+
+    <MatTab Id="comments">
+        <LabelContent>
+            <MatIcon Icon="@MatIconNames.Comment" />
+            <p class="m-0">Comments</p>
+        </LabelContent>
+
+        <ChildContent>
+            <CommentList Items="@Comments" OnCreate="@CommentCreateAsync" OnLike="@CommentLikeAsync" />
+        </ChildContent>
+    </MatTab>
 </MatTabGroup>
 
 @code
 {
-    [Parameter] private TorrentDetailsViewModel Model { get; set; }
+    [Parameter] private TorrentDetailsViewModel Torrent { get; set; }
+    [Parameter] private IEnumerable<CommentViewModel> Comments { get; set; }
+    [Parameter] private EventCallback<CommentCreateViewModel> OnCommentCreate { get; set; }
+    [Parameter] private EventCallback<int> OnCommentLike { get; set; }
 
-    private IEnumerable<FileViewModel> GetFiles() => Model.Files.AsEnumerable();
+    private async Task CommentCreateAsync(CommentCreateViewModel model) => await OnCommentCreate.InvokeAsync(model);
+    private async Task CommentLikeAsync(int id) => await OnCommentLike.InvokeAsync(id);
+
+    private IEnumerable<FileViewModel> GetFiles() => Torrent.Files.AsEnumerable();
 }
