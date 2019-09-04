@@ -1,20 +1,18 @@
 ﻿@inject IModalService ModalService
 
-<div class="d-flex my-3 justify-content-end mt-3">
-    <MatButton Icon="@MatIconNames.Playlist_add" Label="Add subcategory" OnClick="@CreateClicked" Raised="true" />
-</div>
-
-@if (Items == null || !Items.Any())
+@if (Items == null)
 {
     <LoadingBackground ShowLoader="false">
-        <p class="m-0">Sorry, but subcategory list is empty</p>
+        <p class="m-0">Sorry, but the list of subcategory is not loaded</p>
     </LoadingBackground>
 }
 else
 {
-    <MatTable Items="@Items" Class="mat-elevation-z5">
+    <MatTable Items="@Items" AllowSelection="true" Class="mat-elevation-z5">
         <MatTableHeader>
-            <th></th>
+            <th class="p-2 text-center">
+                <MatIconButton Icon="@MatIconNames.Add" OnClick="@CreateClicked" title="Add new subcategory" />
+            </th>
             <th>Id</th>
             <th>Torrent Count</th>
             <th>Name</th>
@@ -90,6 +88,7 @@ else
             await OnUpdate.Invoke(Subcategory, model);
         }
 
+        Subcategory = null;
         ModalService.OnClose -= SubcategoryUpdateModalClosed;
     }
 

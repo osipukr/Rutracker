@@ -49,7 +49,10 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             Guard.Against.OutOfRange(count, rangeFrom: 1, rangeTo: 100, $"The {nameof(count)} is out of range (1 - 100).");
 
-            var torrents = await _torrentRepository.PopularTorrents(count).ToListAsync();
+            var torrents = await _torrentRepository.GetAll()
+                .OrderByDescending(x => x.Comments.Count)
+                .Take(count)
+                .ToListAsync();
 
             Guard.Against.NullNotFound(torrents, "The torrents not found.");
 

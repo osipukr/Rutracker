@@ -29,7 +29,9 @@ else
         </div>
     </div>
 
-    <h1 class="mb-3">@CategoryItem.Name</h1>
+    <h2>@CategoryItem.Name</h2>
+
+    <h4 class="mt-3 mb-1">Subcategories list:</h4>
 
     <SubcategoryList Items="@Subcategories"
                      OnCreate="@CreateSubcategoryAsync"
@@ -68,8 +70,8 @@ else
             var subcategory = await SubcategoryService.CreateAsync(model);
 
             MatToaster.Add("Subcategory successfully created.", MatToastType.Success, "Create subcategory");
-
             Subcategories.Add(subcategory);
+
             StateHasChanged();
         }
         catch (Exception ex)
@@ -80,14 +82,19 @@ else
 
     private async Task UpdateSubcategoryAsync(SubcategoryViewModel subcategory, SubcategoryUpdateViewModel model)
     {
+        if (subcategory.Name == model.Name)
+        {
+            return;
+        }
+
         try
         {
             var result = await SubcategoryService.UpdateAsync(subcategory.Id, model);
 
             MatToaster.Add("Subcategory successfully updated.", MatToastType.Success, "Update subcategory");
-
             Subcategories.Remove(subcategory);
             Subcategories.Add(result);
+
             StateHasChanged();
         }
         catch (Exception ex)
@@ -103,8 +110,8 @@ else
             await SubcategoryService.DeleteAsync(model.Id);
 
             MatToaster.Add("Subcategory successfully deleted.", MatToastType.Success, "Delete subcategory");
-
             Subcategories.Remove(model);
+
             StateHasChanged();
         }
         catch (Exception ex)

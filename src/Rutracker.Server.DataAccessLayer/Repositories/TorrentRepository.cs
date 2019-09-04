@@ -18,18 +18,5 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
                 (!categoryId.HasValue || torrent.Subcategory.CategoryId == categoryId) &&
                 (string.IsNullOrWhiteSpace(search) || torrent.Name.Contains(search)));
         }
-
-        public IQueryable<Torrent> PopularTorrents(int count)
-        {
-            return _context.Comments.GroupBy(x => x.TorrentId,
-                    (key, items) => new
-                    {
-                        Key = key,
-                        Count = items.Count()
-                    })
-                .OrderByDescending(x => x.Count)
-                .Take(count)
-                .Join(_dbSet, group => group.Key, torrent => torrent.Id, (group, torrent) => torrent);
-        }
     }
 }

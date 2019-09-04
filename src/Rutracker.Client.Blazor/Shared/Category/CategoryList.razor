@@ -1,14 +1,12 @@
 ﻿@inject IModalService ModalService
 
-<div class="d-flex justify-content-end mt-3">
-    <MatButton Icon="@MatIconNames.Playlist_add" Label="Add category" OnClick="@CreateClicked" Raised="true" />
-</div>
+<h2 class="my-3">Categories list</h2>
 
-<h1 class="my-3">Categories list</h1>
-
-<MatTable Items="@Items" Class="mat-elevation-z5">
+<MatTable Items="@Items" AllowSelection="true" Class="mat-elevation-z5">
     <MatTableHeader>
-        <th></th>
+        <th class="p-2 text-center">
+            <MatIconButton Icon="@MatIconNames.Add" OnClick="@CreateClicked" title="Add new category" />
+        </th>
         <th title="Category id">Id</th>
         <th title="Subcategory count">Count</th>
         <th title="Category name">Name</th>

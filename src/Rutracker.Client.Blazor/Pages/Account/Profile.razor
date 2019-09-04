@@ -46,10 +46,10 @@ else
 
         <div class="profile-body">
             <MatTabGroup>
-                <InfoTab UserModel="@UserDetailsModel" OnChange="@LoadUserModelAsync" />
+                <InfoTab UserModel="@UserDetailsModel" OnChange="@OnChanged" />
                 <PasswordTab />
-                <EmailTab UserModel="@UserDetailsModel" OnChange="@LoadUserModelAsync" />
-                <PhoneNumberTab UserModel="@UserDetailsModel" OnChange="@LoadUserModelAsync" />
+                <EmailTab UserModel="@UserDetailsModel" OnChange="@OnChanged" />
+                <PhoneNumberTab UserModel="@UserDetailsModel" OnChange="@OnChanged" />
             </MatTabGroup>
         </div>
     </div>
@@ -66,12 +66,10 @@ else
         try
         {
             UserDetailsModel = await UserService.UserDetails();
-
-            StateHasChanged();
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "User info load");
+            MatToaster.Add(ex.Message, MatToastType.Warning, "Load user info");
         }
     }
 
@@ -85,10 +83,16 @@ else
     {
         if (!result.Cancelled && result.Data is bool isSuccess && isSuccess)
         {
-            await LoadUserModelAsync();
+            await OnChanged();
         }
 
         ModalService.OnClose -= ChangeImageModalClosed;
+    }
+
+    private async Task OnChanged()
+    {
+        await LoadUserModelAsync();
+        StateHasChanged();
     }
 
     private bool IsValidUserImage() => !string.IsNullOrWhiteSpace(UserDetailsModel.ImageUrl);

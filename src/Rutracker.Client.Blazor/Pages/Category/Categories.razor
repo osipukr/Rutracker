@@ -19,12 +19,6 @@ else if (CategoriesItems == null)
         <MatButton Link="@Constants.Path.Home" Raised="true" Label="Return to home" />
     </LoadingBackground>
 }
-else if (CategoriesItems.Count == 0)
-{
-    <LoadingBackground ShowLoader="false">
-        <p class="m-0">Sorry, but category list is empty</p>
-    </LoadingBackground>
-}
 else
 {
     <CategoryList Items="@CategoriesItems"
@@ -43,7 +37,7 @@ else
     {
         try
         {
-            CategoriesItems = (await AppState.Categories()).ToList();
+            CategoriesItems = (await AppState.Categories())?.ToList();
         }
         catch (Exception ex)
         {
@@ -58,8 +52,8 @@ else
             var category = await CategoryService.CreateAsync(model);
 
             MatToaster.Add("Category successfully created.", MatToastType.Success, "Create category");
-
             CategoriesItems.Add(category);
+
             StateHasChanged();
         }
         catch (Exception ex)
@@ -70,14 +64,19 @@ else
 
     private async Task UpdateCategoryAsync(CategoryViewModel category, CategoryUpdateViewModel model)
     {
+        if (category.Name == model.Name)
+        {
+            return;
+        }
+
         try
         {
             var result = await CategoryService.UpdateAsync(category.Id, model);
 
             MatToaster.Add("Category successfully updated.", MatToastType.Success, "Update category");
-
             CategoriesItems.Remove(category);
             CategoriesItems.Add(result);
+
             StateHasChanged();
         }
         catch (Exception ex)
@@ -93,8 +92,8 @@ else
             await CategoryService.DeleteAsync(model.Id);
 
             MatToaster.Add("Category successfully deleted.", MatToastType.Success, "Delete category");
-
             CategoriesItems.Remove(model);
+
             StateHasChanged();
         }
         catch (Exception ex)
