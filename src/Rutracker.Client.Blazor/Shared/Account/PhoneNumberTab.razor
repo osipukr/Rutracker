@@ -21,7 +21,7 @@
             </div>
 
             <div class="form-group mt-4 d-flex justify-content-end">
-                <MatButton Type="submit" Raised="true" Label="Change phone" Class="ml-2" />
+                <MatButton Raised="true" Label="Change phone" type="submit" class="ml-2" />
             </div>
         </EditForm>
     </ChildContent>
@@ -29,8 +29,8 @@
 
 @code
 {
-    [Parameter] private UserDetailsViewModel UserModel { get; set; }
-    [Parameter] private EventCallback OnChange { get; set; }
+    [Parameter] public UserDetailsViewModel UserModel { get; set; }
+    [Parameter] public EventCallback OnChange { get; set; }
 
     private ChangePhoneNumberViewModel ChangePhoneNumberModel { get; set; } = new ChangePhoneNumberViewModel();
 
@@ -47,13 +47,13 @@
         {
             await UserService.ChangePhoneNumber(ChangePhoneNumberModel);
 
-            MatToaster.Add("Verification code sent to phone number.", MatToastType.Success, "Phone number change");
+            MatToaster.Add("Verification code sent to phone number.", MatToastType.Success);
 
             ConfirmPhoneNumberModalOpenClicked("Confirm phone number", ChangePhoneNumberModel.PhoneNumber);
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Phone number change");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 

@@ -9,18 +9,18 @@
                 <DataAnnotationsValidator />
 
                 <MatTextField @bind-Value="@Model.Search"
-                              Type="search"
-                              FullWidth="true"
-                              IconTrailing="true"
+                              Label="Search"
                               Icon="@MatIconNames.Search"
+                              IconTrailing="true"
+                              FullWidth="true"
                               InputClass="pr-5"
-                              Label="Search" />
+                              type="search" />
 
                 <ValidationMessage For="@(() => Model.Search)" />
 
-                <MatAccordion Multi="true" Class="my-4">
+                <MatAccordion Multi="true" class="my-4">
                     <MatExpansionPanel>
-                        <MatExpansionPanelSummary Class="no-select">
+                        <MatExpansionPanelSummary class="no-select">
                             <MatExpansionPanelHeader>Size range</MatExpansionPanelHeader>
                         </MatExpansionPanelSummary>
 
@@ -42,19 +42,19 @@
 
                 <div class="d-flex justify-content-end">
                     <div class="d-flex justify-content-between filter-group-btn">
-                        <MatButton OnClick="@ResetButtonClicked"
-                                   Type="reset"
+                        <MatButton @onclick="@ResetButtonClicked"
+                                   Label="All"
                                    Disabled="@AppState.SearchInProgress"
                                    Outlined="true"
-                                   Class="filter-btn mat-elevation-z5"
-                                   Label="All" />
+                                   type="reset"
+                                   class="filter-btn mat-elevation-z5" />
 
-                        <MatButton Type="submit"
+                        <MatButton Label="Apply"
                                    Disabled="@AppState.SearchInProgress"
-                                   Raised="true"
                                    TrailingIcon="@MatIconNames.Search"
-                                   Class="filter-btn mat-elevation-z5"
-                                   Label="Apply" />
+                                   Raised="true"
+                                   type="submit"
+                                   class="filter-btn mat-elevation-z5" />
                     </div>
                 </div>
             </EditForm>
@@ -64,8 +64,8 @@
 
 @code
 {
-    [Parameter] private FilterViewModel Model { get; set; }
-    [Parameter] private EventCallback FilterChanged { get; set; }
+    [Parameter] public FilterViewModel Model { get; set; }
+    [Parameter] public EventCallback FilterChanged { get; set; }
 
     private void ResetFiltration()
     {

@@ -31,11 +31,11 @@ else
 
 @code
 {
-    [Parameter] private int Id { get; set; }
+    [Parameter] public int Id { get; set; }
 
     private TorrentDetailsViewModel TorrentDetailsModel { get; set; }
 
-    protected override async Task OnInitAsync() => await LoadTorrentIndexAsync();
+    protected override async Task OnInitializedAsync() => await LoadTorrentIndexAsync();
 
     private async Task LoadTorrentIndexAsync()
     {

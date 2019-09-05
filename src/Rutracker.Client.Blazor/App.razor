@@ -1,30 +1,52 @@
 ﻿@implements IDisposable
 @inject AppState AppState
 
-<CascadingAuthenticationState>
-    <MatThemeProvider Theme="@Theme">
-        <Router AppAssembly="typeof(Program).Assembly">
-            <NotFoundContent>
-                <Error />
-            </NotFoundContent>
-            <NotAuthorizedContent>
-                <NotAuthorize />
-            </NotAuthorizedContent>
-        </Router>
-        <BlazoredModal />
-        <MatToastContainer />
-    </MatThemeProvider>
-</CascadingAuthenticationState>
+<BlazoredModal />
+<MatToastContainer />
+
+<MatThemeProvider Theme="@theme">
+    <Router AppAssembly="@typeof(Program).Assembly">
+        <Found Context="routeData">
+            <RouteView RouteData="routeData" DefaultLayout="@typeof(MainLayout)" />
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(LoginLayout)">
+                <NotAuthorized>
+                    <div class="login-container">
+                        <LoadingBackground ShowLoader="false">
+                            <div class="login-body">
+                                <label>Sorry, You're not authorized to reach this page. You may need to log in as a different user.</label>
+                                <br />
+                                <MatButton Link="@Constants.Path.Home" Raised="true" Label="Home" />
+                            </div>
+                        </LoadingBackground>
+                    </div>
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(LoginLayout)">
+                <div class="triangle-container">
+                    <div class="triangles"></div>
+                </div>
+
+                <LoadingBackground ShowLoader="false" style="margin-top: 40vh;">
+                    <h1>We lost this page ;(</h1>
+                    <p>We searched high and low but couldn't find what you're looking for.</p>
+                    <MatButton Link="@Constants.Path.Home" Raised="true" Label="Return Home" />
+                </LoadingBackground>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</MatThemeProvider>
 
 @code
 {
-    private MatTheme Theme { get; set; } = new MatTheme
+    private MatTheme theme = new MatTheme
     {
         Primary = MatThemeColors.Purple._900.Value,
         Secondary = MatThemeColors.Purple._900.Value
     };
 
-    protected override void OnInit() => AppState.OnChange += StateHasChanged;
+    protected override void OnInitialized() => AppState.OnChange += StateHasChanged;
 
     public void Dispose() => AppState.OnChange -= StateHasChanged;
 }

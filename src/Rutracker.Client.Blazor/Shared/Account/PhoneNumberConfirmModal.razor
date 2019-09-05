@@ -13,18 +13,18 @@
     </div>
 
     <div class="form-group mt-4 d-flex justify-content-end">
-        <MatButton OnClick="@CancelClicked" Raised="true" Label="Cancel" />
-        <MatButton Type="submit" Raised="true" Label="Confrim" Class="ml-2" />
+        <MatButton @onclick="@CancelClicked" Raised="true" Label="Cancel" />
+        <MatButton Raised="true" Label="Confrim" type="submit" class="ml-2" />
     </div>
 </EditForm>
 
 @code
 {
-    [CascadingParameter] private ModalParameters Parameters { get; set; }
+    [CascadingParameter] public ModalParameters Parameters { get; set; }
 
     private ConfirmChangePhoneNumberViewModel ConfirmPhoneNumberModel { get; set; }
 
-    protected override void OnInit()
+    protected override void OnInitialized()
     {
         ConfirmPhoneNumberModel = Parameters.Get<ConfirmChangePhoneNumberViewModel>(nameof(ConfirmChangePhoneNumberViewModel));
     }
@@ -35,13 +35,13 @@
         {
             await UserService.ConfirmChangePhoneNumber(ConfirmPhoneNumberModel);
 
-            MatToaster.Add("The action was successfully confirmed", MatToastType.Success, "Phone number");
+            MatToaster.Add("The action was successfully confirmed", MatToastType.Success);
 
             ModalService.Close(ModalResult.Ok(true));
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Phone number");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 
