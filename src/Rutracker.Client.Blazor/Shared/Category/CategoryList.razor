@@ -2,36 +2,36 @@
 
 <h2 class="my-3">Categories list</h2>
 
-<MatTable Items="@Items" AllowSelection="true" Class="mat-elevation-z5">
+<MatTable Items="@Items" AllowSelection="true" class="mat-elevation-z5">
     <MatTableHeader>
         <th class="p-2 text-center">
-            <MatIconButton Icon="@MatIconNames.Add" OnClick="@CreateClicked" title="Add new category" />
+            <MatIconButton @onclick="@CreateClicked" Icon="@MatIconNames.Add"title="Add new category" />
         </th>
         <th title="Category id">Id</th>
         <th title="Subcategory count">Count</th>
         <th title="Category name">Name</th>
     </MatTableHeader>
-    <MatTableRow>
+    <MatTableRow Context="category">
         <td>
             <div style="width:100px;">
-                <MatIconButton Icon="@MatIconNames.Edit" OnClick="@(_ => UpdateClicked(context))" />
-                <MatIconButton Icon="@MatIconNames.Delete" OnClick="@(_ => DeleteClicked(context))" />
+                <MatIconButton @onclick="@(_ => UpdateClicked(category))" Icon="@MatIconNames.Edit" />
+                <MatIconButton @onclick="@(_ => DeleteClicked(category))" Icon="@MatIconNames.Delete" />
             </div>
         </td>
-        <td>@context.Id</td>
-        <td>@context.SubcategoriesCount</td>
+        <td>@category.Id</td>
+        <td>@category.SubcategoriesCount</td>
         <td>
-            <a class="text-dark" href="@CategoryDetailsLink(context.Id)">@context.Name</a>
+            <a class="text-dark" href="@CategoryDetailsLink(category.Id)">@category.Name</a>
         </td>
     </MatTableRow>
 </MatTable>
 
 @code
 {
-    [Parameter] private IEnumerable<CategoryViewModel> Items { get; set; }
-    [Parameter] private EventCallback<CategoryCreateViewModel> OnCreate { get; set; }
-    [Parameter] private Func<CategoryViewModel, CategoryUpdateViewModel, Task> OnUpdate { get; set; }
-    [Parameter] private EventCallback<CategoryViewModel> OnDelete { get; set; }
+    [Parameter] public IEnumerable<CategoryViewModel> Items { get; set; }
+    [Parameter] public EventCallback<CategoryCreateViewModel> OnCreate { get; set; }
+    [Parameter] public Func<CategoryViewModel, CategoryUpdateViewModel, Task> OnUpdate { get; set; }
+    [Parameter] public EventCallback<CategoryViewModel> OnDelete { get; set; }
 
     private CategoryViewModel Category { get; set; }
 

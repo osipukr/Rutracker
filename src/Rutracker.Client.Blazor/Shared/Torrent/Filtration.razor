@@ -10,22 +10,22 @@
                 <DataAnnotationsValidator />
 
                 <MatTextField @bind-Value="@Model.Search"
-                              Type="search"
-                              FullWidth="true"
-                              IconTrailing="true"
+                              Label="Search"
                               Icon="@MatIconNames.Search"
+                              IconTrailing="true"
+                              FullWidth="true"
                               InputClass="pr-5"
-                              Label="Search" />
+                              type="search" />
 
                 <ValidationMessage For="@(() => Model.Search)" />
 
                 <div class="row px-0 pt-5 pb-3">
                     <div class="col">
                         <MatSelect @bind-Value="@CategoryId"
-                                    Label="Category"
-                                    Class="w-100"
-                                    Outlined="true"
-                                    Disabled="@(Categories == null)">
+                                   Label="Category"
+                                   Disabled="@(Categories == null)"
+                                   Outlined="true"
+                                   class="w-100">
                             <MatOption Value="">No select</MatOption>
 
                             @if (Categories != null)
@@ -40,10 +40,10 @@
 
                     <div class="col">
                         <MatSelect @bind-Value="@SubcategoryId"
-                                    Label="Subcategory"
-                                    Class="w-100"
-                                    Outlined="true"
-                                    Disabled="@(Subcategories == null)">
+                                   Label="Subcategory"
+                                   Disabled="@(Subcategories == null)"
+                                   Outlined="true"
+                                   class="w-100">
                             <MatOption Value="">No select</MatOption>
 
                             @if (Subcategories != null)
@@ -61,19 +61,19 @@
 
                 <div class="d-flex justify-content-end">
                     <div class="d-flex justify-content-between filter-group-btn">
-                        <MatButton OnClick="@ResetButtonClicked"
-                                   Type="reset"
+                        <MatButton @onclick="@ResetButtonClicked"
+                                   Label="All"
                                    Disabled="@AppState.SearchInProgress"
                                    Outlined="true"
-                                   Class="filter-btn mat-elevation-z5"
-                                   Label="All" />
+                                   class="filter-btn mat-elevation-z5"
+                                   type="reset" />
 
-                        <MatButton Type="submit"
+                        <MatButton Label="Apply"
                                    Disabled="@AppState.SearchInProgress"
-                                   Raised="true"
                                    TrailingIcon="@MatIconNames.Search"
-                                   Class="filter-btn mat-elevation-z5"
-                                   Label="Apply" />
+                                   Raised="true"
+                                   class="filter-btn mat-elevation-z5"
+                                   type="submit" />
                     </div>
                 </div>
             </EditForm>
@@ -83,8 +83,8 @@
 
 @code
 {
-    [Parameter] private FilterViewModel Model { get; set; }
-    [Parameter] private EventCallback FilterChanged { get; set; }
+    [Parameter] public FilterViewModel Model { get; set; }
+    [Parameter] public EventCallback FilterChanged { get; set; }
 
     private IEnumerable<CategoryViewModel> Categories { get; set; }
     private IEnumerable<SubcategoryViewModel> Subcategories { get; set; }
@@ -116,7 +116,7 @@
         set => Model.SubcategoryId = int.TryParse(value, out var id) ? (int?)id : null;
     }
 
-    protected override async Task OnInitAsync() => await LoadCategoriesAsync();
+    protected override async Task OnInitializedAsync() => await LoadCategoriesAsync();
 
     private async Task LoadCategoriesAsync()
     {
@@ -126,7 +126,7 @@
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Load categories");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 
@@ -139,7 +139,7 @@
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Load subcategories");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 

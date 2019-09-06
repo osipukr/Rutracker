@@ -24,12 +24,12 @@ else
                             <MatCardMedia Wide="true" ImageUrl="https://material-components.github.io/material-components-web-catalog/static/media/photos/3x2/2.jpg" />
 
                             <div class="p-1">
-                                <MatHeadline6 Class="m-0">@torrent.Name</MatHeadline6>
+                                <MatHeadline6 class="m-0">@torrent.Name</MatHeadline6>
                             </div>
 
                             <div class="p-2 mt-3">
-                                <MatBody2 Class="m-0">@($"Create at: {torrent.CreatedAt.ToShortDateString()}")</MatBody2>
-                                <MatBody2 Class="m-0">@($"Size: {ConvertBytesToMegabytes(torrent.Size):F3} Mb")</MatBody2>
+                                <MatBody2 class="m-0">@($"Create at: {torrent.CreatedAt.ToShortDateString()}")</MatBody2>
+                                <MatBody2 class="m-0">@($"Size: {ConvertBytesToMegabytes(torrent.Size):F3} Mb")</MatBody2>
                             </div>
                         </MatCardContent>
 
@@ -43,7 +43,7 @@ else
                                     @torrent.CommentsCount
                                     <MatIconButton Link="@GetCommentsLink(torrent.Id)"
                                                    Icon="@MatIconNames.Comment"
-                                                   Class="ml-1" />
+                                                   class="ml-1" />
                                 </div>
                             </MatCardActionIcons>
                         </MatCardActions>
@@ -56,7 +56,7 @@ else
 
 @code
 {
-    [Parameter] private TorrentViewModel[] Items { get; set; }
+    [Parameter] public TorrentViewModel[] Items { get; set; }
 
     private static string GetTorrentDetailsLink(int id) => string.Format(Constants.Path.Torrent, id.ToString());
     private static string GetCommentsLink(int id) => $"{GetTorrentDetailsLink(id)}#comments";

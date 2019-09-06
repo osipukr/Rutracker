@@ -15,8 +15,8 @@
     </div>
 
     <div class="form-group mb-0 mt-4 d-flex justify-content-end">
-        <MatButton Label="Cancel" OnClick="@CancelClicked" />
-        <MatButton Label="Create" Type="submit" />
+        <MatButton @onclick="@CancelClicked" Label="Cancel" />
+        <MatButton Label="Create" type="submit" />
     </div>
 </EditForm>
 

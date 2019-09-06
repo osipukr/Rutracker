@@ -9,29 +9,33 @@
     </Authorized>
 </AuthorizeView>
 
-<MatList SingleSelection="true" TwoLine="true">
-    @if (Items == null || !Items.Any())
-    {
-        <MatListItem>
-            <MatListItemText>
-                Loading comments...
-            </MatListItemText>
-        </MatListItem>
-    }
-    else
-    {
-        foreach (var comment in Items)
-        {
-            <Comment Model="@comment" OnLike="@CommentLikeAsync" />
-        }
-    }
-</MatList>
+<div class="container">
+    <div class="row">
+        <div class="w-100">
+            <h2 class="page-header">Comments</h2>
+            <section class="comment-list">
+                @if (Items == null)
+                {
+                    <p>Loading comments...</p>
+                }
+                else
+                {
+                    foreach (var comment in Items)
+                    {
+                        <Comment Model="@comment" OnLike="@CommentLikeAsync" />
+                    }
+                }
+            </section>
+        </div>
+    </div>
+</div>
+
 
 @code
 {
-    [Parameter] private IEnumerable<CommentViewModel> Items { get; set; }
-    [Parameter] private EventCallback<CommentCreateViewModel> OnCreate { get; set; }
-    [Parameter] private EventCallback<int> OnLike { get; set; }
+    [Parameter] public IEnumerable<CommentViewModel> Items { get; set; }
+    [Parameter] public EventCallback<CommentCreateViewModel> OnCreate { get; set; }
+    [Parameter] public EventCallback<int> OnLike { get; set; }
 
     private async Task CommentCreateAsync(CommentCreateViewModel model) => await OnCreate.InvokeAsync(model);
     private async Task CommentLikeAsync(int id) => await OnLike.InvokeAsync(id);

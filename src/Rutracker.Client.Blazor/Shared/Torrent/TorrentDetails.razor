@@ -45,7 +45,7 @@
         </ChildContent>
     </MatTab>
 
-    @if (Torrent.Files != null && Torrent.Files.Length != 0)
+    @if (Torrent.Files != null && Torrent.Files.Any())
     {
         <MatTab id="files">
             <LabelContent>
@@ -54,7 +54,7 @@
             </LabelContent>
 
             <ChildContent>
-                <MatTable Items="@GetFiles()"
+                <MatTable Items="@Torrent.Files"
                           DebounceMilliseconds="150"
                           FilterByColumnName="@nameof(FileViewModel.Name)"
                           SearchTermFieldLabel="Name"
@@ -64,9 +64,9 @@
                         <th>Size</th>
                         <th>Name</th>
                     </MatTableHeader>
-                    <MatTableRow Context="torrent">
-                        <td>@torrent.Size</td>
-                        <td>@torrent.Name</td>
+                    <MatTableRow Context="file">
+                        <td>@file.Size</td>
+                        <td>@file.Name</td>
                     </MatTableRow>
                 </MatTable>
             </ChildContent>
@@ -106,6 +106,4 @@
 
     private async Task CommentCreateAsync(CommentCreateViewModel model) => await OnCommentCreate.InvokeAsync(model);
     private async Task CommentLikeAsync(int id) => await OnCommentLike.InvokeAsync(id);
-
-    private IEnumerable<FileViewModel> GetFiles() => Torrent.Files.AsEnumerable();
 }

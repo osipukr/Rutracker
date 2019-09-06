@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Rutracker.Shared.Models.ViewModels.User;
 
 namespace Rutracker.Shared.Models.ViewModels.Torrent
@@ -10,7 +11,7 @@ namespace Rutracker.Shared.Models.ViewModels.Torrent
         public string Name { get; set; }
         public string Hash { get; set; }
         public string Content { get; set; }
-        public FileViewModel[] Files { get; set; }
+        public IEnumerable<FileViewModel> Files { get; set; }
         public UserShortViewModel User { get; set; }
     }
 }

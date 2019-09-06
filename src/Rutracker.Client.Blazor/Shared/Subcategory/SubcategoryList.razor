@@ -8,35 +8,35 @@
 }
 else
 {
-    <MatTable Items="@Items" AllowSelection="true" Class="mat-elevation-z5">
+    <MatTable Items="@Items" AllowSelection="true" class="mat-elevation-z5">
         <MatTableHeader>
             <th class="p-2 text-center">
-                <MatIconButton Icon="@MatIconNames.Add" OnClick="@CreateClicked" title="Add new subcategory" />
+                <MatIconButton @onclick="@CreateClicked" Icon="@MatIconNames.Add" title="Add new subcategory" />
             </th>
             <th>Id</th>
             <th>Torrent Count</th>
             <th>Name</th>
         </MatTableHeader>
-        <MatTableRow>
+        <MatTableRow Context="subcategory">
             <td>
                 <div style="width:100px;">
-                    <MatIconButton Icon="@MatIconNames.Edit" OnClick="@(_ => UpdateClicked(context))" />
-                    <MatIconButton Icon="@MatIconNames.Delete" OnClick="@(_ => DeleteClicked(context))" />
+                    <MatIconButton @onclick="@(_ => UpdateClicked(subcategory))" Icon="@MatIconNames.Edit" />
+                    <MatIconButton @onclick="@(_ => DeleteClicked(subcategory))" Icon="@MatIconNames.Delete" />
                 </div>
             </td>
-            <td>@context.Id</td>
-            <td>@context.TorrentsCount</td>
-            <td>@context.Name</td>
+            <td>@subcategory.Id</td>
+            <td>@subcategory.TorrentsCount</td>
+            <td>@subcategory.Name</td>
         </MatTableRow>
     </MatTable>
 }
 
 @code
 {
-    [Parameter] IEnumerable<SubcategoryViewModel> Items { get; set; }
-    [Parameter] private EventCallback<SubcategoryCreateViewModel> OnCreate { get; set; }
-    [Parameter] private Func<SubcategoryViewModel, SubcategoryUpdateViewModel, Task> OnUpdate { get; set; }
-    [Parameter] private EventCallback<SubcategoryViewModel> OnDelete { get; set; }
+    [Parameter] public IEnumerable<SubcategoryViewModel> Items { get; set; }
+    [Parameter] public EventCallback<SubcategoryCreateViewModel> OnCreate { get; set; }
+    [Parameter] public Func<SubcategoryViewModel, SubcategoryUpdateViewModel, Task> OnUpdate { get; set; }
+    [Parameter] public EventCallback<SubcategoryViewModel> OnDelete { get; set; }
 
     private SubcategoryViewModel Subcategory { get; set; }
 

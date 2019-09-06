@@ -25,7 +25,7 @@ else
 {
     <LoadingBackground ShowLoader="false">
         <p>Failed to load page model</p>
-        <MatButton @onclick="@ReloadClicked" Raised="true" Label="Try again" />
+        <MatButton @onclick="@ReloadClicked" Label="Try again" Raised="true" />
     </LoadingBackground>
 }
 
@@ -37,7 +37,7 @@ else
     private int Page { get; set; } = 1;
     private int PageSize => ViewSettings.TorrentsPerPageCount;
 
-    protected override async Task OnInitializedAsync() => await LoadTorrentsIndexAsync(Page, PageSize, FilterModel);
+    protected override async Task OnInitializedAsync() => await LoadTorrentsAsync(Page, PageSize, FilterModel);
 
     private async Task LoadTorrentsAsync(int page, int pageSize, FilterViewModel filter)
     {

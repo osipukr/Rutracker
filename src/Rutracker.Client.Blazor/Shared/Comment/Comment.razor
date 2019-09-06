@@ -1,50 +1,68 @@
-﻿<MatListItem>
-    <div>
+﻿@using System.Globalization
+<article class="row mb-3">
+    <div class="col-md-2 col-sm-2 hidden-xs">
+        <figure class="m-0 p-3">
+            @if (IsValidUserImage())
+            {
+                <img src="@Model.User.ImageUrl" class="w-100 h-100 rounded-circle img-responsive" alt="User image" />
+            }
+            else
+            {
+                <img src="img/profile-bg.jpg" class="w-100 h-100 rounded-circle img-responsive" alt="User image" />
+            }
+        </figure>
+    </div>
+    <div class="col-md-10 col-sm-10">
+        <div class="panel panel-default arrow left">
+            <div class="panel-body bg-white border border-dark p-3" style="border-radius: 1rem;">
+                <header class="text-left">
+                    <div class="comment-user"><i class="fa fa-user"></i> @Model.User.UserName</div>
+                    <time class="comment-date" datetime="16-12-2014 01:05"><i class="fa fa-clock-o"></i> @Model.CreatedAt.ToString(CultureInfo.InvariantCulture)</time>
+                </header>
+                <div class="comment-post">
+                    <p>
+                        @Model.Text
+                    </p>
+                </div>
 
+                <div class="d-flex justify-content-between">
+                    <div>
+                        @Model.LikesCount
+                        <MatIconButton @onclick="@(_ => CommentLikeAsync(Model.Id))"
+                                       Disabled="@(!IsAuthenticated)"
+                                       Icon="@(IsLikedByUser ? MatIconNames.Favorite_border : MatIconNames.Favorite)"
+                                       class="ml-1" />
+                    </div>
+
+                    @if (Model.IsModified)
+                    {
+                        <p class="text-right">@Model.LastModifiedAt.Value.ToString(CultureInfo.InvariantCulture)</p>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
-    <MatListItemText Style="width: 100%;">
-        <MatListItemPrimaryText>
-            @Model.User.UserName
-        </MatListItemPrimaryText>
-        <MatListItemSecondaryText>
-            @Model.Text
-        </MatListItemSecondaryText>
-    </MatListItemText>
-    <div class="m-0 p-0 d-flex justify-content-center align-items-center">
-        @Model.LikesCount
-        <MatIconButton Class="ml-1"
-                       Icon="@IconName"
-                       Disabled="@(!IsAuthenticated)"
-                       OnClick="@(_ => CommentLikeAsync(Model.Id))" />
-    </div>
-</MatListItem>
-<MatListDivider />
+</article>
 
 @code
 {
-    [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; }
-    [Parameter] private CommentViewModel Model { get; set; }
-    [Parameter] private EventCallback<int> OnLike { get; set; }
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    [Parameter] public CommentViewModel Model { get; set; }
+    [Parameter] public EventCallback<int> OnLike { get; set; }
 
     private bool IsAuthenticated { get; set; }
-    private string IconName { get; set; } = MatIconNames.Favorite;
+    private bool IsLikedByUser { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
         var state = await AuthenticationStateTask;
+        var userName = state.User.Identity.Name;
+        var isLiked = Model?.Likes?.Any(x => x.UserName == userName) ?? false;
 
         IsAuthenticated = state.User.Identity.IsAuthenticated;
-
-        if (IsAuthenticated)
-        {
-        }
+        IsLikedByUser = IsAuthenticated && isLiked;
     }
 
-    private async Task CommentLikeAsync(int id)
-    {
-        await OnLike.InvokeAsync(id);
-
-        IconName = MatIconNames.Favorite_border;
-        StateHasChanged();
-    }
+    private async Task CommentLikeAsync(int id) => await OnLike.InvokeAsync(id);
+    private bool IsValidUserImage() => !string.IsNullOrWhiteSpace(Model.User.ImageUrl);
 }

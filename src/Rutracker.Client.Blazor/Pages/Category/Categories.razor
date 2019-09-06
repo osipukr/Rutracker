@@ -16,7 +16,7 @@ else if (CategoriesItems == null)
 {
     <LoadingBackground ShowLoader="false">
         <p>Failed to load page model</p>
-        <MatButton Link="@Constants.Path.Home" Raised="true" Label="Return to home" />
+        <MatButton Link="@Constants.Path.Home" Label="Return to home" Raised="true" />
     </LoadingBackground>
 }
 else
@@ -31,7 +31,7 @@ else
 {
     private List<CategoryViewModel> CategoriesItems { get; set; }
 
-    protected override async Task OnInitAsync() => await LoadCategoriesAsync();
+    protected override async Task OnInitializedAsync() => await LoadCategoriesAsync();
 
     private async Task LoadCategoriesAsync()
     {
@@ -41,7 +41,7 @@ else
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Load categories");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 
@@ -51,14 +51,14 @@ else
         {
             var category = await CategoryService.CreateAsync(model);
 
-            MatToaster.Add("Category successfully created.", MatToastType.Success, "Create category");
+            MatToaster.Add("Category successfully created.", MatToastType.Success);
             CategoriesItems.Add(category);
 
             StateHasChanged();
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Create category");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 
@@ -73,7 +73,7 @@ else
         {
             var result = await CategoryService.UpdateAsync(category.Id, model);
 
-            MatToaster.Add("Category successfully updated.", MatToastType.Success, "Update category");
+            MatToaster.Add("Category successfully updated.", MatToastType.Success);
             CategoriesItems.Remove(category);
             CategoriesItems.Add(result);
 
@@ -81,7 +81,7 @@ else
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Update category");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 
@@ -91,14 +91,14 @@ else
         {
             await CategoryService.DeleteAsync(model.Id);
 
-            MatToaster.Add("Category successfully deleted.", MatToastType.Success, "Delete category");
+            MatToaster.Add("Category successfully deleted.", MatToastType.Success);
             CategoriesItems.Remove(model);
 
             StateHasChanged();
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Delete category");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 }

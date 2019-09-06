@@ -34,12 +34,12 @@
 
         <div class="form-group text-right">
             <MatCheckbox @bind-Checked="@LoginModel.RememberMe" Label="Remember Me ?" class="filled-in chk-col-blue" />
-            <MatButton Raised="true" Label="Login" type="submit" />
+            <MatButton Label="Login" Raised="true" type="submit" />
         </div>
 
         <hr />
 
-        <MatButton Link="@Constants.Path.Register" Outlined="true" Label="Create account" />
+        <MatButton Link="@Constants.Path.Register" Label="Create account" Outlined="true" />
     </EditForm>
 </MatCard>
 

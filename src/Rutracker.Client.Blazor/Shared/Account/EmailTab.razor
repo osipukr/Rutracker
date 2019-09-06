@@ -19,7 +19,7 @@
             </div>
 
             <div class="form-group mt-4 d-flex justify-content-end">
-                <MatButton type="submit" Raised="true" Label="Change email" />
+                <MatButton Label="Change email" Raised="true" type="submit" />
             </div>
         </EditForm>
     </ChildContent>
@@ -32,14 +32,12 @@
 
     private ChangeEmailViewModel ChangeEmailModel { get; set; }
 
-    protected override Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
         ChangeEmailModel = new ChangeEmailViewModel
         {
             Email = UserModel.Email
         };
-
-        return Task.CompletedTask;
     }
 
     private async Task ChangeEmailClicked()

@@ -6,17 +6,17 @@
 </div>
 
 <div class="form-group mb-0 mt-4 d-flex justify-content-end">
-    <MatButton Label="Cancel" OnClick="@CancelClicked" />
-    <MatButton Label="Delete" OnClick="@DeleteClicked" />
+    <MatButton @onclick="@CancelClicked" Label="Cancel" />
+    <MatButton @onclick="@DeleteClicked" Label="Delete" />
 </div>
 
 @code
 {
-    [CascadingParameter] private ModalParameters Parameters { get; set; }
+    [CascadingParameter] public ModalParameters Parameters { get; set; }
 
     private CategoryViewModel Category { get; set; }
 
-    protected override void OnInit() => Category = Parameters.Get<CategoryViewModel>(nameof(CategoryViewModel));
+    protected override void OnInitialized() => Category = Parameters.Get<CategoryViewModel>(nameof(CategoryViewModel));
 
     private void DeleteClicked() => ModalService.Close(ModalResult.Ok(Category));
     private void CancelClicked() => ModalService.Cancel();

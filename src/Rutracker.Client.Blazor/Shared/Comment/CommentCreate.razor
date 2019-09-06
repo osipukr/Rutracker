@@ -1,4 +1,4 @@
-﻿<EditForm Model="@Comment" OnValidSubmit="CreateCommentAsync" autocomplete="off">
+﻿<EditForm Model="@Comment" OnValidSubmit="@CreateCommentAsync" autocomplete="off">
     <div class="card-footer">
         <div class="input-group">
             @if (Creating)
@@ -9,15 +9,14 @@
             }
             else
             {
-                <InputText Class="form-control"
+                <InputText @bind-Value="@Comment.Text"
+                           class="form-control"
                            placeholder="Type your message here..."
                            aria-label="Message"
-                           required
-                           @bind-Value="@Comment.Text" />
+                           required />
 
                 <div class="input-group-append">
                     <button class="btn btn-warning"
-                            ref="createButton"
                             type="submit">
                         Send
                     </button>
@@ -29,7 +28,7 @@
 
 @code
 {
-    [Parameter] private EventCallback<CommentCreateViewModel> OnCreate { get; set; }
+    [Parameter] public EventCallback<CommentCreateViewModel> OnCreate { get; set; }
 
     private CommentCreateViewModel Comment { get; set; } = new CommentCreateViewModel();
     private bool Creating { get; set; } = false;

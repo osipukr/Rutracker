@@ -16,7 +16,7 @@ else if (CategoryItem == null)
 {
     <LoadingBackground ShowLoader="false">
         <p>Category with id=@Id not found</p>
-        <MatButton Link="@Constants.Path.Categories" Raised="true" Label="Return to full categories list" />
+        <MatButton Link="@Constants.Path.Categories" Label="Return to full categories list" Raised="true" />
     </LoadingBackground>
 }
 else
@@ -24,7 +24,7 @@ else
     <div class="mat-layout-grid px-0 pb-5">
         <div class="mat-layout-grid-inner">
             <div class="mat-layout-grid-cell">
-                <MatIconButton Icon="@MatIconNames.Arrow_back" Link="@Constants.Path.Categories" />
+                <MatIconButton Link="@Constants.Path.Categories" Icon="@MatIconNames.Arrow_back" />
             </div>
         </div>
     </div>
@@ -41,12 +41,12 @@ else
 
 @code
 {
-    [Parameter] private int Id { get; set; }
+    [Parameter] public int Id { get; set; }
 
     private CategoryViewModel CategoryItem { get; set; }
     private List<SubcategoryViewModel> Subcategories { get; set; }
 
-    protected override async Task OnInitAsync() => await LoadCategoryAsync();
+    protected override async Task OnInitializedAsync() => await LoadCategoryAsync();
 
     private async Task LoadCategoryAsync()
     {
@@ -57,7 +57,7 @@ else
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Load category");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 
@@ -69,14 +69,14 @@ else
 
             var subcategory = await SubcategoryService.CreateAsync(model);
 
-            MatToaster.Add("Subcategory successfully created.", MatToastType.Success, "Create subcategory");
+            MatToaster.Add("Subcategory successfully created.", MatToastType.Success);
             Subcategories.Add(subcategory);
 
             StateHasChanged();
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Create category");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 
@@ -91,7 +91,7 @@ else
         {
             var result = await SubcategoryService.UpdateAsync(subcategory.Id, model);
 
-            MatToaster.Add("Subcategory successfully updated.", MatToastType.Success, "Update subcategory");
+            MatToaster.Add("Subcategory successfully updated.", MatToastType.Success);
             Subcategories.Remove(subcategory);
             Subcategories.Add(result);
 
@@ -99,7 +99,7 @@ else
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Update subcategory");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 
@@ -109,14 +109,14 @@ else
         {
             await SubcategoryService.DeleteAsync(model.Id);
 
-            MatToaster.Add("Subcategory successfully deleted.", MatToastType.Success, "Delete subcategory");
+            MatToaster.Add("Subcategory successfully deleted.", MatToastType.Success);
             Subcategories.Remove(model);
 
             StateHasChanged();
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Delete subcategory");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 }

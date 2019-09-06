@@ -14,7 +14,7 @@ else if (TorrentDetailsModel == null)
 {
     <LoadingBackground ShowLoader="false">
         <p>Torrent with id=@Id not found</p>
-        <MatButton Link="@Constants.Path.Torrents" Raised="true" Label="Return to full torrents list" />
+        <MatButton Link="@Constants.Path.Torrents" Label="Return to full torrents list" Raised="true" />
     </LoadingBackground>
 }
 else
@@ -22,7 +22,7 @@ else
     <div class="mat-layout-grid px-0 pb-5">
         <div class="mat-layout-grid-inner">
             <div class="mat-layout-grid-cell">
-                <MatIconButton Icon="@MatIconNames.Arrow_back" Link="@Constants.Path.Torrents" />
+                <MatIconButton Link="@Constants.Path.Torrents" Icon="@MatIconNames.Arrow_back" />
             </div>
         </div>
     </div>
@@ -35,19 +35,22 @@ else
 
 @code
 {
-    [Parameter] private int Id { get; set; }
+    [Parameter] public int Id { get; set; }
 
     private TorrentDetailsViewModel TorrentDetailsModel { get; set; }
     private List<CommentViewModel> Comments { get; set; }
 
-    protected override async Task OnInitAsync() => await LoadTorrentAsync();
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTorrentAsync();
+        await LoadCommentsAsync();
+    }
 
     private async Task LoadTorrentAsync()
     {
         try
         {
             TorrentDetailsModel = await AppState.Torrent(Id);
-            await LoadCommentsAsync();
         }
         catch (Exception ex)
         {
@@ -89,9 +92,9 @@ else
         try
         {
             var comment = await CommentService.LikeCommentAsync(commentId);
+            var index = Comments.FindIndex(x => x.Id == commentId);
 
-            Comments.RemoveAll(x => x.Id == commentId);
-            Comments.Add(comment);
+            Comments[index] = comment;
             StateHasChanged();
         }
         catch (Exception ex)

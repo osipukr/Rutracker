@@ -14,7 +14,7 @@ else if (Torrents == null || !Torrents.Any())
 {
     <LoadingBackground ShowLoader="false">
         <p>Failed to load page model</p>
-        <MatButton Link="@Constants.Path.Home" Raised="true" Label="Return to home" />
+        <MatButton Link="@Constants.Path.Home" Label="Return to home" Raised="true" />
     </LoadingBackground>
 }
 else
@@ -27,7 +27,7 @@ else
     private IEnumerable<TorrentViewModel> Torrents { get; set; }
     private int Count => ViewSettings.PopularTorrentsCount;
 
-    protected override async Task OnInitAsync() => await LoadTorrentsAsync();
+    protected override async Task OnInitializedAsync() => await LoadTorrentsAsync();
 
     private async Task LoadTorrentsAsync()
     {
@@ -37,7 +37,7 @@ else
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Load torrents");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 }
