@@ -17,8 +17,8 @@ else
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-header__image">
-                <MatButton Class="m-0 p-0 rounded-circle w-100 h-100 mat-elevation-z5" 
-                           OnClick="@ChangeImageModalOpened"
+                <MatButton @onclick="@ChangeImageModalOpened"
+                           class="m-0 p-0 rounded-circle w-100 h-100 mat-elevation-z5"
                            title="Click to change image">
                     @if (IsValidUserImage())
                     {
@@ -59,7 +59,7 @@ else
 {
     private UserDetailsViewModel UserDetailsModel { get; set; }
 
-    protected override async Task OnInitAsync() => await LoadUserModelAsync();
+    protected override async Task OnInitializedAsync() => await LoadUserModelAsync();
 
     private async Task LoadUserModelAsync()
     {
@@ -69,7 +69,7 @@ else
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Load user info");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 

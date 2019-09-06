@@ -19,7 +19,7 @@
             </div>
 
             <div class="form-group mt-4 d-flex justify-content-end">
-                <MatButton Type="submit" Raised="true" Label="Change email" />
+                <MatButton type="submit" Raised="true" Label="Change email" />
             </div>
         </EditForm>
     </ChildContent>
@@ -27,17 +27,19 @@
 
 @code
 {
-    [Parameter] private UserDetailsViewModel UserModel { get; set; }
-    [Parameter] private EventCallback OnChange { get; set; }
+    [Parameter] public UserDetailsViewModel UserModel { get; set; }
+    [Parameter] public EventCallback OnChange { get; set; }
 
     private ChangeEmailViewModel ChangeEmailModel { get; set; }
 
-    protected override void OnParametersSet()
+    protected override Task OnParametersSetAsync()
     {
         ChangeEmailModel = new ChangeEmailViewModel
         {
             Email = UserModel.Email
         };
+
+        return Task.CompletedTask;
     }
 
     private async Task ChangeEmailClicked()
@@ -51,11 +53,11 @@
         {
             await UserService.ChangeEmail(ChangeEmailModel);
 
-            MatToaster.Add("To complete, check your email.", MatToastType.Success, "Email change");
+            MatToaster.Add("To complete, check your email.", MatToastType.Success);
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Email change");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 }

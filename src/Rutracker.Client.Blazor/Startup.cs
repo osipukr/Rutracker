@@ -4,7 +4,7 @@ using Blazored.LocalStorage;
 using Blazored.Modal;
 using MatBlazor;
 using Microsoft.AspNetCore.Blazor.Http;
-using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -22,21 +22,22 @@ namespace Rutracker.Client.Blazor
             services.AddSingleton(clientSettings.ApiUrlSettings);
             services.AddSingleton(clientSettings.ViewSettings);
 
+            services.AddAuthorizationCore();
             services.AddBlazoredModal();
             services.AddFileReaderService();
             services.AddBlazoredLocalStorage();
             services.AddAuthorizationCore();
 
-            services.AddSingleton<HttpClientService>();
-            services.AddSingleton<ApiAuthenticationStateProvider>();
-            services.AddSingleton<AuthenticationStateProvider>(s => s.GetRequiredService<ApiAuthenticationStateProvider>());
-            services.AddSingleton<IAccountService, AccountService>();
-            services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<ICategoryService, CategoryService>();
-            services.AddSingleton<ISubcategoryService, SubcategoryService>();
-            services.AddSingleton<ITorrentService, TorrentService>();
-            services.AddSingleton<ICommentService, CommentService>();
-            services.AddSingleton<AppState>();
+            services.AddScoped<HttpClientService>();
+            services.AddScoped<ApiAuthenticationStateProvider>();
+            services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<ApiAuthenticationStateProvider>());
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<ISubcategoryService, SubcategoryService>();
+            services.AddScoped<ITorrentService, TorrentService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<AppState>();
 
             services.AddMatToaster((MatToastConfiguration)clientSettings.MatToasterSettings);
         }
@@ -44,6 +45,7 @@ namespace Rutracker.Client.Blazor
         public void Configure(IComponentsApplicationBuilder app)
         {
             WebAssemblyHttpMessageHandler.DefaultCredentials = FetchCredentialsOption.Include;
+
             app.AddComponent<App>("app");
         }
 

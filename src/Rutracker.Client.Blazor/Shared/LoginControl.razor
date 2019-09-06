@@ -1,11 +1,11 @@
-﻿@inject IAccountService AccountService
-@inject IUriHelper UriHelper
+﻿@inject NavigationManager NavigationManager
+@inject IAccountService AccountService
 @inject IMatToaster MatToaster
 
 <AuthorizeView Context="AuthorizeContext">
     <Authorized>
         <MatTooltip Tooltip="Logout" Wrap="true">
-            <MatIconButton Icon="@MatIconNames.Exit_to_app" OnClick="@LogoutClicked" />
+            <MatIconButton Icon="@MatIconNames.Exit_to_app" @onclick="@LogoutClicked" />
         </MatTooltip>
     </Authorized>
     <NotAuthorized>
@@ -27,11 +27,11 @@
         {
             await AccountService.Logout();
 
-            UriHelper.NavigateTo(Constants.Path.Home);
+            NavigationManager.NavigateTo(Constants.Path.Home);
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Failed logout");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 }

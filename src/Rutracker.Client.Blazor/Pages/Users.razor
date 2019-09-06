@@ -38,7 +38,7 @@ else
 {
     private UserViewModel[] UsersModel { get; set; }
 
-    protected override async Task OnInitAsync() => await LoadUsersAsync();
+    protected override async Task OnInitializedAsync() => await LoadUsersAsync();
 
     private async Task LoadUsersAsync()
     {
@@ -48,7 +48,7 @@ else
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Failed load user list");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 }

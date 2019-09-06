@@ -1,36 +1,36 @@
-﻿<MatNavMenu Multi="true" Class="app-sidebar">
-    <MatNavItem Href="@Constants.Path.Home">
+﻿<MatNavMenu Multi="true" class="app-sidebar">
+    <MatNavItem href="@Constants.Path.Home">
         <MatIcon Icon="@MatIconNames.Home" /> <span class="miniHover">Home page</span>
     </MatNavItem>
 
-    <MatNavItem Href="@Constants.Path.Profile" Disabled="@(!_isAuthenticated)">
+    <MatNavItem href="@Constants.Path.Profile" Disabled="@(!_isAuthenticated)">
         <MatIcon Icon="@MatIconNames.Person" /> <span class="miniHover">Profile</span>
     </MatNavItem>
 
-    <MatNavItem Href="@Constants.Path.Users" Disabled="@(!_isAuthenticated)">
+    <MatNavItem href="@Constants.Path.Users" Disabled="@(!_isAuthenticated)">
         <MatIcon Icon="@MatIconNames.Group" /> <span class="miniHover">Users</span>
     </MatNavItem>
 
-    <MatNavItem Href="@Constants.Path.Categories" Disabled="@(!_isAdmin)">
+    <MatNavItem href="@Constants.Path.Categories" Disabled="@(!_isAdmin)">
         <MatIcon Icon="@MatIconNames.Subtitles" /> <span class="miniHover">Categories</span>
     </MatNavItem>
 
-    <MatNavItem Href="@Constants.Path.Torrents">
+    <MatNavItem href="@Constants.Path.Torrents">
         <MatIcon Icon="@MatIconNames.Bar_chart" /> <span class="miniHover">Torrents</span>
     </MatNavItem>
 
-    <MatNavItem Href="@Constants.Path.PopularTorrents">
+    <MatNavItem href="@Constants.Path.PopularTorrents">
         <MatIcon Icon="@MatIconNames.Trending_up" /> <span class="miniHover">Popular torrents</span>
     </MatNavItem>
 
-    <MatNavItem Href="@Constants.Path.Contributors">
+    <MatNavItem href="@Constants.Path.Contributors">
         <MatIcon Icon="@MatIconNames.Group_add" /> <span class="miniHover">Contributors</span>
     </MatNavItem>
 </MatNavMenu>
 
 @code
 {
-    [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask  { get; set; }
 
     private bool _isAuthenticated;
     private bool _isAdmin;

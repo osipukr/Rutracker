@@ -1,7 +1,7 @@
 ﻿@layout LoginLayout
 
+@inject NavigationManager NavigationManager
 @inject IAccountService AccountService
-@inject IUriHelper UriHelper
 @inject IMatToaster MatToaster
 
 @page "/account/register"
@@ -38,7 +38,7 @@
                           IconTrailing="true"
                           FullWidth="true"
                           Required="true"
-                          Type="password" />
+                          type="password" />
         </div>
 
         <div class="form-group">
@@ -48,11 +48,11 @@
                           IconTrailing="true"
                           FullWidth="true"
                           Required="true"
-                          Type="password" />
+                          type="password" />
         </div>
 
         <div class="form-group d-flex justify-content-end">
-            <MatButton Type="submit" Raised="true" Label="Create account" />
+            <MatButton Raised="true" Label="Create account" type="submit" />
         </div>
 
         <MatButton Link="@Constants.Path.Login" Outlined="true" Label="Login to account" />
@@ -69,13 +69,13 @@
         {
             await AccountService.Register(RegisterModel);
 
-            MatToaster.Add("To complete registration, check the email.", MatToastType.Success, "Confirm email");
+            MatToaster.Add("To complete registration, check the email.", MatToastType.Success);
 
-            UriHelper.NavigateTo(Constants.Path.Login);
+            NavigationManager.NavigateTo(Constants.Path.Login);
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "Creating account");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 }

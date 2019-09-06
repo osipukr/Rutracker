@@ -17,18 +17,21 @@
     </div>
 
     <div class="form-group mt-4 d-flex justify-content-end">
-        <MatButton OnClick="@CancelClicked" Raised="true" Label="Cancel" Class="mx-2" />
-        <MatButton Type="submit" Raised="true" Label="Update" Class="mx-2" />
+        <MatButton @onclick="@CancelClicked" Raised="true" Label="Cancel" class="mx-2" />
+        <MatButton Raised="true" Label="Update" type="submit" class="mx-2" />
     </div>
 </EditForm>
 
 @code
 {
-    [CascadingParameter] private ModalParameters Parameters { get; set; }
+    [CascadingParameter] public ModalParameters Parameters { get; set; }
 
     private ChangeUserViewModel ChangeUserModel { get; set; }
 
-    protected override void OnInit() => ChangeUserModel = Parameters.Get<ChangeUserViewModel>(nameof(ChangeUserViewModel));
+    protected override void OnInitialized()
+    {
+        ChangeUserModel = Parameters.Get<ChangeUserViewModel>(nameof(ChangeUserViewModel));
+    }
 
     private async Task ChangeUserClicked()
     {
@@ -36,13 +39,13 @@
         {
             await UserService.ChangeUser(ChangeUserModel);
 
-            MatToaster.Add("User information changed successfully.", MatToastType.Success, "User change");
+            MatToaster.Add("User information changed successfully.", MatToastType.Success);
 
             ModalService.Close(ModalResult.Ok(true));
         }
         catch (Exception ex)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning, "User change");
+            MatToaster.Add(ex.Message, MatToastType.Warning);
         }
     }
 

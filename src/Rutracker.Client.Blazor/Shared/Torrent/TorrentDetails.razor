@@ -1,5 +1,5 @@
 <MatTabGroup>
-    <MatTab Id="info">
+    <MatTab id="info">
         <LabelContent>
             <MatIcon Icon="@MatIconNames.Description" />
             <p class="m-0">Description</p>
@@ -47,7 +47,7 @@
 
     @if (Torrent.Files != null && Torrent.Files.Length != 0)
     {
-        <MatTab Id="files">
+        <MatTab id="files">
             <LabelContent>
                 <MatIcon Icon="@MatIconNames.Folder_open" />
                 <p class="m-0">Files</p>
@@ -55,11 +55,11 @@
 
             <ChildContent>
                 <MatTable Items="@GetFiles()"
-                          Class="mt-2 mat-elevation-z10"
                           DebounceMilliseconds="150"
                           FilterByColumnName="@nameof(FileViewModel.Name)"
                           SearchTermFieldLabel="Name"
-                          SearchTermFieldPlaceHolder="Input the name">
+                          SearchTermFieldPlaceHolder="Input the name"
+                          class="mt-2 mat-elevation-z10" >
                     <MatTableHeader>
                         <th>Size</th>
                         <th>Name</th>
@@ -75,7 +75,7 @@
 
     @if (Torrent.Content != null)
     {
-        <MatTab Id="content">
+        <MatTab id="content">
             <LabelContent>
                 <MatIcon Icon="@MatIconNames.Comment" />
                 <p class="m-0">Content</p>
@@ -85,7 +85,7 @@
         </MatTab>
     }
 
-    <MatTab Id="comments">
+    <MatTab id="comments">
         <LabelContent>
             <MatIcon Icon="@MatIconNames.Comment" />
             <p class="m-0">Comments</p>
@@ -99,10 +99,10 @@
 
 @code
 {
-    [Parameter] private TorrentDetailsViewModel Torrent { get; set; }
-    [Parameter] private IEnumerable<CommentViewModel> Comments { get; set; }
-    [Parameter] private EventCallback<CommentCreateViewModel> OnCommentCreate { get; set; }
-    [Parameter] private EventCallback<int> OnCommentLike { get; set; }
+    [Parameter] public TorrentDetailsViewModel Torrent { get; set; }
+    [Parameter] public IEnumerable<CommentViewModel> Comments { get; set; }
+    [Parameter] public EventCallback<CommentCreateViewModel> OnCommentCreate { get; set; }
+    [Parameter] public EventCallback<int> OnCommentLike { get; set; }
 
     private async Task CommentCreateAsync(CommentCreateViewModel model) => await OnCommentCreate.InvokeAsync(model);
     private async Task CommentLikeAsync(int id) => await OnCommentLike.InvokeAsync(id);
