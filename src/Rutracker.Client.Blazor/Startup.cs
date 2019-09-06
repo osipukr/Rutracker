@@ -3,7 +3,7 @@ using Blazored.LocalStorage;
 using Blazored.Modal;
 using MatBlazor;
 using Microsoft.AspNetCore.Blazor.Http;
-using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Rutracker.Client.Blazor.Interfaces;
@@ -20,17 +20,18 @@ namespace Rutracker.Client.Blazor
             services.AddSingleton(clientSettings.ApiUriSettings);
             services.AddSingleton(clientSettings.ViewSettings);
 
+            services.AddAuthorizationCore();
             services.AddBlazoredModal();
             services.AddFileReaderService();
             services.AddBlazoredLocalStorage();
-            services.AddAuthorizationCore();
-            services.AddSingleton<HttpClientService>();
-            services.AddSingleton<ApiAuthenticationStateProvider>();
-            services.AddSingleton<AuthenticationStateProvider>(s => s.GetRequiredService<ApiAuthenticationStateProvider>());
-            services.AddSingleton<IAccountService, AccountService>();
-            services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<ITorrentService, TorrentService>();
-            services.AddSingleton<AppState>();
+
+            services.AddScoped<HttpClientService>();
+            services.AddScoped<ApiAuthenticationStateProvider>();
+            services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<ApiAuthenticationStateProvider>());
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITorrentService, TorrentService>();
+            services.AddScoped<AppState>();
 
             services.AddMatToaster((MatToastConfiguration)clientSettings.MatToasterSettings);
         }
@@ -38,6 +39,7 @@ namespace Rutracker.Client.Blazor
         public void Configure(IComponentsApplicationBuilder app)
         {
             WebAssemblyHttpMessageHandler.DefaultCredentials = FetchCredentialsOption.Include;
+
             app.AddComponent<App>("app");
         }
     }

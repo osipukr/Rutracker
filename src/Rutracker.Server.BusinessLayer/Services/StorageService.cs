@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
@@ -18,12 +19,14 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             _storageSettings = storageOptions.Value;
 
-            Guard.Against.Null(_storageSettings, nameof(_storageSettings));
-            Guard.Against.NullOrWhiteSpace(_storageSettings.ConnectionString, parameterName: nameof(_storageSettings.ConnectionString));
-
-            _client = CloudStorageAccount.Parse(_storageSettings.ConnectionString).CreateCloudBlobClient();
-
-            Guard.Against.Null(_client, nameof(_client));
+            try
+            {
+                _client = CloudStorageAccount.Parse(_storageSettings.ConnectionString).CreateCloudBlobClient();
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
         public async Task UploadFileAsync(string containerName, string fileName, Stream stream)

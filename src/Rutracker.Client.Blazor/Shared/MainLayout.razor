@@ -2,7 +2,7 @@
 
 @inject ViewSettings ViewSettings
 
-<MatDrawerContainer Style="width: 100vw; height: 100vh;" Class="@_bbDrawerClass">
+<MatDrawerContainer style="width: 100vw; height: 100vh;" class="@_bbDrawerClass">
     <MatDrawer @bind-Opened="@_navMenuOpened">
         <header class="drawer-header">
             <div class="drawer-logo">
@@ -14,7 +14,7 @@
         <NavMenu />
 
         <footer class="drawer-footer">
-            <MatButton Icon="@MatIconNames.Help" Class="w-100" Link="@Constants.Path.Repository">
+            <MatButton Icon="@MatIconNames.Help" Link="@Constants.Path.Repository" class="w-100">
                 <span class="miniHover">Help & Support</span>
             </MatButton>
         </footer>
@@ -29,22 +29,22 @@
                         </MatAppBarTitle>
                         <div class="hidden-mdc-down">
                             <MatTooltip Tooltip="Toggle Navigation" Wrap="true">
-                                <MatIconButton Class="navToggle"
+                                <MatIconButton @onclick="@NavToggleClicked"
                                                Icon="@MatIconNames.Menu"
                                                ToggleIcon="@MatIconNames.Menu"
-                                               OnClick="@NavToggleClicked" />
+                                               class="navToggle" />
                             </MatTooltip>
 
                             <MatTooltip Tooltip="Minify Navigation" Wrap="true">
-                                <MatIconButton Class="navToggle"
+                                <MatIconButton @onclick="@NavMinifyClicked"
                                                Icon="@MatIconNames.Format_indent_decrease"
                                                ToggleIcon="@MatIconNames.Format_indent_decrease"
-                                               OnClick="@NavMinifyClicked" />
+                                               class="navToggle" />
                             </MatTooltip>
                         </div>
                     </MatAppBarSection>
 
-                    <MatAppBarSection Align="@MatAppBarSectionAlign.End" Style="padding-right: 1rem;">
+                    <MatAppBarSection Align="@MatAppBarSectionAlign.End" style="padding-right: 1rem;">
                         <MatTooltip Tooltip="Github Repository" Wrap="true">
                             <MatIconButton Link="@Constants.Path.Repository">
                                 <i class="fa fa-github" aria-hidden="true"></i>

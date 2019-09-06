@@ -13,19 +13,19 @@
                             </span>
 
                             <div class="mdc-paginator-range-buttons">
-                                <MatIconButton OnClick="@(_ => PageChangeClicked(1))"
+                                <MatIconButton @onclick="@(_ => PageChangeClicked(1))"
                                                Disabled="@(AppState.SearchInProgress || Page == 1)"
                                                Icon="@MatIconNames.First_page" />
 
-                                <MatIconButton OnClick="@(_ => PageChangeClicked(Page - 1))"
+                                <MatIconButton @onclick="@(_ => PageChangeClicked(Page - 1))"
                                                Disabled="@(AppState.SearchInProgress || !HasPrevious)"
                                                Icon="@MatIconNames.Navigate_before" />
 
-                                <MatIconButton OnClick="@(_ => PageChangeClicked(Page + 1))"
+                                <MatIconButton @onclick="@(_ => PageChangeClicked(Page + 1))"
                                                Disabled="@(AppState.SearchInProgress || !HasNext)"
                                                Icon="@MatIconNames.Navigate_next" />
 
-                                <MatIconButton OnClick="@(_ => PageChangeClicked(TotalPages))"
+                                <MatIconButton @onclick="@(_ => PageChangeClicked(TotalPages))"
                                                Disabled="@(AppState.SearchInProgress || Page == TotalPages)"
                                                Icon="@MatIconNames.Last_page" />
                             </div>
@@ -39,11 +39,11 @@
 
 @code
 {
-    [Parameter] private int Page { get; set; }
-    [Parameter] private int PageSize { get; set; }
-    [Parameter] private int TotalPages { get; set; }
-    [Parameter] private EventCallback<int> PageChanged { get; set; }
-            
+    [Parameter] public int Page { get; set; }
+    [Parameter] public int PageSize { get; set; }
+    [Parameter] public int TotalPages { get; set; }
+    [Parameter] public EventCallback<int> PageChanged { get; set; }
+
     private bool HasPrevious => Page > 1 && TotalPages > 1;
     private bool HasNext => Page < TotalPages;
 

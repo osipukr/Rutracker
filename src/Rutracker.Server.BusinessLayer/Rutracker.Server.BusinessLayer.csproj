@@ -10,8 +10,8 @@
 
   <ItemGroup>
     <PackageReference Include="CodeKicker.BBCode-NETStandard" Version="5.0.0" />
-    <PackageReference Include="MailKit" Version="2.2.0" />
-    <PackageReference Include="Twilio" Version="5.31.3" />
+    <PackageReference Include="MailKit" Version="2.3.0" />
+    <PackageReference Include="Twilio" Version="5.32.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 

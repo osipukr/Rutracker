@@ -55,7 +55,7 @@
 
             <ChildContent>
                 <MatTable Items="@GetFiles()"
-                          Class="mt-2 mat-elevation-z10"
+                          class="mt-2 mat-elevation-z10"
                           DebounceMilliseconds="150"
                           FilterByColumnName="@nameof(FileViewModel.Name)"
                           SearchTermFieldLabel="Name"
@@ -88,7 +88,7 @@
 
 @code
 {
-    [Parameter] private TorrentDetailsViewModel Model { get; set; }
+    [Parameter] public TorrentDetailsViewModel Model { get; set; }
 
     private IEnumerable<FileViewModel> GetFiles() => Model.Files.AsEnumerable();
 }

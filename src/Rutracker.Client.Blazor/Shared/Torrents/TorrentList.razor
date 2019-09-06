@@ -21,8 +21,8 @@ else
                 <div class="mat-layout-grid-cell">
                     <MatRipple class="no-select mat-elevation-z5" Color="@MatRippleColor.Secondary">
                         <MatList TwoLine="true">
-                            <MatListItem Href="@GetTorrentDetailsLink(torrent.Id)">
-                                <MatIcon Icon="@MatIconNames.Date_range" Class="pr-2" />
+                            <MatListItem href="@GetTorrentDetailsLink(torrent.Id)">
+                                <MatIcon Icon="@MatIconNames.Date_range" class="pr-2" />
                                 <span class="mat-button font-weight-bold">@torrent.CreatedAt.ToShortDateString()</span>
                             </MatListItem>
 
@@ -49,7 +49,7 @@ else
 
 @code
 {
-    [Parameter] private TorrentViewModel[] Items { get; set; }
+    [Parameter] public TorrentViewModel[] Items { get; set; }
 
     private static string GetTorrentDetailsLink(long id) => string.Format(Constants.Path.Torrent, id.ToString());
 }
