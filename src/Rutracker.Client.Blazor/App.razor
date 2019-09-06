@@ -1,14 +1,10 @@
 ﻿@implements IDisposable
 @inject AppState AppState
 
-<BlazoredModal />
-<MatToastContainer />
-
-<MatThemeProvider Theme="@theme">
+<MatThemeProvider Theme="@_theme">
     <Router AppAssembly="@typeof(Program).Assembly">
         <Found Context="routeData">
-            <RouteView RouteData="routeData" DefaultLayout="@typeof(MainLayout)" />
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(LoginLayout)">
+            <AuthorizeRouteView RouteData="routeData" DefaultLayout="@typeof(MainLayout)">
                 <NotAuthorized>
                     <div class="login-container">
                         <LoadingBackground ShowLoader="false">
@@ -23,24 +19,28 @@
             </AuthorizeRouteView>
         </Found>
         <NotFound>
-            <LayoutView Layout="@typeof(LoginLayout)">
-                <div class="triangle-container">
-                    <div class="triangles"></div>
-                </div>
+            <CascadingAuthenticationState>
+                <LayoutView Layout="@typeof(LoginLayout)">
+                    <div class="triangle-container">
+                        <div class="triangles"></div>
+                    </div>
 
-                <LoadingBackground ShowLoader="false" style="margin-top: 40vh;">
-                    <h1>We lost this page ;(</h1>
-                    <p>We searched high and low but couldn't find what you're looking for.</p>
-                    <MatButton Link="@Constants.Path.Home" Raised="true" Label="Return Home" />
-                </LoadingBackground>
-            </LayoutView>
+                    <LoadingBackground ShowLoader="false" style="margin-top: 40vh;">
+                        <h1>We lost this page ;(</h1>
+                        <p>We searched high and low but couldn't find what you're looking for.</p>
+                        <MatButton Link="@Constants.Path.Home" Raised="true" Label="Return Home" />
+                    </LoadingBackground>
+                </LayoutView>
+            </CascadingAuthenticationState>
         </NotFound>
     </Router>
+    <BlazoredModal />
+    <MatToastContainer />
 </MatThemeProvider>
 
 @code
 {
-    private MatTheme theme = new MatTheme
+    private readonly MatTheme _theme = new MatTheme
     {
         Primary = MatThemeColors.Purple._900.Value,
         Secondary = MatThemeColors.Purple._900.Value
