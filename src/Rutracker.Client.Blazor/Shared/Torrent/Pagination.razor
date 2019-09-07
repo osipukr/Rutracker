@@ -1,6 +1,4 @@
-﻿@inject AppState AppState
-
-@if (TotalPages > 1)
+﻿@if (TotalPages > 1)
 {
     <div class="mat-layout-grid p-0">
         <div class="mat-layout-grid-inner">
@@ -9,24 +7,24 @@
                     <div class="mdc-paginator-container">
                         <div class="mdc-paginator-range-actions">
                             <span class="mdc-paginator-range-label ml-0 mr-1">
-                                @($"Page {Page} of {TotalPages}")
+                                @($"Page {Page} of {TotalPages}") - (page size: @PageSize)
                             </span>
 
                             <div class="mdc-paginator-range-buttons">
                                 <MatIconButton @onclick="@(_ => PageChangeClicked(1))"
-                                               Disabled="@(AppState.SearchInProgress || Page == 1)"
+                                               Disabled="@(SearchInProgress || Page == 1)"
                                                Icon="@MatIconNames.First_page" />
 
                                 <MatIconButton @onclick="@(_ => PageChangeClicked(Page - 1))"
-                                               Disabled="@(AppState.SearchInProgress || !HasPrevious)"
+                                               Disabled="@(SearchInProgress || !HasPrevious)"
                                                Icon="@MatIconNames.Navigate_before" />
 
                                 <MatIconButton @onclick="@(_ => PageChangeClicked(Page + 1))"
-                                               Disabled="@(AppState.SearchInProgress || !HasNext)"
+                                               Disabled="@(SearchInProgress || !HasNext)"
                                                Icon="@MatIconNames.Navigate_next" />
 
                                 <MatIconButton @onclick="@(_ => PageChangeClicked(TotalPages))"
-                                               Disabled="@(AppState.SearchInProgress || Page == TotalPages)"
+                                               Disabled="@(SearchInProgress || Page == TotalPages)"
                                                Icon="@MatIconNames.Last_page" />
                             </div>
                         </div>
@@ -43,6 +41,7 @@
     [Parameter] public int PageSize { get; set; }
     [Parameter] public int TotalPages { get; set; }
     [Parameter] public EventCallback<int> PageChanged { get; set; }
+    [Parameter] public bool SearchInProgress { get; set; }
 
     private bool HasPrevious => Page > 1 && TotalPages > 1;
     private bool HasNext => Page < TotalPages;

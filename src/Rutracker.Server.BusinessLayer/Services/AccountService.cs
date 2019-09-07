@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
+using Rutracker.Shared.Infrastructure.Entities;
 using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.BusinessLayer.Services

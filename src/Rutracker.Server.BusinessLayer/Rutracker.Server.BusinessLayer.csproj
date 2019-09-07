@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Rutracker.Server.DataAccessLayer\Rutracker.Server.DataAccessLayer.csproj" />
-    <ProjectReference Include="..\Rutracker.Shared.Infrastructure\Rutracker.Shared.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

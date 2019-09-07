@@ -1,0 +1,56 @@
+﻿@attribute [Authorize(Roles = UserRoles.Admin)]
+
+@inject IUserService UserService
+@inject IMatToaster MatToaster
+
+@page "/users"
+
+@if (UserItems == null)
+{
+    <LoadingBackground>
+        <span>Loading page model, please wait...</span>
+    </LoadingBackground>
+}
+else if (!UserItems.Any())
+{
+    <LoadingBackground ShowLoader="false">
+        <span>Sorry, but user list is empty...</span>
+    </LoadingBackground>
+}
+else
+{
+    <h3>Users list</h3>
+
+    <MatList SingleSelection="true" TwoLine="true">
+        @foreach (var user in UserItems)
+        {
+            <MatListItem Href="@GetUserProfileLink(user.Id)">
+                <MatListItemText>
+                    <MatListItemPrimaryText>@user.Id</MatListItemPrimaryText>
+                    <MatListItemSecondaryText>@user.UserName</MatListItemSecondaryText>
+                </MatListItemText>
+            </MatListItem>
+        }
+    </MatList>
+}
+
+@code
+{
+    private IEnumerable<UserViewModel> UserItems { get; set; }
+
+    protected override async Task OnInitializedAsync() => await LoadUsersAsync();
+
+    private async Task LoadUsersAsync()
+    {
+        try
+        {
+            UserItems = await UserService.ListAsync();
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning);
+        }
+    }
+
+    private static string GetUserProfileLink(string id) => string.Format(Constants.Path.User, id);
+}

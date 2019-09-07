@@ -1,21 +1,14 @@
-﻿@inject AppState AppState
-@inject ViewSettings ViewSettings
+﻿@inject ViewSettings ViewSettings
+@inject ITorrentService TorrentService
 @inject ICommentService CommentService
 @inject IMatToaster MatToaster
 
 @page "/torrents/{id:int}"
 
-@if (AppState.SearchInProgress)
+@if (TorrentDetailsModel == null)
 {
     <LoadingBackground>
         <span>Loading page model, please wait...</span>
-    </LoadingBackground>
-}
-else if (TorrentDetailsModel == null)
-{
-    <LoadingBackground ShowLoader="false">
-        <p>Torrent with id=@Id not found</p>
-        <MatButton Link="@Constants.Path.Torrents" Label="Return to full torrents list" Raised="true" />
     </LoadingBackground>
 }
 else
@@ -54,7 +47,7 @@ else
     {
         try
         {
-            TorrentDetailsModel = await AppState.Torrent(Id);
+            TorrentDetailsModel = await TorrentService.FindAsync(Id);
         }
         catch (Exception ex)
         {

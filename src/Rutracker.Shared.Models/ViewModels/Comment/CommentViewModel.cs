@@ -13,6 +13,6 @@ namespace Rutracker.Shared.Models.ViewModels.Comment
         public DateTime? LastModifiedAt { get; set; }
         public int LikesCount { get; set; }
         public IEnumerable<LikeViewModel> Likes { get; set; }
-        public UserShortViewModel User { get; set; }
+        public UserViewModel User { get; set; }
     }
 }

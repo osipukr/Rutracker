@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Rutracker.Shared.Infrastructure\Rutracker.Shared.Infrastructure.csproj" />
     <ProjectReference Include="..\Rutracker.Shared.Models\Rutracker.Shared.Models.csproj" />
   </ItemGroup>
 

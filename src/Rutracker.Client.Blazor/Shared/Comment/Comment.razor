@@ -1,21 +1,23 @@
-﻿@using System.Globalization
-<article class="row mb-3">
+﻿<article class="row mb-3">
     <div class="col-md-2 col-sm-2 hidden-xs p-4">
         <figure class="m-0" style="width: 126px; height: 126px;">
-            <img src="@(IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : "img/profile-bg.jpg")"
-                 class="w-100 h-100 rounded-circle img-responsive"
-                 alt="User image | @Model.User.UserName" />
+            <a class="w-100 h-100" href="@GetUserProfileLink(Model.User.Id)">
+                <img src="@(IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : "img/profile-bg.jpg")"
+                     class="w-100 h-100 rounded-circle img-responsive"
+                     alt="User image | @Model.User.UserName" />
+            </a>
         </figure>
     </div>
     <div class="col-md-10 col-sm-10">
         <div class="panel panel-default arrow left">
             <div class="panel-body bg-white border border-dark p-3" style="border-radius: 1rem;">
                 <header class="text-left">
-                    <div class="comment-user">
-                        <i class="fa fa-user"></i> @Model.User.UserName
+                    <div class="comment-user" title="User name">
+                        <i class="fa fa-user"></i>
+                        <a href="@GetUserProfileLink(Model.User.Id)">@Model.User.UserName</a>
                     </div>
 
-                    <time class="comment-date" datetime="16-12-2014 01:05">
+                    <time class="comment-date" datetime="@Model.CreatedAt.ToString(CultureInfo.InvariantCulture)" title="Created at">
                         <i class="fa fa-clock-o"></i> @Model.CreatedAt.ToString(CultureInfo.InvariantCulture)
                     </time>
                 </header>
@@ -142,4 +144,5 @@
     }
 
     private static bool IsValidImageUrl(string url) => !string.IsNullOrWhiteSpace(url);
+    private static string GetUserProfileLink(string id) => string.Format(Constants.Path.User, id);
 }

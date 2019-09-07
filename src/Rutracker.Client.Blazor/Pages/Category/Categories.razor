@@ -1,22 +1,20 @@
-﻿@attribute [Authorize(Roles = "admin")]
+﻿@attribute [Authorize(Roles = UserRoles.Admin)]
 
-@inject AppState AppState
 @inject ICategoryService CategoryService
 @inject IMatToaster MatToaster
 
 @page "/categories"
 
-@if (AppState.SearchInProgress)
+@if (CategoriesItems == null)
 {
     <LoadingBackground>
         <span>Loading page model, please wait...</span>
     </LoadingBackground>
 }
-else if (CategoriesItems == null)
+else if (CategoriesItems.Count == 0)
 {
     <LoadingBackground ShowLoader="false">
-        <p>Failed to load page model</p>
-        <MatButton Link="@Constants.Path.Home" Label="Return to home" Raised="true" />
+        <span>Sorry, but category list is empty...</span>
     </LoadingBackground>
 }
 else
@@ -37,7 +35,7 @@ else
     {
         try
         {
-            CategoriesItems = (await AppState.Categories())?.ToList();
+            CategoriesItems = (await CategoryService.ListAsync())?.ToList();
         }
         catch (Exception ex)
         {

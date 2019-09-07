@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Rutracker.Server.DataAccessLayer.Entities;
+using Rutracker.Shared.Infrastructure.Entities;
 
 namespace Rutracker.Server.DataAccessLayer.Contexts
 {

@@ -14,9 +14,9 @@
     </NotAuthorized>
 </AuthorizeView>
 
-<AuthorizeView Roles="user">
+<AuthorizeView Roles="@UserRoles.User">
     <p>You can only see this if you're in the User role.</p>
 </AuthorizeView>
-<AuthorizeView Roles="admin">
+<AuthorizeView Roles="@UserRoles.Admin">
     <p>You can only see this if you're in the Admin role.</p>
 </AuthorizeView>

@@ -12,6 +12,6 @@ namespace Rutracker.Shared.Models.ViewModels.Torrent
         public string Hash { get; set; }
         public string Content { get; set; }
         public IEnumerable<FileViewModel> Files { get; set; }
-        public UserShortViewModel User { get; set; }
+        public UserViewModel User { get; set; }
     }
 }

@@ -21,6 +21,7 @@
 
         // User
         public string Users { get; set; }
+        public string UserProfile { get; set; }
         public string UserDetails { get; set; }
         public string ChangeUser { get; set; }
         public string ChangeImage { get; set; }

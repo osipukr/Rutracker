@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rutracker.Shared.Models.ViewModels.User;
 using Rutracker.Shared.Models.ViewModels.User.Change;
 using Rutracker.Shared.Models.ViewModels.User.Confirm;
@@ -7,7 +8,8 @@ namespace Rutracker.Client.Blazor.Interfaces
 {
     public interface IUserService
     {
-        Task<UserViewModel[]> Users();
+        Task<IEnumerable<UserViewModel>> ListAsync();
+        Task<UserProfileViewModel> ProfileAsync(string id);
         Task<UserDetailsViewModel> UserDetails();
         Task ChangeUser(ChangeUserViewModel model);
         Task ChangeImage(ChangeImageViewModel model);

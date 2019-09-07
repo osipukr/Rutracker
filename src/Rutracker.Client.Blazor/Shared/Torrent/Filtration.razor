@@ -1,15 +1,14 @@
-﻿@inject AppState AppState
-@inject ICategoryService CategoryService
+﻿@inject ICategoryService CategoryService
 @inject ISubcategoryService SubcategoryService
 @inject IMatToaster MatToaster
 
 <div class="mat-layout-grid px-0">
     <div class="mat-layout-grid-inner">
         <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-            <EditForm Model="@Model" OnValidSubmit="@OnValidSubmitClicked">
+            <EditForm Model="@Filter" OnValidSubmit="@OnValidSubmitClicked">
                 <DataAnnotationsValidator />
 
-                <MatTextField @bind-Value="@Model.Search"
+                <MatTextField @bind-Value="@Filter.Search"
                               Label="Search"
                               Icon="@MatIconNames.Search"
                               IconTrailing="true"
@@ -17,7 +16,7 @@
                               InputClass="pr-5"
                               type="search" />
 
-                <ValidationMessage For="@(() => Model.Search)" />
+                <ValidationMessage For="@(() => Filter.Search)" />
 
                 <div class="row px-0 pt-5 pb-3">
                     <div class="col">
@@ -63,13 +62,13 @@
                     <div class="d-flex justify-content-between filter-group-btn">
                         <MatButton @onclick="@ResetButtonClicked"
                                    Label="All"
-                                   Disabled="@AppState.SearchInProgress"
+                                   Disabled="@SearchInProgress"
                                    Outlined="true"
                                    class="filter-btn mat-elevation-z5"
                                    type="reset" />
 
                         <MatButton Label="Apply"
-                                   Disabled="@AppState.SearchInProgress"
+                                   Disabled="@SearchInProgress"
                                    TrailingIcon="@MatIconNames.Search"
                                    Raised="true"
                                    class="filter-btn mat-elevation-z5"
@@ -83,25 +82,26 @@
 
 @code
 {
-    [Parameter] public FilterViewModel Model { get; set; }
-    [Parameter] public EventCallback FilterChanged { get; set; }
+    [Parameter] public EventCallback<FilterViewModel> FilterChanged { get; set; }
+    [Parameter] public bool SearchInProgress { get; set; }
 
+    private FilterViewModel Filter { get; set; } = new FilterViewModel();
     private IEnumerable<CategoryViewModel> Categories { get; set; }
     private IEnumerable<SubcategoryViewModel> Subcategories { get; set; }
 
     private string CategoryId
     {
-        get => Model.CategoryId.ToString();
+        get => Filter.CategoryId.ToString();
         set
         {
             if (int.TryParse(value, out var id))
             {
-                Model.CategoryId = id;
+                Filter.CategoryId = id;
                 LoadSubcategoriesAsync(id);
             }
             else
             {
-                Model.CategoryId = null;
+                Filter.CategoryId = null;
                 Subcategories = null;
             }
 
@@ -112,8 +112,8 @@
 
     private string SubcategoryId
     {
-        get => Model.SubcategoryId.ToString();
-        set => Model.SubcategoryId = int.TryParse(value, out var id) ? (int?)id : null;
+        get => Filter.SubcategoryId.ToString();
+        set => Filter.SubcategoryId = int.TryParse(value, out var id) ? (int?)id : null;
     }
 
     protected override async Task OnInitializedAsync() => await LoadCategoriesAsync();
@@ -145,7 +145,7 @@
 
     private void ResetFiltration()
     {
-        Model.Search = null;
+        Filter.Search = null;
         CategoryId = null;
         SubcategoryId = null;
     }
@@ -156,5 +156,5 @@
         OnValidSubmitClicked();
     }
 
-    private void OnValidSubmitClicked() => FilterChanged.InvokeAsync(EventArgs.Empty);
+    private void OnValidSubmitClicked() => FilterChanged.InvokeAsync(Filter);
 }

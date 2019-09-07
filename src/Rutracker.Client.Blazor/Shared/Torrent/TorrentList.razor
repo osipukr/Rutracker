@@ -1,15 +1,7 @@
-﻿@inject AppState AppState
-
-@if (AppState.SearchInProgress)
+﻿@if (Items == null)
 {
     <LoadingBackground>
-        <span>Loading torrents, please wait...</span>
-    </LoadingBackground>
-}
-else if (Items == null)
-{
-    <LoadingBackground ShowLoader="false">
-        <span>Failed to load torrent list</span>
+        <span>Loading torrent list, please wait...</span>
     </LoadingBackground>
 }
 else if (!Items.Any())

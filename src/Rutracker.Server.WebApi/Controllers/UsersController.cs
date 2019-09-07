@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -10,6 +11,7 @@ using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Extensions;
 using Rutracker.Server.WebApi.Settings;
+using Rutracker.Shared.Infrastructure.Entities;
 using Rutracker.Shared.Models.ViewModels.User;
 using Rutracker.Shared.Models.ViewModels.User.Change;
 using Rutracker.Shared.Models.ViewModels.User.Confirm;
@@ -49,16 +51,24 @@ namespace Rutracker.Server.WebApi.Controllers
             _emailChangeConfirmationSettings = emailOptions.Value;
         }
 
-        [HttpGet]
-        public async Task<UserViewModel[]> GetAll()
+        [HttpGet, Authorize(Roles = UserRoles.Admin)]
+        public async Task<IEnumerable<UserViewModel>> List()
         {
             var users = await _userService.ListAsync();
 
-            return _mapper.Map<UserViewModel[]>(users);
+            return _mapper.Map<IEnumerable<UserViewModel>>(users);
+        }
+
+        [HttpGet("profile/{id}")]
+        public async Task<UserProfileViewModel> Profile(string id)
+        {
+            var user = await _userService.FindAsync(id);
+
+            return _mapper.Map<UserProfileViewModel>(user);
         }
 
         [HttpGet(nameof(Details))]
-        public async Task<UserViewModel> Details()
+        public async Task<UserDetailsViewModel> Details()
         {
             var user = await _userService.FindAsync(User.GetUserId());
             var roles = await _userService.RolesAsync(user);

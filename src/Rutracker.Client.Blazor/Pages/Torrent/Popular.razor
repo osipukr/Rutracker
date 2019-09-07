@@ -1,25 +1,24 @@
 ﻿@inject ViewSettings ViewSettings
-@inject AppState AppState
+@inject ITorrentService TorrentService
 @inject IMatToaster MatToaster
 
 @page "/torrents/popular"
 
-@if (AppState.SearchInProgress)
+@if (Torrents == null)
 {
     <LoadingBackground>
         <span>Loading page model, please wait...</span>
     </LoadingBackground>
 }
-else if (Torrents == null || !Torrents.Any())
+else if (!Torrents.Any())
 {
     <LoadingBackground ShowLoader="false">
-        <p>Failed to load page model</p>
-        <MatButton Link="@Constants.Path.Home" Label="Return to home" Raised="true" />
+        <span>Sorry, but torrent list is empty...</span>
     </LoadingBackground>
 }
 else
 {
-    <TorrentList Items="@Torrents.ToArray()" />
+    <TorrentList Items="@Torrents" />
 }
 
 @code
@@ -33,7 +32,7 @@ else
     {
         try
         {
-            Torrents = await AppState.Popular(Count);
+            Torrents = await TorrentService.PopularTorrentsAsync(Count);
         }
         catch (Exception ex)
         {

@@ -1,7 +1,4 @@
-﻿@implements IDisposable
-@inject AppState AppState
-
-<MatThemeProvider Theme="@_theme">
+﻿<MatThemeProvider Theme="@_theme">
     <Router AppAssembly="@typeof(Program).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="routeData" DefaultLayout="@typeof(MainLayout)">
@@ -21,15 +18,9 @@
         <NotFound>
             <CascadingAuthenticationState>
                 <LayoutView Layout="@typeof(LoginLayout)">
-                    <div class="triangle-container">
-                        <div class="triangles"></div>
-                    </div>
-
-                    <LoadingBackground ShowLoader="false" style="margin-top: 40vh;">
-                        <h1>We lost this page ;(</h1>
-                        <p>We searched high and low but couldn't find what you're looking for.</p>
-                        <MatButton Link="@Constants.Path.Home" Raised="true" Label="Return Home" />
-                    </LoadingBackground>
+                    <h1>We lost this page ;(</h1>
+                    <p>We searched high and low but couldn't find what you're looking for.</p>
+                    <MatButton Link="@Constants.Path.Home" Label="Return Home" Raised="true" />
                 </LayoutView>
             </CascadingAuthenticationState>
         </NotFound>
@@ -45,8 +36,4 @@
         Primary = MatThemeColors.Purple._900.Value,
         Secondary = MatThemeColors.Purple._900.Value
     };
-
-    protected override void OnInitialized() => AppState.OnChange += StateHasChanged;
-
-    public void Dispose() => AppState.OnChange -= StateHasChanged;
 }

@@ -7,7 +7,7 @@
         <MatIcon Icon="@MatIconNames.Person" /> <span class="miniHover">Profile</span>
     </MatNavItem>
 
-    <MatNavItem href="@Constants.Path.Users" Disabled="@(!_isAuthenticated)">
+    <MatNavItem href="@Constants.Path.Users" Disabled="@(!_isAdmin)">
         <MatIcon Icon="@MatIconNames.Group" /> <span class="miniHover">Users</span>
     </MatNavItem>
 
@@ -40,6 +40,6 @@
         var state = await AuthenticationStateTask;
 
         _isAuthenticated = state.User.Identity.IsAuthenticated;
-        _isAdmin = state.User.IsInRole("admin");
+        _isAdmin = state.User.IsInRole(UserRoles.Admin);
     }
 }

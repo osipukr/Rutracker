@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rutracker.Client.Blazor.Interfaces;
 using Rutracker.Client.Blazor.Settings;
 using Rutracker.Shared.Models.ViewModels.User;
@@ -18,9 +19,16 @@ namespace Rutracker.Client.Blazor.Services
             _apiUrls = apiUrls;
         }
 
-        public async Task<UserViewModel[]> Users()
+        public async Task<IEnumerable<UserViewModel>> ListAsync()
         {
-            return await _httpClientService.GetJsonAsync<UserViewModel[]>(_apiUrls.Users);
+            return await _httpClientService.GetJsonAsync<IEnumerable<UserViewModel>>(_apiUrls.Users);
+        }
+
+        public async Task<UserProfileViewModel> ProfileAsync(string id)
+        {
+            var url = string.Format(_apiUrls.UserProfile, id);
+
+            return await _httpClientService.GetJsonAsync<UserProfileViewModel>(url);
         }
 
         public async Task<UserDetailsViewModel> UserDetails()

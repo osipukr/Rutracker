@@ -1,0 +1,95 @@
+﻿@attribute [Authorize(Roles = UserRoles.User)]
+
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+@inject IMatToaster MatToaster
+
+@page "/users/{id:guid}"
+
+@if (UserProfile == null)
+{
+    <LoadingBackground>
+        <span>Loading page model, please wait...</span>
+    </LoadingBackground>
+}
+else
+{
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-header__image">
+                @if (IsValidUserImage())
+                {
+                    <img class="w-100 h-100 rounded-circle" src="@UserProfile.ImageUrl" alt="User image" />
+                }
+                else
+                {
+                    <img class="w-100 h-100 rounded-circle" src="img/profile-bg.jpg" alt="Default user image" />
+                }
+            </div>
+
+            <h1 class="profile-header__name">@UserProfile.UserName</h1>
+        </div>
+
+        <div class="profile-body">
+            <MatList SingleSelection="true" TwoLine="true">
+                <MatListItem>
+                    <MatListItemText>
+                        <MatListItemPrimaryText>First Name</MatListItemPrimaryText>
+                        <MatListItemSecondaryText>@UserProfile.FirstName</MatListItemSecondaryText>
+                    </MatListItemText>
+                </MatListItem>
+
+                <MatListItem>
+                    <MatListItemText>
+                        <MatListItemPrimaryText>Last Name</MatListItemPrimaryText>
+                        <MatListItemSecondaryText>@UserProfile.LastName</MatListItemSecondaryText>
+                    </MatListItemText>
+                </MatListItem>
+
+                <MatListItem>
+                    <MatListItemText>
+                        <MatListItemPrimaryText>Email</MatListItemPrimaryText>
+                        <MatListItemSecondaryText>@UserProfile.Email</MatListItemSecondaryText>
+                    </MatListItemText>
+                </MatListItem>
+            </MatList>
+        </div>
+    </div>
+}
+
+@code
+{
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    [Parameter] public Guid Id { get; set; }
+
+    private string UserId { get; set; }
+    private UserProfileViewModel UserProfile { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        UserId = Id.ToString();
+
+        if (UserId == (await AuthenticationStateTask).User.FindFirst(ClaimTypes.NameIdentifier).Value)
+        {
+            NavigationManager.NavigateTo(Constants.Path.Profile);
+        }
+        else
+        {
+            await LoadUserProfileAsync();
+        }
+    }
+
+    private async Task LoadUserProfileAsync()
+    {
+        try
+        {
+            UserProfile = await UserService.ProfileAsync(UserId);
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning);
+        }
+    }
+
+    private bool IsValidUserImage() => !string.IsNullOrWhiteSpace(UserProfile.ImageUrl);
+}

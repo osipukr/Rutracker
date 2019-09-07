@@ -1,22 +1,15 @@
-﻿@attribute [Authorize(Roles = "admin")]
+﻿@attribute [Authorize(Roles = UserRoles.Admin)]
 
-@inject AppState AppState
+@inject ICategoryService CategoryService
 @inject ISubcategoryService SubcategoryService
 @inject IMatToaster MatToaster
 
 @page "/categories/{id:int}"
 
-@if (AppState.SearchInProgress)
+@if (CategoryItem == null)
 {
     <LoadingBackground>
         <span>Loading page model, please wait...</span>
-    </LoadingBackground>
-}
-else if (CategoryItem == null)
-{
-    <LoadingBackground ShowLoader="false">
-        <p>Category with id=@Id not found</p>
-        <MatButton Link="@Constants.Path.Categories" Label="Return to full categories list" Raised="true" />
     </LoadingBackground>
 }
 else
@@ -52,7 +45,7 @@ else
     {
         try
         {
-            CategoryItem = await AppState.Category(Id);
+            CategoryItem = await CategoryService.FindAsync(Id);
             Subcategories = (await SubcategoryService.ListAsync(Id))?.ToList();
         }
         catch (Exception ex)
