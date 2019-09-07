@@ -36,6 +36,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var comments = await _commentRepository.GetAll(x => x.TorrentId == torrentId)
                 .OrderByDescending(x => x.Likes.Count)
+                .ThenByDescending(x => x.CreatedAt)
                 .ToListAsync();
 
             Guard.Against.NullNotFound(comments, "Comments not found.");

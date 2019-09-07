@@ -6,7 +6,13 @@
         <span>Loading torrents, please wait...</span>
     </LoadingBackground>
 }
-else if (Items?.Length == 0)
+else if (Items == null)
+{
+    <LoadingBackground ShowLoader="false">
+        <span>Failed to load torrent list</span>
+    </LoadingBackground>
+}
+else if (!Items.Any())
 {
     <LoadingBackground ShowLoader="false">
         <span>Sorry, but torrent list is empty...</span>
@@ -19,35 +25,7 @@ else
             @foreach (var torrent in Items)
             {
                 <div class="mat-layout-grid-cell">
-                    <MatCard Class="no-select mat-elevation-z5">
-                        <MatCardContent>
-                            <MatCardMedia Wide="true" ImageUrl="https://material-components.github.io/material-components-web-catalog/static/media/photos/3x2/2.jpg" />
-
-                            <div class="p-1">
-                                <MatHeadline6 class="m-0">@torrent.Name</MatHeadline6>
-                            </div>
-
-                            <div class="p-2 mt-3">
-                                <MatBody2 class="m-0">@($"Create at: {torrent.CreatedAt.ToShortDateString()}")</MatBody2>
-                                <MatBody2 class="m-0">@($"Size: {ConvertBytesToMegabytes(torrent.Size):F3} Mb")</MatBody2>
-                            </div>
-                        </MatCardContent>
-
-                        <MatCardActions>
-                            <MatCardActionButtons>
-                                <MatButton Link="@GetTorrentDetailsLink(torrent.Id)" Label="Details" />
-                            </MatCardActionButtons>
-
-                            <MatCardActionIcons>
-                                <div class="m-0 p-0 d-flex justify-content-center align-items-center">
-                                    @torrent.CommentsCount
-                                    <MatIconButton Link="@GetCommentsLink(torrent.Id)"
-                                                   Icon="@MatIconNames.Comment"
-                                                   class="ml-1" />
-                                </div>
-                            </MatCardActionIcons>
-                        </MatCardActions>
-                    </MatCard>
+                    <Torrent Model="@torrent" />
                 </div>
             }
         </div>
@@ -56,9 +34,5 @@ else
 
 @code
 {
-    [Parameter] public TorrentViewModel[] Items { get; set; }
-
-    private static string GetTorrentDetailsLink(int id) => string.Format(Constants.Path.Torrent, id.ToString());
-    private static string GetCommentsLink(int id) => $"{GetTorrentDetailsLink(id)}#comments";
-    private static double ConvertBytesToMegabytes(long bytes) => bytes / 1024f / 1024f;
+    [Parameter] public IEnumerable<TorrentViewModel> Items { get; set; }
 }

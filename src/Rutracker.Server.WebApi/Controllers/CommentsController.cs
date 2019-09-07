@@ -60,7 +60,7 @@ namespace Rutracker.Server.WebApi.Controllers
             return _mapper.Map<CommentViewModel>(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
             await _commentService.DeleteAsync(id, User.GetUserId());

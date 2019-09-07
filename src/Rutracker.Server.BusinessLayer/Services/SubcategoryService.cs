@@ -5,16 +5,19 @@ using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
+using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
     public class SubcategoryService : ISubcategoryService
     {
+        private readonly ICategoryRepository _categoryRepository;
         private readonly ISubcategoryRepository _subcategoryRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public SubcategoryService(ISubcategoryRepository subcategoryRepository, IUnitOfWork unitOfWork)
+        public SubcategoryService(ICategoryRepository categoryRepository, ISubcategoryRepository subcategoryRepository, IUnitOfWork unitOfWork)
         {
+            _categoryRepository = categoryRepository;
             _subcategoryRepository = subcategoryRepository;
             _unitOfWork = unitOfWork;
         }
@@ -44,6 +47,11 @@ namespace Rutracker.Server.BusinessLayer.Services
         public async Task<Subcategory> AddAsync(Subcategory subcategory)
         {
             ThrowIfInvalidSubcategoryModel(subcategory);
+
+            if (!await _categoryRepository.ExistAsync(subcategory.CategoryId))
+            {
+                throw new RutrackerException($"Category with id {subcategory.CategoryId} not found.", ExceptionEventType.NotValidParameters);
+            }
 
             await _subcategoryRepository.AddAsync(subcategory);
             await _unitOfWork.CompleteAsync();

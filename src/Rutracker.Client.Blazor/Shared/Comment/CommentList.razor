@@ -1,32 +1,31 @@
-﻿<AuthorizeView>
-    <NotAuthorized>
-        <div class="alert alert-success">
-            <a href="@Constants.Path.Login">Log in</a> to post a message.
-        </div>
-    </NotAuthorized>
-    <Authorized>
-        <CommentCreate OnCreate="@CommentCreateAsync" />
-    </Authorized>
-</AuthorizeView>
+﻿<div class="container pt-3">
+    <div class="row m-0 mb-3">
+        <AuthorizeView>
+            <NotAuthorized>
+                <div class="alert alert-success w-100">
+                    <a href="@Constants.Path.Login">Log in</a> to post a message.
+                </div>
+            </NotAuthorized>
+            <Authorized>
+                <CommentCreate OnCreate="@OnCreate" />
+            </Authorized>
+        </AuthorizeView>
+    </div>
 
-<div class="container">
-    <div class="row">
-        <div class="w-100">
-            <h2 class="page-header">Comments</h2>
-            <section class="comment-list">
-                @if (Items == null)
+    <div class="row m-0">
+        <section id="comments" class="comment-list w-100">
+            @if (Items == null)
+            {
+                <p>Loading comments...</p>
+            }
+            else
+            {
+                foreach (var comment in Items)
                 {
-                    <p>Loading comments...</p>
+                    <Comment Model="@comment" OnLike="@OnLike" OnEdit="@OnEdit" OnDelete="@OnDelete" />
                 }
-                else
-                {
-                    foreach (var comment in Items)
-                    {
-                        <Comment Model="@comment" OnLike="@CommentLikeAsync" />
-                    }
-                }
-            </section>
-        </div>
+            }
+        </section>
     </div>
 </div>
 
@@ -35,8 +34,7 @@
 {
     [Parameter] public IEnumerable<CommentViewModel> Items { get; set; }
     [Parameter] public EventCallback<CommentCreateViewModel> OnCreate { get; set; }
+    [Parameter] public Func<CommentViewModel, CommentUpdateViewModel, Task> OnEdit { get; set; }
+    [Parameter] public EventCallback<int> OnDelete { get; set; }
     [Parameter] public EventCallback<int> OnLike { get; set; }
-
-    private async Task CommentCreateAsync(CommentCreateViewModel model) => await OnCreate.InvokeAsync(model);
-    private async Task CommentLikeAsync(int id) => await OnLike.InvokeAsync(id);
 }

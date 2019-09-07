@@ -43,7 +43,7 @@ namespace Rutracker.Server.WebApi.Controllers
                 Page = page,
                 PageSize = pageSize,
                 TotalPages = (int)Math.Ceiling(count / (double)pageSize),
-                Items = _mapper.Map<TorrentViewModel[]>(torrents)
+                Items = _mapper.Map<IEnumerable<TorrentViewModel>>(torrents)
             };
         }
 

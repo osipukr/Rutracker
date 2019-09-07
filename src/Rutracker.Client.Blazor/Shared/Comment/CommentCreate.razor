@@ -1,5 +1,5 @@
-﻿<EditForm Model="@Comment" OnValidSubmit="@CreateCommentAsync" autocomplete="off">
-    <div class="card-footer">
+﻿<EditForm Model="@Comment" OnValidSubmit="@CreateCommentAsync" autocomplete="off" class="w-100">
+    <div class="card-footer" style="background-color: transparent;">
         <div class="input-group">
             @if (Creating)
             {
@@ -16,10 +16,7 @@
                            required />
 
                 <div class="input-group-append">
-                    <button class="btn btn-warning"
-                            type="submit">
-                        Send
-                    </button>
+                    <button class="btn btn-warning" type="submit">Send</button>
                 </div>
             }
         </div>
@@ -31,7 +28,7 @@
     [Parameter] public EventCallback<CommentCreateViewModel> OnCreate { get; set; }
 
     private CommentCreateViewModel Comment { get; set; } = new CommentCreateViewModel();
-    private bool Creating { get; set; } = false;
+    private bool Creating { get; set; }
 
     private async Task CreateCommentAsync()
     {
@@ -40,7 +37,7 @@
 
         await OnCreate.InvokeAsync(Comment);
 
-        Comment = new CommentCreateViewModel();
+        Comment.Text = null;
         Creating = false;
         StateHasChanged();
     }

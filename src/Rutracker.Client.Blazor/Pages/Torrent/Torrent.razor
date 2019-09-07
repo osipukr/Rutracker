@@ -1,4 +1,5 @@
 ﻿@inject AppState AppState
+@inject ViewSettings ViewSettings
 @inject ICommentService CommentService
 @inject IMatToaster MatToaster
 
@@ -27,10 +28,13 @@ else
         </div>
     </div>
 
-    <TorrentDetails Torrent="@TorrentDetailsModel"
-                    Comments="@Comments"
-                    OnCommentCreate="@CreateCommentAsync"
-                    OnCommentLike="@CommentLikeAsync" />
+    <TorrentDetails Torrent="@TorrentDetailsModel" />
+
+    <CommentList Items="@Comments"
+                 OnCreate="@CommentCreateAsync"
+                 OnEdit="@CommentUpdateAsync"
+                 OnDelete="@CommentDeleteAsync"
+                 OnLike="@CommentLikeAsync" />
 }
 
 @code
@@ -70,13 +74,15 @@ else
         }
     }
 
-    private async Task CreateCommentAsync(CommentCreateViewModel comment)
+    private async Task CommentCreateAsync(CommentCreateViewModel comment)
     {
         try
         {
             comment.TorrentId = TorrentDetailsModel.Id;
 
             var result = await CommentService.AddAsync(comment);
+
+            MatToaster.Add("Comment created successfully.", MatToastType.Success);
 
             Comments.Add(result);
             StateHasChanged();
@@ -87,12 +93,50 @@ else
         }
     }
 
-    private async Task CommentLikeAsync(int commentId)
+    private async Task CommentUpdateAsync(CommentViewModel comment, CommentUpdateViewModel model)
     {
         try
         {
-            var comment = await CommentService.LikeCommentAsync(commentId);
-            var index = Comments.FindIndex(x => x.Id == commentId);
+            var result = await CommentService.UpdateAsync(comment.Id, model);
+
+            MatToaster.Add("Comment updated successfully.", MatToastType.Success);
+
+            var index = Comments.FindIndex(x => x.Id == comment.Id);
+
+            Comments[index] = result;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning);
+        }
+    }
+
+    private async Task CommentDeleteAsync(int id)
+    {
+        try
+        {
+            await CommentService.DeleteAsync(id);
+
+            MatToaster.Add("Comment deleted successfully.", MatToastType.Success);
+
+            var index = Comments.FindIndex(x => x.Id == id);
+
+            Comments.RemoveAt(index);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            MatToaster.Add(ex.Message, MatToastType.Warning);
+        }
+    }
+
+    private async Task CommentLikeAsync(int id)
+    {
+        try
+        {
+            var comment = await CommentService.LikeCommentAsync(id);
+            var index = Comments.FindIndex(x => x.Id == id);
 
             Comments[index] = comment;
             StateHasChanged();
