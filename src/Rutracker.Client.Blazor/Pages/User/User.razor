@@ -1,10 +1,8 @@
 ﻿@attribute [Authorize(Roles = UserRoles.User)]
 
-@inject NavigationManager NavigationManager
 @inject IUserService UserService
-@inject IMatToaster MatToaster
 
-@page "/users/{id:guid}"
+@page "/users/{id}"
 
 @if (UserProfile == null)
 {
@@ -60,16 +58,13 @@ else
 @code
 {
     [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
-    [Parameter] public Guid Id { get; set; }
+    [Parameter] public string Id { get; set; }
 
-    private string UserId { get; set; }
     private UserProfileViewModel UserProfile { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        UserId = Id.ToString();
-
-        if (UserId == (await AuthenticationStateTask).User.FindFirst(ClaimTypes.NameIdentifier).Value)
+        if (Id == (await AuthenticationStateTask).User.FindFirst(ClaimTypes.NameIdentifier).Value)
         {
             NavigationManager.NavigateTo(Constants.Path.Profile);
         }
@@ -83,7 +78,7 @@ else
     {
         try
         {
-            UserProfile = await UserService.ProfileAsync(UserId);
+            UserProfile = await UserService.ProfileAsync(Id);
         }
         catch (Exception ex)
         {

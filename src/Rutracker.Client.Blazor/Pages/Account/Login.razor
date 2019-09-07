@@ -1,8 +1,6 @@
 ﻿@layout LoginLayout
 
-@inject NavigationManager NavigationManager
 @inject IAccountService AccountService
-@inject IMatToaster MatToaster
 
 @page "/account/login"
 
@@ -10,7 +8,11 @@
     <EditForm Model="@LoginModel" OnValidSubmit="@LoginClicked">
         <div class="form-group">
             <DataAnnotationsValidator />
-            <ValidationSummary />
+
+            @if (Result == ServiceResult.Failed)
+            {
+                <Alert Type="danger">@Errors</Alert>
+            }
         </div>
 
         <div class="form-group">
@@ -49,15 +51,11 @@
 
     private async Task LoginClicked()
     {
-        try
-        {
-            await AccountService.Login(LoginModel);
+        await LoadAsync(() => AccountService.Login(LoginModel));
 
-            NavigationManager.NavigateTo(Constants.Path.Home);
-        }
-        catch (Exception ex)
+        if (Result == ServiceResult.Succeeded)
         {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
+            NavigationManager.NavigateTo(Constants.Path.Home);
         }
     }
 }

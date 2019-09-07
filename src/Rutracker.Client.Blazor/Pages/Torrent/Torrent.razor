@@ -1,11 +1,17 @@
-﻿@inject ViewSettings ViewSettings
-@inject ITorrentService TorrentService
+﻿@inject ITorrentService TorrentService
 @inject ICommentService CommentService
-@inject IMatToaster MatToaster
 
 @page "/torrents/{id:int}"
 
-@if (TorrentDetailsModel == null)
+@if (Result == ServiceResult.Failed)
+{
+    <Alert Type="danger">@Errors</Alert>
+
+    <LoadingBackground ShowLoader="false">
+        <span>Error loading torrent information.</span>
+    </LoadingBackground>
+}
+else if (TorrentDetailsModel == null)
 {
     <LoadingBackground>
         <span>Loading page model, please wait...</span>
@@ -39,33 +45,12 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadTorrentAsync();
-        await LoadCommentsAsync();
+        await LoadAsync(LoadTorrentAsync);
+        await LoadAsync(LoadCommentsAsync);
     }
 
-    private async Task LoadTorrentAsync()
-    {
-        try
-        {
-            TorrentDetailsModel = await TorrentService.FindAsync(Id);
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
-    }
-
-    private async Task LoadCommentsAsync()
-    {
-        try
-        {
-            Comments = (await CommentService.ListAsync(TorrentDetailsModel.Id))?.ToList();
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
-    }
+    private async Task LoadTorrentAsync() => TorrentDetailsModel = await TorrentService.FindAsync(Id);
+    private async Task LoadCommentsAsync() => Comments = (await CommentService.ListAsync(TorrentDetailsModel.Id)).ToList();
 
     private async Task CommentCreateAsync(CommentCreateViewModel comment)
     {

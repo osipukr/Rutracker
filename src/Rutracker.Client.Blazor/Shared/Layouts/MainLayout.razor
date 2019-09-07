@@ -28,14 +28,14 @@
                         </MatAppBarTitle>
                         <div class="hidden-mdc-down">
                             <MatTooltip Tooltip="Toggle Navigation" Wrap="true">
-                                <MatIconButton @onclick="@NavToggleClicked"
+                                <MatIconButton OnClick="@NavToggleClicked"
                                                Icon="@MatIconNames.Menu"
                                                ToggleIcon="@MatIconNames.Menu"
                                                class="navToggle" />
                             </MatTooltip>
 
                             <MatTooltip Tooltip="Minify Navigation" Wrap="true">
-                                <MatIconButton @onclick="@NavMinifyClicked"
+                                <MatIconButton OnClick="@NavMinifyClicked"
                                                Icon="@MatIconNames.Format_indent_decrease"
                                                ToggleIcon="@MatIconNames.Format_indent_decrease"
                                                class="navToggle" />

@@ -1,23 +1,22 @@
 ﻿@attribute [Authorize(Roles = UserRoles.User)]
 
 @inject IUserService UserService
-@inject IMatToaster MatToaster
 @inject IModalService ModalService
 
 @page "/account/profile"
 
-@if (UserDetailsModel == null)
+@if (Result == ServiceResult.InProgress)
 {
     <LoadingBackground>
-        <span>Loading user list, please wait...</span>
+        <span>Loading user info, please wait...</span>
     </LoadingBackground>
 }
-else
+else if (Result == ServiceResult.Succeeded)
 {
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-header__image">
-                <MatButton @onclick="@ChangeImageModalOpened"
+                <MatButton OnClick="@ChangeImageModalOpened"
                            class="m-0 p-0 rounded-circle w-100 h-100 mat-elevation-z5"
                            title="Click to change image">
                     @if (IsValidUserImage())
@@ -54,24 +53,22 @@ else
         </div>
     </div>
 }
+else
+{
+    <Alert Type="danger">@Errors</Alert>
+
+    <LoadingBackground ShowLoader="false">
+        <span>Error loading user information.</span>
+    </LoadingBackground>
+}
 
 @code
 {
     private UserDetailsViewModel UserDetailsModel { get; set; }
 
-    protected override async Task OnInitializedAsync() => await LoadUserModelAsync();
+    protected override async Task OnInitializedAsync() => await LoadAsync(LoadUserModelAsync);
 
-    private async Task LoadUserModelAsync()
-    {
-        try
-        {
-            UserDetailsModel = await UserService.UserDetails();
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
-    }
+    private async Task LoadUserModelAsync() => UserDetailsModel = await UserService.UserDetails();
 
     private void ChangeImageModalOpened()
     {

@@ -1,0 +1,26 @@
+﻿@if (Show)
+{
+    <div class="alert alert-@Type alert-dismissible fade show @Class" role="alert" style="@Style">
+        @ChildContent
+
+        <button @onclick="@CloseClicked" type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+@code
+{
+    [Parameter] public string Type { get; set; }
+    [Parameter] public string Class { get; set; }
+    [Parameter] public string Style { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    private bool Show { get; set; } = true;
+
+    private void CloseClicked()
+    {
+        Show = false;
+        StateHasChanged();
+    }
+}

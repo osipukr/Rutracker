@@ -24,7 +24,6 @@ namespace Rutracker.Client.Blazor
             services.AddBlazoredModal();
             services.AddFileReaderService();
             services.AddBlazoredLocalStorage();
-            services.AddAuthorizationCore();
 
             services.AddScoped<HttpClientService>();
             services.AddScoped<ApiAuthenticationStateProvider>();

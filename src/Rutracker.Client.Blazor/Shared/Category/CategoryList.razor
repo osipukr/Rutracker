@@ -5,7 +5,7 @@
 <MatTable Items="@Items" AllowSelection="true" class="mat-elevation-z5">
     <MatTableHeader>
         <th class="p-2 text-center">
-            <MatIconButton @onclick="@CreateClicked" Icon="@MatIconNames.Add"title="Add new category" />
+            <MatIconButton OnClick="@CreateClicked" Icon="@MatIconNames.Add"title="Add new category" />
         </th>
         <th title="Category id">Id</th>
         <th title="Subcategory count">Count</th>
@@ -14,8 +14,8 @@
     <MatTableRow Context="category">
         <td>
             <div style="width:100px;">
-                <MatIconButton @onclick="@(_ => UpdateClicked(category))" Icon="@MatIconNames.Edit" />
-                <MatIconButton @onclick="@(_ => DeleteClicked(category))" Icon="@MatIconNames.Delete" />
+                <MatIconButton OnClick="@(_ => UpdateClicked(category))" Icon="@MatIconNames.Edit" />
+                <MatIconButton OnClick="@(_ => DeleteClicked(category))" Icon="@MatIconNames.Delete" />
             </div>
         </td>
         <td>@category.Id</td>

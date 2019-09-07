@@ -11,19 +11,19 @@
                             </span>
 
                             <div class="mdc-paginator-range-buttons">
-                                <MatIconButton @onclick="@(_ => PageChangeClicked(1))"
+                                <MatIconButton OnClick="@(_ => PageChangeClicked(1))"
                                                Disabled="@(SearchInProgress || Page == 1)"
                                                Icon="@MatIconNames.First_page" />
 
-                                <MatIconButton @onclick="@(_ => PageChangeClicked(Page - 1))"
+                                <MatIconButton OnClick="@(_ => PageChangeClicked(Page - 1))"
                                                Disabled="@(SearchInProgress || !HasPrevious)"
                                                Icon="@MatIconNames.Navigate_before" />
 
-                                <MatIconButton @onclick="@(_ => PageChangeClicked(Page + 1))"
+                                <MatIconButton OnClick="@(_ => PageChangeClicked(Page + 1))"
                                                Disabled="@(SearchInProgress || !HasNext)"
                                                Icon="@MatIconNames.Navigate_next" />
 
-                                <MatIconButton @onclick="@(_ => PageChangeClicked(TotalPages))"
+                                <MatIconButton OnClick="@(_ => PageChangeClicked(TotalPages))"
                                                Disabled="@(SearchInProgress || Page == TotalPages)"
                                                Icon="@MatIconNames.Last_page" />
                             </div>

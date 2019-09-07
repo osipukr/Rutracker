@@ -38,7 +38,7 @@
                         </div>
 
                         <div class="mt-2">
-                            <MatButton @onclick="@CommentEditCancelClicked" Label="Cancel" />
+                            <MatButton OnClick="@CommentEditCancelClicked" Label="Cancel" />
                             <MatButton Label="Update" type="submit" />
                         </div>
                     </EditForm>
@@ -62,8 +62,8 @@
 
                             @if (IsUserComment)
                             {
-                                <MatIconButton @onclick="@CommentEditClicked" Icon="@MatIconNames.Edit" title="Edit comment" />
-                                <MatIconButton @onclick="@(_ => CommentDeleteAsync(Model.Id))" Icon="@MatIconNames.Delete" title="Delete comment" />
+                                <MatIconButton OnClick="@CommentEditClicked" Icon="@MatIconNames.Edit" title="Edit comment" />
+                                <MatIconButton OnClick="@(_ => CommentDeleteAsync(Model.Id))" Icon="@MatIconNames.Delete" title="Delete comment" />
                             }
                         </div>
 
