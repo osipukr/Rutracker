@@ -1,0 +1,32 @@
+﻿@if (Action == PageActions.InProgress)
+{
+    <LoadingBackground>
+        <span>Loading @Title, please wait...</span>
+    </LoadingBackground>
+}
+else if (Action == PageActions.Failed)
+{
+    <Alert Type="@AlertTypes.Danger">@Errors</Alert>
+
+    <LoadingBackground ShowLoader="false">
+        <span>Error loading @Title.</span>
+    </LoadingBackground>
+}
+else if (Action == PageActions.Succeeded)
+{
+    @ChildContent
+}
+else
+{
+    <LoadingBackground ShowLoader="false">
+        <span>I don't know :(</span>
+    </LoadingBackground>
+}
+
+@code
+{
+    [Parameter] public string Title { get; set; }
+    [Parameter] public PageActions Action { get; set; }
+    [Parameter] public string Errors { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}

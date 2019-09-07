@@ -87,7 +87,7 @@
 {
     [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
     [Parameter] public CommentViewModel Model { get; set; }
-    [Parameter] public Func<CommentViewModel, CommentUpdateViewModel, Task> OnEdit { get; set; }
+    [Parameter] public Func<CommentViewModel, CommentUpdateViewModel, Task> OnUpdate { get; set; }
     [Parameter] public EventCallback<int> OnDelete { get; set; }
     [Parameter] public EventCallback<int> OnLike { get; set; }
 
@@ -113,7 +113,7 @@
         }
     }
 
-    private async Task CommentEditAsync(CommentUpdateViewModel model) => await OnEdit(Model, model);
+    private async Task CommentUpdateAsync(CommentUpdateViewModel model) => await OnUpdate(Model, model);
     private async Task CommentDeleteAsync(int id) => await OnDelete.InvokeAsync(id);
     private async Task CommentLikeAsync(int id) => await OnLike.InvokeAsync(id);
 
@@ -138,7 +138,7 @@
 
     private async Task OnValidSubmitClicked()
     {
-        await CommentEditAsync(CommentUpdate);
+        await CommentUpdateAsync(CommentUpdate);
 
         CommentEditCancelClicked();
     }

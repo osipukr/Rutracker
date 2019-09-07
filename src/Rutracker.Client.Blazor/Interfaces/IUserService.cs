@@ -19,5 +19,6 @@ namespace Rutracker.Client.Blazor.Interfaces
         Task DeleteImage();
         Task ConfirmChangeEmail(ConfirmChangeEmailViewModel model);
         Task ConfirmChangePhoneNumber(ConfirmChangePhoneNumberViewModel model);
+        bool IsValidUserImage(string imageUrl);
     }
 }

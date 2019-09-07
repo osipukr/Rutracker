@@ -22,7 +22,7 @@
             {
                 foreach (var comment in Items)
                 {
-                    <Comment Model="@comment" OnLike="@OnLike" OnEdit="@OnEdit" OnDelete="@OnDelete" />
+                    <Comment Model="@comment" OnLike="@OnLike" OnUpdate="@OnUpdate" OnDelete="@OnDelete" />
                 }
             }
         </section>
@@ -34,7 +34,7 @@
 {
     [Parameter] public IEnumerable<CommentViewModel> Items { get; set; }
     [Parameter] public EventCallback<CommentCreateViewModel> OnCreate { get; set; }
-    [Parameter] public Func<CommentViewModel, CommentUpdateViewModel, Task> OnEdit { get; set; }
+    [Parameter] public Func<CommentViewModel, CommentUpdateViewModel, Task> OnUpdate { get; set; }
     [Parameter] public EventCallback<int> OnDelete { get; set; }
     [Parameter] public EventCallback<int> OnLike { get; set; }
 }

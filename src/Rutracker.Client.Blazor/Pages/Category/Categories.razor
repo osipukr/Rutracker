@@ -4,59 +4,29 @@
 
 @page "/categories"
 
-@if (CategoriesItems == null)
-{
-    <LoadingBackground>
-        <span>Loading page model, please wait...</span>
-    </LoadingBackground>
-}
-else if (CategoriesItems.Count == 0)
-{
-    <LoadingBackground ShowLoader="false">
-        <span>Sorry, but category list is empty...</span>
-    </LoadingBackground>
-}
-else
-{
+<Page Title="category list" Action="@ActionResult" Errors="@Errors">
     <CategoryList Items="@CategoriesItems"
-                  OnCreate="@CreateCategoryAsync"
-                  OnUpdate="@UpdateCategoryAsync"
-                  OnDelete="@DeleteCategoryAsync" />
-}
+                  OnCreate="@(x => ActionAsync(() => CreateCategoryAsync(x)))"
+                  OnUpdate="@((x, y) => ActionAsync(() => UpdateCategoryAsync(x, y)))"
+                  OnDelete="@(x => ActionAsync(() => DeleteCategoryAsync(x)))" />
+</Page>
 
 @code
 {
     private List<CategoryViewModel> CategoriesItems { get; set; }
 
-    protected override async Task OnInitializedAsync() => await LoadCategoriesAsync();
+    protected override async Task OnInitializedAsync() => await LoadAsync(CategoriesAsync);
 
-    private async Task LoadCategoriesAsync()
-    {
-        try
-        {
-            CategoriesItems = (await CategoryService.ListAsync())?.ToList();
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
-    }
+    private async Task CategoriesAsync() => CategoriesItems = (await CategoryService.ListAsync())?.ToList();
 
     private async Task CreateCategoryAsync(CategoryCreateViewModel model)
     {
-        try
-        {
-            var category = await CategoryService.CreateAsync(model);
+        var category = await CategoryService.CreateAsync(model);
 
-            MatToaster.Add("Category successfully created.", MatToastType.Success);
-            CategoriesItems.Add(category);
+        MatToaster.Add("Category successfully created.", MatToastType.Success);
+        CategoriesItems.Add(category);
 
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
+        StateHasChanged();
     }
 
     private async Task UpdateCategoryAsync(CategoryViewModel category, CategoryUpdateViewModel model)
@@ -66,36 +36,23 @@ else
             return;
         }
 
-        try
-        {
-            var result = await CategoryService.UpdateAsync(category.Id, model);
+        var result = await CategoryService.UpdateAsync(category.Id, model);
 
-            MatToaster.Add("Category successfully updated.", MatToastType.Success);
-            CategoriesItems.Remove(category);
-            CategoriesItems.Add(result);
+        MatToaster.Add("Category successfully updated.", MatToastType.Success);
 
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
+        var index = CategoriesItems.FindIndex(x => x.Id == category.Id);
+
+        CategoriesItems[index] = result;
+        StateHasChanged();
     }
 
     private async Task DeleteCategoryAsync(CategoryViewModel model)
     {
-        try
-        {
-            await CategoryService.DeleteAsync(model.Id);
+        await CategoryService.DeleteAsync(model.Id);
 
-            MatToaster.Add("Category successfully deleted.", MatToastType.Success);
-            CategoriesItems.Remove(model);
+        MatToaster.Add("Category successfully deleted.", MatToastType.Success);
+        CategoriesItems.Remove(model);
 
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
+        StateHasChanged();
     }
 }

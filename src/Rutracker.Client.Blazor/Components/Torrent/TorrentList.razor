@@ -1,10 +1,4 @@
-﻿@if (Items == null)
-{
-    <LoadingBackground>
-        <span>Loading torrent list, please wait...</span>
-    </LoadingBackground>
-}
-else if (!Items.Any())
+﻿@if (Items == null || !Items.Any())
 {
     <LoadingBackground ShowLoader="false">
         <span>Sorry, but torrent list is empty...</span>

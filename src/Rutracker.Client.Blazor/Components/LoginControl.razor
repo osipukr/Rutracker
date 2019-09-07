@@ -1,0 +1,16 @@
+﻿<AuthorizeView Context="AuthorizeContext">
+    <Authorized>
+        <MatTooltip Tooltip="Logout" Wrap="true">
+            <MatIconButton Icon="@MatIconNames.Exit_to_app" Link="@Constants.Path.Logout" />
+        </MatTooltip>
+    </Authorized>
+    <NotAuthorized>
+        <MatTooltip Tooltip="Login" Wrap="true">
+            <MatIconButton Icon="@MatIconNames.Account_box" Link="@Constants.Path.Login" />
+        </MatTooltip>
+
+        <MatTooltip Tooltip="Register" Wrap="true">
+            <MatIconButton Icon="@MatIconNames.How_to_reg" Link="@Constants.Path.Register" />
+        </MatTooltip>
+    </NotAuthorized>
+</AuthorizeView>

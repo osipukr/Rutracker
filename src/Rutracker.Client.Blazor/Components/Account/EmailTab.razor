@@ -1,10 +1,10 @@
-﻿@inject IUserService UserService
-@inject IMatToaster MatToaster
+﻿@inherits PageComponent
+@inject IUserService UserService
 
 <MatTab>
     <LabelContent>Email</LabelContent>
     <ChildContent>
-        <EditForm Model="@ChangeEmailModel" OnValidSubmit="@ChangeEmailClicked">
+        <EditForm Model="@ChangeEmailModel" OnValidSubmit="@ChangeClicked">
             <div class="form-group">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
@@ -32,30 +32,22 @@
 
     private ChangeEmailViewModel ChangeEmailModel { get; set; }
 
-    protected override void OnParametersSet()
+    protected override void OnParametersSet() => ChangeEmailModel = new ChangeEmailViewModel
     {
-        ChangeEmailModel = new ChangeEmailViewModel
-        {
-            Email = UserModel.Email
-        };
-    }
+        Email = UserModel.Email
+    };
 
-    private async Task ChangeEmailClicked()
+    private async Task ChangeEmailAsync()
     {
         if (UserModel.Email == ChangeEmailModel.Email)
         {
             return;
         }
 
-        try
-        {
-            await UserService.ChangeEmail(ChangeEmailModel);
+        await UserService.ChangeEmail(ChangeEmailModel);
 
-            MatToaster.Add("To complete, check your email.", MatToastType.Success);
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
+        MatToaster.Add("To complete, check your email.", MatToastType.Success);
     }
+
+    private async Task ChangeClicked() => await ActionAsync(ChangeEmailAsync);
 }

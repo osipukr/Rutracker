@@ -2,14 +2,7 @@
 
 @page "/torrents"
 
-@if (TorrentsPagination == null)
-{
-    <LoadingBackground>
-        <span>Loading page model, please wait...</span>
-    </LoadingBackground>
-}
-else
-{
+<Page Title="torrent list" Action="@ActionResult" Errors="@Errors">
     <Filtration FilterChanged="@FilterChanged" SearchInProgress="@SearchInProgress" />
 
     <TorrentList Items="@TorrentsPagination.Items" />
@@ -19,7 +12,7 @@ else
                 TotalPages="@TorrentsPagination.TotalPages"
                 PageChanged="@PageChanged"
                 SearchInProgress="@SearchInProgress" />
-}
+</Page>
 
 @code
 {
@@ -29,31 +22,33 @@ else
     private int PageSize => ViewSettings.TorrentsPerPageCount;
     private bool SearchInProgress { get; set; }
 
-    protected override async Task OnInitializedAsync() => await LoadTorrentsAsync(Page, PageSize, FilterModel);
+    protected override async Task OnInitializedAsync() => await LoadAsync(TorrentsAsync);
 
-    private async Task LoadTorrentsAsync(int page, int pageSize, FilterViewModel filter)
+    private async Task TorrentsAsync()
     {
-        try
+        if (TorrentsPagination != null)
         {
-            if (TorrentsPagination != null)
-            {
-                TorrentsPagination.Items = null;
-                SearchInProgress = true;
-
-                StateHasChanged();
-            }
-
-            TorrentsPagination = await TorrentService.ListAsync(page, pageSize, filter);
-            SearchInProgress = TorrentsPagination.Items == null;
-
+            TorrentsPagination.Items = null;
+            SearchInProgress = true;
             StateHasChanged();
         }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
+
+        TorrentsPagination = await TorrentService.ListAsync(Page, PageSize, FilterModel);
+        SearchInProgress = TorrentsPagination.Items == null;
+        StateHasChanged();
     }
 
-    private async Task PageChanged(int page) => await LoadTorrentsAsync(Page = page, PageSize, FilterModel);
-    private async Task FilterChanged(FilterViewModel filter) => await LoadTorrentsAsync(Page = 1, PageSize, FilterModel = filter);
+    private async Task PageChanged(int page)
+    {
+        Page = page;
+
+        await TorrentsAsync();
+    }
+
+    private async Task FilterChanged(FilterViewModel filter)
+    {
+        FilterModel = filter;
+
+        await PageChanged(1);
+    }
 }

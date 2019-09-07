@@ -9,9 +9,9 @@
         <div class="form-group">
             <DataAnnotationsValidator />
 
-            @if (Result == ServiceResult.Failed)
+            @if (ActionResult == PageActions.Failed)
             {
-                <Alert Type="danger">@Errors</Alert>
+                <Alert Type="@AlertTypes.Danger">@Errors</Alert>
             }
         </div>
 
@@ -53,7 +53,7 @@
     {
         await LoadAsync(() => AccountService.Login(LoginModel));
 
-        if (Result == ServiceResult.Succeeded)
+        if (ActionResult == PageActions.Succeeded)
         {
             NavigationManager.NavigateTo(Constants.Path.Home);
         }

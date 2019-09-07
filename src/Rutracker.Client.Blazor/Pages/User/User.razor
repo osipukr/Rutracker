@@ -4,14 +4,7 @@
 
 @page "/users/{id}"
 
-@if (UserProfile == null)
-{
-    <LoadingBackground>
-        <span>Loading page model, please wait...</span>
-    </LoadingBackground>
-}
-else
-{
+<Page Title="torrent information" Action="@ActionResult" Errors="@Errors">
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-header__image">
@@ -53,7 +46,7 @@ else
             </MatList>
         </div>
     </div>
-}
+</Page>
 
 @code
 {
@@ -70,21 +63,11 @@ else
         }
         else
         {
-            await LoadUserProfileAsync();
+            await LoadAsync(UserProfileAsync);
         }
     }
 
-    private async Task LoadUserProfileAsync()
-    {
-        try
-        {
-            UserProfile = await UserService.ProfileAsync(Id);
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
-    }
+    private async Task UserProfileAsync() => UserProfile = await UserService.ProfileAsync(Id);
 
     private bool IsValidUserImage() => !string.IsNullOrWhiteSpace(UserProfile.ImageUrl);
 }

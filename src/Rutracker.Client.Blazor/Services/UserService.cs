@@ -75,5 +75,10 @@ namespace Rutracker.Client.Blazor.Services
         {
             await _httpClientService.PostJsonAsync(_apiUrls.ConfirmChangePhoneNumber, model);
         }
+
+        public bool IsValidUserImage(string imageUrl)
+        {
+            return !string.IsNullOrWhiteSpace(imageUrl);
+        }
     }
 }

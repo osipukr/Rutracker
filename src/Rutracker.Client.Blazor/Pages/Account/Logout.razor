@@ -1,0 +1,16 @@
+﻿@attribute [Authorize]
+
+@inject IAccountService AccountService
+
+@code
+{
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync(() => AccountService.Logout());
+
+        if (ActionResult == PageActions.Succeeded)
+        {
+            NavigationManager.NavigateTo(Constants.Path.Home);
+        }
+    }
+}

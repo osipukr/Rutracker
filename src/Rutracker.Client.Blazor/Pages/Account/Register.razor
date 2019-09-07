@@ -5,19 +5,17 @@
 @page "/account/register"
 
 <MatCard>
-    <EditForm Model="@RegisterModel" OnValidSubmit="@RegisterClicked">
-        <div class="form-group">
-            <DataAnnotationsValidator />
+    @if (ActionResult == PageActions.Succeeded)
+    {
+        <Alert Type="@AlertTypes.Success">To complete registration, check the email.</Alert>
+    }
+    else if (ActionResult == PageActions.Failed)
+    {
+        <Alert Type="@AlertTypes.Danger">@Errors</Alert>
+    }
 
-            @if (Result == ServiceResult.Succeeded)
-            {
-                <Alert Type="success">To complete registration, check the email.</Alert>
-            }
-            else if (Result == ServiceResult.Failed)
-            {
-                <Alert Type="danger">@Errors</Alert>
-            }
-        </div>
+    <EditForm Model="@RegisterModel" OnValidSubmit="@RegisterClicked">
+        <DataAnnotationsValidator />
 
         <div class="form-group">
             <MatTextField @bind-Value="@RegisterModel.UserName"

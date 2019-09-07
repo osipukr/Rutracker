@@ -5,21 +5,14 @@
 
 @page "/account/profile"
 
-@if (Result == ServiceResult.InProgress)
-{
-    <LoadingBackground>
-        <span>Loading user info, please wait...</span>
-    </LoadingBackground>
-}
-else if (Result == ServiceResult.Succeeded)
-{
+<Page Title="user information" Action="@ActionResult" Errors="@Errors">
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-header__image">
                 <MatButton OnClick="@ChangeImageModalOpened"
                            class="m-0 p-0 rounded-circle w-100 h-100 mat-elevation-z5"
                            title="Click to change image">
-                    @if (IsValidUserImage())
+                    @if (UserService.IsValidUserImage(UserDetailsModel.ImageUrl))
                     {
                         <img class="w-100 h-100" src="@UserDetailsModel.ImageUrl" alt="User image" />
                     }
@@ -52,15 +45,7 @@ else if (Result == ServiceResult.Succeeded)
             </MatTabGroup>
         </div>
     </div>
-}
-else
-{
-    <Alert Type="danger">@Errors</Alert>
-
-    <LoadingBackground ShowLoader="false">
-        <span>Error loading user information.</span>
-    </LoadingBackground>
-}
+</Page>
 
 @code
 {
@@ -88,9 +73,7 @@ else
 
     private async Task OnChanged()
     {
-        await LoadUserModelAsync();
+        await ActionAsync(LoadUserModelAsync);
         StateHasChanged();
     }
-
-    private bool IsValidUserImage() => !string.IsNullOrWhiteSpace(UserDetailsModel.ImageUrl);
 }

@@ -16,6 +16,7 @@
 
             public const string Login = "/account/login";
             public const string Register = "/account/register";
+            public const string Logout = "/account/logout";
             public const string Profile = "/account/profile";
 
             public const string Repository = "https://github.com/osipukr/Rutracker-Blazor";

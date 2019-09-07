@@ -2,39 +2,16 @@
 
 @page "/torrents/popular"
 
-@if (Torrents == null)
-{
-    <LoadingBackground>
-        <span>Loading page model, please wait...</span>
-    </LoadingBackground>
-}
-else if (!Torrents.Any())
-{
-    <LoadingBackground ShowLoader="false">
-        <span>Sorry, but torrent list is empty...</span>
-    </LoadingBackground>
-}
-else
-{
+<Page Title="torrent list" Action="@ActionResult" Errors="@Errors">
     <TorrentList Items="@Torrents" />
-}
+</Page>
 
 @code
 {
     private IEnumerable<TorrentViewModel> Torrents { get; set; }
     private int Count => ViewSettings.PopularTorrentsCount;
 
-    protected override async Task OnInitializedAsync() => await LoadTorrentsAsync();
+    protected override async Task OnInitializedAsync() => await LoadAsync(TorrentsAsync);
 
-    private async Task LoadTorrentsAsync()
-    {
-        try
-        {
-            Torrents = await TorrentService.PopularTorrentsAsync(Count);
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
-    }
+    private async Task TorrentsAsync() => Torrents = await TorrentService.PopularTorrentsAsync(Count);
 }

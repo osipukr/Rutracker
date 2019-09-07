@@ -1,11 +1,10 @@
 ﻿@using global::Blazor.FileReader
-
+@inherits PageComponent
 @inject IUserService UserService
-@inject IMatToaster MatToaster
 @inject IModalService ModalService
 @inject IFileReaderService FileReaderService
 
-<EditForm Model="@ChangeImageModel" OnValidSubmit="@ChangeImageClicked">
+<EditForm Model="@ChangeImageModel" OnValidSubmit="@ChangeClicked">
     <div class="form-group">
         <DataAnnotationsValidator />
         <ValidationSummary />
@@ -23,7 +22,7 @@
 
     <div class="form-group mt-4 d-flex justify-content-end">
         <MatButton OnClick="@CancelClicked" Label="Cancel" Raised="true" class="mr-2" />
-        <MatButton OnClick="@DeleteImageClicked" Label="Delete" Raised="true" class="ml-2" />
+        <MatButton OnClick="@DeleteClicked" Label="Delete" Raised="true" class="ml-2" />
         <MatButton Label="Update" Raised="true" type="submit" class="ml-2" />
     </div>
 </EditForm>
@@ -72,38 +71,26 @@
         }
     }
 
-    private async Task ChangeImageClicked()
+    private async Task ChangeImageAsync()
     {
-        try
-        {
-            await ReadFileAsync();
-            await UserService.ChangeImage(ChangeImageModel);
+        await ReadFileAsync();
+        await UserService.ChangeImage(ChangeImageModel);
 
-            MatToaster.Add("Image changed successfully.", MatToastType.Success);
+        MatToaster.Add("Image changed successfully.", MatToastType.Success);
 
-            ModalService.Close(ModalResult.Ok(true));
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
+        ModalService.Close(ModalResult.Ok(true));
     }
 
-    private async Task DeleteImageClicked()
+    private async Task DeleteImageAsync()
     {
-        try
-        {
-            await UserService.DeleteImage();
+        await UserService.DeleteImage();
 
-            MatToaster.Add("Image deleted successfully.", MatToastType.Success);
+        MatToaster.Add("Image deleted successfully.", MatToastType.Success);
 
-            ModalService.Close(ModalResult.Ok(true));
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
+        ModalService.Close(ModalResult.Ok(true));
     }
 
+    private async Task ChangeClicked() => await ActionAsync(ChangeImageAsync);
+    private async Task DeleteClicked() => await ActionAsync(DeleteImageAsync);
     private void CancelClicked() => ModalService.Cancel();
 }

@@ -5,31 +5,22 @@
 
 @page "/categories/{id:int}"
 
-@if (CategoryItem == null)
-{
-    <LoadingBackground>
-        <span>Loading page model, please wait...</span>
-    </LoadingBackground>
-}
-else
-{
-    <div class="mat-layout-grid px-0 pb-5">
-        <div class="mat-layout-grid-inner">
-            <div class="mat-layout-grid-cell">
-                <MatIconButton Link="@Constants.Path.Categories" Icon="@MatIconNames.Arrow_back" />
-            </div>
+<div class="mat-layout-grid px-0 pb-5">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell">
+            <MatIconButton Link="@Constants.Path.Categories" Icon="@MatIconNames.Arrow_back" />
         </div>
     </div>
+</div>
 
+<Page Title="category" Action="@ActionResult" Errors="@Errors">
     <h2>@CategoryItem.Name</h2>
 
-    <h4 class="mt-3 mb-1">Subcategories list:</h4>
-
     <SubcategoryList Items="@Subcategories"
-                     OnCreate="@CreateSubcategoryAsync"
-                     OnUpdate="@UpdateSubcategoryAsync"
-                     OnDelete="@DeleteSubcategoryAsync" />
-}
+                     OnCreate="@(x => ActionAsync(() => CreateSubcategoryAsync(x)))"
+                     OnUpdate="@((x, y) => ActionAsync(() => UpdateSubcategoryAsync(x, y)))"
+                     OnDelete="@(x => ActionAsync(() => DeleteSubcategoryAsync(x)))" />
+</Page>
 
 @code
 {
@@ -38,38 +29,24 @@ else
     private CategoryViewModel CategoryItem { get; set; }
     private List<SubcategoryViewModel> Subcategories { get; set; }
 
-    protected override async Task OnInitializedAsync() => await LoadCategoryAsync();
+    protected override async Task OnInitializedAsync() => await LoadAsync(CategoryAsync);
 
-    private async Task LoadCategoryAsync()
+    private async Task CategoryAsync()
     {
-        try
-        {
-            CategoryItem = await CategoryService.FindAsync(Id);
-            Subcategories = (await SubcategoryService.ListAsync(Id))?.ToList();
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
+        CategoryItem = await CategoryService.FindAsync(Id);
+        Subcategories = (await SubcategoryService.ListAsync(Id))?.ToList();
     }
 
     private async Task CreateSubcategoryAsync(SubcategoryCreateViewModel model)
     {
-        try
-        {
-            model.CategoryId = Id;
+        model.CategoryId = Id;
 
-            var subcategory = await SubcategoryService.CreateAsync(model);
+        var subcategory = await SubcategoryService.CreateAsync(model);
 
-            MatToaster.Add("Subcategory successfully created.", MatToastType.Success);
-            Subcategories.Add(subcategory);
+        MatToaster.Add("Subcategory successfully created.", MatToastType.Success);
 
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
+        Subcategories.Add(subcategory);
+        StateHasChanged();
     }
 
     private async Task UpdateSubcategoryAsync(SubcategoryViewModel subcategory, SubcategoryUpdateViewModel model)
@@ -79,36 +56,23 @@ else
             return;
         }
 
-        try
-        {
-            var result = await SubcategoryService.UpdateAsync(subcategory.Id, model);
+        var result = await SubcategoryService.UpdateAsync(subcategory.Id, model);
 
-            MatToaster.Add("Subcategory successfully updated.", MatToastType.Success);
-            Subcategories.Remove(subcategory);
-            Subcategories.Add(result);
+        MatToaster.Add("Subcategory successfully updated.", MatToastType.Success);
 
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
+        var index = Subcategories.FindIndex(x => x.Id == subcategory.Id);
+
+        Subcategories[index] = result;
+        StateHasChanged();
     }
 
     private async Task DeleteSubcategoryAsync(SubcategoryViewModel model)
     {
-        try
-        {
-            await SubcategoryService.DeleteAsync(model.Id);
+        await SubcategoryService.DeleteAsync(model.Id);
 
-            MatToaster.Add("Subcategory successfully deleted.", MatToastType.Success);
-            Subcategories.Remove(model);
+        MatToaster.Add("Subcategory successfully deleted.", MatToastType.Success);
 
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
+        Subcategories.Remove(model);
+        StateHasChanged();
     }
 }

@@ -1,0 +1,43 @@
+﻿@if (Show)
+{
+    <div class="alert @AlertCssClass alert-dismissible @Class" role="alert" style="@Style">
+        @ChildContent
+
+        <button @onclick="@CloseClicked" type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+@code
+{
+    [Parameter] public AlertTypes Type { get; set; }
+    [Parameter] public string Class { get; set; }
+    [Parameter] public string Style { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    private bool Show { get; set; } = true;
+    private string AlertCssClass { get; set; }
+
+    protected override void OnInitialized()
+    {
+        AlertCssClass = Type switch
+        {
+            AlertTypes.Primary => "alert-primary",
+            AlertTypes.Secondary => "alert-secondary",
+            AlertTypes.Success => "alert-success",
+            AlertTypes.Danger => "alert-danger",
+            AlertTypes.Warning => "alert-warning",
+            AlertTypes.Info => "alert-info",
+            AlertTypes.Light => "alert-light",
+            AlertTypes.Dark => "alert-dark",
+            _ => string.Empty
+        };
+    }
+
+    private void CloseClicked()
+    {
+        Show = false;
+        StateHasChanged();
+    }
+}
