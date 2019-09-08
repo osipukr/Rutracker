@@ -27,20 +27,17 @@
 
 @code
 {
-    [Parameter] public UserDetailsViewModel UserModel { get; set; }
+    [Parameter] public string Phone { get; set; }
     [Parameter] public EventCallback<ChangePhoneNumberViewModel> OnChange { get; set; }
     [Parameter] public EventCallback<ConfirmChangePhoneNumberViewModel> OnConfirm { get; set; }
 
     private ChangePhoneNumberViewModel ChangePhoneNumberModel { get; set; } = new ChangePhoneNumberViewModel();
 
-    protected override void OnParametersSet() => ChangePhoneNumberModel.PhoneNumber = UserModel.PhoneNumber;
+    protected override void OnParametersSet() => ChangePhoneNumberModel.PhoneNumber = Phone;
 
     private async Task ChangeClicked()
     {
-        if (UserModel.PhoneNumber == ChangePhoneNumberModel.PhoneNumber)
-        {
-            return;
-        }
+        if (Phone == ChangePhoneNumberModel.PhoneNumber) return;
 
         await OnChange.InvokeAsync(ChangePhoneNumberModel);
 

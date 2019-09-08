@@ -2,7 +2,7 @@
 
 namespace Rutracker.Server.BusinessLayer.Options
 {
-    public class CacheSettings
+    public class CacheOptions
     {
         public TimeSpan? CacheDuration { get; set; }
     }

@@ -5,11 +5,11 @@
 @page "/account/register"
 
 <MatCard>
-    @if (ActionResult == PageActions.Succeeded)
+    @if (LoadResult == PageActions.Succeeded)
     {
         <Alert Type="@AlertTypes.Success">To complete registration, check the email.</Alert>
     }
-    else if (ActionResult == PageActions.Failed)
+    else if (LoadResult == PageActions.Failed)
     {
         <Alert Type="@AlertTypes.Danger">@Errors</Alert>
     }

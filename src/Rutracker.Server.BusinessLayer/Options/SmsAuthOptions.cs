@@ -1,6 +1,6 @@
 ﻿namespace Rutracker.Server.BusinessLayer.Options
 {
-    public class SmsSettings
+    public class SmsAuthOptions
     {
         public string AccountSid { get; set; }
         public string AccountToken { get; set; }

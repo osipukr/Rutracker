@@ -16,7 +16,7 @@
     <div class="form-group text-center">or</div>
 
     <div class="form-group">
-        Select image from computer: <input type="file" @ref="_inputTypeFileElement" />
+        Select image from computer: <input type="file" accept="image/*" @ref="_inputTypeFileElement" />
     </div>
 
     <div class="form-group mt-4 d-flex justify-content-end">
@@ -41,12 +41,6 @@
         }
 
         var type = (await file.ReadFileInfoAsync()).Type;
-        var types = new[] { "image/png", "image/svg", "image/jpeg", "image/gif", "image/jpg" };
-
-        if (!types.Contains(type))
-        {
-            throw new Exception("Not valid file type.");
-        }
 
         using var stream = await file.OpenReadAsync();
 
@@ -73,6 +67,8 @@
     private async Task ChangeClicked()
     {
         await ReadFileAsync();
+
+        if(ChangeImageModel.ImageUrl == null && ChangeImageModel.ImageBytes == null) return;
 
         ModalService.Close(ModalResult.Ok(ChangeImageModel));
     }

@@ -7,13 +7,13 @@
 
 @using Microsoft.AspNetCore.WebUtilities
 
-@if (ActionResult == PageActions.InProgress)
+@if (LoadResult == PageActions.InProgress)
 {
     <LoadingBackground>
         <span>Email confirmation is made, please wait</span>
     </LoadingBackground>
 }
-else if (ActionResult == PageActions.Failed)
+else if (LoadResult == PageActions.Failed)
 {
     <Alert Type="@AlertTypes.Danger">
         @Errors
@@ -43,13 +43,13 @@ else if (ActionResult == PageActions.Failed)
                 : null
         };
 
-        await ConfirmChangeEmailAsync();
+        await LoadAsync(ConfirmChangeEmailAsync);
 
-        if (ActionResult == PageActions.Succeeded)
+        if (LoadResult == PageActions.Succeeded)
         {
             NavigationManager.NavigateTo(Constants.Path.Profile);
         }
     }
 
-    private async Task ConfirmChangeEmailAsync() => await LoadAsync(async () => await UserService.ConfirmChangeEmailAsync(ConfirmChangeModel));
+    private async Task ConfirmChangeEmailAsync() => await UserService.ConfirmChangeEmailAsync(ConfirmChangeModel);
 }

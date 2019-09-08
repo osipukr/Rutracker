@@ -86,6 +86,11 @@
     private IEnumerable<CategoryViewModel> Categories { get; set; }
     private IEnumerable<SubcategoryViewModel> Subcategories { get; set; }
 
+    protected override async Task OnInitializedAsync() => await CategoriesAsync();
+
+    private async Task CategoriesAsync() => await ActionAsync(async () => Categories = await CategoryService.ListAsync());
+    private async void SubcategoriesAsync(int categoryId) => await ActionAsync(async () => Subcategories = await SubcategoryService.ListAsync(categoryId));
+
     private string CategoryId
     {
         get => FilterModel.CategoryId.ToString();
@@ -112,11 +117,6 @@
         get => FilterModel.SubcategoryId.ToString();
         set => FilterModel.SubcategoryId = int.TryParse(value, out var id) ? (int?)id : null;
     }
-
-    protected override async Task OnInitializedAsync() => await CategoriesAsync();
-
-    private async Task CategoriesAsync() => await ActionAsync(async () => Categories = await CategoryService.ListAsync());
-    private async void SubcategoriesAsync(int categoryId) => await ActionAsync(async () => Subcategories = await SubcategoryService.ListAsync(categoryId));
 
     private void ResetClicked()
     {

@@ -4,7 +4,7 @@
 
 @page "/users/{id}"
 
-<Page Title="torrent information" Action="@ActionResult" Errors="@Errors">
+<Page Title="torrent information" Action="@LoadResult" Errors="@Errors">
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-header__image">
@@ -63,9 +63,9 @@
         }
         else
         {
-            await UserAsync();
+            await LoadAsync(UserAsync);
         }
     }
 
-    private async Task UserAsync() => await LoadAsync(async () => UserModel = await UserService.ProfileAsync(Id));
+    private async Task UserAsync() => UserModel = await UserService.ProfileAsync(Id);
 }

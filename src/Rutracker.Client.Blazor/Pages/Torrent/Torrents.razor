@@ -2,7 +2,7 @@
 
 @page "/torrents"
 
-<Page Title="torrent list" Action="@ActionResult" Errors="@Errors">
+<Page Title="torrent list" Action="@LoadResult" Errors="@Errors">
     <Filtration OnChange="@FilterChanged" />
 
     <TorrentList Items="@TorrentsPagination.Items" />
@@ -21,15 +21,15 @@
     private int Page { get; set; } = 1;
     private int PageSize => ViewSettings.TorrentsPerPageCount;
 
-    protected override async Task OnInitializedAsync() => await TorrentsAsync();
+    protected override async Task OnInitializedAsync() => await LoadAsync(TorrentsAsync);
 
-    private async Task TorrentsAsync() => await LoadAsync(async () => TorrentsPagination = await TorrentService.ListAsync(Page, PageSize, FilterModel));
+    private async Task TorrentsAsync() => TorrentsPagination = await TorrentService.ListAsync(Page, PageSize, FilterModel);
 
     private async Task PageChanged(int page)
     {
         Page = page;
 
-        await TorrentsAsync();
+        await ActionAsync(TorrentsAsync);
     }
 
     private async Task FilterChanged(FilterViewModel filter)

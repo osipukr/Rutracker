@@ -10,9 +10,9 @@ namespace Rutracker.Server.BusinessLayer.Services
 {
     public class SmsSender : ISmsSender
     {
-        private readonly SmsSettings _smsSettings;
+        private readonly SmsAuthOptions _smsSettings;
 
-        public SmsSender(IOptions<SmsSettings> smsOptions)
+        public SmsSender(IOptions<SmsAuthOptions> smsOptions)
         {
             _smsSettings = smsOptions.Value;
         }

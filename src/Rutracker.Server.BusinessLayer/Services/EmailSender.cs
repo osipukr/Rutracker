@@ -9,9 +9,9 @@ namespace Rutracker.Server.BusinessLayer.Services
 {
     public class EmailSender : IEmailSender
     {
-        private readonly EmailSettings _emailSettings;
+        private readonly EmailAuthOptions _emailSettings;
 
-        public EmailSender(IOptions<EmailSettings> emailOptions)
+        public EmailSender(IOptions<EmailAuthOptions> emailOptions)
         {
             _emailSettings = emailOptions.Value;
         }

@@ -2,7 +2,7 @@
 
 @page "/torrents/popular"
 
-<Page Title="torrent list" Action="@ActionResult" Errors="@Errors">
+<Page Title="torrent list" Action="@LoadResult" Errors="@Errors">
     <TorrentList Items="@Torrents" />
 </Page>
 
@@ -11,7 +11,7 @@
     private IEnumerable<TorrentViewModel> Torrents { get; set; }
     private int Count => ViewSettings.PopularTorrentsCount;
 
-    protected override async Task OnInitializedAsync() => await TorrentsAsync();
+    protected override async Task OnInitializedAsync() => await LoadAsync(TorrentsAsync);
 
-    private async Task TorrentsAsync() => await LoadAsync(async () => Torrents = await TorrentService.PopularTorrentsAsync(Count));
+    private async Task TorrentsAsync() => Torrents = await TorrentService.PopularTorrentsAsync(Count);
 }

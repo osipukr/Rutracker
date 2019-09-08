@@ -26,7 +26,7 @@
 
                 @if (IsCommentEditClicked)
                 {
-                    <EditForm Model="@CommentUpdate" OnValidSubmit="@CommentUpdateClicked">
+                    <EditForm Model="@CommentUpdate" OnValidSubmit="@UpdateClicked">
                         <DataAnnotationsValidator />
 
                         <div class="comment-post">
@@ -40,7 +40,7 @@
                         </div>
 
                         <div class="mt-2">
-                            <MatButton OnClick="@CommentEditCancelClicked" Label="Cancel" />
+                            <MatButton OnClick="@EditCancelClicked" Label="Cancel" />
                             <MatButton Label="Update" type="submit" />
                         </div>
                     </EditForm>
@@ -55,7 +55,7 @@
                         <div class="d-flex align-items-center">
                             <span style="padding-top: 5px;">@Model.LikesCount</span>
 
-                            <MatIconButton @onclick="@(_ => CommentLikeAsync(Model.Id))"
+                            <MatIconButton @onclick="@(_ => LikeAsync(Model.Id))"
                                            Disabled="@(!IsAuthenticated)"
                                            Icon="@(IsLikedByUser ? MatIconNames.Favorite : MatIconNames.Favorite_border)"
                                            ToggleIcon="@(IsLikedByUser ? MatIconNames.Favorite_border : MatIconNames.Favorite)"
@@ -64,8 +64,8 @@
 
                             @if (IsUserComment)
                             {
-                                <MatIconButton OnClick="@CommentEditClicked" Icon="@MatIconNames.Edit" title="Edit comment" />
-                                <MatIconButton OnClick="@(_ => CommentDeleteAsync(Model.Id))" Icon="@MatIconNames.Delete" title="Delete comment" />
+                                <MatIconButton OnClick="@EditClicked" Icon="@MatIconNames.Edit" title="Edit comment" />
+                                <MatIconButton OnClick="@(_ => DeleteAsync(Model.Id))" Icon="@MatIconNames.Delete" title="Delete comment" />
                             }
                         </div>
 
@@ -115,11 +115,11 @@
         }
     }
 
-    private async Task CommentUpdateAsync(CommentUpdateViewModel model) => await OnUpdate(Model, model);
-    private async Task CommentDeleteAsync(int id) => await OnDelete.InvokeAsync(id);
-    private async Task CommentLikeAsync(int id) => await OnLike.InvokeAsync(id);
+    private async Task UpdateAsync(CommentUpdateViewModel model) => await OnUpdate(Model, model);
+    private async Task DeleteAsync(int id) => await OnDelete.InvokeAsync(id);
+    private async Task LikeAsync(int id) => await OnLike.InvokeAsync(id);
 
-    private void CommentEditClicked()
+    private void EditClicked()
     {
         IsCommentEditClicked = true;
         CommentUpdate = new CommentUpdateViewModel
@@ -130,7 +130,7 @@
         StateHasChanged();
     }
 
-    private void CommentEditCancelClicked()
+    private void EditCancelClicked()
     {
         IsCommentEditClicked = false;
         CommentUpdate = null;
@@ -138,10 +138,10 @@
         StateHasChanged();
     }
 
-    private async Task CommentUpdateClicked()
+    private async Task UpdateClicked()
     {
-        await CommentUpdateAsync(CommentUpdate);
+        await UpdateAsync(CommentUpdate);
 
-        CommentEditCancelClicked();
+        EditCancelClicked();
     }
 }

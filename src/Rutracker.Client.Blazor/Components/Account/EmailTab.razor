@@ -1,7 +1,7 @@
 ﻿<MatTab>
     <LabelContent>Email</LabelContent>
     <ChildContent>
-        <EditForm Model="@ChangeEmailModel" OnValidSubmit="@ChangeEmailClicked">
+        <EditForm Model="@ChangeEmailModel" OnValidSubmit="@ChangeClicked">
             <div class="form-group">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
@@ -24,22 +24,16 @@
 
 @code
 {
-    [Parameter] public UserDetailsViewModel UserModel { get; set; }
+    [Parameter] public string Email { get; set; }
     [Parameter] public EventCallback<ChangeEmailViewModel> OnChange { get; set; }
 
-    private ChangeEmailViewModel ChangeEmailModel { get; set; }
+    private ChangeEmailViewModel ChangeEmailModel { get; set; } = new ChangeEmailViewModel();
 
-    protected override void OnParametersSet() => ChangeEmailModel = new ChangeEmailViewModel
-    {
-        Email = UserModel.Email
-    };
+    protected override void OnParametersSet() => ChangeEmailModel.Email = Email;
 
-    private async Task ChangeEmailClicked()
+    private async Task ChangeClicked()
     {
-        if (UserModel.Email == ChangeEmailModel.Email)
-        {
-            return;
-        }
+        if (Email == ChangeEmailModel.Email) return;
 
         await OnChange.InvokeAsync(ChangeEmailModel);
     }

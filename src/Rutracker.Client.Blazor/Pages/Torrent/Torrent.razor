@@ -11,7 +11,7 @@
     </div>
 </div>
 
-<Page Title="torrent information" Action="@ActionResult" Errors="@Errors">
+<Page Title="torrent information" Action="@LoadResult" Errors="@Errors">
     <TorrentDetails Torrent="@TorrentDetailsModel" />
 
     <CommentList Items="@Comments"
@@ -42,27 +42,27 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await TorrentAsync();
+        await LoadAsync(TorrentAsync);
 
-        if (ActionResult == PageActions.Succeeded)
+        if (LoadResult == PageActions.Succeeded)
         {
-            await CommentsAsync();
+            await ActionAsync(CommentsAsync);
         }
     }
 
-    private async Task TorrentAsync() => await LoadAsync(async () => TorrentDetailsModel = await TorrentService.FindAsync(Id));
+    private async Task TorrentAsync() => TorrentDetailsModel = await TorrentService.FindAsync(Id);
 
-    private async Task CommentsAsync() => await ActionAsync(async () =>
+    private async Task CommentsAsync()
     {
         CommentPagination = await CommentService.ListAsync(Page, PageSize, Id);
         Comments = CommentPagination.Items.ToList();
-    });
+    }
 
     private async Task PageChanged(int page)
     {
         Page = page;
 
-        await CommentsAsync();
+        await ActionAsync(CommentsAsync);
     }
 
     private async Task CommentCreateAsync(CommentCreateViewModel comment) => await ActionAsync(async () =>
@@ -71,37 +71,27 @@
 
         var result = await CommentService.AddAsync(comment);
 
-        MatToaster.Add("Comment created successfully.", MatToastType.Success);
-
         Comments.Insert(0, result);
-    });
+    }, successMessage: "Comment created successfully.");
 
     private async Task CommentUpdateAsync(CommentViewModel comment, CommentUpdateViewModel model) => await ActionAsync(async () =>
     {
-        if (comment.Text == model.Text)
-        {
-            return;
-        }
+        if (comment.Text == model.Text) return;
 
         var result = await CommentService.UpdateAsync(comment.Id, model);
-
-        MatToaster.Add("Comment updated successfully.", MatToastType.Success);
-
         var index = Comments.FindIndex(x => x.Id == comment.Id);
 
         Comments[index] = result;
-    });
+    }, successMessage: "Comment updated successfully.");
 
     private async Task CommentDeleteAsync(int id) => await ActionAsync(async () =>
     {
         await CommentService.DeleteAsync(id);
 
-        MatToaster.Add("Comment deleted successfully.", MatToastType.Success);
-
         var index = Comments.FindIndex(x => x.Id == id);
 
         Comments.RemoveAt(index);
-    });
+    }, successMessage: "Comment deleted successfully.");
 
     private async Task CommentLikeAsync(int id) => await ActionAsync(async () =>
     {

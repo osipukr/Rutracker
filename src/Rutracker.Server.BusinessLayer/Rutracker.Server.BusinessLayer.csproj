@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="MailKit" Version="2.3.0" />
+    <PackageReference Include="MediaTypeMap" Version="2.1.0" />
     <PackageReference Include="Twilio" Version="5.32.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>

@@ -4,11 +4,11 @@
 
 @page "/account/profile"
 
-<Page Title="user information" Action="@ActionResult" Errors="@Errors">
+<Page Title="user information" Action="@LoadResult" Errors="@Errors">
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-header__image">
-                <UserImage Url="@UserModel.ImageUrl" OnChange="@ChangeImageAsync" />
+                <UserImage @key="@ImageRenderKey" Url="@UserModel.ImageUrl" OnChange="@ChangeImageAsync" />
             </div>
 
             <h1 class="profile-header__name">@UserModel.UserName</h1>
@@ -28,8 +28,8 @@
             <MatTabGroup>
                 <UserInfoTab UserModel="@UserModel" OnChange="@ChangeUserAsync" />
                 <PasswordTab OnChange="@ChangePasswordAsync" />
-                <EmailTab UserModel="@UserModel" OnChange="@ChangeEmailAsync" />
-                <PhoneTab UserModel="@UserModel" OnChange="@ChangePhoneAsync" OnConfirm="@ConfirmPhoneAsync" />
+                <EmailTab Email="@UserModel.Email" OnChange="@ChangeEmailAsync" />
+                <PhoneTab Phone="@UserModel.PhoneNumber" OnChange="@ChangePhoneAsync" OnConfirm="@ConfirmPhoneAsync" />
             </MatTabGroup>
         </div>
     </div>
@@ -38,50 +38,44 @@
 @code
 {
     private UserDetailsViewModel UserModel { get; set; }
+    private string ImageRenderKey { get; set; }
 
-    protected override async Task OnInitializedAsync() => await UserAsync();
+    protected override async Task OnInitializedAsync() => await LoadAsync(UserAsync);
 
-    private async Task UserAsync() => await LoadAsync(async () => UserModel = await UserService.FindAsync());
+    private async Task UserAsync() => UserModel = await UserService.FindAsync();
 
     private async Task ChangeImageAsync(ChangeImageViewModel model) => await ActionAsync(async () =>
     {
         UserModel = await UserService.ChangeImageAsync(model);
-
-        MatToaster.Add("Image successfully changed.", MatToastType.Success);
-    });
+        ImageRenderKey = Guid.NewGuid().ToString();
+    }, successMessage: "Image successfully changed.");
 
     private async Task ChangeUserAsync(ChangeUserViewModel model) => await ActionAsync(async () =>
     {
-        UserModel = await UserService.ChangeInfoAsync(model);
+        if (UserModel.FirstName == model.FirstName && UserModel.LastName == model.LastName) return;
 
-        MatToaster.Add("User successfully changed.", MatToastType.Success);
-    });
+        UserModel = await UserService.ChangeInfoAsync(model);
+    }, successMessage: "User successfully changed.");
 
     private async Task ChangeEmailAsync(ChangeEmailViewModel model) => await ActionAsync(async () =>
     {
-        await UserService.ChangeEmailAsync(model);
+        if(UserModel.Email == model.Email) return;
 
-        MatToaster.Add("Please check your email to confirm your changes.", MatToastType.Success);
-    });
+        await UserService.ChangeEmailAsync(model);
+    }, successMessage: "Please check your email to confirm your changes.");
 
     private async Task ChangePasswordAsync(ChangePasswordViewModel model) => await ActionAsync(async () =>
     {
         await UserService.ChangePasswordAsync(model);
-
-        MatToaster.Add("Password successfully changed.", MatToastType.Success);
-    });
+    }, successMessage: "Password successfully changed.");
 
     private async Task ChangePhoneAsync(ChangePhoneNumberViewModel model) => await ActionAsync(async () =>
     {
         await UserService.ChangePhoneAsync(model);
-
-        MatToaster.Add("Verification code sent to phone number.", MatToastType.Success);
-    });
+    }, successMessage: "Verification code sent to phone number.");
 
     private async Task ConfirmPhoneAsync(ConfirmChangePhoneNumberViewModel model) => await ActionAsync(async () =>
     {
         UserModel = await UserService.ConfirmChangePhoneAsync(model);
-
-        MatToaster.Add("Change phone successfully confirmed.", MatToastType.Success);
-    });
+    }, successMessage: "Change phone successfully confirmed.");
 }

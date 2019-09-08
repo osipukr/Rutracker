@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Server.BusinessLayer.Options;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Shared.Infrastructure.Exceptions;
 
@@ -17,11 +17,13 @@ namespace Rutracker.Server.BusinessLayer.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly IStorageService _storageService;
+        private readonly UserImageOptions _imageOptions;
 
-        public UserService(UserManager<User> userManager, IStorageService storageService)
+        public UserService(UserManager<User> userManager, IStorageService storageService, IOptions<UserImageOptions> imageOptions)
         {
             _userManager = userManager;
             _storageService = storageService;
+            _imageOptions = imageOptions.Value;
         }
 
         public async Task<IEnumerable<User>> ListAsync()
@@ -93,36 +95,29 @@ namespace Rutracker.Server.BusinessLayer.Services
             return user;
         }
 
-        public async Task<User> ChangeImageAsync(string id, byte[] imageBytes, string fileType)
+        public async Task<User> ChangeImageAsync(string id, byte[] imageBytes, string mimeType)
         {
+            Guard.Against.NullOrWhiteSpace(id, message: "Invalid user id.");
             Guard.Against.NullNotValid(imageBytes, "Invalid image bytes.");
 
-            if (imageBytes.Length > 2 * Math.Pow(1024, 2))
+            if (imageBytes.Length > _imageOptions.MaxBytesLength)
             {
                 throw new RutrackerException("File too large.", ExceptionEventType.NotValidParameters);
             }
 
-            var types = new[] { "image/png", "image/svg", "image/jpeg", "image/gif", "image/jpg" };
-
-            if (string.IsNullOrWhiteSpace(fileType) || !types.Contains(fileType.ToLower()))
+            if (string.IsNullOrWhiteSpace(mimeType) || !_imageOptions.MimeTypes.Contains(mimeType.ToLower()))
             {
-                var message = $"Invalid file type. Valid type: {string.Join(", ", types)}.";
-
-                throw new RutrackerException(message, ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("Invalid file type.", ExceptionEventType.NotValidParameters);
             }
 
-            await using var stream = new MemoryStream(imageBytes);
-
-            var containerName = id;
-            var fileName = $"profile-image-{Guid.NewGuid()}.{fileType.Split('/')[1]}";
-            var path = await _storageService.UploadFileAsync(containerName, fileName, stream);
+            var path = await _storageService.UploadFileFromByteArrayAsync(containerName: id, _imageOptions.FileName, mimeType, imageBytes);
 
             return await ChangeImageAsync(id, path);
         }
 
         public async Task<User> DeleteImageAsync(string id)
         {
-            await _storageService.DeleteContainerAsync(id);
+            await _storageService.DeleteFileAsync(id, _imageOptions.FileName);
 
             return await ChangeImageAsync(id, null);
         }

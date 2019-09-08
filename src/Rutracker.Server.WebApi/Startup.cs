@@ -51,12 +51,13 @@ namespace Rutracker.Server.WebApi
 
             services.AddMemoryCache();
 
-            services.Configure<CacheSettings>(_configuration.GetSection(nameof(CacheSettings)));
             services.Configure<JwtSettings>(_configuration.GetSection(nameof(JwtSettings)));
-            services.Configure<StorageSettings>(_configuration.GetSection(nameof(StorageSettings)));
-            services.Configure<EmailSettings>(_configuration.GetSection(nameof(EmailSettings)));
-            services.Configure<SmsSettings>(_configuration.GetSection(nameof(SmsSettings)));
             services.Configure<ClientSettings>(_configuration.GetSection(nameof(ClientSettings)));
+            services.Configure<CacheOptions>(_configuration.GetSection(nameof(CacheOptions)));
+            services.Configure<UserImageOptions>(_configuration.GetSection(nameof(UserImageOptions)));
+            services.Configure<StorageAuthOptions>(_configuration.GetSection(nameof(StorageAuthOptions)));
+            services.Configure<EmailAuthOptions>(_configuration.GetSection(nameof(EmailAuthOptions)));
+            services.Configure<SmsAuthOptions>(_configuration.GetSection(nameof(SmsAuthOptions)));
 
             services.AddResponseCompression(options =>
             {
