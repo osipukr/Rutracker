@@ -15,8 +15,10 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task SendConfirmationPhoneAsync(string phone, string code)
         {
-            Guard.Against.NullOrWhiteSpace(phone, message: "Not valid phone.");
-            Guard.Against.NullOrWhiteSpace(code, message: "Not valid code.");
+            Guard.Against.NullOrWhiteSpace(phone, message: "Invalid phone number.");
+            Guard.Against.NullOrWhiteSpace(code, message: "Invalid code.");
+
+            phone = phone.StartsWith("+") ? phone : $"+{phone}";
 
             await _smsSender.SendAsync(phone, $"Confirmation code: {code}");
         }

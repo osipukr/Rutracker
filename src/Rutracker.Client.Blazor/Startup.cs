@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Rutracker.Client.Blazor.Interfaces;
 using Rutracker.Client.Blazor.Services;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace Rutracker.Client.Blazor
 {
@@ -22,6 +23,7 @@ namespace Rutracker.Client.Blazor
 
             services.AddAuthorizationCore();
             services.AddBlazoredModal();
+            services.AddLoadingBar();
             services.AddFileReaderService();
             services.AddBlazoredLocalStorage();
 
@@ -42,6 +44,7 @@ namespace Rutracker.Client.Blazor
         {
             WebAssemblyHttpMessageHandler.DefaultCredentials = FetchCredentialsOption.Include;
 
+            app.UseLoadingBar();
             app.AddComponent<App>("app");
         }
     }

@@ -35,7 +35,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<User> FindAsync(string id)
         {
-            Guard.Against.NullOrWhiteSpace(id, message: "Not valid user id.");
+            Guard.Against.NullOrWhiteSpace(id, message: "Invalid user id.");
 
             var user = await _userManager.FindByIdAsync(id);
 
@@ -46,8 +46,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<User> UpdateAsync(string id, User user)
         {
-            Guard.Against.NullOrWhiteSpace(id, message: "Not valid user id.");
-            Guard.Against.NullNotValid(user, "Not valid user.");
+            Guard.Against.NullOrWhiteSpace(id, message: "Invalid user id.");
+            Guard.Against.NullNotValid(user, "Invalid user model.");
 
             var result = await FindAsync(id);
 
@@ -64,10 +64,9 @@ namespace Rutracker.Server.BusinessLayer.Services
             return result;
         }
 
-        public async Task<IEnumerable<string>> RolesAsync(User user)
+        public async Task<IEnumerable<string>> RolesAsync(string id)
         {
-            Guard.Against.NullNotValid(user, "Not valid user.");
-
+            var user = await FindAsync(id);
             var roles = await _userManager.GetRolesAsync(user);
 
             if (roles == null)
@@ -96,13 +95,20 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<User> ChangeImageAsync(string id, byte[] imageBytes, string fileType)
         {
-            Guard.Against.NullNotValid(imageBytes, "Not valid image bytes.");
+            Guard.Against.NullNotValid(imageBytes, "Invalid image bytes.");
+
+            if (imageBytes.Length > 2 * Math.Pow(1024, 2))
+            {
+                throw new RutrackerException("File too large.", ExceptionEventType.NotValidParameters);
+            }
 
             var types = new[] { "image/png", "image/svg", "image/jpeg", "image/gif", "image/jpg" };
 
             if (string.IsNullOrWhiteSpace(fileType) || !types.Contains(fileType.ToLower()))
             {
-                throw new RutrackerException("Not valid file type.", ExceptionEventType.NotValidParameters);
+                var message = $"Invalid file type. Valid type: {string.Join(", ", types)}.";
+
+                throw new RutrackerException(message, ExceptionEventType.NotValidParameters);
             }
 
             await using var stream = new MemoryStream(imageBytes);
@@ -126,14 +132,14 @@ namespace Rutracker.Server.BusinessLayer.Services
             var user = await FindAsync(id);
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-            Guard.Against.NullOrWhiteSpace(token, message: "Not valid token.");
+            Guard.Against.NullOrWhiteSpace(token, message: "Invalid token.");
 
             return token;
         }
 
         public async Task<string> ChangeEmailTokenAsync(string id, string email)
         {
-            Guard.Against.NullOrWhiteSpace(email, message: "Not valid email.");
+            Guard.Against.NullOrWhiteSpace(email, message: "Invalid email.");
 
             var user = await FindAsync(id);
 
@@ -144,44 +150,44 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!string.IsNullOrWhiteSpace(user.Email) && !user.EmailConfirmed)
             {
-                throw new RutrackerException("Email not confirmed.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("The email is not confirmed.", ExceptionEventType.NotValidParameters);
             }
 
             var token = await _userManager.GenerateChangeEmailTokenAsync(user, email);
 
-            Guard.Against.NullOrWhiteSpace(token, message: "Not valid token.");
+            Guard.Against.NullOrWhiteSpace(token, message: "Invalid token.");
 
             return token;
         }
 
         public async Task<string> ChangePhoneNumberTokenAsync(string id, string phone)
         {
-            Guard.Against.NullOrWhiteSpace(phone, message: "Not valid phone.");
+            Guard.Against.NullOrWhiteSpace(phone, message: "Invalid phone number.");
 
             var user = await FindAsync(id);
 
             if (!string.IsNullOrWhiteSpace(user.PhoneNumber) && !user.PhoneNumberConfirmed)
             {
-                throw new RutrackerException("Phone number not confirmed.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("The phone number is not confirmed.", ExceptionEventType.NotValidParameters);
             }
 
             var token = await _userManager.GenerateChangePhoneNumberTokenAsync(user, phone);
 
-            Guard.Against.NullOrWhiteSpace(token, message: "Not valid token.");
+            Guard.Against.NullOrWhiteSpace(token, message: "Invalid token.");
 
             return token;
         }
 
         public async Task<User> ChangePasswordAsync(string id, string oldPassword, string newPassword)
         {
-            Guard.Against.NullOrWhiteSpace(oldPassword, message: "Not valid old password.");
-            Guard.Against.NullOrWhiteSpace(newPassword, message: "Not valid new password.");
+            Guard.Against.NullOrWhiteSpace(oldPassword, message: "Invalid old password.");
+            Guard.Against.NullOrWhiteSpace(newPassword, message: "Invalid new password.");
 
             var user = await FindAsync(id);
 
             if (!await _userManager.CheckPasswordAsync(user, oldPassword))
             {
-                throw new RutrackerException("Old password is not correct.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("The old password is not correct.", ExceptionEventType.NotValidParameters);
             }
 
             if (oldPassword == newPassword)
@@ -201,8 +207,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<User> ChangeEmailAsync(string id, string email, string token)
         {
-            Guard.Against.NullOrWhiteSpace(email, message: "Not valid email.");
-            Guard.Against.NullOrWhiteSpace(token, message: "Not valid token.");
+            Guard.Against.NullOrWhiteSpace(email, message: "Invalid email.");
+            Guard.Against.NullOrWhiteSpace(token, message: "Invalid token.");
 
             var user = await FindAsync(id);
             var result = await _userManager.ChangeEmailAsync(user, email, token);
@@ -217,8 +223,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<User> ChangePhoneNumberAsync(string id, string phone, string token)
         {
-            Guard.Against.NullOrWhiteSpace(phone, message: "Not valid phone.");
-            Guard.Against.NullOrWhiteSpace(token, message: "Not valid token.");
+            Guard.Against.NullOrWhiteSpace(phone, message: "Invalid phone.");
+            Guard.Against.NullOrWhiteSpace(token, message: "Invalid token.");
 
             var user = await FindAsync(id);
             var result = await _userManager.ChangePhoneNumberAsync(user, phone, token);
@@ -233,7 +239,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<User> ConfirmEmailAsync(string id, string token)
         {
-            Guard.Against.NullOrWhiteSpace(token, message: "Not valid token.");
+            Guard.Against.NullOrWhiteSpace(token, message: "Invalid token.");
 
             var user = await FindAsync(id);
             var result = await _userManager.ConfirmEmailAsync(user, token);

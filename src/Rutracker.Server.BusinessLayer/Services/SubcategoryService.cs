@@ -28,7 +28,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var subcategories = await _subcategoryRepository.GetAll(x => x.CategoryId == categoryId).ToListAsync();
 
-            Guard.Against.NullNotFound(subcategories, "Subcategories not found.");
+            Guard.Against.NullNotFound(subcategories, "The subcategories not found.");
 
             return subcategories;
         }
@@ -39,7 +39,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var subcategory = await _subcategoryRepository.GetAsync(id);
 
-            Guard.Against.NullNotFound(subcategory, "Subcategory not found.");
+            Guard.Against.NullNotFound(subcategory, $"The subcategory with id '{id}' not found.");
 
             return subcategory;
         }
@@ -50,10 +50,10 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!await _categoryRepository.ExistAsync(subcategory.CategoryId))
             {
-                throw new RutrackerException($"Category with id {subcategory.CategoryId} not found.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"The category with id '{subcategory.CategoryId}' not found.", ExceptionEventType.NotValidParameters);
             }
 
-            await _subcategoryRepository.AddAsync(subcategory);
+            subcategory = await _subcategoryRepository.AddAsync(subcategory);
             await _unitOfWork.CompleteAsync();
 
             return subcategory;
@@ -67,7 +67,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             result.Name = subcategory.Name;
 
-            _subcategoryRepository.Update(result);
+            result = _subcategoryRepository.Update(result);
             await _unitOfWork.CompleteAsync();
 
             return result;
@@ -77,7 +77,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var subcategory = await FindAsync(id);
 
-            _subcategoryRepository.Remove(subcategory);
+            subcategory = _subcategoryRepository.Remove(subcategory);
 
             await _unitOfWork.CompleteAsync();
 
@@ -86,8 +86,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         private static void ThrowIfInvalidSubcategoryModel(Subcategory subcategory)
         {
-            Guard.Against.NullNotValid(subcategory, $"Not valid {nameof(subcategory)}.");
-            Guard.Against.NullOrWhiteSpace(subcategory.Name, message: $"The {nameof(subcategory.Name)} is null or white space.");
+            Guard.Against.NullNotValid(subcategory, "Invalid subcategory model.");
+            Guard.Against.NullOrWhiteSpace(subcategory.Name, message: "The subcategory must contain a name.");
         }
     }
 }

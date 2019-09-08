@@ -33,6 +33,9 @@ namespace Rutracker.Server.WebApi.Services
 
         public async Task<string> GenerateTokenAsync(User user, IEnumerable<string> roles)
         {
+            Guard.Against.Null(user, nameof(user));
+            Guard.Against.Null(roles, nameof(roles));
+
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
@@ -55,8 +58,10 @@ namespace Rutracker.Server.WebApi.Services
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
-        /// <returns>Date converted to seconds since Unix epoch (Jan 1, 1970, midnight UTC).</returns>
-        private static long ToUnixEpochDate(DateTime date) =>
-            (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
+        private static long ToUnixEpochDate(DateTime date)
+        {
+            return (long)Math.Round((date.ToUniversalTime() -
+                                      new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
+        }
     }
 }

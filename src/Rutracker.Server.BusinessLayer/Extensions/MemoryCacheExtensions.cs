@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Rutracker.Server.BusinessLayer.Extensions
@@ -7,14 +8,14 @@ namespace Rutracker.Server.BusinessLayer.Extensions
     {
         public static async Task<TItem> GetOrCreateAsync<TItem>(this IMemoryCache cache,
             object key,
-            Task<TItem> factory,
+            Func<Task<TItem>> func,
             MemoryCacheEntryOptions options)
         {
             return await cache.GetOrCreateAsync(key, async entry =>
             {
                 entry.SetOptions(options);
 
-                return await factory;
+                return await func();
             });
         }
     }

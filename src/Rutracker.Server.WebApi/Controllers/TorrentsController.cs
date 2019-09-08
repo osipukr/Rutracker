@@ -33,14 +33,16 @@ namespace Rutracker.Server.WebApi.Controllers
         [HttpPost]
         public async Task<PaginationResult<TorrentViewModel>> Pagination(int page, int pageSize, FilterViewModel filter)
         {
-            var torrents = await _torrentService.ListAsync(page, pageSize, filter.CategoryId, filter.SubcategoryId, filter.Search);
-            var count = await _torrentService.CountAsync(filter.CategoryId, filter.SubcategoryId, filter.Search);
+            var (torrents, count) = await _torrentService.ListAsync(page, pageSize,
+                filter.CategoryId,
+                filter.SubcategoryId,
+                filter.Search);
 
             return new PaginationResult<TorrentViewModel>
             {
                 Page = page,
                 PageSize = pageSize,
-                TotalPages = (int)Math.Ceiling(count / (double)pageSize),
+                TotalItems = count,
                 Items = _mapper.Map<IEnumerable<TorrentViewModel>>(torrents)
             };
         }

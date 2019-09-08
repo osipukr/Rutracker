@@ -19,6 +19,15 @@
                  OnUpdate="@CommentUpdateAsync"
                  OnDelete="@CommentDeleteAsync"
                  OnLike="@CommentLikeAsync" />
+
+    @if (CommentPagination != null)
+    {
+        <Pagination Page="@Page"
+                    PageSize="@PageSize"
+                    TotalPages="@CommentPagination.TotalPages"
+                    TotalItems="@CommentPagination.TotalItems"
+                    OnPageChange="@PageChanged" />
+    }
 </Page>
 
 @code
@@ -26,15 +35,35 @@
     [Parameter] public int Id { get; set; }
 
     private TorrentDetailsViewModel TorrentDetailsModel { get; set; }
+    private PaginationResult<CommentViewModel> CommentPagination { get; set; }
     private List<CommentViewModel> Comments { get; set; } = new List<CommentViewModel>();
+    private int Page { get; set; } = 1;
+    private int PageSize => ViewSettings.CommentsPerPageCount;
 
-    protected override async Task OnInitializedAsync() => await TorrentWithCommentsAsync();
-
-    private async Task TorrentWithCommentsAsync() => await LoadAsync(async () =>
+    protected override async Task OnInitializedAsync()
     {
-        TorrentDetailsModel = await TorrentService.FindAsync(Id);
-        Comments = (await CommentService.ListAsync(TorrentDetailsModel.Id)).ToList();
+        await TorrentAsync();
+
+        if (ActionResult == PageActions.Succeeded)
+        {
+            await CommentsAsync();
+        }
+    }
+
+    private async Task TorrentAsync() => await LoadAsync(async () => TorrentDetailsModel = await TorrentService.FindAsync(Id));
+
+    private async Task CommentsAsync() => await ActionAsync(async () =>
+    {
+        CommentPagination = await CommentService.ListAsync(Page, PageSize, Id);
+        Comments = CommentPagination.Items.ToList();
     });
+
+    private async Task PageChanged(int page)
+    {
+        Page = page;
+
+        await CommentsAsync();
+    }
 
     private async Task CommentCreateAsync(CommentCreateViewModel comment) => await ActionAsync(async () =>
     {
@@ -44,7 +73,7 @@
 
         MatToaster.Add("Comment created successfully.", MatToastType.Success);
 
-        Comments.Add(result);
+        Comments.Insert(0, result);
     });
 
     private async Task CommentUpdateAsync(CommentViewModel comment, CommentUpdateViewModel model) => await ActionAsync(async () =>
@@ -76,9 +105,9 @@
 
     private async Task CommentLikeAsync(int id) => await ActionAsync(async () =>
     {
-        var comment = await CommentService.LikeCommentAsync(id);
+        var result = await CommentService.LikeCommentAsync(id);
         var index = Comments.FindIndex(x => x.Id == id);
 
-        Comments[index] = comment;
+        Comments[index] = result;
     });
 }

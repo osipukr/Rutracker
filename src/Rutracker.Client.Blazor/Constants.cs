@@ -18,8 +18,6 @@
             public const string Register = "/account/register";
             public const string Logout = "/account/logout";
             public const string Profile = "/account/profile";
-            public const string ConfirmEmail = "/account/confirm_email/{0}/{1}";
-            public const string ConfirmChangeEmail = "/account/confirm_change_email/{0}/{1}";
 
             public const string Repository = "https://github.com/osipukr/Rutracker-Blazor";
         }

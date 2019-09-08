@@ -9,7 +9,7 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
         Task<IEnumerable<User>> ListAsync();
         Task<User> FindAsync(string id);
         Task<User> UpdateAsync(string id, User user);
-        Task<IEnumerable<string>> RolesAsync(User user);
+        Task<IEnumerable<string>> RolesAsync(string id);
         Task<User> ChangeImageAsync(string id, string imageUrl);
         Task<User> ChangeImageAsync(string id, byte[] imageBytes, string imageType);
         Task<User> DeleteImageAsync(string id);

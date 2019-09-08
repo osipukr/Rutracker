@@ -15,8 +15,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task SendConfirmationEmailAsync(string email, string confirmationUrl)
         {
-            Guard.Against.NullOrWhiteSpace(email, message: "Not valid user name.");
-            Guard.Against.NullOrWhiteSpace(confirmationUrl, message: "Not valid confirmation url.");
+            Guard.Against.NullOrWhiteSpace(email, message: "Invalid email.");
+            Guard.Against.NullOrWhiteSpace(confirmationUrl, message: "Invalid confirmation url.");
 
             await _emailSender.SendAsync(
                 email: email,
@@ -26,8 +26,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task SendEmailChangeConfirmation(string email, string confirmationUrl)
         {
-            Guard.Against.NullOrWhiteSpace(email, message: "Not valid user name.");
-            Guard.Against.NullOrWhiteSpace(confirmationUrl, message: "Not valid confirmation url.");
+            Guard.Against.NullOrWhiteSpace(email, message: "Invalid email.");
+            Guard.Against.NullOrWhiteSpace(confirmationUrl, message: "Invalid confirmation url.");
 
             await _emailSender.SendAsync(
                 email: email,

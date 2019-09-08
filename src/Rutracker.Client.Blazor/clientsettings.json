@@ -28,7 +28,8 @@
   "ViewSettings": {
     "ServiceName": "Rutracker",
     "TorrentsPerPageCount": 6,
-    "PopularTorrentsCount": 10
+    "PopularTorrentsCount": 10,
+    "CommentsPerPageCount": 5
   },
   "MatToasterSettings": {
     "Position": "BottomRight",

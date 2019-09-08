@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Rutracker.Client.Blazor.Interfaces;
 using Rutracker.Client.Blazor.Settings;
+using Rutracker.Shared.Models.ViewModels;
 using Rutracker.Shared.Models.ViewModels.Comment;
 
 namespace Rutracker.Client.Blazor.Services
@@ -17,11 +17,11 @@ namespace Rutracker.Client.Blazor.Services
             _apiUrls = apiUrls;
         }
 
-        public async Task<IEnumerable<CommentViewModel>> ListAsync(int torrentId)
+        public async Task<PaginationResult<CommentViewModel>> ListAsync(int page, int pageSize, int torrentId)
         {
-            var url = $"{_apiUrls.Comments}?{nameof(torrentId)}={torrentId}";
+            var url = $"{_apiUrls.Comments}?{nameof(page)}={page}&{nameof(pageSize)}={pageSize}&{nameof(torrentId)}={torrentId}";
 
-            return await _httpClientService.GetJsonAsync<IEnumerable<CommentViewModel>>(url);
+            return await _httpClientService.GetJsonAsync<PaginationResult<CommentViewModel>>(url);
         }
 
         public async Task<CommentViewModel> AddAsync(CommentCreateViewModel model)

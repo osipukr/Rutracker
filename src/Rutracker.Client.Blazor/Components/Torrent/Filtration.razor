@@ -5,10 +5,10 @@
 <div class="mat-layout-grid px-0">
     <div class="mat-layout-grid-inner">
         <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-            <EditForm Model="@Filter" OnValidSubmit="@ApplyClicked">
+            <EditForm Model="@FilterModel" OnValidSubmit="@ApplyClicked">
                 <DataAnnotationsValidator />
 
-                <MatTextField @bind-Value="@Filter.Search"
+                <MatTextField @bind-Value="@FilterModel.Search"
                               Label="Search"
                               Icon="@MatIconNames.Search"
                               IconTrailing="true"
@@ -16,7 +16,7 @@
                               InputClass="pr-5"
                               type="search" />
 
-                <ValidationMessage For="@(() => Filter.Search)" />
+                <ValidationMessage For="@(() => FilterModel.Search)" />
 
                 <div class="row px-0 pt-5 pb-3">
                     <div class="col">
@@ -62,13 +62,11 @@
                     <div class="d-flex justify-content-between filter-group-btn">
                         <MatButton OnClick="@ResetClicked"
                                    Label="All"
-                                   Disabled="@SearchInProgress"
                                    Outlined="true"
                                    class="filter-btn mat-elevation-z5"
                                    type="reset" />
 
                         <MatButton Label="Apply"
-                                   Disabled="@SearchInProgress"
                                    TrailingIcon="@MatIconNames.Search"
                                    Raised="true"
                                    class="filter-btn mat-elevation-z5"
@@ -83,25 +81,24 @@
 @code
 {
     [Parameter] public EventCallback<FilterViewModel> OnChange { get; set; }
-    [Parameter] public bool SearchInProgress { get; set; }
 
-    private FilterViewModel Filter { get; set; } = new FilterViewModel();
+    private FilterViewModel FilterModel { get; set; } = new FilterViewModel();
     private IEnumerable<CategoryViewModel> Categories { get; set; }
     private IEnumerable<SubcategoryViewModel> Subcategories { get; set; }
 
     private string CategoryId
     {
-        get => Filter.CategoryId.ToString();
+        get => FilterModel.CategoryId.ToString();
         set
         {
             if (int.TryParse(value, out var id))
             {
-                Filter.CategoryId = id;
+                FilterModel.CategoryId = id;
                 SubcategoriesAsync(id);
             }
             else
             {
-                Filter.CategoryId = null;
+                FilterModel.CategoryId = null;
                 Subcategories = null;
             }
 
@@ -112,8 +109,8 @@
 
     private string SubcategoryId
     {
-        get => Filter.SubcategoryId.ToString();
-        set => Filter.SubcategoryId = int.TryParse(value, out var id) ? (int?)id : null;
+        get => FilterModel.SubcategoryId.ToString();
+        set => FilterModel.SubcategoryId = int.TryParse(value, out var id) ? (int?)id : null;
     }
 
     protected override async Task OnInitializedAsync() => await CategoriesAsync();
@@ -123,12 +120,12 @@
 
     private void ResetClicked()
     {
-        Filter.Search = null;
+        FilterModel.Search = null;
         CategoryId = null;
         SubcategoryId = null;
 
         ApplyClicked();
     }
 
-    private void ApplyClicked() => OnChange.InvokeAsync(Filter);
+    private void ApplyClicked() => OnChange.InvokeAsync(FilterModel);
 }

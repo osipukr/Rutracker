@@ -67,8 +67,11 @@ namespace Rutracker.Server.WebApi.Controllers
         {
             var userId = User.GetUserId();
             var user = await _userService.FindAsync(userId);
+            var result = _mapper.Map<UserDetailsViewModel>(user);
 
-            return _mapper.Map<UserDetailsViewModel>(user);
+            result.Roles = await _userService.RolesAsync(userId);
+
+            return result;
         }
 
         [HttpPut("change/info")]

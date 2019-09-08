@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Rutracker.Shared.Models.ViewModels
 {
@@ -6,7 +7,8 @@ namespace Rutracker.Shared.Models.ViewModels
     {
         public int Page { get; set; } = 1;
         public int PageSize { get; set; } = 0;
-        public int TotalPages { get; set; } = 0;
+        public int TotalItems { get; set; } = 0;
+        public int TotalPages => (int)Math.Ceiling(TotalItems / (double)PageSize);
         public IEnumerable<TResult> Items { get; set; }
     }
 }

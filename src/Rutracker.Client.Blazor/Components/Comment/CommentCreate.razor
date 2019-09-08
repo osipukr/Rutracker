@@ -1,9 +1,9 @@
-﻿<EditForm Model="@Comment" OnValidSubmit="@CreateCommentAsync" autocomplete="off" class="w-100">
+﻿<EditForm Model="@Comment" OnValidSubmit="@CreateCommentAsync" class="w-100">
     <div class="card-footer" style="background-color: transparent;">
         <div class="input-group">
             @if (Creating)
             {
-                <button style="width:100%;" class="btn btn-light">
+                <button class="btn btn-light w-100" type="button">
                     <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Creating...
                 </button>
             }

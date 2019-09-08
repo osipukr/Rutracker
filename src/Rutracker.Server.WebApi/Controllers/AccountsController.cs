@@ -45,7 +45,7 @@ namespace Rutracker.Server.WebApi.Controllers
         public async Task<string> Login(LoginViewModel model)
         {
             var user = await _accountService.LoginAsync(model.UserName, model.Password, model.RememberMe);
-            var roles = await _userService.RolesAsync(user);
+            var roles = await _userService.RolesAsync(user.Id);
 
             return await _jwtFactory.GenerateTokenAsync(user, roles);
         }

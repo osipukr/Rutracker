@@ -30,18 +30,28 @@ namespace Rutracker.Server.BusinessLayer.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<Comment>> ListAsync(int torrentId)
+        public async Task<Tuple<IEnumerable<Comment>, int>> ListAsync(int page, int pageSize, int torrentId)
         {
+            Guard.Against.LessOne(page, $"The {nameof(page)} is less than 1.");
+            Guard.Against.OutOfRange(pageSize, rangeFrom: 1, rangeTo: 100, $"The {nameof(pageSize)} is out of range ({1} - {100}).");
             Guard.Against.LessOne(torrentId, $"The {nameof(torrentId)} is less than 1.");
 
-            var comments = await _commentRepository.GetAll(x => x.TorrentId == torrentId)
+            if (!await _torrentRepository.ExistAsync(torrentId))
+            {
+                throw new RutrackerException($"The torrent with id '{torrentId}' not found.", ExceptionEventType.NotValidParameters);
+            }
+
+            var query = _commentRepository.GetAll(x => x.TorrentId == torrentId)
                 .OrderByDescending(x => x.Likes.Count)
-                .ThenByDescending(x => x.CreatedAt)
-                .ToListAsync();
+                .ThenByDescending(x => x.CreatedAt);
 
-            Guard.Against.NullNotFound(comments, "Comments not found.");
+            var comments = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
-            return comments;
+            Guard.Against.NullNotFound(comments, "The comments not found.");
+
+            var count = await query.CountAsync();
+
+            return Tuple.Create<IEnumerable<Comment>, int>(comments, count);
         }
 
         public async Task<Comment> FindAsync(int id, string userId)
@@ -51,7 +61,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var comment = await _commentRepository.GetAsync(x => x.Id == id && x.UserId == userId);
 
-            Guard.Against.NullNotFound(comment, "Comment not found.");
+            Guard.Against.NullNotFound(comment, $"The comment with id '{id}' not found.");
 
             return comment;
         }
@@ -62,12 +72,12 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!await _torrentRepository.ExistAsync(comment.TorrentId))
             {
-                throw new RutrackerException($"Error adding comment. Torrent with id {comment.TorrentId} not found.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"The torrent with id '{comment.TorrentId}' not found.", ExceptionEventType.NotValidParameters);
             }
 
             comment.CreatedAt = DateTime.Now;
 
-            await _commentRepository.AddAsync(comment);
+            comment = await _commentRepository.AddAsync(comment);
             await _unitOfWork.CompleteAsync();
 
             return comment;
@@ -83,7 +93,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             result.IsModified = true;
             result.LastModifiedAt = DateTime.Now;
 
-            _commentRepository.Update(result);
+            result = _commentRepository.Update(result);
 
             await _unitOfWork.CompleteAsync();
 
@@ -94,7 +104,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var comment = await FindAsync(id, userId);
 
-            _commentRepository.Remove(comment);
+            comment = _commentRepository.Remove(comment);
 
             await _unitOfWork.CompleteAsync();
 
@@ -115,7 +125,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             }
             else if (comment == null)
             {
-                throw new RutrackerException("Not valid comment ID.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"The comment with id '{id}' not found.", ExceptionEventType.NotValidParameters);
             }
             else
             {
@@ -133,7 +143,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         private static void ThrowIfInvalidCommentModel(Comment comment)
         {
-            Guard.Against.NullNotValid(comment, "Not valid comment.");
+            Guard.Against.NullNotValid(comment, "Invalid comment model.");
             Guard.Against.NullOrWhiteSpace(comment.Text, message: "The comment must contain text.");
         }
     }

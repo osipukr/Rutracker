@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +8,7 @@ using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Extensions;
+using Rutracker.Shared.Models.ViewModels;
 using Rutracker.Shared.Models.ViewModels.Comment;
 
 namespace Rutracker.Server.WebApi.Controllers
@@ -22,11 +24,17 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpGet, AllowAnonymous]
-        public async Task<IEnumerable<CommentViewModel>> List(int torrentId)
+        public async Task<PaginationResult<CommentViewModel>> List(int page, int pageSize, int torrentId)
         {
-            var comments = await _commentService.ListAsync(torrentId);
+            var (comments, count) = await _commentService.ListAsync(page, pageSize, torrentId);
 
-            return _mapper.Map<IEnumerable<CommentViewModel>>(comments);
+            return new PaginationResult<CommentViewModel>
+            {
+                Page = page,
+                PageSize = pageSize,
+                TotalItems = count,
+                Items = _mapper.Map<IEnumerable<CommentViewModel>>(comments)
+            };
         }
 
         [HttpGet("{id}")]

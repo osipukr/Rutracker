@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Rutracker.Shared.Models.ViewModels.Role;
 
 namespace Rutracker.Shared.Models.ViewModels.User
 {
@@ -9,6 +8,6 @@ namespace Rutracker.Shared.Models.ViewModels.User
         public bool EmailConfirmed { get; set; }
         public bool PhoneNumberConfirmed { get; set; }
         public bool TwoFactorEnabled { get; set; }
-        public IEnumerable<RoleViewModel> Roles { get; set; }
+        public IEnumerable<string> Roles { get; set; }
     }
 }
