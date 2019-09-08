@@ -1,4 +1,7 @@
-﻿namespace Rutracker.Shared.Models.ViewModels.User
+﻿using System.Collections.Generic;
+using Rutracker.Shared.Models.ViewModels.Role;
+
+namespace Rutracker.Shared.Models.ViewModels.User
 {
     public class UserDetailsViewModel : UserProfileViewModel
     {
@@ -6,6 +9,6 @@
         public bool EmailConfirmed { get; set; }
         public bool PhoneNumberConfirmed { get; set; }
         public bool TwoFactorEnabled { get; set; }
-        public string[] Roles { get; set; }
+        public IEnumerable<RoleViewModel> Roles { get; set; }
     }
 }

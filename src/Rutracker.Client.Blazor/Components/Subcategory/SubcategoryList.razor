@@ -13,7 +13,7 @@ else
     <MatTable Items="@Items" AllowSelection="true" class="mat-elevation-z5">
         <MatTableHeader>
             <th class="p-2 text-center">
-                <MatIconButton OnClick="@CreateClicked" Icon="@MatIconNames.Add" title="Add new subcategory" />
+                <MatIconButton OnClick="@CreateModalOpened" Icon="@MatIconNames.Add" title="Add new subcategory" />
             </th>
             <th>Id</th>
             <th>Torrent Count</th>
@@ -22,8 +22,8 @@ else
         <MatTableRow Context="subcategory">
             <td>
                 <div style="width:100px;">
-                    <MatIconButton OnClick="@(_ => UpdateClicked(subcategory))" Icon="@MatIconNames.Edit" />
-                    <MatIconButton OnClick="@(_ => DeleteClicked(subcategory))" Icon="@MatIconNames.Delete" />
+                    <MatIconButton OnClick="@(_ => UpdateModelOpened(subcategory))" Icon="@MatIconNames.Edit" />
+                    <MatIconButton OnClick="@(_ => DeleteModalOpened(subcategory))" Icon="@MatIconNames.Delete" />
                 </div>
             </td>
             <td>@subcategory.Id</td>
@@ -42,13 +42,13 @@ else
 
     private SubcategoryViewModel Subcategory { get; set; }
 
-    private void CreateClicked()
+    private void CreateModalOpened()
     {
-        ModalService.OnClose += SubcategoryAddModalClosed;
+        ModalService.OnClose += CreateModalClosed;
         ModalService.Show("Create subcategory", typeof(SubcategoryAddModal));
     }
 
-    private void UpdateClicked(SubcategoryViewModel model)
+    private void UpdateModelOpened(SubcategoryViewModel model)
     {
         var parameters = new ModalParameters();
 
@@ -59,31 +59,31 @@ else
 
         Subcategory = model;
 
-        ModalService.OnClose += SubcategoryUpdateModalClosed;
+        ModalService.OnClose += UpdateModalClosed;
         ModalService.Show("Update subcategory", typeof(SubcategoryUpdateModal), parameters);
     }
 
-    private void DeleteClicked(SubcategoryViewModel model)
+    private void DeleteModalOpened(SubcategoryViewModel model)
     {
         var parameters = new ModalParameters();
 
         parameters.Add(nameof(SubcategoryViewModel), model);
 
-        ModalService.OnClose += SubcategoryDeleteModalClosed;
+        ModalService.OnClose += DeleteModalClosed;
         ModalService.Show("Delete subcategory", typeof(SubcategoryDeleteModal), parameters);
     }
 
-    private async void SubcategoryAddModalClosed(ModalResult result)
+    private async void CreateModalClosed(ModalResult result)
     {
         if (!result.Cancelled && result.Data is SubcategoryCreateViewModel model)
         {
             await OnCreate.InvokeAsync(model);
         }
 
-        ModalService.OnClose -= SubcategoryAddModalClosed;
+        ModalService.OnClose -= CreateModalClosed;
     }
 
-    private async void SubcategoryUpdateModalClosed(ModalResult result)
+    private async void UpdateModalClosed(ModalResult result)
     {
         if (!result.Cancelled && result.Data is SubcategoryUpdateViewModel model)
         {
@@ -91,16 +91,16 @@ else
         }
 
         Subcategory = null;
-        ModalService.OnClose -= SubcategoryUpdateModalClosed;
+        ModalService.OnClose -= UpdateModalClosed;
     }
 
-    private async void SubcategoryDeleteModalClosed(ModalResult result)
+    private async void DeleteModalClosed(ModalResult result)
     {
         if (!result.Cancelled && result.Data is SubcategoryViewModel model)
         {
             await OnDelete.InvokeAsync(model);
         }
 
-        ModalService.OnClose -= SubcategoryDeleteModalClosed;
+        ModalService.OnClose -= DeleteModalClosed;
     }
 }

@@ -48,6 +48,10 @@ namespace Rutracker.Client.Blazor.Models
             {
                 MatToaster.Add(ex.Message, MatToastType.Warning, toasterTitle);
             }
+            finally
+            {
+                StateHasChanged();
+            }
         }
     }
 }

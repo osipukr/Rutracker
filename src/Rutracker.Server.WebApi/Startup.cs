@@ -56,9 +56,7 @@ namespace Rutracker.Server.WebApi
             services.Configure<StorageSettings>(_configuration.GetSection(nameof(StorageSettings)));
             services.Configure<EmailSettings>(_configuration.GetSection(nameof(EmailSettings)));
             services.Configure<SmsSettings>(_configuration.GetSection(nameof(SmsSettings)));
-            services.Configure<HostSettings>(_configuration.GetSection(nameof(HostSettings)));
-            services.Configure<EmailConfirmationSettings>(_configuration.GetSection(nameof(EmailConfirmationSettings)));
-            services.Configure<EmailChangeConfirmationSettings>(_configuration.GetSection(nameof(EmailChangeConfirmationSettings)));
+            services.Configure<ClientSettings>(_configuration.GetSection(nameof(ClientSettings)));
 
             services.AddResponseCompression(options =>
             {

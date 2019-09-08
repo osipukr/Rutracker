@@ -5,7 +5,7 @@
 @page "/account/login"
 
 <MatCard>
-    <EditForm Model="@LoginModel" OnValidSubmit="@LoginClicked">
+    <EditForm Model="@LoginModel" OnValidSubmit="@LoginAsync">
         <div class="form-group">
             <DataAnnotationsValidator />
 
@@ -49,7 +49,7 @@
 {
     private LoginViewModel LoginModel { get; set; } = new LoginViewModel();
 
-    private async Task LoginClicked()
+    private async Task LoginAsync()
     {
         await LoadAsync(() => AccountService.Login(LoginModel));
 

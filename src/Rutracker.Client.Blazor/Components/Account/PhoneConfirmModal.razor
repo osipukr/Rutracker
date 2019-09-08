@@ -1,6 +1,4 @@
-﻿@inherits PageComponent
-@inject IUserService UserService
-@inject IModalService ModalService
+﻿@inject IModalService ModalService
 
 <EditForm Model="@ConfirmPhoneNumberModel" OnValidSubmit="@ConfirmClicked">
     <div class="form-group">
@@ -29,15 +27,6 @@
         ConfirmPhoneNumberModel = Parameters.Get<ConfirmChangePhoneNumberViewModel>(nameof(ConfirmChangePhoneNumberViewModel));
     }
 
-    private async Task ConfirmPhoneNumberAsync()
-    {
-        await UserService.ConfirmChangePhoneNumber(ConfirmPhoneNumberModel);
-
-        MatToaster.Add("The action was successfully confirmed", MatToastType.Success);
-
-        ModalService.Close(ModalResult.Ok(true));
-    }
-
-    private async Task ConfirmClicked() => await ActionAsync(ConfirmPhoneNumberAsync);
+    private void ConfirmClicked() => ModalService.Close(ModalResult.Ok(ConfirmPhoneNumberModel));
     private void CancelClicked() => ModalService.Cancel();
 }

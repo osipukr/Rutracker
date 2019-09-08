@@ -12,12 +12,10 @@ namespace Rutracker.Server.WebApi.Controllers
     public class SubcategoriesController : BaseApiController
     {
         private readonly ISubcategoryService _subcategoryService;
-        private readonly IMapper _mapper;
 
-        public SubcategoriesController(ISubcategoryService subcategoryService, IMapper mapper)
+        public SubcategoriesController(ISubcategoryService subcategoryService, IMapper mapper) : base(mapper)
         {
             _subcategoryService = subcategoryService;
-            _mapper = mapper;
         }
 
         [HttpGet]

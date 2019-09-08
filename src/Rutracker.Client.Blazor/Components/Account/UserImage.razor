@@ -1,0 +1,34 @@
+﻿@inject IModalService ModalService
+
+<MatButton OnClick="@ChangeModalOpened" class="m-0 p-0 rounded-circle w-100 h-100 mat-elevation-z5" title="Click to change image">
+    @if (PageHelpers.IsValidImageUrl(Url))
+    {
+        <img class="w-100 h-100" src="@Url" alt="User image" />
+    }
+    else
+    {
+        <img class="w-100 h-100" src="img/profile-bg.jpg" alt="Default user image" />
+    }
+</MatButton>
+
+@code
+{
+    [Parameter] public string Url { get; set; }
+    [Parameter] public EventCallback<ChangeImageViewModel> OnChange { get; set; }
+
+    private void ChangeModalOpened()
+    {
+        ModalService.OnClose += ChangeModalClosed;
+        ModalService.Show("Change user image", typeof(UserImageChangeModal));
+    }
+
+    private async void ChangeModalClosed(ModalResult result)
+    {
+        if (!result.Cancelled && result.Data is ChangeImageViewModel model)
+        {
+            await OnChange.InvokeAsync(model);
+        }
+
+        ModalService.OnClose -= ChangeModalClosed;
+    }
+}

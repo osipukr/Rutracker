@@ -11,7 +11,7 @@
     private IEnumerable<TorrentViewModel> Torrents { get; set; }
     private int Count => ViewSettings.PopularTorrentsCount;
 
-    protected override async Task OnInitializedAsync() => await LoadAsync(TorrentsAsync);
+    protected override async Task OnInitializedAsync() => await TorrentsAsync();
 
-    private async Task TorrentsAsync() => Torrents = await TorrentService.PopularTorrentsAsync(Count);
+    private async Task TorrentsAsync() => await LoadAsync(async () => Torrents = await TorrentService.PopularTorrentsAsync(Count));
 }

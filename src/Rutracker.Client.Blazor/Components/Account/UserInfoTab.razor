@@ -39,7 +39,7 @@
         </div>
 
         <div class="form-group mt-4 d-flex justify-content-end">
-            <MatButton OnClick="@ChangeUserModalOpenClicked" Label="Edit profile" Raised="true" />
+            <MatButton OnClick="@ChangeModalOpened" Label="Edit profile" Raised="true" />
         </div>
     </ChildContent>
 </MatTab>
@@ -47,9 +47,9 @@
 @code
 {
     [Parameter] public UserDetailsViewModel UserModel { get; set; }
-    [Parameter] public EventCallback OnChange { get; set; }
+    [Parameter] public EventCallback<ChangeUserViewModel> OnChange { get; set; }
 
-    private void ChangeUserModalOpenClicked()
+    private void ChangeModalOpened()
     {
         var parameters = new ModalParameters();
 
@@ -59,17 +59,17 @@
             LastName = UserModel.LastName
         });
 
-        ModalService.OnClose += ModalClosed;
-        ModalService.Show("Change user info", typeof(ChangeUserModal), parameters);
+        ModalService.OnClose += ChangeModalClosed;
+        ModalService.Show("Change user information", typeof(UserInfoChangeModal), parameters);
     }
 
-    private async void ModalClosed(ModalResult result)
+    private async void ChangeModalClosed(ModalResult result)
     {
-        if (!result.Cancelled && result.Data is bool isSuccess && isSuccess)
+        if (!result.Cancelled && result.Data is ChangeUserViewModel model)
         {
-            await OnChange.InvokeAsync(EventArgs.Empty);
+            await OnChange.InvokeAsync(model);
         }
 
-        ModalService.OnClose -= ModalClosed;
+        ModalService.OnClose -= ChangeModalClosed;
     }
 }

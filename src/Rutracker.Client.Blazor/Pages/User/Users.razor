@@ -5,14 +5,14 @@
 @page "/users"
 
 <Page Title="user list" Action="@ActionResult" Errors="@Errors">
-    <UserList Items="@UserItems" />
+    <UserList Items="@UsersItems" />
 </Page>
 
 @code
 {
-    private IEnumerable<UserViewModel> UserItems { get; set; }
+    private IEnumerable<UserViewModel> UsersItems { get; set; }
 
-    protected override async Task OnInitializedAsync() => await LoadAsync(UsersAsync);
+    protected override async Task OnInitializedAsync() => await UsersAsync();
 
-    private async Task UsersAsync() => UserItems = await UserService.ListAsync();
+    private async Task UsersAsync() => await LoadAsync(async () => UsersItems = await UserService.ListAsync());
 }

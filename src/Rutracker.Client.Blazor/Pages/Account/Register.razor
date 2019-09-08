@@ -14,7 +14,7 @@
         <Alert Type="@AlertTypes.Danger">@Errors</Alert>
     }
 
-    <EditForm Model="@RegisterModel" OnValidSubmit="@RegisterClicked">
+    <EditForm Model="@RegisterModel" OnValidSubmit="@RegisterAsync">
         <DataAnnotationsValidator />
 
         <div class="form-group">
@@ -67,5 +67,5 @@
 {
     private RegisterViewModel RegisterModel { get; set; } = new RegisterViewModel();
 
-    private async Task RegisterClicked() => await LoadAsync(() => AccountService.Register(RegisterModel));
+    private async Task RegisterAsync() => await LoadAsync(() => AccountService.Register(RegisterModel));
 }

@@ -40,11 +40,11 @@
     [Parameter] public int Page { get; set; }
     [Parameter] public int PageSize { get; set; }
     [Parameter] public int TotalPages { get; set; }
-    [Parameter] public EventCallback<int> PageChanged { get; set; }
+    [Parameter] public EventCallback<int> OnPageChange { get; set; }
     [Parameter] public bool SearchInProgress { get; set; }
 
     private bool HasPrevious => Page > 1 && TotalPages > 1;
     private bool HasNext => Page < TotalPages;
 
-    private void PageChangeClicked(int page) => PageChanged.InvokeAsync(page);
+    private void PageChangeClicked(int page) => OnPageChange.InvokeAsync(page);
 }

@@ -15,12 +15,10 @@ namespace Rutracker.Server.WebApi.Controllers
     public class CommentsController : BaseApiController
     {
         private readonly ICommentService _commentService;
-        private readonly IMapper _mapper;
 
-        public CommentsController(ICommentService commentService, IMapper mapper)
+        public CommentsController(ICommentService commentService, IMapper mapper) : base(mapper)
         {
             _commentService = commentService;
-            _mapper = mapper;
         }
 
         [HttpGet, AllowAnonymous]

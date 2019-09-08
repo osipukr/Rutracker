@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Rutracker.Shared.Models.ViewModels.Account
+namespace Rutracker.Shared.Models.ViewModels.User.Confirm
 {
     public class ConfirmEmailViewModel
     {

@@ -15,10 +15,10 @@
     <TorrentDetails Torrent="@TorrentDetailsModel" />
 
     <CommentList Items="@Comments"
-                 OnCreate="@(x => ActionAsync(() => CommentCreateAsync(x)))"
-                 OnUpdate="@((x, y) => ActionAsync(() => CommentUpdateAsync(x, y)))"
-                 OnDelete="@(x => ActionAsync(() => CommentDeleteAsync(x)))"
-                 OnLike="@(x => ActionAsync(() => CommentLikeAsync(x)))" />
+                 OnCreate="@CommentCreateAsync"
+                 OnUpdate="@CommentUpdateAsync"
+                 OnDelete="@CommentDeleteAsync"
+                 OnLike="@CommentLikeAsync" />
 </Page>
 
 @code
@@ -26,18 +26,17 @@
     [Parameter] public int Id { get; set; }
 
     private TorrentDetailsViewModel TorrentDetailsModel { get; set; }
-    private List<CommentViewModel> Comments { get; set; }
+    private List<CommentViewModel> Comments { get; set; } = new List<CommentViewModel>();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync() => await TorrentWithCommentsAsync();
+
+    private async Task TorrentWithCommentsAsync() => await LoadAsync(async () =>
     {
-        await LoadAsync(TorrentAsync);
-        await LoadAsync(CommentsAsync);
-    }
+        TorrentDetailsModel = await TorrentService.FindAsync(Id);
+        Comments = (await CommentService.ListAsync(TorrentDetailsModel.Id)).ToList();
+    });
 
-    private async Task TorrentAsync() => TorrentDetailsModel = await TorrentService.FindAsync(Id);
-    private async Task CommentsAsync() => Comments = (await CommentService.ListAsync(TorrentDetailsModel.Id)).ToList();
-
-    private async Task CommentCreateAsync(CommentCreateViewModel comment)
+    private async Task CommentCreateAsync(CommentCreateViewModel comment) => await ActionAsync(async () =>
     {
         comment.TorrentId = TorrentDetailsModel.Id;
 
@@ -46,11 +45,15 @@
         MatToaster.Add("Comment created successfully.", MatToastType.Success);
 
         Comments.Add(result);
-        StateHasChanged();
-    }
+    });
 
-    private async Task CommentUpdateAsync(CommentViewModel comment, CommentUpdateViewModel model)
+    private async Task CommentUpdateAsync(CommentViewModel comment, CommentUpdateViewModel model) => await ActionAsync(async () =>
     {
+        if (comment.Text == model.Text)
+        {
+            return;
+        }
+
         var result = await CommentService.UpdateAsync(comment.Id, model);
 
         MatToaster.Add("Comment updated successfully.", MatToastType.Success);
@@ -58,10 +61,9 @@
         var index = Comments.FindIndex(x => x.Id == comment.Id);
 
         Comments[index] = result;
-        StateHasChanged();
-    }
+    });
 
-    private async Task CommentDeleteAsync(int id)
+    private async Task CommentDeleteAsync(int id) => await ActionAsync(async () =>
     {
         await CommentService.DeleteAsync(id);
 
@@ -70,15 +72,13 @@
         var index = Comments.FindIndex(x => x.Id == id);
 
         Comments.RemoveAt(index);
-        StateHasChanged();
-    }
+    });
 
-    private async Task CommentLikeAsync(int id)
+    private async Task CommentLikeAsync(int id) => await ActionAsync(async () =>
     {
         var comment = await CommentService.LikeCommentAsync(id);
         var index = Comments.FindIndex(x => x.Id == id);
 
         Comments[index] = comment;
-        StateHasChanged();
-    }
+    });
 }

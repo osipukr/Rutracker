@@ -6,30 +6,28 @@
 
 <Page Title="category list" Action="@ActionResult" Errors="@Errors">
     <CategoryList Items="@CategoriesItems"
-                  OnCreate="@(x => ActionAsync(() => CreateCategoryAsync(x)))"
-                  OnUpdate="@((x, y) => ActionAsync(() => UpdateCategoryAsync(x, y)))"
-                  OnDelete="@(x => ActionAsync(() => DeleteCategoryAsync(x)))" />
+                  OnCreate="@CreateCategoryAsync"
+                  OnUpdate="@UpdateCategoryAsync"
+                  OnDelete="@DeleteCategoryAsync" />
 </Page>
 
 @code
 {
-    private List<CategoryViewModel> CategoriesItems { get; set; }
+    private List<CategoryViewModel> CategoriesItems { get; set; } = new List<CategoryViewModel>();
 
-    protected override async Task OnInitializedAsync() => await LoadAsync(CategoriesAsync);
+    protected override async Task OnInitializedAsync() => await CategoriesAsync();
 
-    private async Task CategoriesAsync() => CategoriesItems = (await CategoryService.ListAsync())?.ToList();
+    private async Task CategoriesAsync() => await LoadAsync(async () => CategoriesItems = (await CategoryService.ListAsync())?.ToList());
 
-    private async Task CreateCategoryAsync(CategoryCreateViewModel model)
+    private async Task CreateCategoryAsync(CategoryCreateViewModel model) => await ActionAsync(async () =>
     {
         var category = await CategoryService.CreateAsync(model);
 
         MatToaster.Add("Category successfully created.", MatToastType.Success);
         CategoriesItems.Add(category);
+    });
 
-        StateHasChanged();
-    }
-
-    private async Task UpdateCategoryAsync(CategoryViewModel category, CategoryUpdateViewModel model)
+    private async Task UpdateCategoryAsync(CategoryViewModel category, CategoryUpdateViewModel model) => await ActionAsync(async () =>
     {
         if (category.Name == model.Name)
         {
@@ -43,16 +41,13 @@
         var index = CategoriesItems.FindIndex(x => x.Id == category.Id);
 
         CategoriesItems[index] = result;
-        StateHasChanged();
-    }
+    });
 
-    private async Task DeleteCategoryAsync(CategoryViewModel model)
+    private async Task DeleteCategoryAsync(CategoryViewModel model) => await ActionAsync(async () =>
     {
         await CategoryService.DeleteAsync(model.Id);
 
         MatToaster.Add("Category successfully deleted.", MatToastType.Success);
         CategoriesItems.Remove(model);
-
-        StateHasChanged();
-    }
+    });
 }

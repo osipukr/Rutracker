@@ -1,8 +1,10 @@
-﻿<article class="row mb-3">
+﻿@using System.Globalization
+
+<article class="row mb-3">
     <div class="col-md-2 col-sm-2 hidden-xs p-4">
         <figure class="m-0" style="width: 126px; height: 126px;">
-            <a class="w-100 h-100" href="@GetUserProfileLink(Model.User.Id)">
-                <img src="@(IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : "img/profile-bg.jpg")"
+            <a class="w-100 h-100" href="@PageHelpers.UserLink(Model.User.Id)">
+                <img src="@(PageHelpers.IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : "img/profile-bg.jpg")"
                      class="w-100 h-100 rounded-circle img-responsive"
                      alt="User image | @Model.User.UserName" />
             </a>
@@ -14,7 +16,7 @@
                 <header class="text-left">
                     <div class="comment-user" title="User name">
                         <i class="fa fa-user"></i>
-                        <a href="@GetUserProfileLink(Model.User.Id)">@Model.User.UserName</a>
+                        <a href="@PageHelpers.UserLink(Model.User.Id)">@Model.User.UserName</a>
                     </div>
 
                     <time class="comment-date" datetime="@Model.CreatedAt.ToString(CultureInfo.InvariantCulture)" title="Created at">
@@ -24,7 +26,7 @@
 
                 @if (IsCommentEditClicked)
                 {
-                    <EditForm Model="@CommentUpdate" OnValidSubmit="@OnValidSubmitClicked">
+                    <EditForm Model="@CommentUpdate" OnValidSubmit="@CommentUpdateClicked">
                         <DataAnnotationsValidator />
 
                         <div class="comment-post">
@@ -136,13 +138,10 @@
         StateHasChanged();
     }
 
-    private async Task OnValidSubmitClicked()
+    private async Task CommentUpdateClicked()
     {
         await CommentUpdateAsync(CommentUpdate);
 
         CommentEditCancelClicked();
     }
-
-    private static bool IsValidImageUrl(string url) => !string.IsNullOrWhiteSpace(url);
-    private static string GetUserProfileLink(string id) => string.Format(Constants.Path.User, id);
 }

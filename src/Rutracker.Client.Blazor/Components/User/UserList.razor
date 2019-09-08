@@ -11,7 +11,7 @@ else
     <MatList SingleSelection="true" TwoLine="true">
         @foreach (var user in Items)
         {
-            <MatListItem Href="@GetUserProfileLink(user.Id)">
+            <MatListItem Href="@PageHelpers.UserLink(user.Id)">
                 <MatListItemText>
                     <MatListItemPrimaryText>@user.Id</MatListItemPrimaryText>
                     <MatListItemSecondaryText>@user.UserName</MatListItemSecondaryText>
@@ -24,6 +24,4 @@ else
 @code
 {
     [Parameter] public IEnumerable<UserViewModel> Items { get; set; }
-
-    private static string GetUserProfileLink(string id) => string.Format(Constants.Path.User, id);
 }   

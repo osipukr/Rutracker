@@ -1,11 +1,11 @@
-﻿@inject ICategoryService CategoryService
+﻿@inherits PageComponent
+@inject ICategoryService CategoryService
 @inject ISubcategoryService SubcategoryService
-@inject IMatToaster MatToaster
 
 <div class="mat-layout-grid px-0">
     <div class="mat-layout-grid-inner">
         <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-            <EditForm Model="@Filter" OnValidSubmit="@OnValidSubmitClicked">
+            <EditForm Model="@Filter" OnValidSubmit="@ApplyClicked">
                 <DataAnnotationsValidator />
 
                 <MatTextField @bind-Value="@Filter.Search"
@@ -60,7 +60,7 @@
 
                 <div class="d-flex justify-content-end">
                     <div class="d-flex justify-content-between filter-group-btn">
-                        <MatButton OnClick="@ResetButtonClicked"
+                        <MatButton OnClick="@ResetClicked"
                                    Label="All"
                                    Disabled="@SearchInProgress"
                                    Outlined="true"
@@ -82,7 +82,7 @@
 
 @code
 {
-    [Parameter] public EventCallback<FilterViewModel> FilterChanged { get; set; }
+    [Parameter] public EventCallback<FilterViewModel> OnChange { get; set; }
     [Parameter] public bool SearchInProgress { get; set; }
 
     private FilterViewModel Filter { get; set; } = new FilterViewModel();
@@ -97,7 +97,7 @@
             if (int.TryParse(value, out var id))
             {
                 Filter.CategoryId = id;
-                LoadSubcategoriesAsync(id);
+                SubcategoriesAsync(id);
             }
             else
             {
@@ -116,45 +116,19 @@
         set => Filter.SubcategoryId = int.TryParse(value, out var id) ? (int?)id : null;
     }
 
-    protected override async Task OnInitializedAsync() => await LoadCategoriesAsync();
+    protected override async Task OnInitializedAsync() => await CategoriesAsync();
 
-    private async Task LoadCategoriesAsync()
-    {
-        try
-        {
-            Categories = await CategoryService.ListAsync();
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
-    }
+    private async Task CategoriesAsync() => await ActionAsync(async () => Categories = await CategoryService.ListAsync());
+    private async void SubcategoriesAsync(int categoryId) => await ActionAsync(async () => Subcategories = await SubcategoryService.ListAsync(categoryId));
 
-    private async void LoadSubcategoriesAsync(int categoryId)
-    {
-        try
-        {
-            Subcategories = await SubcategoryService.ListAsync(categoryId);
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
-    }
-
-    private void ResetFiltration()
+    private void ResetClicked()
     {
         Filter.Search = null;
         CategoryId = null;
         SubcategoryId = null;
+
+        ApplyClicked();
     }
 
-    private void ResetButtonClicked()
-    {
-        ResetFiltration();
-        OnValidSubmitClicked();
-    }
-
-    private void OnValidSubmitClicked() => FilterChanged.InvokeAsync(Filter);
+    private void ApplyClicked() => OnChange.InvokeAsync(Filter);
 }

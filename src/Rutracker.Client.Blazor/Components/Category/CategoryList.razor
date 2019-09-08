@@ -5,7 +5,7 @@
 <MatTable Items="@Items" AllowSelection="true" class="mat-elevation-z5">
     <MatTableHeader>
         <th class="p-2 text-center">
-            <MatIconButton OnClick="@CreateClicked" Icon="@MatIconNames.Add" title="Add new category" />
+            <MatIconButton OnClick="@CreateModalOpened" Icon="@MatIconNames.Add" title="Add new category" />
         </th>
         <th title="Category id">Id</th>
         <th title="Subcategory count">Count</th>
@@ -14,14 +14,14 @@
     <MatTableRow Context="category">
         <td>
             <div style="width:100px;">
-                <MatIconButton OnClick="@(_ => UpdateClicked(category))" Icon="@MatIconNames.Edit" />
-                <MatIconButton OnClick="@(_ => DeleteClicked(category))" Icon="@MatIconNames.Delete" />
+                <MatIconButton OnClick="@(_ => UpdateModalOpened(category))" Icon="@MatIconNames.Edit" />
+                <MatIconButton OnClick="@(_ => DeleteModalOpened(category))" Icon="@MatIconNames.Delete" />
             </div>
         </td>
         <td>@category.Id</td>
         <td>@category.SubcategoriesCount</td>
         <td>
-            <a class="text-dark" href="@CategoryDetailsLink(category.Id)">@category.Name</a>
+            <a class="text-dark" href="@PageHelpers.CategoryLink(category.Id)">@category.Name</a>
         </td>
     </MatTableRow>
 </MatTable>
@@ -35,13 +35,13 @@
 
     private CategoryViewModel Category { get; set; }
 
-    private void CreateClicked()
+    private void CreateModalOpened()
     {
-        ModalService.OnClose += CategoryAddModalClosed;
+        ModalService.OnClose += CreateModalClosed;
         ModalService.Show("Create category", typeof(CategoryAddModal));
     }
 
-    private void UpdateClicked(CategoryViewModel model)
+    private void UpdateModalOpened(CategoryViewModel model)
     {
         var parameters = new ModalParameters();
 
@@ -52,49 +52,47 @@
 
         Category = model;
 
-        ModalService.OnClose += CategoryUpdateModalClosed;
+        ModalService.OnClose += UpdateModalClosed;
         ModalService.Show("Update category", typeof(CategoryUpdateModal), parameters);
     }
 
-    private void DeleteClicked(CategoryViewModel model)
+    private void DeleteModalOpened(CategoryViewModel model)
     {
         var parameters = new ModalParameters();
 
         parameters.Add(nameof(CategoryViewModel), model);
 
-        ModalService.OnClose += CategoryDeleteModalClosed;
+        ModalService.OnClose += DeleteModalClosed;
         ModalService.Show("Delete category", typeof(CategoryDeleteModal), parameters);
     }
 
-    private async void CategoryAddModalClosed(ModalResult result)
+    private async void CreateModalClosed(ModalResult result)
     {
         if (!result.Cancelled && result.Data is CategoryCreateViewModel model)
         {
             await OnCreate.InvokeAsync(model);
         }
 
-        ModalService.OnClose -= CategoryAddModalClosed;
+        ModalService.OnClose -= CreateModalClosed;
     }
 
-    private async void CategoryUpdateModalClosed(ModalResult result)
+    private async void UpdateModalClosed(ModalResult result)
     {
         if (!result.Cancelled && result.Data is CategoryUpdateViewModel model)
         {
             await OnUpdate.Invoke(Category, model);
         }
 
-        ModalService.OnClose -= CategoryUpdateModalClosed;
+        ModalService.OnClose -= UpdateModalClosed;
     }
 
-    private async void CategoryDeleteModalClosed(ModalResult result)
+    private async void DeleteModalClosed(ModalResult result)
     {
         if (!result.Cancelled && result.Data is CategoryViewModel model)
         {
             await OnDelete.InvokeAsync(model);
         }
 
-        ModalService.OnClose -= CategoryDeleteModalClosed;
+        ModalService.OnClose -= DeleteModalClosed;
     }
-
-    private static string CategoryDetailsLink(int id) => string.Format(Constants.Path.Category, id.ToString());
 }

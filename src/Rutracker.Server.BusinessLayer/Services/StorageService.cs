@@ -29,11 +29,13 @@ namespace Rutracker.Server.BusinessLayer.Services
             }
         }
 
-        public async Task UploadFileAsync(string containerName, string fileName, Stream stream)
+        public async Task<string> UploadFileAsync(string containerName, string fileName, Stream stream)
         {
             var blockBlob = await GetBlockBlobAsync(containerName, fileName, createIfNotExists: true);
 
             await blockBlob.UploadFromStreamAsync(stream);
+
+            return blockBlob.Uri.AbsoluteUri;
         }
 
         public async Task<Stream> DownloadFileAsync(string containerName, string fileName)

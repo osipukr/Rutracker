@@ -18,12 +18,10 @@ namespace Rutracker.Server.WebApi.Controllers
     public class TorrentsController : BaseApiController
     {
         private readonly ITorrentService _torrentService;
-        private readonly IMapper _mapper;
 
-        public TorrentsController(ITorrentService torrentService, IMapper mapper)
+        public TorrentsController(ITorrentService torrentService, IMapper mapper) : base(mapper)
         {
             _torrentService = torrentService;
-            _mapper = mapper;
         }
 
         /// <summary>

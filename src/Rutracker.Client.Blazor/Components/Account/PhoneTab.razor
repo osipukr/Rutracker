@@ -1,6 +1,4 @@
-﻿@inherits PageComponent
-@inject IUserService UserService
-@inject IModalService ModalService
+﻿@inject IModalService ModalService
 
 <MatTab>
     <LabelContent>Phone</LabelContent>
@@ -30,29 +28,26 @@
 @code
 {
     [Parameter] public UserDetailsViewModel UserModel { get; set; }
-    [Parameter] public EventCallback OnChange { get; set; }
+    [Parameter] public EventCallback<ChangePhoneNumberViewModel> OnChange { get; set; }
+    [Parameter] public EventCallback<ConfirmChangePhoneNumberViewModel> OnConfirm { get; set; }
 
     private ChangePhoneNumberViewModel ChangePhoneNumberModel { get; set; } = new ChangePhoneNumberViewModel();
 
     protected override void OnParametersSet() => ChangePhoneNumberModel.PhoneNumber = UserModel.PhoneNumber;
 
-    private async Task ChangePhoneNumberAsync()
+    private async Task ChangeClicked()
     {
         if (UserModel.PhoneNumber == ChangePhoneNumberModel.PhoneNumber)
         {
             return;
         }
 
-        await UserService.ChangePhoneNumber(ChangePhoneNumberModel);
+        await OnChange.InvokeAsync(ChangePhoneNumberModel);
 
-        MatToaster.Add("Verification code sent to phone number.", MatToastType.Success);
-
-        ConfirmModalOpenClicked();
+        ConfirmModalOpened();
     }
 
-    private async Task ChangeClicked() => await ActionAsync(ChangePhoneNumberAsync);
-
-    private void ConfirmModalOpenClicked()
+    private void ConfirmModalOpened()
     {
         var parameters = new ModalParameters();
 
@@ -62,14 +57,14 @@
         });
 
         ModalService.OnClose += ConfirmModalClosed;
-        ModalService.Show("Confirm phone number", typeof(PhoneNumberConfirmModal), parameters);
+        ModalService.Show("Confirm phone number", typeof(PhoneConfirmModal), parameters);
     }
 
     private async void ConfirmModalClosed(ModalResult result)
     {
-        if (!result.Cancelled && result.Data is bool isSuccess && isSuccess)
+        if (!result.Cancelled && result.Data is ConfirmChangePhoneNumberViewModel model)
         {
-            await OnChange.InvokeAsync(EventArgs.Empty);
+            await OnConfirm.InvokeAsync(model);
         }
 
         ModalService.OnClose -= ConfirmModalClosed;

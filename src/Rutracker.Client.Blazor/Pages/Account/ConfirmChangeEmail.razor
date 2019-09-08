@@ -1,0 +1,55 @@
+﻿@layout LoginLayout
+@attribute [Authorize(Roles = UserRoles.User)]
+
+@inject IUserService UserService
+
+@page "/account/confirm_change_email"
+
+@using Microsoft.AspNetCore.WebUtilities
+
+@if (ActionResult == PageActions.InProgress)
+{
+    <LoadingBackground>
+        <span>Email confirmation is made, please wait</span>
+    </LoadingBackground>
+}
+else if (ActionResult == PageActions.Failed)
+{
+    <Alert Type="@AlertTypes.Danger">
+        @Errors
+    </Alert>
+
+    <div class="d-flex justify-content-center">
+        <MatButton Link="@Constants.Path.Home" Label="Home" />
+    </div>
+}
+
+@code
+{
+    private ConfirmChangeEmailViewModel ConfirmChangeModel { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = new Uri(NavigationManager.Uri);
+
+        ConfirmChangeModel = new ConfirmChangeEmailViewModel
+        {
+            Email = QueryHelpers.ParseQuery(uri.Query).TryGetValue(nameof(ConfirmChangeEmailViewModel.Email), out var email)
+                ? email.FirstOrDefault()
+                : null,
+
+            Token = QueryHelpers.ParseQuery(uri.Query).TryGetValue(nameof(ConfirmChangeEmailViewModel.Token), out var token)
+                ? token.FirstOrDefault()
+                : null
+        };
+
+        await ConfirmChangeEmailAsync();
+
+        if (ActionResult == PageActions.Succeeded)
+        {
+            NavigationManager.NavigateTo(Constants.Path.Profile);
+        }
+    }
+
+    private async Task ConfirmChangeEmailAsync() => await LoadAsync(async () => await UserService.ConfirmChangeEmailAsync(ConfirmChangeModel));
+}

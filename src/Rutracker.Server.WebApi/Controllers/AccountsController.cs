@@ -9,6 +9,7 @@ using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Settings;
 using Rutracker.Shared.Models.ViewModels.Account;
+using Rutracker.Shared.Models.ViewModels.User.Confirm;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
@@ -24,26 +25,23 @@ namespace Rutracker.Server.WebApi.Controllers
         private readonly IEmailService _emailService;
         private readonly IJwtFactory _jwtFactory;
 
-        private readonly HostSettings _hostSettings;
-        private readonly EmailConfirmationSettings _emailConfirmationSettings;
+        private readonly ClientSettings _clientSettings;
 
         public AccountsController(
             IAccountService accountService,
             IUserService userService,
             IEmailService emailService,
             IJwtFactory jwtFactory,
-            IOptions<HostSettings> hostOptions,
-            IOptions<EmailConfirmationSettings> emailOptions)
+            IOptions<ClientSettings> clientOptions) : base(null)
         {
             _accountService = accountService;
             _userService = userService;
             _emailService = emailService;
             _jwtFactory = jwtFactory;
-            _hostSettings = hostOptions.Value;
-            _emailConfirmationSettings = emailOptions.Value;
+            _clientSettings = clientOptions.Value;
         }
 
-        [HttpPost(nameof(Login))]
+        [HttpPost("login")]
         public async Task<string> Login(LoginViewModel model)
         {
             var user = await _accountService.LoginAsync(model.UserName, model.Password, model.RememberMe);
@@ -52,37 +50,29 @@ namespace Rutracker.Server.WebApi.Controllers
             return await _jwtFactory.GenerateTokenAsync(user, roles);
         }
 
-        [HttpPost(nameof(Register))]
+        [HttpPost("register")]
         public async Task Register(RegisterViewModel model)
         {
             var user = await _accountService.RegisterAsync(model.UserName, model.Email, model.Password);
-            var token = await _userService.EmailConfirmationTokenAsync(user);
+            var token = await _userService.EmailConfirmationTokenAsync(user.Id);
             var parameters = HttpUtility.ParseQueryString(string.Empty);
 
             parameters.Add(nameof(ConfirmEmailViewModel.UserId), user.Id);
             parameters.Add(nameof(ConfirmEmailViewModel.Token), token);
 
-            var urlBuilder = new UriBuilder(_hostSettings.BaseUrl)
+            var urlBuilder = new UriBuilder(_clientSettings.BaseUrl)
             {
-                Path = _emailConfirmationSettings.Path,
+                Path = _clientSettings.EmailConfirmPath,
                 Query = parameters.ToString()
             };
 
             await _emailService.SendConfirmationEmailAsync(user.Email, urlBuilder.Uri.ToString());
         }
 
-        [Authorize, HttpPost(nameof(Logout))]
+        [Authorize, HttpPost("logout")]
         public async Task Logout()
         {
             await _accountService.LogoutAsync();
-        }
-
-        [HttpGet(nameof(ConfirmEmail))]
-        public async Task ConfirmEmail([FromQuery] ConfirmEmailViewModel model)
-        {
-            var user = await _userService.FindAsync(model.UserId);
-
-            await _userService.ConfirmEmailAsync(user, model.Token);
         }
     }
 }

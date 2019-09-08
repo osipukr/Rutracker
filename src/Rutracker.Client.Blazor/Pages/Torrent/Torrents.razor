@@ -3,14 +3,14 @@
 @page "/torrents"
 
 <Page Title="torrent list" Action="@ActionResult" Errors="@Errors">
-    <Filtration FilterChanged="@FilterChanged" SearchInProgress="@SearchInProgress" />
+    <Filtration OnChange="@FilterChanged" SearchInProgress="@SearchInProgress" />
 
     <TorrentList Items="@TorrentsPagination.Items" />
 
     <Pagination Page="@TorrentsPagination.Page"
                 PageSize="@TorrentsPagination.PageSize"
                 TotalPages="@TorrentsPagination.TotalPages"
-                PageChanged="@PageChanged"
+                OnPageChange="@PageChanged"
                 SearchInProgress="@SearchInProgress" />
 </Page>
 
@@ -22,9 +22,9 @@
     private int PageSize => ViewSettings.TorrentsPerPageCount;
     private bool SearchInProgress { get; set; }
 
-    protected override async Task OnInitializedAsync() => await LoadAsync(TorrentsAsync);
+    protected override async Task OnInitializedAsync() => await TorrentsAsync();
 
-    private async Task TorrentsAsync()
+    private async Task TorrentsAsync() => await LoadAsync(async () =>
     {
         if (TorrentsPagination != null)
         {
@@ -35,8 +35,7 @@
 
         TorrentsPagination = await TorrentService.ListAsync(Page, PageSize, FilterModel);
         SearchInProgress = TorrentsPagination.Items == null;
-        StateHasChanged();
-    }
+    });
 
     private async Task PageChanged(int page)
     {

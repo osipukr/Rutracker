@@ -1,6 +1,4 @@
-﻿@inherits PageComponent
-@inject IUserService UserService
-@inject IModalService ModalService
+﻿@inject IModalService ModalService
 
 <EditForm Model="@ChangeUserModel" OnValidSubmit="@ChangeClicked">
     <div class="form-group">
@@ -30,15 +28,6 @@
 
     protected override void OnInitialized() => ChangeUserModel = Parameters.Get<ChangeUserViewModel>(nameof(ChangeUserViewModel));
 
-    private async Task ChangeUserAsync()
-    {
-        await UserService.ChangeUser(ChangeUserModel);
-
-        MatToaster.Add("User information changed successfully.", MatToastType.Success);
-
-        ModalService.Close(ModalResult.Ok(true));
-    }
-
-    private async Task ChangeClicked() => await ActionAsync(ChangeUserAsync);
+    private void ChangeClicked() => ModalService.Close(ModalResult.Ok(ChangeUserModel));
     private void CancelClicked() => ModalService.Cancel();
 }

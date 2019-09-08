@@ -8,31 +8,26 @@
 
         <div class="p-2 mt-3">
             <MatBody2 class="m-0">@($"Create at: {Model.CreatedAt.ToShortDateString()}")</MatBody2>
-            <MatBody2 class="m-0">@($"Size: {ConvertBytesToMegabytes(Model.Size):F3} Mb")</MatBody2>
+            <MatBody2 class="m-0">@($"Size: {PageHelpers.ConvertBytesToMegabytes(Model.Size):F3} Mb")</MatBody2>
         </div>
     </MatCardContent>
 
     <MatCardActions>
         <MatCardActionButtons>
-            <MatButton Link="@GetTorrentDetailsLink(Model.Id)" Label="Details" />
+            <MatButton Link="@PageHelpers.TorrentLink(Model.Id)" Label="Details" />
         </MatCardActionButtons>
 
         <MatCardActionIcons>
             <div class="m-0 p-0 d-flex justify-content-center align-items-center">
                 @Model.CommentsCount
-                <MatIconButton Link="@GetCommentsLink(Model.Id)"
-                               Icon="@MatIconNames.Comment"
-                               class="ml-1" />
+
+                <MatIcon Icon="@MatIconNames.Comment" class="ml-1" />
             </div>
         </MatCardActionIcons>
     </MatCardActions>
 </MatCard>
 
-@code 
+@code
 {
     [Parameter] public TorrentViewModel Model { get; set; }
-
-    private static string GetTorrentDetailsLink(int id) => string.Format(Constants.Path.Torrent, id.ToString());
-    private static string GetCommentsLink(int id) => $"{GetTorrentDetailsLink(id)}#comments";
-    private static double ConvertBytesToMegabytes(long bytes) => bytes / 1024f / 1024f;
 }

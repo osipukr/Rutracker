@@ -1,6 +1,5 @@
 ﻿@using global::Blazor.FileReader
-@inherits PageComponent
-@inject IUserService UserService
+
 @inject IModalService ModalService
 @inject IFileReaderService FileReaderService
 
@@ -71,26 +70,22 @@
         }
     }
 
-    private async Task ChangeImageAsync()
+    private async Task ChangeClicked()
     {
         await ReadFileAsync();
-        await UserService.ChangeImage(ChangeImageModel);
 
-        MatToaster.Add("Image changed successfully.", MatToastType.Success);
-
-        ModalService.Close(ModalResult.Ok(true));
+        ModalService.Close(ModalResult.Ok(ChangeImageModel));
     }
 
-    private async Task DeleteImageAsync()
+    private void DeleteClicked()
     {
-        await UserService.DeleteImage();
+        ChangeImageModel.FileType = null;
+        ChangeImageModel.ImageBytes = null;
+        ChangeImageModel.ImageUrl = null;
+        ChangeImageModel.IsDelete = true;
 
-        MatToaster.Add("Image deleted successfully.", MatToastType.Success);
-
-        ModalService.Close(ModalResult.Ok(true));
+        ModalService.Close(ModalResult.Ok(ChangeImageModel));
     }
 
-    private async Task ChangeClicked() => await ActionAsync(ChangeImageAsync);
-    private async Task DeleteClicked() => await ActionAsync(DeleteImageAsync);
     private void CancelClicked() => ModalService.Cancel();
 }
