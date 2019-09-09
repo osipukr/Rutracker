@@ -1,4 +1,9 @@
 ﻿<div class="container pt-3">
+    <div class="row m-0 justify-content-end align-items-center">
+        <span class="pr-2">@TotalItems</span>
+        <h3 class="m-0">Total comments</h3>
+    </div>
+
     <div class="row m-0 mb-3">
         <AuthorizeView>
             <NotAuthorized>
@@ -33,6 +38,7 @@
 @code
 {
     [Parameter] public IEnumerable<CommentViewModel> Items { get; set; }
+    [Parameter] public int TotalItems { get; set; }
     [Parameter] public EventCallback<CommentCreateViewModel> OnCreate { get; set; }
     [Parameter] public Func<CommentViewModel, CommentUpdateViewModel, Task> OnUpdate { get; set; }
     [Parameter] public EventCallback<int> OnDelete { get; set; }

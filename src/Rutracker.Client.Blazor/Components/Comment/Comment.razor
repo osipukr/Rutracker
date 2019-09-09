@@ -1,7 +1,7 @@
 ﻿@using System.Globalization
 
-<article class="row mb-3">
-    <div class="col-md-2 col-sm-2 hidden-xs p-4">
+<article class="row mb-3 justify-content-center">
+    <div class="col-md-2 col-sm-3 p-0 justify-content-center align-items-center">
         <figure class="m-0" style="width: 126px; height: 126px;">
             <a class="w-100 h-100" href="@PageHelpers.UserLink(Model.User.Id)">
                 <img src="@(PageHelpers.IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : Constants.Path.DefaultProfileImage)"
@@ -11,17 +11,18 @@
         </figure>
     </div>
 
-    <div class="col-md-10 col-sm-10">
+    <div class="col-md-8 col-sm-8">
         <div class="panel panel-default arrow left">
             <div class="panel-body bg-white border border-dark p-3" style="border-radius: 1rem;">
                 <header class="text-left">
-                    <div class="comment-user" title="User name">
-                        <i class="fa fa-user"></i>
+                    <div class="comment-user d-flex " title="User name">
+                        <MatIcon Icon="@MatIconNames.Account_box" class="mr-1" />
                         <a href="@PageHelpers.UserLink(Model.User.Id)">@Model.User.UserName</a>
                     </div>
 
-                    <time class="comment-date" datetime="@Model.CreatedAt.ToString(CultureInfo.InvariantCulture)" title="Created at">
-                        <i class="fa fa-clock-o"></i> @Model.CreatedAt.ToString(CultureInfo.InvariantCulture)
+                    <time class="comment-date d-flex " datetime="@Model.CreatedAt.ToString(CultureInfo.InvariantCulture)" title="Created at">
+                        <MatIcon Icon="@MatIconNames.Access_time" class="mr-1" />
+                        @Model.CreatedAt.ToString(CultureInfo.InvariantCulture)
                     </time>
                 </header>
 
@@ -59,6 +60,7 @@
                                 @if (Model.LastModifiedAt.HasValue)
                                 {
                                     <span title="Recent change">@Model.LastModifiedAt.Value.ToString(CultureInfo.InvariantCulture)</span>
+                                    <MatIcon Icon="@MatIconNames.Timelapse" class="ml-1" />
                                 }
                             </div>
                         }
