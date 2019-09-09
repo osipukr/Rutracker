@@ -1,25 +1,23 @@
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Rutracker.Server.WebApi.Settings;
 
 namespace Rutracker.Server.WebApi
 {
     public class Program
     {
-        public static void Main(string[] args) => CreateHostBuilder(args).Build().Run();
+        public static void Main(string[] args) => CreateWebHostBuilder(args).Build().Run();
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .ConfigureLogging((context, builder) =>
                 {
-                    webBuilder.ConfigureLogging((context, configure) =>
-                    {
-                        configure.AddFile(context.Configuration.GetSection(nameof(FileLoggingSettings)).Bind);
-                    });
-
-                    webBuilder.UseStartup<Startup>();
-                });
+                    builder.AddFile(context.Configuration.GetSection("Logging"));
+                })
+                .UseConfiguration(new ConfigurationBuilder()
+                    .AddCommandLine(args)
+                    .Build())
+                .UseStartup<Startup>();
     }
 }
