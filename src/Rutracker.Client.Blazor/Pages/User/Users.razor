@@ -5,14 +5,32 @@
 @page "/users"
 
 <Page Title="user list" Action="@LoadAction" Errors="@Errors">
-    <UserList Items="@UsersItems" />
+    @if (UsersPagination != null)
+    {
+        <UserList Items="@UsersPagination.Items" TotalItems="@UsersPagination.TotalItems" />
+
+        <Pagination Page="@Page"
+                    PageSize="@PageSize"
+                    TotalPages="@UsersPagination.TotalPages"
+                    TotalItems="@UsersPagination.TotalItems"
+                    OnPageChange="@PageChanged" />
+    }
 </Page>
 
 @code
 {
-    private IEnumerable<UserViewModel> UsersItems { get; set; }
+    private PaginationResult<UserViewModel> UsersPagination { get; set; }
+    private int Page { get; set; } = 1;
+    private int PageSize => ViewSettings.UsersPerPageCount;
 
     protected override async Task OnInitializedAsync() => await LoadAsync(UsersAsync);
 
-    private async Task UsersAsync() => UsersItems = await UserService.ListAsync();
+    private async Task UsersAsync() => UsersPagination = await UserService.ListAsync(Page, PageSize);
+
+    private async Task PageChanged(int page)
+    {
+        Page = page;
+
+        await ActionAsync(UsersAsync);
+    }
 }

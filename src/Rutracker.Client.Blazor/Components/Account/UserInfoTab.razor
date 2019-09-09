@@ -38,6 +38,10 @@
             <MatTextField Value="@UserModel.LastName" Label="User Name" FullWidth="true" ReadOnly="true" />
         </div>
 
+        <div class="form-group">
+            <MatTextField Value="@UserModel.RegisteredAt.ToLongDateString()" Label="Registered At" FullWidth="true" ReadOnly="true" />
+        </div>
+
         <div class="d-flex flex-row-reverse mt-4">
             <MatButton OnClick="@ChangeModalOpened" Label="Edit profile" Raised="true" />
         </div>

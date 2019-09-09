@@ -12,6 +12,7 @@ using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Extensions;
 using Rutracker.Server.WebApi.Settings;
 using Rutracker.Shared.Infrastructure.Entities;
+using Rutracker.Shared.Models.ViewModels;
 using Rutracker.Shared.Models.ViewModels.User;
 using Rutracker.Shared.Models.ViewModels.User.Change;
 using Rutracker.Shared.Models.ViewModels.User.Confirm;
@@ -47,11 +48,17 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpGet, Authorize(Roles = UserRoles.Admin)]
-        public async Task<IEnumerable<UserViewModel>> List()
+        public async Task<PaginationResult<UserViewModel>> List(int page, int pageSize)
         {
-            var users = await _userService.ListAsync();
+            var (users, count) = await _userService.ListAsync(page, pageSize);
 
-            return _mapper.Map<IEnumerable<UserViewModel>>(users);
+            return new PaginationResult<UserViewModel>
+            {
+                Page = page,
+                PageSize = pageSize,
+                TotalItems = count,
+                Items = _mapper.Map<IEnumerable<UserViewModel>>(users)
+            };
         }
 
         [HttpGet("profile/{id}")]

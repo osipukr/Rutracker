@@ -43,6 +43,13 @@
                         <MatListItemSecondaryText>@UserModel.Email</MatListItemSecondaryText>
                     </MatListItemText>
                 </MatListItem>
+
+                <MatListItem>
+                    <MatListItemText>
+                        <MatListItemPrimaryText>Registered At</MatListItemPrimaryText>
+                        <MatListItemSecondaryText>@UserModel.RegisteredAt.ToLongDateString()</MatListItemSecondaryText>
+                    </MatListItemText>
+                </MatListItem>
             </MatList>
         </div>
     </div>

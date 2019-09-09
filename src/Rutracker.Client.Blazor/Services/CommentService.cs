@@ -19,7 +19,7 @@ namespace Rutracker.Client.Blazor.Services
 
         public async Task<PaginationResult<CommentViewModel>> ListAsync(int page, int pageSize, int torrentId)
         {
-            var url = $"{_apiUrls.Comments}?{nameof(page)}={page}&{nameof(pageSize)}={pageSize}&{nameof(torrentId)}={torrentId}";
+            var url = string.Format(_apiUrls.CommentsPagination, torrentId.ToString(), page.ToString(), pageSize.ToString());
 
             return await _httpClientService.GetJsonAsync<PaginationResult<CommentViewModel>>(url);
         }

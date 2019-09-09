@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Rutracker.Server.DataAccessLayer.Entities;
 
@@ -6,7 +7,7 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<User>> ListAsync();
+        Task<Tuple<IEnumerable<User>, int>> ListAsync(int page, int pageSize);
         Task<User> FindAsync(string id);
         Task<User> UpdateAsync(string id, User user);
         Task<IEnumerable<string>> RolesAsync(string id);

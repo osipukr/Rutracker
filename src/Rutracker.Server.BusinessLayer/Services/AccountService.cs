@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
 using Rutracker.Server.BusinessLayer.Extensions;
@@ -72,7 +73,8 @@ namespace Rutracker.Server.BusinessLayer.Services
             user = new User
             {
                 UserName = userName,
-                Email = email
+                Email = email,
+                RegisteredAt = DateTime.UtcNow
             };
 
             var result = await _userManager.CreateAsync(user, password);

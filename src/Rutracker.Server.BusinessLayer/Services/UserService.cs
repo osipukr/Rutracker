@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -26,13 +27,19 @@ namespace Rutracker.Server.BusinessLayer.Services
             _imageOptions = imageOptions.Value;
         }
 
-        public async Task<IEnumerable<User>> ListAsync()
+        public async Task<Tuple<IEnumerable<User>, int>> ListAsync(int page, int pageSize)
         {
-            var users = await _userManager.Users.ToListAsync();
+            Guard.Against.LessOne(page, $"The {nameof(page)} is less than 1.");
+            Guard.Against.OutOfRange(pageSize, rangeFrom: 1, rangeTo: 100, $"The {nameof(pageSize)} is out of range ({1} - {100}).");
+
+            var query = _userManager.Users.OrderBy(x => x.RegisteredAt);
+            var users = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
             Guard.Against.NullNotFound(users, "The users not found.");
 
-            return users;
+            var count = await query.CountAsync();
+
+            return Tuple.Create<IEnumerable<User>, int>(users, count);
         }
 
         public async Task<User> FindAsync(string id)

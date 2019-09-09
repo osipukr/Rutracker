@@ -83,7 +83,8 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
             FirstName = "Roman",
             LastName = "Osipuk",
             EmailConfirmed = true,
-            ImageUrl = "https://avatars1.githubusercontent.com/u/40744739?s=300&v=4"
+            ImageUrl = "https://avatars1.githubusercontent.com/u/40744739?s=300&v=4",
+            RegisteredAt = DateTime.UtcNow
         };
 
         private static readonly IEnumerable<Role> Roles = new[]
