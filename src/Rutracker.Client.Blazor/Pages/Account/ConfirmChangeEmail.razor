@@ -7,20 +7,20 @@
 
 @using Microsoft.AspNetCore.WebUtilities
 
-@if (LoadResult == PageActions.InProgress)
+@if (LoadAction == ActionTypes.InProgress)
 {
     <LoadingBackground>
         <span>Email confirmation is made, please wait</span>
     </LoadingBackground>
 }
-else if (LoadResult == PageActions.Failed)
+else if (LoadAction == ActionTypes.Failed)
 {
     <Alert Type="@AlertTypes.Danger">
         @Errors
     </Alert>
 
-    <div class="d-flex justify-content-center">
-        <MatButton Link="@Constants.Path.Home" Label="Home" />
+    <div class="d-flex justify-content-center mt-3">
+        <MatButton Link="@Constants.Path.Home" Label="Home" Raised="true" />
     </div>
 }
 
@@ -45,7 +45,7 @@ else if (LoadResult == PageActions.Failed)
 
         await LoadAsync(ConfirmChangeEmailAsync);
 
-        if (LoadResult == PageActions.Succeeded)
+        if (LoadAction == ActionTypes.Succeeded)
         {
             NavigationManager.NavigateTo(Constants.Path.Profile);
         }

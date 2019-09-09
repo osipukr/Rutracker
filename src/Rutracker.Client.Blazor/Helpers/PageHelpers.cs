@@ -1,4 +1,4 @@
-﻿namespace Rutracker.Client.Blazor.Models
+﻿namespace Rutracker.Client.Blazor.Helpers
 {
     public static class PageHelpers
     {

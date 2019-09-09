@@ -4,12 +4,13 @@
     <div class="col-md-2 col-sm-2 hidden-xs p-4">
         <figure class="m-0" style="width: 126px; height: 126px;">
             <a class="w-100 h-100" href="@PageHelpers.UserLink(Model.User.Id)">
-                <img src="@(PageHelpers.IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : "img/profile-bg.jpg")"
+                <img src="@(PageHelpers.IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : Constants.Path.DefaultProfileImage)"
                      class="w-100 h-100 rounded-circle img-responsive"
                      alt="User image | @Model.User.UserName" />
             </a>
         </figure>
     </div>
+
     <div class="col-md-10 col-sm-10">
         <div class="panel panel-default arrow left">
             <div class="panel-body bg-white border border-dark p-3" style="border-radius: 1rem;">
@@ -26,24 +27,7 @@
 
                 @if (IsCommentEditClicked)
                 {
-                    <EditForm Model="@CommentUpdate" OnValidSubmit="@UpdateClicked">
-                        <DataAnnotationsValidator />
-
-                        <div class="comment-post">
-                            <MatTextField @bind-Value="@CommentUpdate.Text"
-                                          TextArea="true"
-                                          Dense="true"
-                                          FullWidth="true"
-                                          Required="true"
-                                          ValidationDisabled="true"
-                                          InputStyle="height: 50px; min-height: 50px; max-height: 150px;" />
-                        </div>
-
-                        <div class="mt-2">
-                            <MatButton OnClick="@EditCancelClicked" Label="Cancel" />
-                            <MatButton Label="Update" type="submit" />
-                        </div>
-                    </EditForm>
+                    <CommentUpdate Text="@Model.Text" OnUpdate="@UpdateClicked" OnCancel="@EditCancelClicked" />
                 }
                 else
                 {
@@ -55,7 +39,7 @@
                         <div class="d-flex align-items-center">
                             <span style="padding-top: 5px;">@Model.LikesCount</span>
 
-                            <MatIconButton @onclick="@(_ => LikeAsync(Model.Id))"
+                            <MatIconButton OnClick="@(_ => LikeAsync(Model.Id))"
                                            Disabled="@(!IsAuthenticated)"
                                            Icon="@(IsLikedByUser ? MatIconNames.Favorite : MatIconNames.Favorite_border)"
                                            ToggleIcon="@(IsLikedByUser ? MatIconNames.Favorite_border : MatIconNames.Favorite)"
@@ -104,11 +88,11 @@
     {
         var state = await AuthenticationStateTask;
 
-        IsAuthenticated = state.User.Identity.IsAuthenticated;
+        IsAuthenticated = state.IsUserAuthenticated();
 
         if (IsAuthenticated)
         {
-            var userName = state.User.Identity.Name;
+            var userName = state.UserName();
 
             IsLikedByUser = Model?.Likes?.Any(x => x.UserName == userName) ?? false;
             IsUserComment = Model?.User?.UserName == userName;
@@ -130,18 +114,18 @@
         StateHasChanged();
     }
 
+    private async Task UpdateClicked(CommentUpdateViewModel model)
+    {
+        await UpdateAsync(model);
+
+        EditCancelClicked();
+    }
+
     private void EditCancelClicked()
     {
         IsCommentEditClicked = false;
         CommentUpdate = null;
 
         StateHasChanged();
-    }
-
-    private async Task UpdateClicked()
-    {
-        await UpdateAsync(CommentUpdate);
-
-        EditCancelClicked();
     }
 }

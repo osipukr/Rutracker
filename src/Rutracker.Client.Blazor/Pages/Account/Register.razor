@@ -5,11 +5,11 @@
 @page "/account/register"
 
 <MatCard>
-    @if (LoadResult == PageActions.Succeeded)
+    @if (LoadAction == ActionTypes.Succeeded)
     {
         <Alert Type="@AlertTypes.Success">To complete registration, check the email.</Alert>
     }
-    else if (LoadResult == PageActions.Failed)
+    else if (LoadAction == ActionTypes.Failed)
     {
         <Alert Type="@AlertTypes.Danger">@Errors</Alert>
     }
@@ -55,7 +55,7 @@
                           type="password" />
         </div>
 
-        <div class="form-group d-flex justify-content-end">
+        <div class="d-flex flex-row-reverse my-3">
             <MatButton Label="Create account" Raised="true" type="submit" />
         </div>
 

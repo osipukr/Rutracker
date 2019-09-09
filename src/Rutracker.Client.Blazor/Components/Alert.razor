@@ -19,21 +19,18 @@
     private bool Show { get; set; } = true;
     private string AlertCssClass { get; set; }
 
-    protected override void OnInitialized()
+    protected override void OnInitialized() => AlertCssClass = Type switch
     {
-        AlertCssClass = Type switch
-        {
-            AlertTypes.Primary => "alert-primary",
-            AlertTypes.Secondary => "alert-secondary",
-            AlertTypes.Success => "alert-success",
-            AlertTypes.Danger => "alert-danger",
-            AlertTypes.Warning => "alert-warning",
-            AlertTypes.Info => "alert-info",
-            AlertTypes.Light => "alert-light",
-            AlertTypes.Dark => "alert-dark",
-            _ => string.Empty
-        };
-    }
+        AlertTypes.Primary => "alert-primary",
+        AlertTypes.Secondary => "alert-secondary",
+        AlertTypes.Success => "alert-success",
+        AlertTypes.Danger => "alert-danger",
+        AlertTypes.Warning => "alert-warning",
+        AlertTypes.Info => "alert-info",
+        AlertTypes.Light => "alert-light",
+        AlertTypes.Dark => "alert-dark",
+        _ => null
+    };
 
     private void CloseClicked()
     {

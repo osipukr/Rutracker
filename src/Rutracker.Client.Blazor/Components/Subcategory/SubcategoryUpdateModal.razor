@@ -14,9 +14,9 @@
         <ValidationMessage For="@(() => Subcategory.Name)" />
     </div>
 
-    <div class="form-group mb-0 mt-4 d-flex justify-content-end">
-        <MatButton OnClick="@CancelClicked" Label="Cancel" />
+    <div class="d-flex flex-row-reverse mt-4">
         <MatButton Label="Update" type="submit" />
+        <MatButton OnClick="@CancelClicked" Label="Cancel" />
     </div>
 </EditForm>
 

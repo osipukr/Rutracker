@@ -5,9 +5,9 @@
     <p class="m-0">This category contains <strong>@Category.SubcategoriesCount</strong> subcategories.</p>
 </div>
 
-<div class="form-group mb-0 mt-4 d-flex justify-content-end">
-    <MatButton OnClick="@CancelClicked" Label="Cancel" />
+<div class="d-flex flex-row-reverse mt-4">
     <MatButton OnClick="@DeleteClicked" Label="Delete" />
+    <MatButton OnClick="@CancelClicked" Label="Cancel" />
 </div>
 
 @code

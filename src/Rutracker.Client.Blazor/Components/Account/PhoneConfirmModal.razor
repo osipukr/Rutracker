@@ -10,9 +10,9 @@
         <MatTextField @bind-Value="@ConfirmPhoneNumberModel.Token" Label="Code" FullWidth="true" />
     </div>
 
-    <div class="form-group mt-4 d-flex justify-content-end">
-        <MatButton OnClick="@CancelClicked" Label="Cancel" Raised="true" />
-        <MatButton Label="Confrim" Raised="true" type="submit" class="ml-2" />
+    <div class="d-flex flex-row-reverse mt-4">
+        <MatButton Label="Confrim" type="submit" />
+        <MatButton OnClick="@CancelClicked" Label="Cancel" />
     </div>
 </EditForm>
 

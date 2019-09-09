@@ -4,7 +4,7 @@
 
 @page "/users/{id}"
 
-<Page Title="torrent information" Action="@LoadResult" Errors="@Errors">
+<Page Title="torrent information" Action="@LoadAction" Errors="@Errors">
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-header__image">
@@ -14,7 +14,7 @@
                 }
                 else
                 {
-                    <img class="w-100 h-100 rounded-circle" src="img/profile-bg.jpg" alt="Default user image" />
+                    <img class="w-100 h-100 rounded-circle" src="@Constants.Path.DefaultProfileImage" alt="Default user image" />
                 }
             </div>
 
@@ -57,7 +57,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (Id == (await AuthenticationStateTask).User.FindFirst(ClaimTypes.NameIdentifier).Value)
+        var state = await AuthenticationStateTask;
+
+        if (Id == state.UserId())
         {
             NavigationManager.NavigateTo(Constants.Path.Profile);
         }

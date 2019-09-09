@@ -3,15 +3,15 @@
         <MatIcon Icon="@MatIconNames.Home" /> <span class="miniHover">Home page</span>
     </MatNavItem>
 
-    <MatNavItem Href="@Constants.Path.Profile" Disabled="@(!_isAuthenticated)">
+    <MatNavItem Href="@Constants.Path.Profile" Disabled="@(!IsAuthenticated)">
         <MatIcon Icon="@MatIconNames.Person" /> <span class="miniHover">Profile</span>
     </MatNavItem>
 
-    <MatNavItem Href="@Constants.Path.Users" Disabled="@(!_isAdmin)">
+    <MatNavItem Href="@Constants.Path.Users" Disabled="@(!IsAdmin)">
         <MatIcon Icon="@MatIconNames.Group" /> <span class="miniHover">Users</span>
     </MatNavItem>
 
-    <MatNavItem Href="@Constants.Path.Categories" Disabled="@(!_isAdmin)">
+    <MatNavItem Href="@Constants.Path.Categories" Disabled="@(!IsAdmin)">
         <MatIcon Icon="@MatIconNames.Subtitles" /> <span class="miniHover">Categories</span>
     </MatNavItem>
 
@@ -32,14 +32,14 @@
 {
     [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
-    private bool _isAuthenticated;
-    private bool _isAdmin;
+    private bool IsAuthenticated { get; set; }
+    private bool IsAdmin { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
         var state = await AuthenticationStateTask;
 
-        _isAuthenticated = state.User.Identity.IsAuthenticated;
-        _isAdmin = state.User.IsInRole(UserRoles.Admin);
+        IsAuthenticated = state.IsUserAuthenticated();
+        IsAdmin = state.IsUserInRole(UserRoles.Admin);
     }
 }

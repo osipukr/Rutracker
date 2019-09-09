@@ -4,7 +4,7 @@
 
 @page "/categories"
 
-<Page Title="category list" Action="@LoadResult" Errors="@Errors">
+<Page Title="category list" Action="@LoadAction" Errors="@Errors">
     <CategoryList Items="@CategoriesItems"
                   OnCreate="@CreateCategoryAsync"
                   OnUpdate="@UpdateCategoryAsync"
@@ -34,7 +34,9 @@
         var index = CategoriesItems.FindIndex(x => x.Id == category.Id);
 
         CategoriesItems[index] = result;
-    }, successMessage: "Category successfully updated.");
+
+        MatToaster.Add("Category successfully updated.", MatToastType.Success);
+    });
 
     private async Task DeleteCategoryAsync(CategoryViewModel model) => await ActionAsync(async () =>
     {

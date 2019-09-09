@@ -19,10 +19,10 @@
         Select image from computer: <input type="file" accept="image/*" @ref="_inputTypeFileElement" />
     </div>
 
-    <div class="form-group mt-4 d-flex flex-row-reverse">
-        <MatButton Label="Update" Raised="true" type="submit" class="mr-2" />
-        <MatButton OnClick="@ClearClicked" Label="Crear" Raised="true" class="mr-2" />
-        <MatButton OnClick="@CancelClicked" Label="Cancel" Raised="true" class="mr-2" />
+    <div class="d-flex flex-row-reverse mt-4">
+        <MatButton Label="Update" type="submit" />
+        <MatButton OnClick="@ClearClicked" Label="Clear" />
+        <MatButton OnClick="@CancelClicked" Label="Cancel" />
     </div>
 </EditForm>
 

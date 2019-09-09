@@ -4,7 +4,7 @@
 
 @page "/account/profile"
 
-<Page Title="user information" Action="@LoadResult" Errors="@Errors">
+<Page Title="user information" Action="@LoadAction" Errors="@Errors">
     <div class="profile-container">
         <div class="profile-header">
             <UserImage @key="@ImageRenderKey" Url="@UserModel.ImageUrl" OnChange="@ChangeImageAsync" />
@@ -53,14 +53,18 @@
         if (UserModel.FirstName == model.FirstName && UserModel.LastName == model.LastName) return;
 
         UserModel = await UserService.ChangeInfoAsync(model);
-    }, successMessage: "User successfully changed.");
+
+        MatToaster.Add("User successfully changed.", MatToastType.Success);
+    });
 
     private async Task ChangeEmailAsync(ChangeEmailViewModel model) => await ActionAsync(async () =>
     {
-        if(UserModel.Email == model.Email) return;
+        if (UserModel.Email == model.Email) return;
 
         await UserService.ChangeEmailAsync(model);
-    }, successMessage: "Please check your email to confirm your changes.");
+
+        MatToaster.Add("Please check your email to confirm your changes.", MatToastType.Success);
+    });
 
     private async Task ChangePasswordAsync(ChangePasswordViewModel model) => await ActionAsync(async () =>
     {

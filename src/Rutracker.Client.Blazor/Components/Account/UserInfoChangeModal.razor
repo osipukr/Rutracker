@@ -14,9 +14,9 @@
         <MatTextField @bind-Value="@ChangeUserModel.LastName" Label="Last Name" FullWidth="true" />
     </div>
 
-    <div class="form-group mt-4 d-flex justify-content-end">
-        <MatButton OnClick="@CancelClicked" Label="Cancel" Raised="true" class="mx-2" />
-        <MatButton Label="Update" Raised="true" type="submit" class="mx-2" />
+    <div class="d-flex flex-row-reverse mt-4">
+        <MatButton Label="Update" type="submit" />
+        <MatButton OnClick="@CancelClicked" Label="Cancel" />
     </div>
 </EditForm>
 

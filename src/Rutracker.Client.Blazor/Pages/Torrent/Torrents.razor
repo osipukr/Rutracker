@@ -2,7 +2,7 @@
 
 @page "/torrents"
 
-<Page Title="torrent list" Action="@LoadResult" Errors="@Errors">
+<Page Title="torrent list" Action="@LoadAction" Errors="@Errors">
     <Filtration OnChange="@FilterChanged" />
 
     <TorrentList Items="@TorrentsPagination.Items" />

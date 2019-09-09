@@ -5,22 +5,22 @@
 
 @page "/account/logout"
 
-@if (LoadResult == PageActions.InProgress)
+@if (LoadAction == ActionTypes.InProgress)
 {
     <LoadingBackground>
         <span>You are logged out of your account, please wait..</span>
     </LoadingBackground>
 }
-else if (LoadResult == PageActions.Failed)
+else if (LoadAction == ActionTypes.Failed)
 {
     <Alert Type="@AlertTypes.Danger">
         @Errors
     </Alert>
 
     <div class="d-flex justify-content-center">
-        <MatButton Link="@Constants.Path.Login" Label="Login" />
-        <MatButton Link="@Constants.Path.Register" Label="Register" />
-        <MatButton Link="@Constants.Path.Home" Label="Home" />
+        <MatButton Link="@Constants.Path.Login" Label="Login" Raised="true" />
+        <MatButton Link="@Constants.Path.Register" Label="Register" Raised="true" />
+        <MatButton Link="@Constants.Path.Home" Label="Home" Raised="true" />
     </div>
 }
 
@@ -32,7 +32,7 @@ else if (LoadResult == PageActions.Failed)
     {
         await LoadAsync(() => AccountService.Logout());
 
-        if (LoadResult == PageActions.Succeeded)
+        if (LoadAction == ActionTypes.Succeeded)
         {
             NavigationManager.NavigateTo(Constants.Path.Home);
         }

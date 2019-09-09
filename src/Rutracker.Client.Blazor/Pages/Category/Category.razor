@@ -13,7 +13,7 @@
     </div>
 </div>
 
-<Page Title="category" Action="@LoadResult" Errors="@Errors">
+<Page Title="category" Action="@LoadAction" Errors="@Errors">
     <h2>@CategoryModel.Name</h2>
 
     <SubcategoryList Items="@Subcategories"
@@ -54,7 +54,9 @@
         var index = Subcategories.FindIndex(x => x.Id == subcategory.Id);
 
         Subcategories[index] = result;
-    }, successMessage: "Subcategory successfully updated.");
+
+        MatToaster.Add("Subcategory successfully updated.", MatToastType.Success);
+    });
 
     private async Task DeleteSubcategoryAsync(SubcategoryViewModel model) => await ActionAsync(async () =>
     {

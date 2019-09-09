@@ -11,7 +11,7 @@
     </div>
 </div>
 
-<Page Title="torrent information" Action="@LoadResult" Errors="@Errors">
+<Page Title="torrent information" Action="@LoadAction" Errors="@Errors">
     <TorrentDetails Torrent="@TorrentDetailsModel" />
 
     <CommentList Items="@Comments"
@@ -44,7 +44,7 @@
     {
         await LoadAsync(TorrentAsync);
 
-        if (LoadResult == PageActions.Succeeded)
+        if (LoadAction == ActionTypes.Succeeded)
         {
             await ActionAsync(CommentsAsync);
         }
@@ -82,7 +82,9 @@
         var index = Comments.FindIndex(x => x.Id == comment.Id);
 
         Comments[index] = result;
-    }, successMessage: "Comment updated successfully.");
+
+        MatToaster.Add("Comment updated successfully.", MatToastType.Success);
+    });
 
     private async Task CommentDeleteAsync(int id) => await ActionAsync(async () =>
     {

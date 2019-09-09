@@ -20,6 +20,7 @@
             public const string Profile = "/account/profile";
 
             public const string Repository = "https://github.com/osipukr/Rutracker-Blazor";
+            public const string DefaultProfileImage = "img/profile-bg.jpg";
         }
 
         public static class File

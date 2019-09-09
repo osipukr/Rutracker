@@ -1,6 +1,6 @@
 ﻿namespace Rutracker.Client.Blazor.Models
 {
-    public enum PageActions : byte
+    public enum ActionTypes : byte
     {
         InProgress = 1,
         Succeeded = 2,

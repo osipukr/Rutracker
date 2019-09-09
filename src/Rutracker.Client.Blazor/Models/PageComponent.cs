@@ -10,7 +10,7 @@ namespace Rutracker.Client.Blazor.Models
         [Inject]
         public IMatToaster MatToaster { get; set; }
 
-        public PageActions LoadResult { get; set; } = PageActions.InProgress;
+        public ActionTypes LoadAction { get; set; } = ActionTypes.InProgress;
         public string Errors { get; set; }
 
         public async Task LoadAsync(Func<Task> func, bool isToaster = false, string toasterTitle = null)
@@ -19,12 +19,12 @@ namespace Rutracker.Client.Blazor.Models
             {
                 await func();
 
-                LoadResult = PageActions.Succeeded;
+                LoadAction = ActionTypes.Succeeded;
                 Errors = null;
             }
             catch (Exception ex)
             {
-                LoadResult = PageActions.Failed;
+                LoadAction = ActionTypes.Failed;
                 Errors = ex.Message;
 
                 if (isToaster)
