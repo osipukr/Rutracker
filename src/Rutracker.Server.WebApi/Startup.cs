@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Rutracker.Server.BusinessLayer.Interfaces;
@@ -171,9 +170,10 @@ namespace Rutracker.Server.WebApi
             services.AddScoped<ISubcategoryService, SubcategoryService>();
             services.AddScoped<ITorrentService, TorrentService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IContextSeed, RutrackerContextSeed>();
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IContextSeed contextSeed)
         {
             app.UseResponseCaching();
             app.UseResponseCompression();
@@ -203,17 +203,7 @@ namespace Rutracker.Server.WebApi
                 endpoints.MapFallbackToClientSideBlazor<Client.Blazor.Startup>(filePath: "index.html");
             });
 
-            using var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
-
-            var context = scope.ServiceProvider.GetRequiredService<RutrackerContext>();
-            var userManager = scope.ServiceProvider.GetService<UserManager<User>>();
-            var roleManager = scope.ServiceProvider.GetService<RoleManager<Role>>();
-            var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
-
-            if (context.Database.EnsureCreated())
-            {
-                RutrackerContextSeed.SeedAsync(context, userManager, roleManager, loggerFactory).Wait();
-            }
+            contextSeed.SeedAsync().Wait();
         }
     }
 }
