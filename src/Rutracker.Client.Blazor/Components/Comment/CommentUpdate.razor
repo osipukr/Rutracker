@@ -1,0 +1,35 @@
+﻿<EditForm Model="@CommentUpdateModel" OnValidSubmit="@UpdateClicked">
+    <DataAnnotationsValidator />
+
+    <div class="comment-post">
+        <MatTextField @bind-Value="@CommentUpdateModel.Text"
+                      TextArea="true"
+                      Dense="true"
+                      FullWidth="true"
+                      Required="true"
+                      ValidationDisabled="true"
+                      InputStyle="height: 50px; min-height: 50px; max-height: 150px;" />
+    </div>
+
+    <div class="d-flex flex-row-reverse mt-2">
+        <MatButton Label="Update" type="submit" />
+        <MatButton OnClick="@CancelClicked" Label="Cancel" />
+    </div>
+</EditForm>
+
+@code
+{
+    [Parameter] public string Text { get; set; }
+    [Parameter] public EventCallback<CommentUpdateViewModel> OnUpdate { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    private CommentUpdateViewModel CommentUpdateModel { get; set; }
+
+    protected override void OnInitialized() => CommentUpdateModel = new CommentUpdateViewModel
+    {
+        Text = Text
+    };
+
+    private async Task UpdateClicked() => await OnUpdate.InvokeAsync(CommentUpdateModel);
+    private async Task CancelClicked() => await OnCancel.InvokeAsync(EventArgs.Empty);
+}

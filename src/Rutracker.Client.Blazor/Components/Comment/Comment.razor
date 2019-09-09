@@ -1,0 +1,131 @@
+﻿@using System.Globalization
+
+<article class="row mb-3">
+    <div class="col-md-2 col-sm-2 hidden-xs p-4">
+        <figure class="m-0" style="width: 126px; height: 126px;">
+            <a class="w-100 h-100" href="@PageHelpers.UserLink(Model.User.Id)">
+                <img src="@(PageHelpers.IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : Constants.Path.DefaultProfileImage)"
+                     class="w-100 h-100 rounded-circle img-responsive"
+                     alt="User image | @Model.User.UserName" />
+            </a>
+        </figure>
+    </div>
+
+    <div class="col-md-10 col-sm-10">
+        <div class="panel panel-default arrow left">
+            <div class="panel-body bg-white border border-dark p-3" style="border-radius: 1rem;">
+                <header class="text-left">
+                    <div class="comment-user" title="User name">
+                        <i class="fa fa-user"></i>
+                        <a href="@PageHelpers.UserLink(Model.User.Id)">@Model.User.UserName</a>
+                    </div>
+
+                    <time class="comment-date" datetime="@Model.CreatedAt.ToString(CultureInfo.InvariantCulture)" title="Created at">
+                        <i class="fa fa-clock-o"></i> @Model.CreatedAt.ToString(CultureInfo.InvariantCulture)
+                    </time>
+                </header>
+
+                @if (IsCommentEditClicked)
+                {
+                    <CommentUpdate Text="@Model.Text" OnUpdate="@UpdateClicked" OnCancel="@EditCancelClicked" />
+                }
+                else
+                {
+                    <div class="comment-post">
+                        <p>@Model.Text</p>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <span style="padding-top: 5px;">@Model.LikesCount</span>
+
+                            <MatIconButton OnClick="@(_ => LikeAsync(Model.Id))"
+                                           Disabled="@(!IsAuthenticated)"
+                                           Icon="@(IsLikedByUser ? MatIconNames.Favorite : MatIconNames.Favorite_border)"
+                                           ToggleIcon="@(IsLikedByUser ? MatIconNames.Favorite_border : MatIconNames.Favorite)"
+                                           class="ml-1"
+                                           title="Like comment" />
+
+                            @if (IsUserComment)
+                            {
+                                <MatIconButton OnClick="@EditClicked" Icon="@MatIconNames.Edit" title="Edit comment" />
+                                <MatIconButton OnClick="@(_ => DeleteAsync(Model.Id))" Icon="@MatIconNames.Delete" title="Delete comment" />
+                            }
+                        </div>
+
+                        @if (Model.IsModified)
+                        {
+                            <div class="d-flex align-items-center">
+                                @if (Model.LastModifiedAt.HasValue)
+                                {
+                                    <span title="Recent change">@Model.LastModifiedAt.Value.ToString(CultureInfo.InvariantCulture)</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</article>
+
+@code
+{
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    [Parameter] public CommentViewModel Model { get; set; }
+    [Parameter] public Func<CommentViewModel, CommentUpdateViewModel, Task> OnUpdate { get; set; }
+    [Parameter] public EventCallback<int> OnDelete { get; set; }
+    [Parameter] public EventCallback<int> OnLike { get; set; }
+
+    private CommentUpdateViewModel CommentUpdate { get; set; }
+
+    private bool IsAuthenticated { get; set; }
+    private bool IsLikedByUser { get; set; }
+    private bool IsUserComment { get; set; }
+    private bool IsCommentEditClicked { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthenticationStateTask;
+
+        IsAuthenticated = state.IsUserAuthenticated();
+
+        if (IsAuthenticated)
+        {
+            var userName = state.UserName();
+
+            IsLikedByUser = Model?.Likes?.Any(x => x.UserName == userName) ?? false;
+            IsUserComment = Model?.User?.UserName == userName;
+        }
+    }
+
+    private async Task UpdateAsync(CommentUpdateViewModel model) => await OnUpdate(Model, model);
+    private async Task DeleteAsync(int id) => await OnDelete.InvokeAsync(id);
+    private async Task LikeAsync(int id) => await OnLike.InvokeAsync(id);
+
+    private void EditClicked()
+    {
+        IsCommentEditClicked = true;
+        CommentUpdate = new CommentUpdateViewModel
+        {
+            Text = Model.Text
+        };
+
+        StateHasChanged();
+    }
+
+    private async Task UpdateClicked(CommentUpdateViewModel model)
+    {
+        await UpdateAsync(model);
+
+        EditCancelClicked();
+    }
+
+    private void EditCancelClicked()
+    {
+        IsCommentEditClicked = false;
+        CommentUpdate = null;
+
+        StateHasChanged();
+    }
+}

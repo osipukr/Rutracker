@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Rutracker.Server.WebApi.Controllers.Base
@@ -9,5 +10,11 @@ namespace Rutracker.Server.WebApi.Controllers.Base
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     public class BaseApiController : ControllerBase
     {
+        protected readonly IMapper _mapper;
+
+        public BaseApiController(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
     }
 }

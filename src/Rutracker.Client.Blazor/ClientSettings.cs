@@ -4,7 +4,7 @@ namespace Rutracker.Client.Blazor
 {
     public class ClientSettings
     {
-        public ApiUriSettings ApiUriSettings { get; set; }
+        public ApiUrlSettings ApiUrlSettings { get; set; }
         public ViewSettings ViewSettings { get; set; }
         public MatToasterSettings MatToasterSettings { get; set; }
     }

@@ -1,0 +1,54 @@
+﻿@layout LoginLayout
+
+@inject IUserService UserService
+
+@page "/account/confirm_email"
+
+@using Microsoft.AspNetCore.WebUtilities
+
+@if (LoadAction == ActionTypes.InProgress)
+{
+    <LoadingBackground>
+        <span>Email confirmation is made, please wait</span>
+    </LoadingBackground>
+}
+else if (LoadAction == ActionTypes.Failed)
+{
+    <Alert Type="@AlertTypes.Danger">
+        @Errors
+    </Alert>
+
+    <div class="d-flex justify-content-center mt-3">
+        <MatButton Link="@Constants.Path.Home" Label="Home" Raised="true" />
+    </div>
+}
+
+@code
+{
+    private ConfirmEmailViewModel ConfirmModel { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = new Uri(NavigationManager.Uri);
+
+        ConfirmModel = new ConfirmEmailViewModel
+        {
+            UserId = QueryHelpers.ParseQuery(uri.Query).TryGetValue(nameof(ConfirmEmailViewModel.UserId), out var userId)
+                ? userId.FirstOrDefault()
+                : null,
+
+            Token = QueryHelpers.ParseQuery(uri.Query).TryGetValue(nameof(ConfirmEmailViewModel.Token), out var token)
+                ? token.FirstOrDefault()
+                : null
+        };
+
+        await LoadAsync(ConfirmEmailAsync);
+
+        if (LoadAction == ActionTypes.Succeeded)
+        {
+            NavigationManager.NavigateTo(Constants.Path.Login);
+        }
+    }
+
+    private async Task ConfirmEmailAsync() => await UserService.ConfirmEmailAsync(ConfirmModel);
+}

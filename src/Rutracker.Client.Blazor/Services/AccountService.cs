@@ -8,12 +8,12 @@ namespace Rutracker.Client.Blazor.Services
     public class AccountService : IAccountService
     {
         private readonly HttpClientService _httpClientService;
-        private readonly ApiUriSettings _apiUriSettings;
+        private readonly ApiUrlSettings _apiUriSettings;
         private readonly ApiAuthenticationStateProvider _apiAuthenticationState;
 
         public AccountService(
             HttpClientService httpClientService,
-            ApiUriSettings apiUri,
+            ApiUrlSettings apiUri,
             ApiAuthenticationStateProvider apiAuthenticationState)
         {
             _httpClientService = httpClientService;

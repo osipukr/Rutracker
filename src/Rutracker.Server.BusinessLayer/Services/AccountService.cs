@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
+using Rutracker.Shared.Infrastructure.Entities;
 using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.BusinessLayer.Services
@@ -21,12 +22,12 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<User> LoginAsync(string userName, string password, bool rememberMe)
         {
-            Guard.Against.NullOrWhiteSpace(userName, message: "Not valid user name.");
-            Guard.Against.NullOrWhiteSpace(password, message: "Not valid password.");
+            Guard.Against.NullOrWhiteSpace(userName, message: "Invalid user name.");
+            Guard.Against.NullOrWhiteSpace(password, message: "Invalid password.");
 
             var user = await _userManager.FindByNameAsync(userName);
 
-            Guard.Against.NullNotFound(user, "User not found.");
+            Guard.Against.NullNotFound(user, $"The user with name '{userName}' not found.");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: true);
 
@@ -52,20 +53,20 @@ namespace Rutracker.Server.BusinessLayer.Services
                 // RequiresTwoFactor
             }
 
-            throw new RutrackerException("Not valid password.", ExceptionEventType.NotValidParameters);
+            throw new RutrackerException("Wrong password.", ExceptionEventType.NotValidParameters);
         }
 
         public async Task<User> RegisterAsync(string userName, string email, string password)
         {
-            Guard.Against.NullOrWhiteSpace(userName, message: "Not valid user name.");
-            Guard.Against.NullOrWhiteSpace(email, message: "Not valid email.");
-            Guard.Against.NullOrWhiteSpace(password, message: "Not valid password.");
+            Guard.Against.NullOrWhiteSpace(userName, message: "Invalid user name.");
+            Guard.Against.NullOrWhiteSpace(email, message: "Invalid email.");
+            Guard.Against.NullOrWhiteSpace(password, message: "Invalid password.");
 
             var user = await _userManager.FindByNameAsync(userName);
 
             if (user != null)
             {
-                throw new RutrackerException("A user with this name is already.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"The name '{userName}' is already.", ExceptionEventType.NotValidParameters);
             }
 
             user = new User

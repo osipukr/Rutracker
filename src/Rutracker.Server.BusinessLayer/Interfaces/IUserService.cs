@@ -7,17 +7,18 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
     public interface IUserService
     {
         Task<IEnumerable<User>> ListAsync();
-        Task<User> FindAsync(string userId);
-        Task UpdateAsync(User user);
-        Task<IEnumerable<string>> RolesAsync(User user);
-        Task<string> UploadProfileImageAsync(User user, byte[] imageBytes, string fileType);
-        Task DeleteProfileImageAsync(User user);
-        Task<string> EmailConfirmationTokenAsync(User user);
-        Task<string> ChangeEmailTokenAsync(User user, string email);
-        Task<string> ChangePhoneNumberTokenAsync(User user, string phone);
-        Task ChangePasswordAsync(User user, string oldPassword, string newPassword);
-        Task ChangeEmailAsync(User user, string email, string token);
-        Task ChangePhoneNumberAsync(User user, string phone, string token);
-        Task ConfirmEmailAsync(User user, string token);
+        Task<User> FindAsync(string id);
+        Task<User> UpdateAsync(string id, User user);
+        Task<IEnumerable<string>> RolesAsync(string id);
+        Task<User> ChangeImageAsync(string id, string imageUrl);
+        Task<User> ChangeImageAsync(string id, byte[] imageBytes, string imageType);
+        Task<User> DeleteImageAsync(string id);
+        Task<string> EmailConfirmationTokenAsync(string id);
+        Task<string> ChangeEmailTokenAsync(string id, string email);
+        Task<string> ChangePhoneNumberTokenAsync(string id, string phone);
+        Task<User> ChangePasswordAsync(string id, string oldPassword, string newPassword);
+        Task<User> ChangeEmailAsync(string id, string email, string token);
+        Task<User> ChangePhoneNumberAsync(string id, string phone, string token);
+        Task<User> ConfirmEmailAsync(string id, string token);
     }
 }

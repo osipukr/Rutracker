@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Ardalis.GuardClauses;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -10,17 +9,11 @@ namespace Rutracker.Server.BusinessLayer.Services
 {
     public class EmailSender : IEmailSender
     {
-        private readonly EmailSettings _emailSettings;
+        private readonly EmailAuthOptions _emailSettings;
 
-        public EmailSender(IOptions<EmailSettings> emailOptions)
+        public EmailSender(IOptions<EmailAuthOptions> emailOptions)
         {
             _emailSettings = emailOptions.Value;
-
-            Guard.Against.Null(_emailSettings, nameof(_emailSettings));
-            Guard.Against.NullOrWhiteSpace(_emailSettings.SenderEmail, parameterName: nameof(_emailSettings.SenderEmail));
-            Guard.Against.NullOrWhiteSpace(_emailSettings.SenderEmailPassword, parameterName: nameof(_emailSettings.SenderEmailPassword));
-            Guard.Against.NullOrWhiteSpace(_emailSettings.SmtpServer, parameterName: nameof(_emailSettings.SmtpServer));
-            Guard.Against.OutOfRange(_emailSettings.SmtpServerPort, nameof(_emailSettings.SmtpServerPort), 1, int.MaxValue);
         }
 
         public async Task SendAsync(string email, string subject, string message)

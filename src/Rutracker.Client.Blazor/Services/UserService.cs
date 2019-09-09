@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rutracker.Client.Blazor.Interfaces;
 using Rutracker.Client.Blazor.Settings;
 using Rutracker.Shared.Models.ViewModels.User;
@@ -10,62 +11,69 @@ namespace Rutracker.Client.Blazor.Services
     public class UserService : IUserService
     {
         private readonly HttpClientService _httpClientService;
-        private readonly ApiUriSettings _apiUriSettings;
+        private readonly ApiUrlSettings _apiUrls;
 
-        public UserService(HttpClientService httpClientService, ApiUriSettings uriSettings)
+        public UserService(HttpClientService httpClientService, ApiUrlSettings apiUrls)
         {
             _httpClientService = httpClientService;
-            _apiUriSettings = uriSettings;
+            _apiUrls = apiUrls;
         }
 
-        public async Task<UserViewModel[]> Users()
+        public async Task<IEnumerable<UserViewModel>> ListAsync()
         {
-            return await _httpClientService.GetJsonAsync<UserViewModel[]>(_apiUriSettings.Users);
+            return await _httpClientService.GetJsonAsync<IEnumerable<UserViewModel>>(_apiUrls.Users);
         }
 
-        public async Task<UserDetailsViewModel> UserDetails()
+        public async Task<UserProfileViewModel> ProfileAsync(string id)
         {
-            return await _httpClientService.GetJsonAsync<UserDetailsViewModel>(_apiUriSettings.UserDetails);
+            var url = string.Format(_apiUrls.UserProfile, id);
+
+            return await _httpClientService.GetJsonAsync<UserProfileViewModel>(url);
         }
 
-        public async Task ChangeUser(ChangeUserViewModel model)
+        public async Task<UserDetailsViewModel> FindAsync()
         {
-            await _httpClientService.PutJsonAsync(_apiUriSettings.ChangeUser, model);
+            return await _httpClientService.GetJsonAsync<UserDetailsViewModel>(_apiUrls.User);
         }
 
-        public async Task ChangeImage(ChangeImageViewModel model)
+        public async Task<UserDetailsViewModel> ChangeInfoAsync(ChangeUserViewModel model)
         {
-            await _httpClientService.PutJsonAsync(_apiUriSettings.ChangeImage, model);
+            return await _httpClientService.PutJsonAsync<UserDetailsViewModel>(_apiUrls.ChangeUserInfo, model);
         }
 
-        public async Task ChangePassword(ChangePasswordViewModel model)
+        public async Task<UserDetailsViewModel> ChangeImageAsync(ChangeImageViewModel model)
         {
-            await _httpClientService.PutJsonAsync(_apiUriSettings.ChangePassword, model);
+            return await _httpClientService.PutJsonAsync<UserDetailsViewModel>(_apiUrls.ChangeImage, model);
         }
 
-        public async Task ChangeEmail(ChangeEmailViewModel model)
+        public async Task<UserDetailsViewModel> ChangePasswordAsync(ChangePasswordViewModel model)
         {
-            await _httpClientService.PutJsonAsync(_apiUriSettings.ChangeEmail, model);
+            return await _httpClientService.PutJsonAsync<UserDetailsViewModel>(_apiUrls.ChangePassword, model);
         }
 
-        public async Task ChangePhoneNumber(ChangePhoneNumberViewModel model)
+        public async Task ChangeEmailAsync(ChangeEmailViewModel model)
         {
-            await _httpClientService.PutJsonAsync(_apiUriSettings.ChangePhoneNumber, model);
+            await _httpClientService.PutJsonAsync(_apiUrls.ChangeEmail, model);
         }
 
-        public async Task DeleteImage()
+        public async Task ChangePhoneAsync(ChangePhoneNumberViewModel model)
         {
-            await _httpClientService.DeleteJsonAsync(_apiUriSettings.DeleteImage);
+            await _httpClientService.PutJsonAsync(_apiUrls.ChangePhone, model);
         }
 
-        public async Task ConfirmChangeEmail(ConfirmChangeEmailViewModel model)
+        public async Task ConfirmEmailAsync(ConfirmEmailViewModel model)
         {
-            await _httpClientService.PostJsonAsync(_apiUriSettings.ConfirmChangeEmail, model);
+            await _httpClientService.PostJsonAsync(_apiUrls.ConfirmEmail, model);
         }
 
-        public async Task ConfirmChangePhoneNumber(ConfirmChangePhoneNumberViewModel model)
+        public async Task ConfirmChangeEmailAsync(ConfirmChangeEmailViewModel model)
         {
-            await _httpClientService.PostJsonAsync(_apiUriSettings.ConfirmChangePhoneNumber, model);
+            await _httpClientService.PostJsonAsync(_apiUrls.ConfirmChangeEmail, model);
+        }
+
+        public async Task<UserDetailsViewModel> ConfirmChangePhoneAsync(ConfirmChangePhoneNumberViewModel model)
+        {
+            return await _httpClientService.PostJsonAsync<UserDetailsViewModel>(_apiUrls.ConfirmPhone, model);
         }
     }
 }

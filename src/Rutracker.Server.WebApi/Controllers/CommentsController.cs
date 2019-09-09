@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -7,9 +8,8 @@ using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Extensions;
-using Rutracker.Shared.Models.ViewModels.Torrent;
-using Rutracker.Shared.Models.ViewModels.Torrent.Create;
-using Rutracker.Shared.Models.ViewModels.Torrent.Update;
+using Rutracker.Shared.Models.ViewModels;
+using Rutracker.Shared.Models.ViewModels.Comment;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
@@ -17,52 +17,67 @@ namespace Rutracker.Server.WebApi.Controllers
     public class CommentsController : BaseApiController
     {
         private readonly ICommentService _commentService;
-        private readonly ILikeService _likeService;
-        private readonly IMapper _mapper;
 
-        public CommentsController(ICommentService commentService, ILikeService likeService, IMapper mapper)
+        public CommentsController(ICommentService commentService, IMapper mapper) : base(mapper)
         {
             _commentService = commentService;
-            _likeService = likeService;
-            _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<CommentViewModel>> List(int torrentId, int count)
+        [HttpGet, AllowAnonymous]
+        public async Task<PaginationResult<CommentViewModel>> List(int page, int pageSize, int torrentId)
         {
-            var comments = await _commentService.ListAsync(torrentId, count);
+            var (comments, count) = await _commentService.ListAsync(page, pageSize, torrentId);
 
-            return _mapper.Map<IEnumerable<CommentViewModel>>(comments);
+            return new PaginationResult<CommentViewModel>
+            {
+                Page = page,
+                PageSize = pageSize,
+                TotalItems = count,
+                Items = _mapper.Map<IEnumerable<CommentViewModel>>(comments)
+            };
         }
 
-        [HttpPost(nameof(Add))]
-        public async Task Add(CommentCreateViewModel model)
+        [HttpGet("{id}")]
+        public async Task<CommentViewModel> Find(int id)
+        {
+            var comment = await _commentService.FindAsync(id, User.GetUserId());
+
+            return _mapper.Map<CommentViewModel>(comment);
+        }
+
+        [HttpPost]
+        public async Task<CommentViewModel> Add(CommentCreateViewModel model)
         {
             var comment = _mapper.Map<Comment>(model);
 
             comment.UserId = User.GetUserId();
 
-            await _commentService.AddAsync(comment);
+            var result = await _commentService.AddAsync(comment);
+
+            return _mapper.Map<CommentViewModel>(result);
         }
 
-        [HttpPut(nameof(Update))]
-        public async Task Update(int commentId, CommentUpdateViewModel model)
+        [HttpPut("{id}")]
+        public async Task<CommentViewModel> Update(int id, CommentUpdateViewModel model)
         {
             var comment = _mapper.Map<Comment>(model);
+            var result = await _commentService.UpdateAsync(id, User.GetUserId(), comment);
 
-            await _commentService.UpdateAsync(commentId, User.GetUserId(), comment);
+            return _mapper.Map<CommentViewModel>(result);
         }
 
-        [HttpDelete(nameof(Delete))]
-        public async Task Delete(int commentId)
+        [HttpDelete("{id}")]
+        public async Task Delete(int id)
         {
-            await _commentService.DeleteAsync(commentId, User.GetUserId());
+            await _commentService.DeleteAsync(id, User.GetUserId());
         }
 
-        [HttpGet(nameof(Like))]
-        public async Task Like(int commentId)
+        [HttpGet("like/{id}")]
+        public async Task<CommentViewModel> Like(int id)
         {
-            await _likeService.LikeCommentAsync(commentId, User.GetUserId());
+            var comment = await _commentService.LikeCommentAsync(id, User.GetUserId());
+
+            return _mapper.Map<CommentViewModel>(comment);
         }
     }
 }

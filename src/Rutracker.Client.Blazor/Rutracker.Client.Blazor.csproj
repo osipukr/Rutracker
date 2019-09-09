@@ -17,18 +17,21 @@
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="2.0.13" />
     <PackageReference Include="Blazored.Modal" Version="2.0.7" />
-    <PackageReference Include="MatBlazor" Version="1.7.0" />
+    <PackageReference Include="MatBlazor" Version="1.7.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.0.0-preview9.19424.4" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.0.0-preview9.19424.4" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.0.0-preview9.19424.4" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.0.0-preview9.19424.4" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" Version="3.0.0-preview9.19424.4" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3-beta1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.5.0" />
     <PackageReference Include="Tewr.Blazor.FileReader" Version="0.15.0.19248" />
+    <PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Rutracker.Shared.Infrastructure\Rutracker.Shared.Infrastructure.csproj" />
     <ProjectReference Include="..\Rutracker.Shared.Models\Rutracker.Shared.Models.csproj" />
   </ItemGroup>
 

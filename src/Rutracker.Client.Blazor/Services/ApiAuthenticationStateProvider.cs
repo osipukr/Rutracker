@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -25,18 +25,25 @@ namespace Rutracker.Client.Blazor.Services
         {
             var token = await _localStorageService.GetItemAsync<string>(TokenKey);
 
-            if (string.IsNullOrWhiteSpace(token))
+            if (!string.IsNullOrWhiteSpace(token))
             {
-                _httpClientService.RemoveAuthorizationToken();
+                var jwtToken = new JwtSecurityToken(token);
 
-                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+                if (jwtToken.ValidTo > DateTime.UtcNow)
+                {
+                    _httpClientService.SetAuthorizationToken(token);
+
+                    var identity = new ClaimsIdentity(jwtToken.Claims, AuthenticationType);
+
+                    return new AuthenticationState(new ClaimsPrincipal(identity));
+                }
+
+                await _localStorageService.RemoveItemAsync(TokenKey);
             }
 
-            _httpClientService.SetAuthorizationToken(token);
+            _httpClientService.RemoveAuthorizationToken();
 
-            var identity = new ClaimsIdentity(ParseClaimsFromJwt(token), AuthenticationType);
-
-            return new AuthenticationState(new ClaimsPrincipal(identity));
+            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
 
         public async Task MarkUserAsAuthenticated(string token)
@@ -52,7 +59,5 @@ namespace Rutracker.Client.Blazor.Services
 
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
-
-        private static IEnumerable<Claim> ParseClaimsFromJwt(string token) => new JwtSecurityToken(token).Claims;
     }
 }

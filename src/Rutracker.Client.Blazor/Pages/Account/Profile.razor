@@ -1,42 +1,20 @@
-﻿@attribute [Authorize]
+﻿@attribute [Authorize(Roles = UserRoles.User)]
 
 @inject IUserService UserService
-@inject IMatToaster MatToaster
-@inject IModalService ModalService
 
 @page "/account/profile"
 
-@if (UserDetailsModel == null)
-{
-    <LoadingBackground>
-        <span>Loading user list, please wait...</span>
-    </LoadingBackground>
-}
-else
-{
+<Page Title="user information" Action="@LoadAction" Errors="@Errors">
     <div class="profile-container">
         <div class="profile-header">
-            <div class="profile-header__image">
-                <MatButton @onclick="@ChangeImageModalOpened"
-                           class="m-0 p-0 rounded-circle w-100 h-100 mat-elevation-z5"
-                           title="Click to change image">
-                    @if (IsValidUserImage())
-                    {
-                        <img class="w-100 h-100" src="@UserDetailsModel.ImageUrl" alt="User image" />
-                    }
-                    else
-                    {
-                        <img class="w-100 h-100" src="img/profile-bg.jpg" alt="Default user image" />
-                    }
-                </MatButton>
-            </div>
+            <UserImage @key="@ImageRenderKey" Url="@UserModel.ImageUrl" OnChange="@ChangeImageAsync" />
 
-            <h1 class="profile-header__name">@UserDetailsModel.UserName</h1>
+            <h1 class="profile-header__name">@UserModel.UserName</h1>
 
-            @if (UserDetailsModel.Roles != null)
+            @if (UserModel.Roles != null)
             {
                 <MatChipSet>
-                    @foreach (var role in UserDetailsModel.Roles)
+                    @foreach (var role in UserModel.Roles)
                     {
                         <MatChip Label="@role" />
                     }
@@ -46,54 +24,60 @@ else
 
         <div class="profile-body">
             <MatTabGroup>
-                <InfoTab UserModel="@UserDetailsModel" OnChange="@OnChanged" />
-                <PasswordTab />
-                <EmailTab UserModel="@UserDetailsModel" OnChange="@OnChanged" />
-                <PhoneNumberTab UserModel="@UserDetailsModel" OnChange="@OnChanged" />
+                <UserInfoTab UserModel="@UserModel" OnChange="@ChangeUserAsync" />
+                <PasswordTab OnChange="@ChangePasswordAsync" />
+                <EmailTab Email="@UserModel.Email" OnChange="@ChangeEmailAsync" />
+                <PhoneTab Phone="@UserModel.PhoneNumber" OnChange="@ChangePhoneAsync" OnConfirm="@ConfirmPhoneAsync" />
             </MatTabGroup>
         </div>
     </div>
-}
+</Page>
 
 @code
 {
-    private UserDetailsViewModel UserDetailsModel { get; set; }
+    private UserDetailsViewModel UserModel { get; set; }
+    private string ImageRenderKey { get; set; }
 
-    protected override async Task OnInitializedAsync() => await LoadUserModelAsync();
+    protected override async Task OnInitializedAsync() => await LoadAsync(UserAsync);
 
-    private async Task LoadUserModelAsync()
+    private async Task UserAsync() => UserModel = await UserService.FindAsync();
+
+    private async Task ChangeImageAsync(ChangeImageViewModel model) => await ActionAsync(async () =>
     {
-        try
-        {
-            UserDetailsModel = await UserService.UserDetails();
-        }
-        catch (Exception ex)
-        {
-            MatToaster.Add(ex.Message, MatToastType.Warning);
-        }
-    }
+        UserModel = await UserService.ChangeImageAsync(model);
+        ImageRenderKey = Guid.NewGuid().ToString();
+    }, successMessage: "Image successfully changed.");
 
-    private void ChangeImageModalOpened()
+    private async Task ChangeUserAsync(ChangeUserViewModel model) => await ActionAsync(async () =>
     {
-        ModalService.OnClose += ChangeImageModalClosed;
-        ModalService.Show("Change image", typeof(ChangeImageModal));
-    }
+        if (UserModel.FirstName == model.FirstName && UserModel.LastName == model.LastName) return;
 
-    private async void ChangeImageModalClosed(ModalResult result)
+        UserModel = await UserService.ChangeInfoAsync(model);
+
+        MatToaster.Add("User successfully changed.", MatToastType.Success);
+    });
+
+    private async Task ChangeEmailAsync(ChangeEmailViewModel model) => await ActionAsync(async () =>
     {
-        if (!result.Cancelled && result.Data is bool isSuccess && isSuccess)
-        {
-            await OnChanged();
-        }
+        if (UserModel.Email == model.Email) return;
 
-        ModalService.OnClose -= ChangeImageModalClosed;
-    }
+        await UserService.ChangeEmailAsync(model);
 
-    private async Task OnChanged()
+        MatToaster.Add("Please check your email to confirm your changes.", MatToastType.Success);
+    });
+
+    private async Task ChangePasswordAsync(ChangePasswordViewModel model) => await ActionAsync(async () =>
     {
-        await LoadUserModelAsync();
-        StateHasChanged();
-    }
+        await UserService.ChangePasswordAsync(model);
+    }, successMessage: "Password successfully changed.");
 
-    private bool IsValidUserImage() => !string.IsNullOrWhiteSpace(UserDetailsModel.ImageUrl);
+    private async Task ChangePhoneAsync(ChangePhoneNumberViewModel model) => await ActionAsync(async () =>
+    {
+        await UserService.ChangePhoneAsync(model);
+    }, successMessage: "Verification code sent to phone number.");
+
+    private async Task ConfirmPhoneAsync(ConfirmChangePhoneNumberViewModel model) => await ActionAsync(async () =>
+    {
+        UserModel = await UserService.ConfirmChangePhoneAsync(model);
+    }, successMessage: "Change phone successfully confirmed.");
 }

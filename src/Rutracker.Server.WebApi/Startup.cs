@@ -51,14 +51,13 @@ namespace Rutracker.Server.WebApi
 
             services.AddMemoryCache();
 
-            services.Configure<CacheSettings>(_configuration.GetSection(nameof(CacheSettings)));
             services.Configure<JwtSettings>(_configuration.GetSection(nameof(JwtSettings)));
-            services.Configure<StorageSettings>(_configuration.GetSection(nameof(StorageSettings)));
-            services.Configure<EmailSettings>(_configuration.GetSection(nameof(EmailSettings)));
-            services.Configure<SmsSettings>(_configuration.GetSection(nameof(SmsSettings)));
-            services.Configure<HostSettings>(_configuration.GetSection(nameof(HostSettings)));
-            services.Configure<EmailConfirmationSettings>(_configuration.GetSection(nameof(EmailConfirmationSettings)));
-            services.Configure<EmailChangeConfirmationSettings>(_configuration.GetSection(nameof(EmailChangeConfirmationSettings)));
+            services.Configure<ClientSettings>(_configuration.GetSection(nameof(ClientSettings)));
+            services.Configure<CacheOptions>(_configuration.GetSection(nameof(CacheOptions)));
+            services.Configure<UserImageOptions>(_configuration.GetSection(nameof(UserImageOptions)));
+            services.Configure<StorageAuthOptions>(_configuration.GetSection(nameof(StorageAuthOptions)));
+            services.Configure<EmailAuthOptions>(_configuration.GetSection(nameof(EmailAuthOptions)));
+            services.Configure<SmsAuthOptions>(_configuration.GetSection(nameof(SmsAuthOptions)));
 
             services.AddResponseCompression(options =>
             {
@@ -172,7 +171,6 @@ namespace Rutracker.Server.WebApi
             services.AddScoped<ISubcategoryService, SubcategoryService>();
             services.AddScoped<ITorrentService, TorrentService>();
             services.AddScoped<ICommentService, CommentService>();
-            services.AddScoped<ILikeService, LikeService>();
         }
 
         public void Configure(IApplicationBuilder app)

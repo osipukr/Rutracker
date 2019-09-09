@@ -1,0 +1,40 @@
+﻿@layout LoginLayout
+@attribute [Authorize]
+
+@inject IAccountService AccountService
+
+@page "/account/logout"
+
+@if (LoadAction == ActionTypes.InProgress)
+{
+    <LoadingBackground>
+        <span>You are logged out of your account, please wait..</span>
+    </LoadingBackground>
+}
+else if (LoadAction == ActionTypes.Failed)
+{
+    <Alert Type="@AlertTypes.Danger">
+        @Errors
+    </Alert>
+
+    <div class="d-flex justify-content-center">
+        <MatButton Link="@Constants.Path.Login" Label="Login" Raised="true" />
+        <MatButton Link="@Constants.Path.Register" Label="Register" Raised="true" />
+        <MatButton Link="@Constants.Path.Home" Label="Home" Raised="true" />
+    </div>
+}
+
+@code
+{
+    protected override async Task OnInitializedAsync() => await LogoutAsync();
+
+    private async Task LogoutAsync()
+    {
+        await LoadAsync(() => AccountService.Logout());
+
+        if (LoadAction == ActionTypes.Succeeded)
+        {
+            NavigationManager.NavigateTo(Constants.Path.Home);
+        }
+    }
+}

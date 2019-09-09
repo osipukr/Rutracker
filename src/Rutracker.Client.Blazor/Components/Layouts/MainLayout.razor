@@ -1,0 +1,100 @@
+﻿@inherits LayoutComponentBase
+@inject ViewSettings ViewSettings
+
+<MatDrawerContainer style="width: 100vw; height: 100vh;" class="@_bbDrawerClass">
+    <MatDrawer @bind-Opened="@_navMenuOpened">
+        <header class="drawer-header">
+            <div class="drawer-logo">
+                <img alt="@BrandName" class="logo-img" src="img/brand-white.svg" title="@BrandName">
+                <a class="miniHover" href="@Constants.Path.Home">@BrandName</a>
+            </div>
+        </header>
+
+        <NavMenu />
+
+        <footer class="drawer-footer">
+            <MatButton Icon="@MatIconNames.Help" Link="@Constants.Path.Repository" class="w-100">
+                <span class="miniHover">Help & Support</span>
+            </MatButton>
+        </footer>
+    </MatDrawer>
+    <MatDrawerContent>
+        <MatAppBarContainer>
+            <MatAppBar Fixed="true">
+                <MatAppBarRow>
+                    <MatAppBarSection>
+                        <MatAppBarTitle>
+
+                        </MatAppBarTitle>
+                        <div class="hidden-mdc-down">
+                            <MatTooltip Tooltip="Toggle Navigation" Wrap="true">
+                                <MatIconButton OnClick="@NavToggleClicked"
+                                               Icon="@MatIconNames.Menu"
+                                               ToggleIcon="@MatIconNames.Menu"
+                                               class="navToggle" />
+                            </MatTooltip>
+
+                            <MatTooltip Tooltip="Minify Navigation" Wrap="true">
+                                <MatIconButton OnClick="@NavMinifyClicked"
+                                               Icon="@MatIconNames.Format_indent_decrease"
+                                               ToggleIcon="@MatIconNames.Format_indent_decrease"
+                                               class="navToggle" />
+                            </MatTooltip>
+                        </div>
+                    </MatAppBarSection>
+
+                    <MatAppBarSection Align="@MatAppBarSectionAlign.End" class="pr-4">
+                        <MatTooltip Tooltip="Github Repository" Wrap="true">
+                            <MatIconButton Link="@Constants.Path.Repository">
+                                <i class="fa fa-github" aria-hidden="true"></i>
+                            </MatIconButton>
+                        </MatTooltip>
+
+                        <LoginControl />
+                    </MatAppBarSection>
+                </MatAppBarRow>
+            </MatAppBar>
+            <MatAppBarContent>
+                <section class="container-fluid px-4 py-3">
+                    @Body
+                </section>
+            </MatAppBarContent>
+        </MatAppBarContainer>
+    </MatDrawerContent>
+</MatDrawerContainer>
+
+@code
+{
+    private bool _navMenuOpened = true;
+    private bool _navMinified = false;
+    private string _bbDrawerClass = string.Empty;
+
+    private string BrandName => ViewSettings.ServiceName;
+
+    private void NavToggleClicked()
+    {
+        _navMenuOpened = !_navMenuOpened;
+        _bbDrawerClass = _navMenuOpened ? "full" : "closed";
+
+        StateHasChanged();
+    }
+
+    private void NavMinifyClicked()
+    {
+        _navMinified = !_navMinified || !_navMenuOpened;
+
+        if (_navMinified)
+        {
+            _bbDrawerClass = "mini";
+            _navMenuOpened = true;
+        }
+        else if (_navMenuOpened)
+        {
+            _bbDrawerClass = "full";
+        }
+
+        _navMenuOpened = true;
+
+        StateHasChanged();
+    }
+}

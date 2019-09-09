@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -12,16 +11,15 @@ namespace Rutracker.Server.BusinessLayer.Services
 {
     public class StorageService : IStorageService
     {
-        private readonly StorageSettings _storageSettings;
         private readonly CloudBlobClient _client;
 
-        public StorageService(IOptions<StorageSettings> storageOptions)
+        public StorageService(IOptions<StorageAuthOptions> storageOptions)
         {
-            _storageSettings = storageOptions.Value;
+            var storageSettings = storageOptions.Value;
 
             try
             {
-                _client = CloudStorageAccount.Parse(_storageSettings.ConnectionString).CreateCloudBlobClient();
+                _client = CloudStorageAccount.Parse(storageSettings.ConnectionString).CreateCloudBlobClient();
             }
             catch (Exception)
             {
@@ -29,19 +27,35 @@ namespace Rutracker.Server.BusinessLayer.Services
             }
         }
 
-        public async Task UploadFileAsync(string containerName, string fileName, Stream stream)
+        public async Task<string> UploadFileFromStreamAsync(string containerName, string fileName, string fileType, Stream stream)
         {
             var blockBlob = await GetBlockBlobAsync(containerName, fileName, createIfNotExists: true);
 
             await blockBlob.UploadFromStreamAsync(stream);
+
+            blockBlob.Properties.ContentType = fileType;
+            await blockBlob.SetPropertiesAsync();
+
+            return blockBlob.Uri.AbsoluteUri;
         }
 
-        public async Task<Stream> DownloadFileAsync(string containerName, string fileName)
+        public async Task<string> UploadFileFromByteArrayAsync(string containerName, string fileName, string fileType, byte[] bytes)
+        {
+            var blockBlob = await GetBlockBlobAsync(containerName, fileName, createIfNotExists: true);
+
+            await blockBlob.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
+
+            blockBlob.Properties.ContentType = fileType;
+            await blockBlob.SetPropertiesAsync();
+
+            return blockBlob.Uri.AbsoluteUri;
+        }
+
+        public async Task<Stream> DownloadFileToStreamAsync(string containerName, string fileName)
         {
             var blockBlob = await GetBlockBlobAsync(containerName, fileName);
 
-            using var stream = File.OpenWrite(fileName);
-
+            await using var stream = File.OpenWrite(fileName);
             await blockBlob.DownloadToStreamAsync(stream);
 
             return stream;
@@ -56,7 +70,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<bool> DeleteContainerAsync(string containerName)
         {
-            var container = GetBlobContainer(containerName);
+            var container = _client.GetContainerReference(containerName);
 
             return await container.DeleteIfExistsAsync();
         }
@@ -68,16 +82,9 @@ namespace Rutracker.Server.BusinessLayer.Services
             return blockBlob.Uri.AbsoluteUri;
         }
 
-        private CloudBlobContainer GetBlobContainer(string containerName)
-        {
-            Guard.Against.NullOrWhiteSpace(containerName, message: "The container name not valid.");
-
-            return _client.GetContainerReference(containerName);
-        }
-
         private async Task<CloudBlockBlob> GetBlockBlobAsync(string containerName, string fileName, bool createIfNotExists = false)
         {
-            var container = GetBlobContainer(containerName);
+            var container = _client.GetContainerReference(containerName);
 
             if (createIfNotExists)
             {
@@ -88,13 +95,7 @@ namespace Rutracker.Server.BusinessLayer.Services
                 });
             }
 
-            Guard.Against.NullOrWhiteSpace(fileName, message: "The file name not valid.");
-
-            var blockBlob = container.GetBlockBlobReference(fileName);
-
-            Guard.Against.NullNotFound(blockBlob, "The block blob not found.");
-
-            return blockBlob;
+            return container.GetBlockBlobReference(fileName);
         }
     }
 }

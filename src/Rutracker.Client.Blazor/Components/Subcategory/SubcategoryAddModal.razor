@@ -1,0 +1,29 @@
+﻿@inject IModalService ModalService
+
+<EditForm Model="@Subcategory" OnValidSubmit="@CreateClicked">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <MatTextField @bind-Value="@Subcategory.Name"
+                      Label="Name"
+                      Icon="@MatIconNames.Create"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true" />
+
+        <ValidationMessage For="@(() => Subcategory.Name)" />
+    </div>
+
+    <div class="d-flex flex-row-reverse mt-4">
+        <MatButton Label="Create" type="submit" />
+        <MatButton OnClick="@CancelClicked" Label="Cancel" />
+    </div>
+</EditForm>
+
+@code
+{
+    private SubcategoryCreateViewModel Subcategory { get; set; } = new SubcategoryCreateViewModel();
+
+    private void CreateClicked() => ModalService.Close(ModalResult.Ok(Subcategory));
+    private void CancelClicked() => ModalService.Cancel();
+}

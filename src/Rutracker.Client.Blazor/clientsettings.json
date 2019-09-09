@@ -1,24 +1,35 @@
 {
-  "ApiUriSettings": {
-    "TorrentsIndex": "api/torrents/pagination/?page={0}&pageSize={1}",
-    "TorrentIndex": "api/torrents/?id={0}",
+  "ApiUrlSettings": {
+    "Categories": "api/categories",
+    "Category": "api/categories/{0}",
+    "Subcategories": "api/subcategories",
+    "Subcategory": "api/subcategories/{0}",
+    "Torrents": "api/torrents?page={0}&pageSize={1}",
+    "PopularTorrents": "api/torrents/popular/{0}",
+    "Torrent": "api/torrents/{0}",
+    "Comments": "api/comments",
+    "Comment": "api/comments/{0}",
+    "LikeComment": "api/comments/like/{0}",
     "Login": "api/accounts/login",
     "Register": "api/accounts/register",
     "Logout": "api/accounts/logout",
     "Users": "api/users",
-    "UserDetails": "api/users/details",
-    "ChangeUser": "api/users/changeuser",
-    "ChangeImage": "api/users/changeimage",
-    "ChangePassword": "api/users/changepassword",
-    "ChangeEmail": "api/users/changeemail",
-    "ChangePhoneNumber": "api/users/changePhoneNumber",
-    "DeleteImage": "api/users/deleteImage",
-    "ConfirmChangeEmail": "api/users/confirmChangeEmail",
-    "ConfirmChangePhoneNumber": "api/users/confirmChangePhoneNumber"
+    "UserProfile": "api/users/profile/{0}",
+    "User": "api/users/details",
+    "ChangeUserInfo": "api/users/change/info",
+    "ChangeImage": "api/users/change/image",
+    "ChangePassword": "api/users/change/password",
+    "ChangeEmail": "api/users/change/email",
+    "ChangePhone": "api/users/change/phone",
+    "ConfirmEmail": "api/users/confirm/email",
+    "ConfirmPhone": "api/users/confirm/phone",
+    "ConfirmChangeEmail": "api/users/confirm/changeEmail"
   },
   "ViewSettings": {
     "ServiceName": "Rutracker",
-    "TorrentsPerPageCount": 6
+    "TorrentsPerPageCount": 6,
+    "PopularTorrentsCount": 10,
+    "CommentsPerPageCount": 5
   },
   "MatToasterSettings": {
     "Position": "BottomRight",

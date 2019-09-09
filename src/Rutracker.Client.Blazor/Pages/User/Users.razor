@@ -1,0 +1,18 @@
+﻿@attribute [Authorize(Roles = UserRoles.Admin)]
+
+@inject IUserService UserService
+
+@page "/users"
+
+<Page Title="user list" Action="@LoadAction" Errors="@Errors">
+    <UserList Items="@UsersItems" />
+</Page>
+
+@code
+{
+    private IEnumerable<UserViewModel> UsersItems { get; set; }
+
+    protected override async Task OnInitializedAsync() => await LoadAsync(UsersAsync);
+
+    private async Task UsersAsync() => UsersItems = await UserService.ListAsync();
+}

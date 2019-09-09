@@ -1,0 +1,17 @@
+﻿@inject ITorrentService TorrentService
+
+@page "/torrents/popular"
+
+<Page Title="torrent list" Action="@LoadAction" Errors="@Errors">
+    <TorrentList Items="@Torrents" />
+</Page>
+
+@code
+{
+    private IEnumerable<TorrentViewModel> Torrents { get; set; }
+    private int Count => ViewSettings.PopularTorrentsCount;
+
+    protected override async Task OnInitializedAsync() => await LoadAsync(TorrentsAsync);
+
+    private async Task TorrentsAsync() => Torrents = await TorrentService.PopularTorrentsAsync(Count);
+}

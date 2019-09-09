@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Shared.Models.ViewModels.User;
+using Rutracker.Shared.Models.ViewModels.User.Change;
 
 namespace Rutracker.Server.WebApi.Mapping
 {
@@ -9,8 +10,9 @@ namespace Rutracker.Server.WebApi.Mapping
         public UserViewModelProfile()
         {
             CreateMap<User, UserViewModel>();
-            CreateMap<User, UserShortViewModel>();
+            CreateMap<User, UserProfileViewModel>();
             CreateMap<User, UserDetailsViewModel>();
+            CreateMap<ChangeUserViewModel, User>();
         }
     }
 }
