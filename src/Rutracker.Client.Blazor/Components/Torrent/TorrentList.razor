@@ -6,6 +6,13 @@
 }
 else
 {
+    <hr />
+    <div class="d-flex justify-content-end align-items-center">
+        <span class="pr-2">@TotalItems</span>
+        <h3 class="m-0">Total torrents</h3>
+    </div>
+    <hr />
+
     <div class="mat-layout-grid px-0">
         <div class="mat-layout-grid-inner">
             @foreach (var torrent in Items)
@@ -16,9 +23,11 @@ else
             }
         </div>
     </div>
+    <hr />
 }
 
 @code
 {
     [Parameter] public IEnumerable<TorrentViewModel> Items { get; set; }
+    [Parameter] public int TotalItems { get; set; }
 }

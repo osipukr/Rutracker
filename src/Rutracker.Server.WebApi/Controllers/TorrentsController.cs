@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.WebApi.Controllers.Base;
-using Rutracker.Shared.Models.ViewModels;
+using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.Torrent;
 
 namespace Rutracker.Server.WebApi.Controllers

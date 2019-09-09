@@ -5,13 +5,16 @@
 <Page Title="torrent list" Action="@LoadAction" Errors="@Errors">
     <Filtration OnChange="@FilterChanged" />
 
-    <TorrentList Items="@TorrentsPagination.Items" />
+    @if (TorrentsPagination != null)
+    {
+        <TorrentList Items="@TorrentsPagination.Items" TotalItems="@TorrentsPagination.TotalItems" />
 
-    <Pagination Page="@Page"
-                PageSize="@PageSize"
-                TotalPages="@TorrentsPagination.TotalPages"
-                TotalItems="@TorrentsPagination.TotalItems"
-                OnPageChange="@PageChanged" />
+        <Pagination Page="@Page"
+                    PageSize="@PageSize"
+                    TotalPages="@TorrentsPagination.TotalPages"
+                    TotalItems="@TorrentsPagination.TotalItems"
+                    OnPageChange="@PageChanged" />
+    }
 </Page>
 
 @code

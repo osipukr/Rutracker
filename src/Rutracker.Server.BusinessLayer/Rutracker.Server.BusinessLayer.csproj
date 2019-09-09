@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Ardalis.GuardClauses" Version="1.2.9" />
     <PackageReference Include="MailKit" Version="2.3.0" />
     <PackageReference Include="MediaTypeMap" Version="2.1.0" />
     <PackageReference Include="Twilio" Version="5.32.0" />

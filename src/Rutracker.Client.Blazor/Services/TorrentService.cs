@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Rutracker.Client.Blazor.Interfaces;
 using Rutracker.Client.Blazor.Settings;
-using Rutracker.Shared.Models.ViewModels;
+using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.Torrent;
 
 namespace Rutracker.Client.Blazor.Services

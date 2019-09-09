@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rutracker.Shared.Models.ViewModels
+namespace Rutracker.Shared.Models
 {
     public class PaginationResult<TResult>
     {
