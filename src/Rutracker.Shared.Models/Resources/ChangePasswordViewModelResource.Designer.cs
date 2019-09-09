@@ -42,29 +42,14 @@
         public static global::System.Globalization.CultureInfo Culture { get; set; }
 
         /// <summary>
-        ///   Looks up a localized string similar to Confirm new password.
-        /// </summary>
-        public static string ConfirmNewPasswordDisplayName => ResourceManager.GetString("ConfirmNewPasswordDisplayName", Culture);
-
-        /// <summary>
         ///   Looks up a localized string similar to The password and confirmation password do not match..
         /// </summary>
         public static string ConfirmNewPasswordErrorMessage => ResourceManager.GetString("ConfirmNewPasswordErrorMessage", Culture);
 
         /// <summary>
-        ///   Looks up a localized string similar to New password.
-        /// </summary>
-        public static string NewPasswordDisplayName => ResourceManager.GetString("NewPasswordDisplayName", Culture);
-
-        /// <summary>
         ///   Looks up a localized string similar to The {0} must be at least {2} and at max {1} characters long..
         /// </summary>
         public static string NewPasswordErrorMessage => ResourceManager.GetString("NewPasswordErrorMessage", Culture);
-
-        /// <summary>
-        ///   Looks up a localized string similar to Old password.
-        /// </summary>
-        public static string OldPasswordDisplayName => ResourceManager.GetString("OldPasswordDisplayName", Culture);
 
         /// <summary>
         ///   Looks up a localized string similar to The {0} must be at least {2} and at max {1} characters long..

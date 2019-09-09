@@ -42,19 +42,9 @@
         public static global::System.Globalization.CultureInfo Culture { get; set; }
 
         /// <summary>
-        ///   Looks up a localized string similar to Confirm password.
-        /// </summary>
-        public static string ConfirmPasswordDisplayName => ResourceManager.GetString("ConfirmPasswordDisplayName", Culture);
-
-        /// <summary>
         ///   Looks up a localized string similar to The password and confirmation password do not match..
         /// </summary>
         public static string ConfirmPasswordErrorMessage => ResourceManager.GetString("ConfirmPasswordErrorMessage", Culture);
-
-        /// <summary>
-        ///   Looks up a localized string similar to Email.
-        /// </summary>
-        public static string EmailDisplayName => ResourceManager.GetString("EmailDisplayName", Culture);
 
         /// <summary>
         ///   Looks up a localized string similar to The {0} is not valid..
@@ -62,19 +52,9 @@
         public static string EmailErrorMessage => ResourceManager.GetString("EmailErrorMessage", Culture);
 
         /// <summary>
-        ///   Looks up a localized string similar to Password.
-        /// </summary>
-        public static string PasswordDisplayName => ResourceManager.GetString("PasswordDisplayName", Culture);
-
-        /// <summary>
         ///   Looks up a localized string similar to The {0} must be at least {2} and at max {1} characters long..
         /// </summary>
         public static string PasswordErrorMessage => ResourceManager.GetString("PasswordErrorMessage", Culture);
-
-        /// <summary>
-        ///   Looks up a localized string similar to User name.
-        /// </summary>
-        public static string UserNameDisplayName => ResourceManager.GetString("UserNameDisplayName", Culture);
 
         /// <summary>
         ///   Looks up a localized string similar to The {0} must be at least {2} and at max {1} characters long..

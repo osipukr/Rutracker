@@ -9,7 +9,6 @@ namespace Rutracker.Shared.Models.ViewModels.User.Change
         [EmailAddress(
             ErrorMessageResourceName = nameof(ChangeEmailViewModelResource.EmailErrorMessage),
             ErrorMessageResourceType = typeof(ChangeEmailViewModelResource))]
-        [Display(Name = nameof(ChangeEmailViewModelResource.EmailDislpayName), ResourceType = typeof(ChangeEmailViewModelResource))]
         public string Email { get; set; }
     }
 }

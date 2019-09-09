@@ -42,19 +42,9 @@
         public static global::System.Globalization.CultureInfo Culture { get; set; }
 
         /// <summary>
-        ///   Looks up a localized string similar to First name.
-        /// </summary>
-        public static string FirstNameDisplayName => ResourceManager.GetString("FirstNameDisplayName", Culture);
-
-        /// <summary>
         ///   Looks up a localized string similar to The {0} must be at max {1} characters long..
         /// </summary>
         public static string FirstNameErrorMessage => ResourceManager.GetString("FirstNameErrorMessage", Culture);
-
-        /// <summary>
-        ///   Looks up a localized string similar to Last name.
-        /// </summary>
-        public static string LastNameDisplayName => ResourceManager.GetString("LastNameDisplayName", Culture);
 
         /// <summary>
         ///   Looks up a localized string similar to The {0} must be at max {1} characters long..

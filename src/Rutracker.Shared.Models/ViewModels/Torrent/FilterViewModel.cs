@@ -5,7 +5,6 @@ namespace Rutracker.Shared.Models.ViewModels.Torrent
 {
     public class FilterViewModel
     {
-        [Display(Name = nameof(FilterViewModelResource.SearchDisplayName), ResourceType = typeof(FilterViewModelResource))]
         [MaxLength(length: 100,
             ErrorMessageResourceName = nameof(FilterViewModelResource.SearchErrorMessage),
             ErrorMessageResourceType = typeof(FilterViewModelResource))]

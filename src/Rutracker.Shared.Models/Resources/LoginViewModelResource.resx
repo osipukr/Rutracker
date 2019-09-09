@@ -117,17 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="PasswordDisplayName" xml:space="preserve">
-    <value>Password</value>
-  </data>
   <data name="PasswordErrorMessage" xml:space="preserve">
     <value>The {0} must be at least {2} and at max {1} characters long.</value>
-  </data>
-  <data name="RememberMeDisplayName" xml:space="preserve">
-    <value>Remember me?</value>
-  </data>
-  <data name="UserNameDisplayName" xml:space="preserve">
-    <value>User name</value>
   </data>
   <data name="UserNameErrorMessage" xml:space="preserve">
     <value>The {0} must be at least {2} and at max {1} characters long.</value>

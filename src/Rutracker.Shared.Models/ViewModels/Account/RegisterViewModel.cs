@@ -6,22 +6,18 @@ namespace Rutracker.Shared.Models.ViewModels.Account
     public class RegisterViewModel
     {
         [Required]
-        [Display(Name = nameof(RegisterViewModelResource.UserNameDisplayName), ResourceType = typeof(RegisterViewModelResource))]
         [StringLength(maximumLength: 100, MinimumLength = 5,
             ErrorMessageResourceName = nameof(RegisterViewModelResource.UserNameErrorMessage),
             ErrorMessageResourceType = typeof(RegisterViewModelResource))]
         public string UserName { get; set; }
 
         [Required]
-        [EmailAddress(ErrorMessageResourceName = nameof(RegisterViewModelResource.EmailErrorMessage), 
+        [EmailAddress(ErrorMessageResourceName = nameof(RegisterViewModelResource.EmailErrorMessage),
             ErrorMessageResourceType = typeof(RegisterViewModelResource))]
-        [Display(Name = nameof(RegisterViewModelResource.EmailDisplayName),
-            ResourceType = typeof(RegisterViewModelResource))]
         public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = nameof(RegisterViewModelResource.PasswordDisplayName), ResourceType = typeof(RegisterViewModelResource))]
         [StringLength(maximumLength: 100, MinimumLength = 6,
             ErrorMessageResourceName = nameof(RegisterViewModelResource.PasswordErrorMessage),
             ErrorMessageResourceType = typeof(RegisterViewModelResource))]
@@ -29,7 +25,6 @@ namespace Rutracker.Shared.Models.ViewModels.Account
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = nameof(RegisterViewModelResource.ConfirmPasswordDisplayName), ResourceType = typeof(RegisterViewModelResource))]
         [Compare(nameof(Password),
             ErrorMessageResourceName = nameof(RegisterViewModelResource.ConfirmPasswordErrorMessage),
             ErrorMessageResourceType = typeof(RegisterViewModelResource))]

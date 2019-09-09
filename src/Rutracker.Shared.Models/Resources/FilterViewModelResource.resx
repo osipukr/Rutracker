@@ -117,25 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="SearchDisplayName" xml:space="preserve">
-    <value>Search</value>
-  </data>
   <data name="SearchErrorMessage" xml:space="preserve">
     <value>The {0} must be at  max {1} characters long.</value>
-  </data>
-  <data name="SelectedForumIdsDisplayName" xml:space="preserve">
-    <value>Forum titles category</value>
-  </data>
-  <data name="SizeFromDisplayName" xml:space="preserve">
-    <value>Size from</value>
-  </data>
-  <data name="SizeFromErrorMessage" xml:space="preserve">
-    <value>The {0} must be greater than {1}.</value>
-  </data>
-  <data name="SizeToDisplayName" xml:space="preserve">
-    <value>Size to</value>
-  </data>
-  <data name="SizeToErrorMessage" xml:space="preserve">
-    <value>The {0} must be greater than {1}.</value>
   </data>
 </root>

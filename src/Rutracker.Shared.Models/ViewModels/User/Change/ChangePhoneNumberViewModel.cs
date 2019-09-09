@@ -9,9 +9,6 @@ namespace Rutracker.Shared.Models.ViewModels.User.Change
         [Phone(
             ErrorMessageResourceName = nameof(ChangePhoneNumberViewModelResource.PhoneNumberErrorMessage),
             ErrorMessageResourceType = typeof(ChangePhoneNumberViewModelResource))]
-        [Display(
-            Name = nameof(ChangePhoneNumberViewModelResource.PhoneNumberDisplayName),
-            ResourceType = typeof(ChangePhoneNumberViewModelResource))]
         public string PhoneNumber { get; set; }
     }
 }

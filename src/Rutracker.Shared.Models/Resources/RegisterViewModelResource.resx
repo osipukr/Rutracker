@@ -117,26 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ConfirmPasswordDisplayName" xml:space="preserve">
-    <value>Confirm password</value>
-  </data>
   <data name="ConfirmPasswordErrorMessage" xml:space="preserve">
     <value>The password and confirmation password do not match.</value>
-  </data>
-  <data name="EmailDisplayName" xml:space="preserve">
-    <value>Email</value>
   </data>
   <data name="EmailErrorMessage" xml:space="preserve">
     <value>The {0} is not valid.</value>
   </data>
-  <data name="PasswordDisplayName" xml:space="preserve">
-    <value>Password</value>
-  </data>
   <data name="PasswordErrorMessage" xml:space="preserve">
     <value>The {0} must be at least {2} and at max {1} characters long.</value>
-  </data>
-  <data name="UserNameDisplayName" xml:space="preserve">
-    <value>User name</value>
   </data>
   <data name="UserNameErrorMessage" xml:space="preserve">
     <value>The {0} must be at least {2} and at max {1} characters long.</value>

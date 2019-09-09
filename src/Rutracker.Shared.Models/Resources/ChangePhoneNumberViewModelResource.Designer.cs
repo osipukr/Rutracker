@@ -42,11 +42,6 @@
         public static global::System.Globalization.CultureInfo Culture { get; set; }
 
         /// <summary>
-        ///   Looks up a localized string similar to Phone number.
-        /// </summary>
-        public static string PhoneNumberDisplayName => ResourceManager.GetString("PhoneNumberDisplayName", Culture);
-
-        /// <summary>
         ///   Looks up a localized string similar to The {0} is not valid..
         /// </summary>
         public static string PhoneNumberErrorMessage => ResourceManager.GetString("PhoneNumberErrorMessage", Culture);

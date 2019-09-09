@@ -7,8 +7,6 @@ namespace Rutracker.Shared.Models.ViewModels.User.Change
     {
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = nameof(ChangePasswordViewModelResource.OldPasswordDisplayName),
-            ResourceType = typeof(ChangePasswordViewModelResource))]
         [StringLength(maximumLength: 100, MinimumLength = 6,
             ErrorMessageResourceName = nameof(ChangePasswordViewModelResource.OldPasswordErrorMessage),
             ErrorMessageResourceType = typeof(ChangePasswordViewModelResource))]
@@ -16,8 +14,6 @@ namespace Rutracker.Shared.Models.ViewModels.User.Change
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = nameof(ChangePasswordViewModelResource.NewPasswordDisplayName),
-            ResourceType = typeof(ChangePasswordViewModelResource))]
         [StringLength(maximumLength: 100, MinimumLength = 6,
             ErrorMessageResourceName = nameof(ChangePasswordViewModelResource.NewPasswordErrorMessage),
             ErrorMessageResourceType = typeof(ChangePasswordViewModelResource))]
@@ -25,8 +21,6 @@ namespace Rutracker.Shared.Models.ViewModels.User.Change
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = nameof(ChangePasswordViewModelResource.ConfirmNewPasswordDisplayName),
-            ResourceType = typeof(ChangePasswordViewModelResource))]
         [Compare(nameof(NewPassword), 
             ErrorMessageResourceName = nameof(ChangePasswordViewModelResource.ConfirmNewPasswordErrorMessage),
             ErrorMessageResourceType = typeof(ChangePasswordViewModelResource))]

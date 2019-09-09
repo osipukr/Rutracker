@@ -42,11 +42,6 @@
         public static global::System.Globalization.CultureInfo Culture { get; set; }
 
         /// <summary>
-        ///   Looks up a localized string similar to Email.
-        /// </summary>
-        public static string EmailDislpayName => ResourceManager.GetString("EmailDislpayName", Culture);
-
-        /// <summary>
         ///   Looks up a localized string similar to The {0} is not valid..
         /// </summary>
         public static string EmailErrorMessage => ResourceManager.GetString("EmailErrorMessage", Culture);

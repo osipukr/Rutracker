@@ -42,38 +42,8 @@
         public static global::System.Globalization.CultureInfo Culture { get; set; }
 
         /// <summary>
-        ///   Looks up a localized string similar to Search.
-        /// </summary>
-        public static string SearchDisplayName => ResourceManager.GetString("SearchDisplayName", Culture);
-
-        /// <summary>
         ///   Looks up a localized string similar to The {0} must be at  max {1} characters long..
         /// </summary>
         public static string SearchErrorMessage => ResourceManager.GetString("SearchErrorMessage", Culture);
-
-        /// <summary>
-        ///   Looks up a localized string similar to Forum titles category.
-        /// </summary>
-        public static string SelectedForumIdsDisplayName => ResourceManager.GetString("SelectedForumIdsDisplayName", Culture);
-
-        /// <summary>
-        ///   Looks up a localized string similar to Size from.
-        /// </summary>
-        public static string SizeFromDisplayName => ResourceManager.GetString("SizeFromDisplayName", Culture);
-
-        /// <summary>
-        ///   Looks up a localized string similar to The {0} must be greater than {1}..
-        /// </summary>
-        public static string SizeFromErrorMessage => ResourceManager.GetString("SizeFromErrorMessage", Culture);
-
-        /// <summary>
-        ///   Looks up a localized string similar to Size to.
-        /// </summary>
-        public static string SizeToDisplayName => ResourceManager.GetString("SizeToDisplayName", Culture);
-
-        /// <summary>
-        ///   Looks up a localized string similar to The {0} must be greater than {1}..
-        /// </summary>
-        public static string SizeToErrorMessage => ResourceManager.GetString("SizeToErrorMessage", Culture);
     }
 }
