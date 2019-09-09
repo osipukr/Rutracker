@@ -1,15 +1,28 @@
 ﻿@inject IModalService ModalService
 
-<MatButton OnClick="@ChangeModalOpened" class="m-0 p-0 rounded-circle w-100 h-100 mat-elevation-z5" title="Click to change image">
+<div class="profile-header__image position-relative">
     @if (PageHelpers.IsValidImageUrl(Url))
     {
-        <img class="w-100 h-100" src="@Url" alt="User image" />
+        <MatIconButton OnClick="@DeleteModalOpened"
+                       Icon="@MatIconNames.Close"
+                       class="delete position-absolute"
+                       style="top: -13px; right: -15px;" />
     }
-    else
-    {
-        <img class="w-100 h-100" src="img/profile-bg.jpg" alt="Default user image" />
-    }
-</MatButton>
+
+    <MatRipple @onclick="@ChangeModalOpened"
+               Color="@MatRippleColor.Primary"
+               class="w-100 h-100 no-select rounded-circle mat-elevation-z5"
+               style="cursor: pointer;">
+        @if (PageHelpers.IsValidImageUrl(Url))
+        {
+            <img class="w-100 h-100" src="@Url" alt="User image" />
+        }
+        else
+        {
+            <img class="w-100 h-100" src="img/profile-bg.jpg" alt="Default user image" />
+        }
+    </MatRipple>
+</div>
 
 @code
 {
@@ -20,6 +33,12 @@
     {
         ModalService.OnClose += ChangeModalClosed;
         ModalService.Show("Change user image", typeof(UserImageChangeModal));
+    }
+
+    private void DeleteModalOpened()
+    {
+        ModalService.OnClose += ChangeModalClosed;
+        ModalService.Show("Delete user image", typeof(UserImageDeleteModal));
     }
 
     private async void ChangeModalClosed(ModalResult result)

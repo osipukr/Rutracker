@@ -24,7 +24,7 @@ namespace Rutracker.Client.Blazor
             services.AddAuthorizationCore();
             services.AddBlazoredModal();
             services.AddLoadingBar();
-            services.AddFileReaderService();
+            services.AddFileReaderService(options => options.UseWasmSharedBuffer = true);
             services.AddBlazoredLocalStorage();
 
             services.AddScoped<HttpClientService>();

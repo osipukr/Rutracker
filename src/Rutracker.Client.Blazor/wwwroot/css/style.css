@@ -556,6 +556,14 @@ ul.mdc-nav-menu {
     height: 200px;
 }
 
+    .profile-header__image .delete {
+        display: none;
+    }
+
+    .profile-header__image:hover .delete {
+        display: block;
+    }
+
 .profile-header__name {
     font-size: 2rem;
     margin: 15px 0;
@@ -568,23 +576,27 @@ ul.mdc-nav-menu {
 .comment-list .row {
     margin-bottom: 0px;
 }
+
 .comment-list .panel .panel-heading {
     padding: 4px 15px;
     position: absolute;
-    border:none;
+    border: none;
     /*Panel-heading border radius*/
-    border-top-right-radius:0px;
+    border-top-right-radius: 0px;
     top: 1px;
 }
-.comment-list .panel .panel-heading.right {
-    border-right-width: 0px;
-    /*Panel-heading border radius*/
-    border-top-left-radius:0px;
-    right: 16px;
-}
-.comment-list .panel .panel-heading .panel-body {
-    padding-top: 6px;
-}
+
+    .comment-list .panel .panel-heading.right {
+        border-right-width: 0px;
+        /*Panel-heading border radius*/
+        border-top-left-radius: 0px;
+        right: 16px;
+    }
+
+    .comment-list .panel .panel-heading .panel-body {
+        padding-top: 6px;
+    }
+
 .comment-list figcaption {
     /*For wrapping text in thumbnail*/
     word-wrap: break-word;
@@ -599,6 +611,7 @@ ul.mdc-nav-menu {
         border-style: solid;
         border-color: transparent;
     }
+
     .comment-list .panel.arrow.left:after, .comment-list .panel.arrow.left:before {
         border-left: 0;
     }
@@ -637,6 +650,7 @@ ul.mdc-nav-menu {
         border-width: 15px;
     }
 }
+
 .comment-list .comment-post {
     margin-top: 6px;
 }

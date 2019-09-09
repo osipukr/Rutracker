@@ -3,7 +3,7 @@
 @inject IModalService ModalService
 @inject IFileReaderService FileReaderService
 
-<EditForm Model="@ChangeImageModel" OnValidSubmit="@ChangeClicked">
+<EditForm Model="@ChangeImageModel" OnValidSubmit="@UpdateClicked">
     <div class="form-group">
         <DataAnnotationsValidator />
         <ValidationSummary />
@@ -19,10 +19,10 @@
         Select image from computer: <input type="file" accept="image/*" @ref="_inputTypeFileElement" />
     </div>
 
-    <div class="form-group mt-4 d-flex justify-content-end">
+    <div class="form-group mt-4 d-flex flex-row-reverse">
+        <MatButton Label="Update" Raised="true" type="submit" class="mr-2" />
+        <MatButton OnClick="@ClearClicked" Label="Crear" Raised="true" class="mr-2" />
         <MatButton OnClick="@CancelClicked" Label="Cancel" Raised="true" class="mr-2" />
-        <MatButton OnClick="@DeleteClicked" Label="Delete" Raised="true" class="ml-2" />
-        <MatButton Label="Update" Raised="true" type="submit" class="ml-2" />
     </div>
 </EditForm>
 
@@ -40,23 +40,23 @@
             return;
         }
 
-        var type = (await file.ReadFileInfoAsync()).Type;
+        var fileInfo = await file.ReadFileInfoAsync();
 
-        using var stream = await file.OpenReadAsync();
-
-        if (stream.Length > Constants.File.MaxImageSize)
+        if (fileInfo.Size > Constants.File.MaxImageSize)
         {
             throw new Exception("File size too large.");
         }
 
+        using var stream = await file.OpenReadAsync();
+
         ChangeImageModel.ImageBytes = new byte[stream.Length];
-        ChangeImageModel.FileType = type;
+        ChangeImageModel.FileType = fileInfo.Type;
 
         var buffer = new byte[4 * 1024];
         var length = 0;
         int count;
 
-        while ((count = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+        while ((count = await stream.ReadAsync(buffer, 0, buffer.Length)) != 0)
         {
             Array.Copy(buffer, 0, ChangeImageModel.ImageBytes, length, count);
 
@@ -64,24 +64,15 @@
         }
     }
 
-    private async Task ChangeClicked()
+    private async Task UpdateClicked()
     {
         await ReadFileAsync();
 
-        if(ChangeImageModel.ImageUrl == null && ChangeImageModel.ImageBytes == null) return;
+        if (ChangeImageModel.ImageUrl == null && ChangeImageModel.ImageBytes == null) return;
 
         ModalService.Close(ModalResult.Ok(ChangeImageModel));
     }
 
-    private void DeleteClicked()
-    {
-        ChangeImageModel.FileType = null;
-        ChangeImageModel.ImageBytes = null;
-        ChangeImageModel.ImageUrl = null;
-        ChangeImageModel.IsDelete = true;
-
-        ModalService.Close(ModalResult.Ok(ChangeImageModel));
-    }
-
+    private async Task ClearClicked() => await FileReaderService.CreateReference(_inputTypeFileElement).ClearValue();
     private void CancelClicked() => ModalService.Cancel();
 }
