@@ -43,10 +43,10 @@ namespace Rutracker.Server.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<RutrackerContext>(options => options
+                .UseLazyLoadingProxies()
                 .UseSqlServer(
                     _configuration.GetConnectionString("RutrackerConnection"),
-                    sqlServerOptions => sqlServerOptions.EnableRetryOnFailure())
-                .UseLazyLoadingProxies());
+                    sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
 
             services.AddMemoryCache();
 

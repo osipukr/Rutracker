@@ -29,7 +29,7 @@
             {
                 foreach (var comment in Items)
                 {
-                    <Comment Model="@comment" OnLike="@OnLike" OnUpdate="@OnUpdate" OnDelete="@OnDelete" />
+                    <Comment @key="@comment" Model="@comment" OnLike="@OnLike" OnUpdate="@OnUpdate" OnDelete="@OnDelete" />
                 }
             }
         </section>

@@ -42,8 +42,7 @@
 
                             <MatIconButton OnClick="@(_ => LikeAsync(Model.Id))"
                                            Disabled="@(!IsAuthenticated)"
-                                           Icon="@(IsLikedByUser ? MatIconNames.Favorite : MatIconNames.Favorite_border)"
-                                           ToggleIcon="@(IsLikedByUser ? MatIconNames.Favorite_border : MatIconNames.Favorite)"
+                                           Icon="@MatIconNames.Favorite_border"
                                            class="ml-1"
                                            title="Like comment" />
 
@@ -82,7 +81,6 @@
     private CommentUpdateViewModel CommentUpdate { get; set; }
 
     private bool IsAuthenticated { get; set; }
-    private bool IsLikedByUser { get; set; }
     private bool IsUserComment { get; set; }
     private bool IsCommentEditClicked { get; set; }
 
@@ -91,14 +89,7 @@
         var state = await AuthenticationStateTask;
 
         IsAuthenticated = state.IsUserAuthenticated();
-
-        if (IsAuthenticated)
-        {
-            var userName = state.UserName();
-
-            IsLikedByUser = Model?.Likes?.Any(x => x.UserName == userName) ?? false;
-            IsUserComment = Model?.User?.UserName == userName;
-        }
+        IsUserComment = IsAuthenticated && Model.User.UserName == state.UserName();
     }
 
     private async Task UpdateAsync(CommentUpdateViewModel model) => await OnUpdate(Model, model);

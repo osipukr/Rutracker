@@ -9,6 +9,8 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
         public void Configure(EntityTypeBuilder<Subcategory> builder)
         {
             builder.Property(s => s.Id).ValueGeneratedOnAdd().IsRequired();
+            builder.Property(s => s.Name).IsRequired();
+            builder.Property(s => s.CategoryId).IsRequired();
 
             builder.HasOne(s => s.Category)
                 .WithMany(c => c.Subcategories)

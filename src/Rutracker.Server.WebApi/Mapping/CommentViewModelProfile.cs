@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Shared.Models.ViewModels.Comment;
 

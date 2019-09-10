@@ -9,6 +9,8 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
         public void Configure(EntityTypeBuilder<Like> builder)
         {
             builder.Property(l => l.Id).ValueGeneratedOnAdd().IsRequired();
+            builder.Property(l => l.CommentId).IsRequired();
+            builder.Property(l => l.UserId).IsRequired();
 
             builder.HasOne(l => l.Comment)
                 .WithMany(c => c.Likes)

@@ -9,6 +9,9 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
         public void Configure(EntityTypeBuilder<File> builder)
         {
             builder.Property(f => f.Id).ValueGeneratedOnAdd().IsRequired();
+            builder.Property(f => f.Name).IsRequired();
+            builder.Property(f => f.Size).IsRequired();
+            builder.Property(f => f.TorrentId).IsRequired();
 
             builder.HasOne(f => f.Torrent)
                 .WithMany(t => t.Files)

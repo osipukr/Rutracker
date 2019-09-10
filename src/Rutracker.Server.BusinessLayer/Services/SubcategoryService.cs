@@ -46,14 +46,14 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Subcategory> AddAsync(Subcategory subcategory)
         {
-            ThrowIfInvalidSubcategoryModel(subcategory);
+            await ThrowIfInvalidSubcategory(subcategory);
 
             if (!await _categoryRepository.ExistAsync(subcategory.CategoryId))
             {
                 throw new RutrackerException($"The category with id '{subcategory.CategoryId}' not found.", ExceptionEventType.NotValidParameters);
             }
 
-            subcategory = await _subcategoryRepository.AddAsync(subcategory);
+            await _subcategoryRepository.AddAsync(subcategory);
             await _unitOfWork.CompleteAsync();
 
             return subcategory;
@@ -61,13 +61,13 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Subcategory> UpdateAsync(int id, Subcategory subcategory)
         {
-            ThrowIfInvalidSubcategoryModel(subcategory);
+            await ThrowIfInvalidSubcategory(subcategory);
 
             var result = await FindAsync(id);
 
             result.Name = subcategory.Name;
 
-            result = _subcategoryRepository.Update(result);
+            _subcategoryRepository.Update(result);
             await _unitOfWork.CompleteAsync();
 
             return result;
@@ -77,17 +77,22 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var subcategory = await FindAsync(id);
 
-            subcategory = _subcategoryRepository.Remove(subcategory);
+            _subcategoryRepository.Remove(subcategory);
 
             await _unitOfWork.CompleteAsync();
 
             return subcategory;
         }
 
-        private static void ThrowIfInvalidSubcategoryModel(Subcategory subcategory)
+        private async Task ThrowIfInvalidSubcategory(Subcategory subcategory)
         {
             Guard.Against.NullNotValid(subcategory, "Invalid subcategory model.");
             Guard.Against.NullOrWhiteSpace(subcategory.Name, message: "The subcategory must contain a name.");
+
+            if (await _subcategoryRepository.ExistAsync(x => x.Name == subcategory.Name))
+            {
+                throw new RutrackerException($"Subcategory with name '{subcategory.Name}' already exists.", ExceptionEventType.NotValidParameters);
+            }
         }
     }
 }

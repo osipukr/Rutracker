@@ -63,9 +63,9 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
             return await _dbSet.CountAsync(expression);
         }
 
-        public virtual async Task<TEntity> AddAsync(TEntity entity)
+        public virtual async Task AddAsync(TEntity entity)
         {
-            return (await _dbSet.AddAsync(entity)).Entity;
+            await _dbSet.AddAsync(entity);
         }
 
         public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
@@ -73,9 +73,9 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
             await _dbSet.AddRangeAsync(entities);
         }
 
-        public virtual TEntity Update(TEntity entity)
+        public virtual void Update(TEntity entity)
         {
-            return _dbSet.Update(entity).Entity;
+            _dbSet.Update(entity);
         }
 
         public virtual void UpdateRange(IEnumerable<TEntity> entities)
@@ -83,9 +83,9 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
             _dbSet.UpdateRange(entities);
         }
 
-        public virtual TEntity Remove(TEntity entity)
+        public virtual void Remove(TEntity entity)
         {
-            return _dbSet.Remove(entity).Entity;
+            _dbSet.Remove(entity);
         }
 
         public virtual void RemoveRange(IEnumerable<TEntity> entities)

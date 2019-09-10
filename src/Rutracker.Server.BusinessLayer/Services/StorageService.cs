@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
@@ -11,20 +10,11 @@ namespace Rutracker.Server.BusinessLayer.Services
 {
     public class StorageService : IStorageService
     {
-        private readonly CloudBlobClient _client;
+        private readonly StorageAuthOptions _storageAuthOptions;
 
         public StorageService(IOptions<StorageAuthOptions> storageOptions)
         {
-            var storageSettings = storageOptions.Value;
-
-            try
-            {
-                _client = CloudStorageAccount.Parse(storageSettings.ConnectionString).CreateCloudBlobClient();
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
+            _storageAuthOptions = storageOptions.Value;
         }
 
         public async Task<string> UploadFileFromStreamAsync(string containerName, string fileName, string fileType, Stream stream)
@@ -70,7 +60,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<bool> DeleteContainerAsync(string containerName)
         {
-            var container = _client.GetContainerReference(containerName);
+            var container = GetBlobContainer(containerName);
 
             return await container.DeleteIfExistsAsync();
         }
@@ -82,9 +72,16 @@ namespace Rutracker.Server.BusinessLayer.Services
             return blockBlob.Uri.AbsoluteUri;
         }
 
+        private CloudBlobContainer GetBlobContainer(string containerName)
+        {
+            var client = CloudStorageAccount.Parse(_storageAuthOptions.ConnectionString).CreateCloudBlobClient();
+
+            return client.GetContainerReference(containerName);
+        }
+
         private async Task<CloudBlockBlob> GetBlockBlobAsync(string containerName, string fileName, bool createIfNotExists = false)
         {
-            var container = _client.GetContainerReference(containerName);
+            var container = GetBlobContainer(containerName);
 
             if (createIfNotExists)
             {
