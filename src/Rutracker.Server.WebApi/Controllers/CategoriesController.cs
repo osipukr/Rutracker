@@ -1,14 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Controllers.Base;
+using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.Category;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
+    [Authorize(Policy = Policies.IsAdmin)]
     public class CategoriesController : BaseApiController
     {
         private readonly ICategoryService _categoryService;
@@ -18,7 +21,7 @@ namespace Rutracker.Server.WebApi.Controllers
             _categoryService = categoryService;
         }
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public async Task<IEnumerable<CategoryViewModel>> List()
         {
             var categories = await _categoryService.ListAsync();
@@ -26,7 +29,7 @@ namespace Rutracker.Server.WebApi.Controllers
             return _mapper.Map<IEnumerable<CategoryViewModel>>(categories);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), AllowAnonymous]
         public async Task<CategoryViewModel> Find(int id)
         {
             var category = await _categoryService.FindAsync(id);

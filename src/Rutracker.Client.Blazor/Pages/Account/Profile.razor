@@ -1,4 +1,4 @@
-﻿@attribute [Authorize(Roles = UserRoles.User)]
+﻿@attribute [Authorize(Policy = Policies.IsUser)]
 
 @inject IUserService UserService
 

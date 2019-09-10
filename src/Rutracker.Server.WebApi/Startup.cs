@@ -26,6 +26,7 @@ using Rutracker.Server.WebApi.Filters;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Services;
 using Rutracker.Server.WebApi.Settings;
+using Rutracker.Shared.Models;
 
 namespace Rutracker.Server.WebApi
 {
@@ -135,6 +136,12 @@ namespace Rutracker.Server.WebApi
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
                 };
+            });
+
+            services.AddAuthorization(config =>
+            {
+                config.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
+                config.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
             });
 
             services.AddControllers(options =>

@@ -11,7 +11,7 @@
             To complete registration, check the email.
         </Alert>
     }
-    else
+    else if (LoadAction == ActionTypes.Failed)
     {
         <Alert Type="@AlertTypes.Danger">
             @Errors

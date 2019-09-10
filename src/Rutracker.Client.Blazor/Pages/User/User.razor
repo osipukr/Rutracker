@@ -1,4 +1,4 @@
-﻿@attribute [Authorize(Roles = UserRoles.User)]
+﻿@attribute [Authorize(Policy = Policies.IsUser)]
 
 @inject IUserService UserService
 
@@ -66,7 +66,7 @@
     {
         var state = await AuthenticationStateTask;
 
-        if (Id == state.UserId())
+        if (Id == state.GetUserId())
         {
             NavigationManager.NavigateTo(Constants.Path.Profile);
         }

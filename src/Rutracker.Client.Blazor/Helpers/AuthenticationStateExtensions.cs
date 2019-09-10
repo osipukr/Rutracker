@@ -15,12 +15,12 @@ namespace Rutracker.Client.Blazor.Helpers
             return state.User.IsInRole(role);
         }
 
-        public static string UserName(this AuthenticationState state)
+        public static string GetUserName(this AuthenticationState state)
         {
             return state.User.Identity.Name;
         }
 
-        public static string UserId(this AuthenticationState state)
+        public static string GetUserId(this AuthenticationState state)
         {
             return state.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }

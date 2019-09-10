@@ -11,7 +11,6 @@ using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Extensions;
 using Rutracker.Server.WebApi.Settings;
-using Rutracker.Shared.Infrastructure.Entities;
 using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.User;
 using Rutracker.Shared.Models.ViewModels.User.Change;
@@ -25,7 +24,7 @@ namespace Rutracker.Server.WebApi.Controllers
     /// <response code="400">If the parameters are not valid.</response>
     /// <response code="401">If the user is not authorized.</response>
     /// <response code="404">If the item is null.</response>
-    [Authorize]
+    [Authorize(Policy = Policies.IsUser)]
     public class UsersController : BaseApiController
     {
         private readonly IUserService _userService;
@@ -47,7 +46,7 @@ namespace Rutracker.Server.WebApi.Controllers
             _clientSettings = clientOptions.Value;
         }
 
-        [HttpGet, Authorize(Roles = UserRoles.Admin)]
+        [HttpGet, Authorize(Policy = Policies.IsAdmin)]
         public async Task<PaginationResult<UserViewModel>> List(int page, int pageSize)
         {
             var (users, count) = await _userService.ListAsync(page, pageSize);

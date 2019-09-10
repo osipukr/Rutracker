@@ -13,7 +13,7 @@ using Rutracker.Shared.Models.ViewModels.Comment;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = Policies.IsUser)]
     public class CommentsController : BaseApiController
     {
         private readonly ICommentService _commentService;

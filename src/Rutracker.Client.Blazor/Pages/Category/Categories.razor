@@ -1,4 +1,4 @@
-﻿@attribute [Authorize(Roles = UserRoles.Admin)]
+﻿@attribute [Authorize(Policy = Policies.IsAdmin)]
 
 @inject ICategoryService CategoryService
 

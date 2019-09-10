@@ -89,7 +89,7 @@
         var state = await AuthenticationStateTask;
 
         IsAuthenticated = state.IsUserAuthenticated();
-        IsUserComment = IsAuthenticated && Model.User.UserName == state.UserName();
+        IsUserComment = IsAuthenticated && Model.User.UserName == state.GetUserName();
     }
 
     private async Task UpdateAsync(CommentUpdateViewModel model) => await OnUpdate(Model, model);
