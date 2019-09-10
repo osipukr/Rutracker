@@ -3,11 +3,20 @@
 <article class="row mb-3 justify-content-center">
     <div class="col-md-2 col-sm-3 p-0 justify-content-center align-items-center">
         <figure class="m-0" style="width: 126px; height: 126px;">
-            <a class="w-100 h-100" href="@(IsUserComment ? Constants.Path.Profile : PageHelpers.UserLink(Model.User.Id))">
+            @if (IsAuthenticated)
+            {
+                <a href="@(IsUserComment ? Constants.Path.Profile : PageHelpers.UserLink(Model.User.UserName))">
+                    <img src="@(PageHelpers.IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : Constants.Path.DefaultProfileImage)"
+                         class="w-100 h-100 rounded-circle img-responsive"
+                         alt="User image | @Model.User.UserName" />
+                </a>
+            }
+            else
+            {
                 <img src="@(PageHelpers.IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : Constants.Path.DefaultProfileImage)"
                      class="w-100 h-100 rounded-circle img-responsive"
                      alt="User image | @Model.User.UserName" />
-            </a>
+            }
         </figure>
     </div>
 
@@ -17,7 +26,17 @@
                 <header class="text-left">
                     <div class="comment-user d-flex " title="User name">
                         <MatIcon Icon="@MatIconNames.Account_box" class="mr-1" />
-                        <a href="@(IsUserComment ? Constants.Path.Profile : PageHelpers.UserLink(Model.User.Id))">@Model.User.UserName</a>
+
+                        @if (IsAuthenticated)
+                        {
+                            <a href="@(IsUserComment ? Constants.Path.Profile : PageHelpers.UserLink(Model.User.UserName))">
+                                @Model.User.UserName
+                            </a>
+                        }
+                        else
+                        {
+                            @Model.User.UserName
+                        }
                     </div>
 
                     <time class="comment-date d-flex " datetime="@Model.CreatedAt.ToString(CultureInfo.InvariantCulture)" title="Created at">

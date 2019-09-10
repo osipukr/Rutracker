@@ -9,7 +9,7 @@ namespace Rutracker.Client.Blazor.Interfaces
     public interface IUserService
     {
         Task<PaginationResult<UserViewModel>> ListAsync(int page, int pageSize);
-        Task<UserProfileViewModel> ProfileAsync(string id);
+        Task<UserProfileViewModel> ProfileAsync(string userName);
         Task<UserDetailsViewModel> FindAsync();
         Task<UserDetailsViewModel> ChangeInfoAsync(ChangeUserViewModel model);
         Task<UserDetailsViewModel> ChangeImageAsync(ChangeImageViewModel model);

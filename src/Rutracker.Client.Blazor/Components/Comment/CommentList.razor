@@ -6,10 +6,10 @@
     </div>
     <hr />
 
-    <div class="row m-0 mb-3">
+    <div class="row m-0 mb-3 px-4">
         <AuthorizeView>
             <NotAuthorized>
-                <div class="alert alert-success w-100">
+                <div class="alert alert-success w-100 text-center">
                     <a href="@Constants.Path.Login">Log in</a> to post a message.
                 </div>
             </NotAuthorized>
@@ -29,7 +29,7 @@
             {
                 foreach (var comment in Items)
                 {
-                    <Comment @key="@comment" Model="@comment" OnLike="@OnLike" OnUpdate="@OnUpdate" OnDelete="@OnDelete" />
+                    <Comment Model="@comment" OnLike="@OnLike" OnUpdate="@OnUpdate" OnDelete="@OnDelete" />
                 }
             }
         </section>

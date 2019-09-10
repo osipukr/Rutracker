@@ -2,7 +2,7 @@
 
 @inject IUserService UserService
 
-@page "/users/{id}"
+@page "/users/{username}"
 
 <Page Title="torrent information" Action="@LoadAction" Errors="@Errors">
     <div class="profile-container">
@@ -58,7 +58,7 @@
 @code
 {
     [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
-    [Parameter] public string Id { get; set; }
+    [Parameter] public string UserName { get; set; }
 
     private UserProfileViewModel UserModel { get; set; }
 
@@ -66,7 +66,7 @@
     {
         var state = await AuthenticationStateTask;
 
-        if (Id == state.GetUserId())
+        if (UserName == state.GetUserName())
         {
             NavigationManager.NavigateTo(Constants.Path.Profile);
         }
@@ -76,5 +76,5 @@
         }
     }
 
-    private async Task UserAsync() => UserModel = await UserService.ProfileAsync(Id);
+    private async Task UserAsync() => UserModel = await UserService.ProfileAsync(UserName);
 }

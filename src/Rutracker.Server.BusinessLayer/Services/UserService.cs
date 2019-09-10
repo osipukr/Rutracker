@@ -53,6 +53,17 @@ namespace Rutracker.Server.BusinessLayer.Services
             return user;
         }
 
+        public async Task<User> FindByNameAsync(string userName)
+        {
+            Guard.Against.NullOrWhiteSpace(userName, message: "Invalid user name.");
+
+            var user = await _userManager.FindByNameAsync(userName);
+
+            Guard.Against.NullNotFound(user, $"The user with name '{userName}' not found.");
+
+            return user;
+        }
+
         public async Task<User> UpdateAsync(string id, User user)
         {
             Guard.Against.NullOrWhiteSpace(id, message: "Invalid user id.");

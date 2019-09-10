@@ -60,10 +60,10 @@ namespace Rutracker.Server.WebApi.Controllers
             };
         }
 
-        [HttpGet("profile/{id}")]
-        public async Task<UserProfileViewModel> Profile(string id)
+        [HttpGet("profile/{username}")]
+        public async Task<UserProfileViewModel> Profile(string userName)
         {
-            var user = await _userService.FindAsync(id);
+            var user = await _userService.FindByNameAsync(userName);
 
             return _mapper.Map<UserProfileViewModel>(user);
         }

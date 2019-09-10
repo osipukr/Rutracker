@@ -26,9 +26,9 @@ namespace Rutracker.Client.Blazor.Services
             return await _httpClientService.GetJsonAsync<PaginationResult<UserViewModel>>(url);
         }
 
-        public async Task<UserProfileViewModel> ProfileAsync(string id)
+        public async Task<UserProfileViewModel> ProfileAsync(string userName)
         {
-            var url = string.Format(_apiUrls.UserProfile, id);
+            var url = string.Format(_apiUrls.UserProfile, userName);
 
             return await _httpClientService.GetJsonAsync<UserProfileViewModel>(url);
         }
