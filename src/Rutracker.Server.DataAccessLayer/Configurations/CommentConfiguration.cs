@@ -10,8 +10,6 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
         {
             builder.Property(c => c.Id).ValueGeneratedOnAdd().IsRequired();
             builder.Property(c => c.Text).IsRequired();
-            builder.Property(c => c.TorrentId).IsRequired();
-            builder.Property(c => c.UserId).IsRequired();
 
             builder.HasOne(c => c.Torrent)
                 .WithMany(t => t.Comments)

@@ -19,6 +19,7 @@
         // Account
         public string Login { get; set; }
         public string Register { get; set; }
+        public string CompleteRegistration { get; set; }
         public string Logout { get; set; }
 
         // User
@@ -30,7 +31,6 @@
         public string ChangePassword { get; set; }
         public string ChangeEmail { get; set; }
         public string ChangePhone { get; set; }
-        public string ConfirmEmail { get; set; }
         public string ConfirmPhone { get; set; }
         public string ConfirmChangeEmail { get; set; }
     }

@@ -6,12 +6,12 @@
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class RegisterViewModelResource
+    public class CompleteRegistrationViewModelResource
     {
         private static global::System.Resources.ResourceManager resourceMan;
 
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal RegisterViewModelResource()
+        internal CompleteRegistrationViewModelResource()
         {
         }
 
@@ -26,8 +26,8 @@
                 if (object.ReferenceEquals(resourceMan, null))
                 {
                     resourceMan = new global::System.Resources.ResourceManager(
-                        "Rutracker.Shared.Models.Resources.RegisterViewModelResource",
-                        typeof(RegisterViewModelResource).Assembly);
+                        "Rutracker.Shared.Models.Resources.CompleteRegistrationViewModelResource",
+                        typeof(CompleteRegistrationViewModelResource).Assembly);
                 }
 
                 return resourceMan;
@@ -42,13 +42,13 @@
         public static global::System.Globalization.CultureInfo Culture { get; set; }
 
         /// <summary>
-        ///   Looks up a localized string similar to The {0} is not valid..
+        ///   Looks up a localized string similar to The password and confirmation password do not match..
         /// </summary>
-        public static string EmailErrorMessage => ResourceManager.GetString("EmailErrorMessage", Culture);
+        public static string ConfirmPasswordErrorMessage => ResourceManager.GetString("ConfirmPasswordErrorMessage", Culture);
 
         /// <summary>
         ///   Looks up a localized string similar to The {0} must be at least {2} and at max {1} characters long..
         /// </summary>
-        public static string UserNameErrorMessage => ResourceManager.GetString("UserNameErrorMessage", Culture);
+        public static string PasswordErrorMessage => ResourceManager.GetString("PasswordErrorMessage", Culture);
     }
 }

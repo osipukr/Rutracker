@@ -20,6 +20,5 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
         Task<User> ChangePasswordAsync(string id, string oldPassword, string newPassword);
         Task<User> ChangeEmailAsync(string id, string email, string token);
         Task<User> ChangePhoneNumberAsync(string id, string phone, string token);
-        Task<User> ConfirmEmailAsync(string id, string token);
     }
 }

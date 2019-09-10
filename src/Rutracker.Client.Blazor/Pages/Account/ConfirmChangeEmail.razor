@@ -3,17 +3,11 @@
 
 @inject IUserService UserService
 
-@page "/account/confirm_change_email"
+@page "/account/profile/confirmEmail"
 
 @using Microsoft.AspNetCore.WebUtilities
 
-@if (LoadAction == ActionTypes.InProgress)
-{
-    <LoadingBackground>
-        <span>Email confirmation is made, please wait</span>
-    </LoadingBackground>
-}
-else if (LoadAction == ActionTypes.Failed)
+@if (LoadAction == ActionTypes.Failed)
 {
     <Alert Type="@AlertTypes.Danger">
         @Errors
@@ -21,6 +15,8 @@ else if (LoadAction == ActionTypes.Failed)
 
     <div class="d-flex justify-content-center mt-3">
         <MatButton Link="@Constants.Path.Home" Label="Home" Raised="true" />
+        <MatButton Link="@Constants.Path.Login" Label="Login" Raised="true" />
+        <MatButton Link="@Constants.Path.Register" Label="Register" Raised="true" />
     </div>
 }
 
@@ -42,6 +38,11 @@ else if (LoadAction == ActionTypes.Failed)
                 ? token.FirstOrDefault()
                 : null
         };
+
+        if (ConfirmChangeModel.Email == null || ConfirmChangeModel.Token == null)
+        {
+            NavigationManager.NavigateTo(Constants.Path.Home);
+        }
 
         await LoadAsync(ConfirmChangeEmailAsync);
 

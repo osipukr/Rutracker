@@ -7,6 +7,7 @@ namespace Rutracker.Client.Blazor.Interfaces
     {
         Task Login(LoginViewModel model);
         Task Register(RegisterViewModel model);
+        Task CompleteRegistration(CompleteRegistrationViewModel model);
         Task Logout();
     }
 }

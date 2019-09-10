@@ -5,13 +5,7 @@
 
 @page "/account/logout"
 
-@if (LoadAction == ActionTypes.InProgress)
-{
-    <LoadingBackground>
-        <span>You are logged out of your account, please wait..</span>
-    </LoadingBackground>
-}
-else if (LoadAction == ActionTypes.Failed)
+@if (LoadAction == ActionTypes.Failed)
 {
     <Alert Type="@AlertTypes.Danger">
         @Errors

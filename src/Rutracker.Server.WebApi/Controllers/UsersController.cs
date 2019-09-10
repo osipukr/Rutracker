@@ -119,7 +119,7 @@ namespace Rutracker.Server.WebApi.Controllers
             var parameters = HttpUtility.ParseQueryString(string.Empty);
 
             parameters.Add(nameof(ConfirmChangeEmailViewModel.Email), model.Email);
-            parameters.Add(nameof(ConfirmEmailViewModel.Token), token);
+            parameters.Add(nameof(ConfirmChangeEmailViewModel.Token), token);
 
             var urlBuilder = new UriBuilder(_clientSettings.BaseUrl)
             {
@@ -137,12 +137,6 @@ namespace Rutracker.Server.WebApi.Controllers
             var token = await _userService.ChangePhoneNumberTokenAsync(userId, model.PhoneNumber);
 
             await _smsService.SendConfirmationPhoneAsync(model.PhoneNumber, token);
-        }
-
-        [AllowAnonymous, HttpPost("confirm/email")]
-        public async Task ConfirmEmail(ConfirmEmailViewModel model)
-        {
-            await _userService.ConfirmEmailAsync(model.UserId, model.Token);
         }
 
         [HttpPost("confirm/changeEmail")]

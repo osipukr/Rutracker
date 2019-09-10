@@ -5,15 +5,15 @@
 @page "/account/login"
 
 <MatCard>
-    <EditForm Model="@LoginModel" OnValidSubmit="@LoginAsync">
-        <div class="form-group">
-            <DataAnnotationsValidator />
+    @if (LoadAction == ActionTypes.Failed)
+    {
+        <Alert Type="@AlertTypes.Danger">
+            @Errors
+        </Alert>
+    }
 
-            @if (LoadAction == ActionTypes.Failed)
-            {
-                <Alert Type="@AlertTypes.Danger">@Errors</Alert>
-            }
-        </div>
+    <EditForm Model="@LoginModel" OnValidSubmit="@LoginAsync">
+        <DataAnnotationsValidator />
 
         <div class="form-group">
             <MatTextField @bind-Value="@LoginModel.UserName"
@@ -22,6 +22,8 @@
                           IconTrailing="true"
                           FullWidth="true"
                           Required="true" />
+
+            <ValidationMessage For="@(() => LoginModel.UserName)" />
         </div>
 
         <div class="form-group">
@@ -32,6 +34,8 @@
                           FullWidth="true"
                           Required="true"
                           type="password" />
+
+            <ValidationMessage For="@(() => LoginModel.Password)" />
         </div>
 
         <div class="form-group text-right">

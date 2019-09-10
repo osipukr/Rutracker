@@ -94,8 +94,6 @@ namespace Rutracker.Server.WebApi
 
                 config.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
 
-                config.User.RequireUniqueEmail = true;
-
                 config.Password.RequireNonAlphanumeric = false;
                 config.Password.RequireUppercase = false;
                 config.Password.RequireDigit = false;

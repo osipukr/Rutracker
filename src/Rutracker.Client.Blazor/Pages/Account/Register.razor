@@ -7,11 +7,15 @@
 <MatCard>
     @if (LoadAction == ActionTypes.Succeeded)
     {
-        <Alert Type="@AlertTypes.Success">To complete registration, check the email.</Alert>
+        <Alert Type="@AlertTypes.Success">
+            To complete registration, check the email.
+        </Alert>
     }
-    else if (LoadAction == ActionTypes.Failed)
+    else
     {
-        <Alert Type="@AlertTypes.Danger">@Errors</Alert>
+        <Alert Type="@AlertTypes.Danger">
+            @Errors
+        </Alert>
     }
 
     <EditForm Model="@RegisterModel" OnValidSubmit="@RegisterAsync">
@@ -24,6 +28,8 @@
                           IconTrailing="true"
                           FullWidth="true"
                           Required="true" />
+
+            <ValidationMessage For="@(() => RegisterModel.UserName)" />
         </div>
 
         <div class="form-group">
@@ -33,29 +39,11 @@
                           IconTrailing="true"
                           FullWidth="true"
                           Required="true" />
+
+            <ValidationMessage For="@(() => RegisterModel.Email)" />
         </div>
 
-        <div class="form-group">
-            <MatTextField @bind-Value="@RegisterModel.Password"
-                          Label="Password"
-                          Icon="@MatIconNames.Lock_open"
-                          IconTrailing="true"
-                          FullWidth="true"
-                          Required="true"
-                          type="password" />
-        </div>
-
-        <div class="form-group">
-            <MatTextField @bind-Value="@RegisterModel.ConfirmPassword"
-                          Label="Password Confirmation"
-                          Icon="@MatIconNames.Lock_open"
-                          IconTrailing="true"
-                          FullWidth="true"
-                          Required="true"
-                          type="password" />
-        </div>
-
-        <div class="d-flex flex-row-reverse my-3">
+        <div class="d-flex flex-row-reverse my-4">
             <MatButton Label="Create account" Raised="true" type="submit" />
         </div>
 

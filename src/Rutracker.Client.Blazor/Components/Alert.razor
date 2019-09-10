@@ -14,9 +14,9 @@
     [Parameter] public AlertTypes Type { get; set; }
     [Parameter] public string Class { get; set; }
     [Parameter] public string Style { get; set; }
+    [Parameter] public bool Show { get; set; } = true;
     [Parameter] public RenderFragment ChildContent { get; set; }
 
-    private bool Show { get; set; } = true;
     private string AlertCssClass { get; set; }
 
     protected override void OnInitialized() => AlertCssClass = Type switch

@@ -11,7 +11,6 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
             builder.Property(t => t.Id).ValueGeneratedOnAdd().IsRequired();
             builder.Property(t => t.Name).IsRequired();
             builder.Property(t => t.Size).IsRequired();
-            builder.Property(t => t.SubcategoryId).IsRequired();
 
             builder.HasOne(t => t.Subcategory)
                 .WithMany(s => s.Torrents)

@@ -63,11 +63,6 @@ namespace Rutracker.Client.Blazor.Services
             await _httpClientService.PutJsonAsync(_apiUrls.ChangePhone, model);
         }
 
-        public async Task ConfirmEmailAsync(ConfirmEmailViewModel model)
-        {
-            await _httpClientService.PostJsonAsync(_apiUrls.ConfirmEmail, model);
-        }
-
         public async Task ConfirmChangeEmailAsync(ConfirmChangeEmailViewModel model)
         {
             await _httpClientService.PostJsonAsync(_apiUrls.ConfirmChangeEmail, model);

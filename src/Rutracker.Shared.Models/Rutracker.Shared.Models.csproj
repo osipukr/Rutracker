@@ -33,6 +33,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ChangeUserViewModelResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\CompleteRegistrationViewModelResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CompleteRegistrationViewModelResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\FilterViewModelResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -66,6 +71,10 @@
     <EmbeddedResource Update="Resources\ChangeUserViewModelResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ChangeUserViewModelResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\CompleteRegistrationViewModelResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CompleteRegistrationViewModelResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\FilterViewModelResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

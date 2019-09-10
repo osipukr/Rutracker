@@ -16,7 +16,6 @@ namespace Rutracker.Client.Blazor.Interfaces
         Task<UserDetailsViewModel> ChangePasswordAsync(ChangePasswordViewModel model);
         Task ChangeEmailAsync(ChangeEmailViewModel model);
         Task ChangePhoneAsync(ChangePhoneNumberViewModel model);
-        Task ConfirmEmailAsync(ConfirmEmailViewModel model);
         Task ConfirmChangeEmailAsync(ConfirmChangeEmailViewModel model);
         Task<UserDetailsViewModel> ConfirmChangePhoneAsync(ConfirmChangePhoneNumberViewModel model);
     }

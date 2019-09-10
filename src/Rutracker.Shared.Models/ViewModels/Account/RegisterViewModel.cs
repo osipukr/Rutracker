@@ -15,19 +15,5 @@ namespace Rutracker.Shared.Models.ViewModels.Account
         [EmailAddress(ErrorMessageResourceName = nameof(RegisterViewModelResource.EmailErrorMessage),
             ErrorMessageResourceType = typeof(RegisterViewModelResource))]
         public string Email { get; set; }
-
-        [Required]
-        [DataType(DataType.Password)]
-        [StringLength(maximumLength: 100, MinimumLength = 6,
-            ErrorMessageResourceName = nameof(RegisterViewModelResource.PasswordErrorMessage),
-            ErrorMessageResourceType = typeof(RegisterViewModelResource))]
-        public string Password { get; set; }
-
-        [Required]
-        [DataType(DataType.Password)]
-        [Compare(nameof(Password),
-            ErrorMessageResourceName = nameof(RegisterViewModelResource.ConfirmPasswordErrorMessage),
-            ErrorMessageResourceType = typeof(RegisterViewModelResource))]
-        public string ConfirmPassword { get; set; }
     }
 }

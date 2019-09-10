@@ -9,7 +9,6 @@ using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Settings;
 using Rutracker.Shared.Models.ViewModels.Account;
-using Rutracker.Shared.Models.ViewModels.User.Confirm;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
@@ -53,20 +52,29 @@ namespace Rutracker.Server.WebApi.Controllers
         [HttpPost("register")]
         public async Task Register(RegisterViewModel model)
         {
-            var user = await _accountService.RegisterAsync(model.UserName, model.Email, model.Password);
+            var user = await _accountService.RegisterAsync(model.UserName, model.Email);
             var token = await _userService.EmailConfirmationTokenAsync(user.Id);
             var parameters = HttpUtility.ParseQueryString(string.Empty);
 
-            parameters.Add(nameof(ConfirmEmailViewModel.UserId), user.Id);
-            parameters.Add(nameof(ConfirmEmailViewModel.Token), token);
+            parameters.Add(nameof(CompleteRegistrationViewModel.UserId), user.Id);
+            parameters.Add(nameof(CompleteRegistrationViewModel.Token), token);
 
             var urlBuilder = new UriBuilder(_clientSettings.BaseUrl)
             {
-                Path = _clientSettings.EmailConfirmPath,
+                Path = _clientSettings.CompleteRegistrationPath,
                 Query = parameters.ToString()
             };
 
             await _emailService.SendConfirmationEmailAsync(user.Email, urlBuilder.Uri.ToString());
+        }
+
+        [HttpPost("completeRegistration")]
+        public async Task<string> CompleteRegistration(CompleteRegistrationViewModel model)
+        {
+            var user = await _accountService.CompleteRegistrationAsync(model.UserId, model.Token, model.FirstName, model.LastName, model.Password);
+            var roles = await _userService.RolesAsync(user.Id);
+
+            return await _jwtFactory.GenerateTokenAsync(user, roles);
         }
 
         [Authorize, HttpPost("logout")]

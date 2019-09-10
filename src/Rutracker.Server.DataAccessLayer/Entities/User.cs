@@ -10,6 +10,7 @@ namespace Rutracker.Server.DataAccessLayer.Entities
         public string LastName { get; set; }
         public string ImageUrl { get; set; }
         public DateTime RegisteredAt { get; set; }
+        public bool IsRegistrationFinished { get; set; }
 
         public virtual ICollection<Torrent> Torrents { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }

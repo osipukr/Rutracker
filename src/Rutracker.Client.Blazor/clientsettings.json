@@ -14,6 +14,7 @@
     "LikeComment": "api/comments/like/{0}",
     "Login": "api/accounts/login",
     "Register": "api/accounts/register",
+    "CompleteRegistration": "api/accounts/completeRegistration",
     "Logout": "api/accounts/logout",
     "Users": "api/users?page={0}&pageSize={1}",
     "UserProfile": "api/users/profile/{0}",
@@ -23,7 +24,6 @@
     "ChangePassword": "api/users/change/password",
     "ChangeEmail": "api/users/change/email",
     "ChangePhone": "api/users/change/phone",
-    "ConfirmEmail": "api/users/confirm/email",
     "ConfirmPhone": "api/users/confirm/phone",
     "ConfirmChangeEmail": "api/users/confirm/changeEmail"
   },

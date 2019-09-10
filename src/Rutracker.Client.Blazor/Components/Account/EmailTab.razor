@@ -2,10 +2,7 @@
     <LabelContent>Email</LabelContent>
     <ChildContent>
         <EditForm Model="@ChangeEmailModel" OnValidSubmit="@ChangeClicked">
-            <div class="form-group">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
-            </div>
+            <DataAnnotationsValidator />
 
             <div class="form-group">
                 <MatTextField @bind-Value="@ChangeEmailModel.Email"
@@ -13,6 +10,8 @@
                               Icon="@MatIconNames.Mail_outline"
                               IconTrailing="true"
                               FullWidth="true" />
+
+                <ValidationMessage For="@(() => ChangeEmailModel.Email)" />
             </div>
 
             <div class="d-flex flex-row-reverse mt-4">

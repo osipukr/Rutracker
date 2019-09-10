@@ -238,20 +238,5 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             return user;
         }
-
-        public async Task<User> ConfirmEmailAsync(string id, string token)
-        {
-            Guard.Against.NullOrWhiteSpace(token, message: "Invalid token.");
-
-            var user = await FindAsync(id);
-            var result = await _userManager.ConfirmEmailAsync(user, token);
-
-            if (!result.Succeeded)
-            {
-                throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
-            }
-
-            return user;
-        }
     }
 }
