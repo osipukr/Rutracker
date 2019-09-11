@@ -2,17 +2,29 @@
 {
     public class ApiUrlSettings
     {
-        // Torrent
+        // Category
         public string Categories { get; set; }
         public string Category { get; set; }
+
+        // Subcategory
         public string Subcategories { get; set; }
-        public string SubcategoriesList{ get; set; }
+        public string SubcategoriesSearch{ get; set; }
         public string Subcategory { get; set; }
+
+        // Torrent
         public string Torrents { get; set; }
-        public string PopularTorrents { get; set; }
+        public string TorrentsSearch { get; set; }
+        public string PopularTorrentsSearch { get; set; }
         public string Torrent { get; set; }
+
+        // File
+        public string Files { get; set; }
+        public string FilesSearch { get; set; }
+        public string File { get; set; }
+
+        // Comment
         public string Comments { get; set; }
-        public string CommentsPagination { get; set; }
+        public string CommentsSearch { get; set; }
         public string Comment { get; set; }
         public string LikeComment { get; set; }
 
@@ -23,7 +35,7 @@
         public string Logout { get; set; }
 
         // User
-        public string Users { get; set; }
+        public string UserSearch { get; set; }
         public string UserProfile { get; set; }
         public string User { get; set; }
         public string ChangeUserInfo { get; set; }

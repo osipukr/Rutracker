@@ -52,12 +52,12 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!await _categoryRepository.ExistAsync(subcategory.CategoryId))
             {
-                throw new RutrackerException($"The category with id '{subcategory.CategoryId}' not found.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"The category with id '{subcategory.CategoryId}' not found.", ExceptionEventTypes.NotValidParameters);
             }
 
             if (await _subcategoryRepository.ExistAsync(x => x.Name == subcategory.Name))
             {
-                throw new RutrackerException($"Subcategory with name '{subcategory.Name}' already exists.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"Subcategory with name '{subcategory.Name}' already exists.", ExceptionEventTypes.NotValidParameters);
             }
 
             await _subcategoryRepository.AddAsync(subcategory);
@@ -73,7 +73,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (await _subcategoryRepository.ExistAsync(x => x.Name == subcategory.Name))
             {
-                throw new RutrackerException($"Subcategory with name '{subcategory.Name}' already exists.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"Subcategory with name '{subcategory.Name}' already exists.", ExceptionEventTypes.NotValidParameters);
             }
 
             var result = await FindAsync(id);

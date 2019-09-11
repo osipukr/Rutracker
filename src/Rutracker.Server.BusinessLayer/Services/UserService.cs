@@ -79,7 +79,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!identityResult.Succeeded)
             {
-                throw new RutrackerException(identityResult.GetError(), ExceptionEventType.NotValidParameters);
+                throw new RutrackerException(identityResult.GetError(), ExceptionEventTypes.NotValidParameters);
             }
 
             return result;
@@ -92,7 +92,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (roles == null)
             {
-                throw new RutrackerException("The roles not found.", ExceptionEventType.NotFound);
+                throw new RutrackerException("The roles not found.", ExceptionEventTypes.NotFound);
             }
 
             return roles;
@@ -108,7 +108,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!result.Succeeded)
             {
-                throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
+                throw new RutrackerException(result.GetError(), ExceptionEventTypes.NotValidParameters);
             }
 
             return user;
@@ -121,12 +121,12 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (imageBytes.Length > _imageOptions.MaxBytesLength)
             {
-                throw new RutrackerException("File too large.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("File too large.", ExceptionEventTypes.NotValidParameters);
             }
 
             if (string.IsNullOrWhiteSpace(mimeType) || !_imageOptions.MimeTypes.Contains(mimeType.ToLower()))
             {
-                throw new RutrackerException("Invalid file type.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("Invalid file type.", ExceptionEventTypes.NotValidParameters);
             }
 
             await using var stream = new MemoryStream(imageBytes);
@@ -161,12 +161,12 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (await _userManager.FindByEmailAsync(email) != null)
             {
-                throw new RutrackerException("This email is already.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("This email is already.", ExceptionEventTypes.NotValidParameters);
             }
 
             if (!string.IsNullOrWhiteSpace(user.Email) && !user.EmailConfirmed)
             {
-                throw new RutrackerException("The email is not confirmed.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("The email is not confirmed.", ExceptionEventTypes.NotValidParameters);
             }
 
             var token = await _userManager.GenerateChangeEmailTokenAsync(user, email);
@@ -184,7 +184,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!string.IsNullOrWhiteSpace(user.PhoneNumber) && !user.PhoneNumberConfirmed)
             {
-                throw new RutrackerException("The phone number is not confirmed.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("The phone number is not confirmed.", ExceptionEventTypes.NotValidParameters);
             }
 
             var token = await _userManager.GenerateChangePhoneNumberTokenAsync(user, phone);
@@ -203,19 +203,19 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!await _userManager.CheckPasswordAsync(user, oldPassword))
             {
-                throw new RutrackerException("The old password is not correct.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("The old password is not correct.", ExceptionEventTypes.NotValidParameters);
             }
 
             if (oldPassword == newPassword)
             {
-                throw new RutrackerException("The new password must not match the old password.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("The new password must not match the old password.", ExceptionEventTypes.NotValidParameters);
             }
 
             var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
 
             if (!result.Succeeded)
             {
-                throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
+                throw new RutrackerException(result.GetError(), ExceptionEventTypes.NotValidParameters);
             }
 
             return user;
@@ -231,7 +231,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!result.Succeeded)
             {
-                throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
+                throw new RutrackerException(result.GetError(), ExceptionEventTypes.NotValidParameters);
             }
 
             return user;
@@ -247,7 +247,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!result.Succeeded)
             {
-                throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
+                throw new RutrackerException(result.GetError(), ExceptionEventTypes.NotValidParameters);
             }
 
             return user;

@@ -10,6 +10,7 @@
             public const string Torrents = "/torrents";
             public const string PopularTorrents = "/torrents/popular";
             public const string Torrent = "/torrents/{0}";
+            public const string TorrentCreate = "/torrents/create";
             public const string Users = "/users";
             public const string User = "/users/{0}";
             public const string Contributors = "/contributors";

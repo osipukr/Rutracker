@@ -22,8 +22,8 @@ namespace Rutracker.Server.WebApi.Controllers
             _fileService = fileService;
         }
 
-        [HttpGet, AllowAnonymous]
-        public async Task<IEnumerable<FileViewModel>> List(int torrentId)
+        [HttpGet("search"), AllowAnonymous]
+        public async Task<IEnumerable<FileViewModel>> Search(int torrentId)
         {
             var files = await _fileService.ListAsync(torrentId);
 

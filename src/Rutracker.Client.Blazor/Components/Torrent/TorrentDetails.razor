@@ -23,8 +23,8 @@
 
                 <MatListItem>
                     <MatListItemText>
-                        <MatListItemPrimaryText>Size (bytes)</MatListItemPrimaryText>
-                        <MatListItemSecondaryText>@Torrent.Size</MatListItemSecondaryText>
+                        <MatListItemPrimaryText>Description</MatListItemPrimaryText>
+                        <MatListItemSecondaryText>@Torrent.Description</MatListItemSecondaryText>
                     </MatListItemText>
                 </MatListItem>
 
@@ -37,8 +37,8 @@
 
                 <MatListItem>
                     <MatListItemText>
-                        <MatListItemPrimaryText>Hash</MatListItemPrimaryText>
-                        <MatListItemSecondaryText>@Torrent.Hash</MatListItemSecondaryText>
+                        <MatListItemPrimaryText>Content</MatListItemPrimaryText>
+                        <MatListItemSecondaryText>@Torrent.Content</MatListItemSecondaryText>
                     </MatListItemText>
                 </MatListItem>
             </MatList>
@@ -54,34 +54,19 @@
             </LabelContent>
 
             <ChildContent>
-                <MatTable Items="@Torrent.Files"
-                          DebounceMilliseconds="150"
-                          FilterByColumnName="@nameof(FileViewModel.Name)"
-                          SearchTermFieldLabel="Name"
-                          SearchTermFieldPlaceHolder="Input the name"
-                          class="mt-2 mat-elevation-z10">
+                <MatTable Items="@Torrent.Files" class="mt-2 mat-elevation-z10">
                     <MatTableHeader>
-                        <th>Size</th>
+                        <th>Id</th>
                         <th>Name</th>
+                        <th>Url</th>
                     </MatTableHeader>
                     <MatTableRow Context="file">
-                        <td>@file.Size</td>
+                        <td>@file.Id</td>
                         <td>@file.Name</td>
+                        <td>@file.Url</td>
                     </MatTableRow>
                 </MatTable>
             </ChildContent>
-        </MatTab>
-    }
-
-    @if (Torrent.Content != null)
-    {
-        <MatTab id="content">
-            <LabelContent>
-                <MatIcon Icon="@MatIconNames.Comment" />
-                <p class="m-0">Content</p>
-            </LabelContent>
-
-            <ChildContent>@((MarkupString)Torrent.Content)</ChildContent>
         </MatTab>
     }
 </MatTabGroup>

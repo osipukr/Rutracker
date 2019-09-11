@@ -55,7 +55,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _subcategoryService.ListAsync(-10));
 
-            Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
         }
 
         [Fact(DisplayName = "FindAsync() with an invalid parameters should throw RutrackerException.")]
@@ -65,7 +65,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _subcategoryService.FindAsync(-10));
 
-            Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
         }
 
         [Fact(DisplayName = "FindAsync() with an invalid parameters should throw RutrackerException.")]
@@ -75,7 +75,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _subcategoryService.FindAsync(1000));
 
-            Assert.Equal(ExceptionEventType.NotFound, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.NotFound, exception.ExceptionEventType);
         }
     }
 }

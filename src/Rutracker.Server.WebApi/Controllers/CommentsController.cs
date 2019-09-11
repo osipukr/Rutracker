@@ -23,8 +23,8 @@ namespace Rutracker.Server.WebApi.Controllers
             _commentService = commentService;
         }
 
-        [HttpGet, AllowAnonymous]
-        public async Task<PaginationResult<CommentViewModel>> List(int page, int pageSize, int torrentId)
+        [HttpGet("search"), AllowAnonymous]
+        public async Task<PaginationResult<CommentViewModel>> Search(int page, int pageSize, int torrentId)
         {
             var (comments, count) = await _commentService.ListAsync(page, pageSize, torrentId);
 

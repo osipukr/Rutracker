@@ -154,9 +154,10 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
         private static IEnumerable<Torrent> GetPreconfiguredTorrents() =>
             Enumerable.Range(1, TorrentMaxCount).Select(id => new Torrent
             {
-                CreatedAt = DateTime.Now,
                 Name = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
+                Content = Guid.NewGuid().ToString(),
+                CreatedAt = DateTime.Now,
                 SubcategoryId = Random.Next(1, SubcategoryMaxCount),
                 UserId = Admin.Id
             });
@@ -165,6 +166,7 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
             Enumerable.Range(1, FileMaxCount).Select(id => new File
             {
                 Name = Guid.NewGuid().ToString(),
+                Url = Guid.NewGuid().ToString(),
                 TorrentId = Random.Next(1, TorrentMaxCount)
             });
 
@@ -173,8 +175,6 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
             {
                 Text = Guid.NewGuid().ToString(),
                 CreatedAt = DateTime.Now,
-                IsModified = false,
-                LastModifiedAt = null,
                 TorrentId = Random.Next(1, TorrentMaxCount),
                 UserId = Admin.Id
             });

@@ -70,7 +70,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!await _torrentRepository.ExistAsync(comment.TorrentId))
             {
-                throw new RutrackerException($"The torrent with id '{comment.TorrentId}' not found.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"The torrent with id '{comment.TorrentId}' not found.", ExceptionEventTypes.NotValidParameters);
             }
 
             comment.CreatedAt = DateTime.UtcNow;
@@ -89,8 +89,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             var result = await FindAsync(id, userId);
 
             result.Text = comment.Text;
-            result.IsModified = true;
-            result.LastModifiedAt = DateTime.UtcNow;
+            result.LastUpdatedAt = DateTime.UtcNow;
 
             _commentRepository.Update(result);
 
@@ -119,7 +118,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (comment == null)
             {
-                throw new RutrackerException($"The comment with id '{id}' not found.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"The comment with id '{id}' not found.", ExceptionEventTypes.NotValidParameters);
             }
 
             var like = await _likeRepository.GetAsync(x => x.CommentId == id && x.UserId == userId);

@@ -101,7 +101,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!await _subcategoryRepository.ExistAsync(torrent.SubcategoryId))
             {
-                throw new RutrackerException($"The subcategory with id {torrent.SubcategoryId} not found.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"The subcategory with id {torrent.SubcategoryId} not found.", ExceptionEventTypes.NotValidParameters);
             }
 
             torrent.CreatedAt = DateTime.UtcNow;
@@ -122,6 +122,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             result.Name = torrent.Name;
             result.Description = torrent.Description;
+            result.LastUpdatedAt = DateTime.UtcNow;
 
             _torrentRepository.Update(result);
 

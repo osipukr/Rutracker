@@ -7,8 +7,8 @@
         </div>
 
         <div class="p-2 mt-3">
-            <MatBody2 class="m-0">@($"Create at: {Model.CreatedAt.ToShortDateString()}")</MatBody2>
-            <MatBody2 class="m-0">@($"Size: {PageHelpers.ConvertBytesToMegabytes(Model.Size):F3} Mb")</MatBody2>
+            <MatBody2 class="m-0">@Model.CreatedAt.ToShortDateString()</MatBody2>
+            <MatBody2 class="m-0">@Model.Description</MatBody2>
         </div>
     </MatCardContent>
 
@@ -19,7 +19,7 @@
 
         <MatCardActionIcons>
             <div class="m-0 p-0 d-flex justify-content-center align-items-center">
-                @Model.CommentsCount
+                <span>@Model.CommentsCount</span>
 
                 <MatIcon Icon="@MatIconNames.Comment" class="ml-1" />
             </div>

@@ -8,8 +8,7 @@ namespace Rutracker.Server.DataAccessLayer.Entities
     {
         public string Text { get; set; }
         public DateTime CreatedAt { get; set; }
-        public bool IsModified { get; set; }
-        public DateTime? LastModifiedAt { get; set; }
+        public DateTime? LastUpdatedAt { get; set; }
         public int TorrentId { get; set; }
         public string UserId { get; set; }
 

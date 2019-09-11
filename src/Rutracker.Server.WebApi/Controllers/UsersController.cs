@@ -44,8 +44,8 @@ namespace Rutracker.Server.WebApi.Controllers
             _clientSettings = clientOptions.Value;
         }
 
-        [HttpGet, Authorize(Policy = Policies.IsAdmin)]
-        public async Task<PaginationResult<UserViewModel>> List(int page, int pageSize)
+        [HttpGet("search"), Authorize(Policy = Policies.IsAdmin)]
+        public async Task<PaginationResult<UserViewModel>> Search(int page, int pageSize)
         {
             var (users, count) = await _userService.ListAsync(page, pageSize);
 

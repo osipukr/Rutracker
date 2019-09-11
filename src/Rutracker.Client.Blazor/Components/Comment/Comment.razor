@@ -78,14 +78,11 @@
                             }
                         </div>
 
-                        @if (Model.IsModified)
+                        @if (Model.LastUpdatedAt.HasValue)
                         {
                             <div class="d-flex align-items-center">
-                                @if (Model.LastModifiedAt.HasValue)
-                                {
-                                    <span title="Recent change">@Model.LastModifiedAt.Value.ToString(CultureInfo.InvariantCulture)</span>
-                                    <MatIcon Icon="@MatIconNames.Timelapse" class="ml-1" />
-                                }
+                                <span title="Recent change">@Model.LastUpdatedAt.Value.ToString(CultureInfo.InvariantCulture)</span>
+                                <MatIcon Icon="@MatIconNames.Timelapse" class="ml-1" />
                             </div>
                         }
                     </div>

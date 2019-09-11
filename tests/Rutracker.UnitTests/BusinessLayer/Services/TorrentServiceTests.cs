@@ -81,7 +81,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _torrentService.ListAsync(-10, -10, null, null, null));
 
-            Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
         }
 
         [Fact(DisplayName = "FindAsync() with an invalid parameters should throw RutrackerException.")]
@@ -91,7 +91,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _torrentService.FindAsync(-10));
 
-            Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
         }
 
         [Fact(DisplayName = "FindAsync() with an invalid parameters should throw RutrackerException.")]
@@ -101,7 +101,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _torrentService.FindAsync(1000));
 
-            Assert.Equal(ExceptionEventType.NotFound, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.NotFound, exception.ExceptionEventType);
         }
 
         [Fact(DisplayName = "PopularTorrentsAsync() with an invalid parameters should throw RutrackerException.")]
@@ -111,7 +111,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _torrentService.PopularAsync(-10));
 
-            Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
         }
     }
 }

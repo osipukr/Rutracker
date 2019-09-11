@@ -35,7 +35,7 @@ namespace Rutracker.Server.WebApi.Controllers
         /// <param name="pageSize">Number of items per page.</param>
         /// <param name="filter">Information to filter elements.</param>
         [HttpPost("search"), AllowAnonymous]
-        public async Task<PaginationResult<TorrentViewModel>> Pagination(int page, int pageSize, TorrentFilterViewModel filter)
+        public async Task<PaginationResult<TorrentViewModel>> Search(int page, int pageSize, TorrentFilterViewModel filter)
         {
             var (torrents, count) = await _torrentService.ListAsync(page, pageSize,
                 filter.CategoryId,
@@ -51,7 +51,7 @@ namespace Rutracker.Server.WebApi.Controllers
             };
         }
 
-        [HttpGet("popular/{count}"), AllowAnonymous]
+        [HttpGet("popular"), AllowAnonymous]
         public async Task<IEnumerable<TorrentViewModel>> Popular(int count)
         {
             var torrents = await _torrentService.PopularAsync(count);

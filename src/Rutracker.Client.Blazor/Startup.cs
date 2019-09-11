@@ -40,6 +40,7 @@ namespace Rutracker.Client.Blazor
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISubcategoryService, SubcategoryService>();
             services.AddScoped<ITorrentService, TorrentService>();
+            services.AddScoped<IFileService, FileService>();
             services.AddScoped<ICommentService, CommentService>();
 
             services.AddMatToaster(x =>

@@ -15,6 +15,7 @@
     <h2>@CategoryModel.Name</h2>
 
     <SubcategoryList Items="@Subcategories"
+                     TotalItems="@Subcategories.Count"
                      OnCreate="@CreateSubcategoryAsync"
                      OnUpdate="@UpdateSubcategoryAsync"
                      OnDelete="@DeleteSubcategoryAsync" />

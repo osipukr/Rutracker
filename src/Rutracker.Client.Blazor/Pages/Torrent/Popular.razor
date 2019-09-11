@@ -13,5 +13,5 @@
 
     protected override async Task OnInitializedAsync() => await LoadAsync(TorrentsAsync);
 
-    private async Task TorrentsAsync() => Torrents = await TorrentService.PopularTorrentsAsync(Count);
+    private async Task TorrentsAsync() => Torrents = await TorrentService.PopularAsync(Count);
 }

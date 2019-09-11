@@ -20,14 +20,14 @@ namespace Rutracker.Client.Blazor.Services
 
         public async Task<PaginationResult<TorrentViewModel>> ListAsync(int page, int pageSize, TorrentFilterViewModel filter)
         {
-            var url = string.Format(_apiUrls.Torrents, page.ToString(), pageSize.ToString());
+            var url = string.Format(_apiUrls.TorrentsSearch, page.ToString(), pageSize.ToString());
 
             return await _httpClientService.PostJsonAsync<PaginationResult<TorrentViewModel>>(url, filter);
         }
 
-        public async Task<IEnumerable<TorrentViewModel>> PopularTorrentsAsync(int count)
+        public async Task<IEnumerable<TorrentViewModel>> PopularAsync(int count)
         {
-            var url = string.Format(_apiUrls.PopularTorrents, count.ToString());
+            var url = string.Format(_apiUrls.PopularTorrentsSearch, count.ToString());
 
             return await _httpClientService.GetJsonAsync<IEnumerable<TorrentViewModel>>(url);
         }
@@ -37,6 +37,25 @@ namespace Rutracker.Client.Blazor.Services
             var url = string.Format(_apiUrls.Torrent, id.ToString());
 
             return await _httpClientService.GetJsonAsync<TorrentDetailsViewModel>(url);
+        }
+
+        public async Task<TorrentDetailsViewModel> CreateAsync(TorrentCreateViewModel model)
+        {
+            return await _httpClientService.PostJsonAsync<TorrentDetailsViewModel>(_apiUrls.Torrents, model);
+        }
+
+        public async Task<TorrentDetailsViewModel> Update(int id, TorrentUpdateViewModel model)
+        {
+            var url = string.Format(_apiUrls.Torrent, id.ToString());
+
+            return await _httpClientService.PutJsonAsync<TorrentDetailsViewModel>(url, model);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var url = string.Format(_apiUrls.Torrent, id.ToString());
+
+            await _httpClientService.DeleteJsonAsync(url);
         }
     }
 }

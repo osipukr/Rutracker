@@ -22,6 +22,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             var blockBlob = await GetBlockBlobAsync(containerName, fileName, createIfNotExists: true);
 
             await blockBlob.UploadFromStreamAsync(stream);
+            await stream.DisposeAsync();
 
             return blockBlob.Uri.AbsoluteUri;
         }
