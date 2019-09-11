@@ -26,7 +26,7 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
 
             // Act
             var torrents = await _client.PostJsonAsync<PaginationResult<TorrentViewModel>>(
-                $"api/torrents/pagination/?page={page}&pageSize={pageSize}", new FilterViewModel());
+                $"api/torrents/pagination/?page={page}&pageSize={pageSize}", new TorrentFilterViewModel());
 
             // Assert
             Assert.NotNull(torrents);

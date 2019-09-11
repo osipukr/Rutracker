@@ -12,20 +12,26 @@ else
 
     <MatTable Items="@Items" AllowSelection="true" class="mat-elevation-z5">
         <MatTableHeader>
-            <th class="p-2 text-center">
-                <MatIconButton OnClick="@CreateModalOpened" Icon="@MatIconNames.Add" title="Add new subcategory" />
-            </th>
+            <AuthorizeView Policy="@Policies.IsAdmin">
+                <th class="p-2 text-center">
+                    <MatIconButton OnClick="@CreateModalOpened" Icon="@MatIconNames.Add" title="Add new subcategory" />
+                </th>
+            </AuthorizeView>
+
             <th>Id</th>
             <th>Torrent Count</th>
             <th>Name</th>
         </MatTableHeader>
         <MatTableRow Context="subcategory">
-            <td>
-                <div style="width:100px;">
-                    <MatIconButton OnClick="@(_ => UpdateModelOpened(subcategory))" Icon="@MatIconNames.Edit" />
-                    <MatIconButton OnClick="@(_ => DeleteModalOpened(subcategory))" Icon="@MatIconNames.Delete" />
-                </div>
-            </td>
+            <AuthorizeView Policy="@Policies.IsAdmin">
+                <td>
+                    <div style="width:100px;">
+                        <MatIconButton OnClick="@(_ => UpdateModelOpened(subcategory))" Icon="@MatIconNames.Edit" />
+                        <MatIconButton OnClick="@(_ => DeleteModalOpened(subcategory))" Icon="@MatIconNames.Delete" />
+                    </div>
+                </td>
+            </AuthorizeView>
+
             <td>@subcategory.Id</td>
             <td>@subcategory.TorrentsCount</td>
             <td>@subcategory.Name</td>

@@ -80,9 +80,9 @@
 
 @code
 {
-    [Parameter] public EventCallback<FilterViewModel> OnChange { get; set; }
+    [Parameter] public EventCallback<TorrentFilterViewModel> OnChange { get; set; }
 
-    private FilterViewModel FilterModel { get; set; } = new FilterViewModel();
+    private TorrentFilterViewModel FilterModel { get; set; } = new TorrentFilterViewModel();
     private IEnumerable<CategoryViewModel> Categories { get; set; }
     private IEnumerable<SubcategoryViewModel> Subcategories { get; set; }
 

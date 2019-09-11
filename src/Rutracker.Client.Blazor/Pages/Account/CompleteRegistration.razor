@@ -6,68 +6,68 @@
 
 @using Microsoft.AspNetCore.WebUtilities
 
-<MatCard>
-    @if (LoadAction == ActionTypes.Failed)
-    {
-        <Alert Type="@AlertTypes.Danger">
-            @Errors
-        </Alert>
-    }
+@if (LoadAction == ActionTypes.Failed)
+{
+    <Alert Type="@AlertTypes.Danger">
+        @Errors
+    </Alert>
+}
 
-    <EditForm Model="@Model" OnValidSubmit="@CompleteRegistrationClicked">
-        <DataAnnotationsValidator />
+<EditForm Model="@Model" OnValidSubmit="@CompleteRegistrationClicked">
+    <DataAnnotationsValidator />
 
-        <div class="form-group">
-            <MatTextField @bind-Value="@Model.FirstName"
-                          Label="First Name"
-                          Icon="@MatIconNames.Create"
-                          IconTrailing="true"
-                          FullWidth="true" />
+    <div class="form-group">
+        <MatTextField @bind-Value="@Model.FirstName"
+                      Label="First Name"
+                      Icon="@MatIconNames.Create"
+                      IconTrailing="true"
+                      FullWidth="true" />
 
-            <ValidationMessage For="@(() => Model.FirstName)" />
-        </div>
+        <ValidationMessage For="@(() => Model.FirstName)" />
+    </div>
 
-        <div class="form-group">
-            <MatTextField @bind-Value="@Model.LastName"
-                          Label="Last Name"
-                          Icon="@MatIconNames.Create"
-                          IconTrailing="true"
-                          FullWidth="true" />
+    <div class="form-group">
+        <MatTextField @bind-Value="@Model.LastName"
+                      Label="Last Name"
+                      Icon="@MatIconNames.Create"
+                      IconTrailing="true"
+                      FullWidth="true" />
 
-            <ValidationMessage For="@(() => Model.LastName)" />
-        </div>
+        <ValidationMessage For="@(() => Model.LastName)" />
+    </div>
 
-        <div class="form-group">
-            <MatTextField @bind-Value="@Model.Password"
-                          Label="Password"
-                          Icon="@MatIconNames.Lock_open"
-                          IconTrailing="true"
-                          FullWidth="true"
-                          Required="true"
-                          type="password" />
+    <div class="form-group">
+        <MatTextField @bind-Value="@Model.Password"
+                      Label="Password"
+                      Icon="@MatIconNames.Lock_open"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true"
+                      type="password" />
 
-            <ValidationMessage For="@(() => Model.Password)" />
-        </div>
+        <ValidationMessage For="@(() => Model.Password)" />
+    </div>
 
-        <div class="form-group">
-            <MatTextField @bind-Value="@Model.ConfirmPassword"
-                          Label="Password Confirmation"
-                          Icon="@MatIconNames.Lock_open"
-                          IconTrailing="true"
-                          FullWidth="true"
-                          Required="true"
-                          type="password" />
+    <div class="form-group">
+        <MatTextField @bind-Value="@Model.ConfirmPassword"
+                      Label="Password Confirmation"
+                      Icon="@MatIconNames.Lock_open"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true"
+                      type="password" />
 
-            <ValidationMessage For="@(() => Model.ConfirmPassword)" />
-        </div>
+        <ValidationMessage For="@(() => Model.ConfirmPassword)" />
+    </div>
 
-        <div class="d-flex flex-row-reverse my-3">
-            <MatButton Label="Register" Raised="true" type="submit" />
-        </div>
+    <div class="d-flex flex-row-reverse my-3">
+        <MatButton Label="Register" Raised="true" type="submit" />
+    </div>
 
-        <MatButton Link="@Constants.Path.Login" Label="Login" Outlined="true" />
-    </EditForm>
-</MatCard>
+    <hr />
+
+    <MatButton Link="@Constants.Path.Login" Label="Login" Outlined="true" />
+</EditForm>
 
 @code
 {

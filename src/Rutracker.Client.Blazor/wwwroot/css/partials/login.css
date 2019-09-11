@@ -19,6 +19,7 @@
     }
 
 .login-body {
+    min-width: 400px;
     position: relative;
     flex-direction: column;
     margin: 0 auto;

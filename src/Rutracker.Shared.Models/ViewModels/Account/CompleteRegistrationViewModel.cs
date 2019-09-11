@@ -1,31 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Rutracker.Shared.Models.Resources;
 
 namespace Rutracker.Shared.Models.ViewModels.Account
 {
     public class CompleteRegistrationViewModel
     {
-        [Required]
-        public string UserId { get; set; }
+        [Required] public string UserId { get; set; }
+        [Required] public string Token { get; set; }
 
-        [Required]
-        public string Token { get; set; }
-
+        [MaxLength(100)]
         public string FirstName { get; set; }
+
+        [MaxLength(100)]
         public string LastName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        [StringLength(maximumLength: 100, MinimumLength = 6,
-            ErrorMessageResourceName = nameof(CompleteRegistrationViewModelResource.PasswordErrorMessage),
-            ErrorMessageResourceType = typeof(CompleteRegistrationViewModelResource))]
+        [StringLength(maximumLength: 100, MinimumLength = 6)]
         public string Password { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        [Compare(nameof(Password),
-            ErrorMessageResourceName = nameof(CompleteRegistrationViewModelResource.ConfirmPasswordErrorMessage),
-            ErrorMessageResourceType = typeof(CompleteRegistrationViewModelResource))]
+        [Compare(nameof(Password))]
         public string ConfirmPassword { get; set; }
     }
 }

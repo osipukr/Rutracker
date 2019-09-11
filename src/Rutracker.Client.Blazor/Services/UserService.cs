@@ -3,8 +3,6 @@ using Rutracker.Client.Blazor.Interfaces;
 using Rutracker.Client.Blazor.Settings;
 using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.User;
-using Rutracker.Shared.Models.ViewModels.User.Change;
-using Rutracker.Shared.Models.ViewModels.User.Confirm;
 
 namespace Rutracker.Client.Blazor.Services
 {

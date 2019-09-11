@@ -4,7 +4,12 @@ namespace Rutracker.Shared.Models.ViewModels.Comment
 {
     public class CommentCreateViewModel
     {
-        [Required] public string Text { get; set; }
-        [Required] public int TorrentId { get; set; }
+        [Required]
+        [MaxLength(300)]
+        public string Text { get; set; }
+
+        [Required]
+        [Range(1, int.MaxValue)]
+        public int TorrentId { get; set; }
     }
 }
