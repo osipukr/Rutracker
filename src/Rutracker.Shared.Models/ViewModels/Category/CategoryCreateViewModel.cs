@@ -4,6 +4,8 @@ namespace Rutracker.Shared.Models.ViewModels.Category
 {
     public class CategoryCreateViewModel
     {
-        [Required] public string Name { get; set; }
+        [Required]
+        [MaxLength(100)]
+        public string Name { get; set; }
     }
 }

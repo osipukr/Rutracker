@@ -6,71 +6,90 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Rutracker.Server.DataAccessLayer.Entities;
+using Rutracker.Server.DataAccessLayer.Interfaces;
 using Rutracker.Shared.Infrastructure.Entities;
 
 namespace Rutracker.Server.DataAccessLayer.Contexts
 {
-    public class RutrackerContextSeed
+    public class RutrackerContextSeed : IContextSeed
     {
-        public static async Task SeedAsync(
+        private readonly RutrackerContext _context;
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
+        private readonly ILogger<RutrackerContextSeed> _logger;
+
+        public RutrackerContextSeed(
             RutrackerContext context,
             UserManager<User> userManager,
             RoleManager<Role> roleManager,
-            ILoggerFactory loggerFactory)
+            ILogger<RutrackerContextSeed> logger)
+        {
+            _context = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _logger = logger;
+        }
+
+        public async Task SeedAsync()
         {
             try
             {
-                if (!await context.Roles.AnyAsync())
+                if (!await _context.Database.EnsureCreatedAsync())
                 {
-                    await SeedRolesAsync(roleManager);
-                    await context.SaveChangesAsync();
+                    return;
                 }
 
-                if (!await context.Users.AnyAsync())
+                if (!await _context.Roles.AnyAsync())
                 {
-                    await SeedUsersAsync(userManager);
-                    await context.SaveChangesAsync();
+                    await SeedRolesAsync(_roleManager);
+                    await _context.SaveChangesAsync();
                 }
 
-                if (!await context.Categories.AnyAsync())
+                if (!await _context.Users.AnyAsync())
                 {
-                    await context.Categories.AddRangeAsync(GetPreconfiguredCategories());
-                    await context.SaveChangesAsync();
+                    await SeedUsersAsync(_userManager);
+                    await _context.SaveChangesAsync();
                 }
 
-                if (!await context.Subcategories.AnyAsync())
+                if (!await _context.Categories.AnyAsync())
                 {
-                    await context.Subcategories.AddRangeAsync(GetPreconfiguredSubcategories());
-                    await context.SaveChangesAsync();
+                    await _context.Categories.AddRangeAsync(GetPreconfiguredCategories());
+                    await _context.SaveChangesAsync();
                 }
 
-                if (!await context.Torrents.AnyAsync())
+                if (!await _context.Subcategories.AnyAsync())
                 {
-                    await context.Torrents.AddRangeAsync(GetPreconfiguredTorrents());
-                    await context.SaveChangesAsync();
+                    await _context.Subcategories.AddRangeAsync(GetPreconfiguredSubcategories());
+                    await _context.SaveChangesAsync();
                 }
 
-                if (!await context.Files.AnyAsync())
+                if (!await _context.Torrents.AnyAsync())
                 {
-                    await context.Files.AddRangeAsync(GetPreconfiguredFiles());
-                    await context.SaveChangesAsync();
+                    await _context.Torrents.AddRangeAsync(GetPreconfiguredTorrents());
+                    await _context.SaveChangesAsync();
                 }
 
-                if (!await context.Comments.AnyAsync())
+                if (!await _context.Files.AnyAsync())
                 {
-                    await context.Comments.AddRangeAsync(GetPreconfiguredComments());
-                    await context.SaveChangesAsync();
+                    await _context.Files.AddRangeAsync(GetPreconfiguredFiles());
+                    await _context.SaveChangesAsync();
                 }
 
-                if (!await context.Likes.AnyAsync())
+                if (!await _context.Comments.AnyAsync())
                 {
-                    await context.Likes.AddRangeAsync(GetPreconfiguredLikes());
-                    await context.SaveChangesAsync();
+                    await _context.Comments.AddRangeAsync(GetPreconfiguredComments());
+                    await _context.SaveChangesAsync();
+                }
+
+                if (!await _context.Likes.AnyAsync())
+                {
+                    await _context.Likes.AddRangeAsync(GetPreconfiguredLikes());
+                    await _context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
             {
-                loggerFactory.CreateLogger<RutrackerContextSeed>().LogError(ex.Message);
+                _logger.LogError(ex.Message);
             }
         }
 
@@ -80,10 +99,15 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
         {
             UserName = "admin",
             Email = "fredstone624@gmail.com",
+            PhoneNumber = "+375336246410",
             FirstName = "Roman",
             LastName = "Osipuk",
             EmailConfirmed = true,
-            ImageUrl = "https://avatars1.githubusercontent.com/u/40744739?s=300&v=4"
+            PhoneNumberConfirmed = true,
+            TwoFactorEnabled = true,
+            ImageUrl = "https://avatars1.githubusercontent.com/u/40744739?s=300&v=4",
+            RegisteredAt = DateTime.UtcNow,
+            IsRegistrationFinished = true
         };
 
         private static readonly IEnumerable<Role> Roles = new[]

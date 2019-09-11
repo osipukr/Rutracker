@@ -1,23 +1,34 @@
 ﻿@inject IModalService ModalService
 
-<h2 class="my-3">Categories list</h2>
+<hr />
+<div class="d-flex justify-content-end align-items-center pr-4">
+    <span class="pr-2">@TotalItems</span>
+    <h3 class="m-0">Total categories</h3>
+</div>
+<hr />
 
 <MatTable Items="@Items" AllowSelection="true" class="mat-elevation-z5">
     <MatTableHeader>
-        <th class="p-2 text-center">
-            <MatIconButton OnClick="@CreateModalOpened" Icon="@MatIconNames.Add" title="Add new category" />
-        </th>
+        <AuthorizeView Policy="@Policies.IsAdmin">
+            <th class="p-2 text-center">
+                <MatIconButton OnClick="@CreateModalOpened" Icon="@MatIconNames.Add" title="Add new category" />
+            </th>
+        </AuthorizeView>
+
         <th title="Category id">Id</th>
         <th title="Subcategory count">Count</th>
         <th title="Category name">Name</th>
     </MatTableHeader>
     <MatTableRow Context="category">
-        <td>
-            <div style="width:100px;">
-                <MatIconButton OnClick="@(_ => UpdateModalOpened(category))" Icon="@MatIconNames.Edit" />
-                <MatIconButton OnClick="@(_ => DeleteModalOpened(category))" Icon="@MatIconNames.Delete" />
-            </div>
-        </td>
+        <AuthorizeView Policy="@Policies.IsAdmin">
+            <td>
+                <div style="width:100px;">
+                    <MatIconButton OnClick="@(_ => UpdateModalOpened(category))" Icon="@MatIconNames.Edit" />
+                    <MatIconButton OnClick="@(_ => DeleteModalOpened(category))" Icon="@MatIconNames.Delete" />
+                </div>
+            </td>
+        </AuthorizeView>
+
         <td>@category.Id</td>
         <td>@category.SubcategoriesCount</td>
         <td>
@@ -29,6 +40,7 @@
 @code
 {
     [Parameter] public IEnumerable<CategoryViewModel> Items { get; set; }
+    [Parameter] public int TotalItems { get; set; }
     [Parameter] public EventCallback<CategoryCreateViewModel> OnCreate { get; set; }
     [Parameter] public Func<CategoryViewModel, CategoryUpdateViewModel, Task> OnUpdate { get; set; }
     [Parameter] public EventCallback<CategoryViewModel> OnDelete { get; set; }

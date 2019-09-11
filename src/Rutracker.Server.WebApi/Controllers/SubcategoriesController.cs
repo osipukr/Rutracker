@@ -1,14 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Controllers.Base;
+using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.Subcategory;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
+    [Authorize(Policy = Policies.IsAdmin)]
     public class SubcategoriesController : BaseApiController
     {
         private readonly ISubcategoryService _subcategoryService;
@@ -18,7 +21,7 @@ namespace Rutracker.Server.WebApi.Controllers
             _subcategoryService = subcategoryService;
         }
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public async Task<IEnumerable<SubcategoryViewModel>> List(int categoryId)
         {
             var subcategories = await _subcategoryService.ListAsync(categoryId);
@@ -26,7 +29,7 @@ namespace Rutracker.Server.WebApi.Controllers
             return _mapper.Map<IEnumerable<SubcategoryViewModel>>(subcategories);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), AllowAnonymous]
         public async Task<SubcategoryViewModel> Find(int id)
         {
             var subcategory = await _subcategoryService.FindAsync(id);

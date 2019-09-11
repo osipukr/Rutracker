@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
+using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
@@ -41,9 +42,9 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Category> AddAsync(Category category)
         {
-            ThrowIfInvalidCategoryModel(category);
+            await ThrowIfInvalidCategory(category);
 
-            category = await _categoryRepository.AddAsync(category);
+            await _categoryRepository.AddAsync(category);
             await _unitOfWork.CompleteAsync();
 
             return category;
@@ -51,13 +52,13 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Category> UpdateAsync(int id, Category category)
         {
-            ThrowIfInvalidCategoryModel(category);
+            await ThrowIfInvalidCategory(category);
 
             var result = await FindAsync(id);
 
             result.Name = category.Name;
 
-            result = _categoryRepository.Update(result);
+            _categoryRepository.Update(result);
             await _unitOfWork.CompleteAsync();
 
             return result;
@@ -67,16 +68,21 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var category = await FindAsync(id);
 
-            category = _categoryRepository.Remove(category);
+            _categoryRepository.Remove(category);
             await _unitOfWork.CompleteAsync();
 
             return category;
         }
 
-        private static void ThrowIfInvalidCategoryModel(Category category)
+        private async Task ThrowIfInvalidCategory(Category category)
         {
             Guard.Against.NullNotValid(category, "Invalid category model.");
             Guard.Against.NullOrWhiteSpace(category.Name, message: "The category must contain a name.");
+
+            if (await _categoryRepository.ExistAsync(x => x.Name == category.Name))
+            {
+                throw new RutrackerException($"Category with name '{category.Name}' already exists.", ExceptionEventType.NotValidParameters);
+            }
         }
     }
 }

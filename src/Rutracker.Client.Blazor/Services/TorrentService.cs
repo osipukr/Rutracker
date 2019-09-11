@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Rutracker.Client.Blazor.Interfaces;
 using Rutracker.Client.Blazor.Settings;
-using Rutracker.Shared.Models.ViewModels;
+using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.Torrent;
 
 namespace Rutracker.Client.Blazor.Services
@@ -18,7 +18,7 @@ namespace Rutracker.Client.Blazor.Services
             _apiUrls = apiUrls;
         }
 
-        public async Task<PaginationResult<TorrentViewModel>> ListAsync(int page, int pageSize, FilterViewModel filter)
+        public async Task<PaginationResult<TorrentViewModel>> ListAsync(int page, int pageSize, TorrentFilterViewModel filter)
         {
             var url = string.Format(_apiUrls.Torrents, page.ToString(), pageSize.ToString());
 

@@ -4,7 +4,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -13,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Rutracker.Server.BusinessLayer.Interfaces;
@@ -27,6 +25,7 @@ using Rutracker.Server.WebApi.Filters;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Services;
 using Rutracker.Server.WebApi.Settings;
+using Rutracker.Shared.Models;
 
 namespace Rutracker.Server.WebApi
 {
@@ -44,10 +43,10 @@ namespace Rutracker.Server.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<RutrackerContext>(options => options
+                .UseLazyLoadingProxies()
                 .UseSqlServer(
                     _configuration.GetConnectionString("RutrackerConnection"),
-                    sqlServerOptions => sqlServerOptions.EnableRetryOnFailure())
-                .UseLazyLoadingProxies());
+                    sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
 
             services.AddMemoryCache();
 
@@ -95,11 +94,10 @@ namespace Rutracker.Server.WebApi
 
                 config.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
 
-                config.User.RequireUniqueEmail = true;
-
                 config.Password.RequireNonAlphanumeric = false;
                 config.Password.RequireUppercase = false;
                 config.Password.RequireDigit = false;
+                config.Password.RequiredLength = 6;
             })
             .AddRoles<Role>()
             .AddEntityFrameworkStores<RutrackerContext>()
@@ -111,12 +109,7 @@ namespace Rutracker.Server.WebApi
                 options.SlidingExpiration = true;
             });
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
+            services.AddAuthentication().AddJwtBearer(options =>
             {
                 var jwtSettings = _configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
 
@@ -138,6 +131,12 @@ namespace Rutracker.Server.WebApi
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
                 };
+            });
+
+            services.AddAuthorization(config =>
+            {
+                config.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
+                config.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
             });
 
             services.AddControllers(options =>
@@ -171,9 +170,10 @@ namespace Rutracker.Server.WebApi
             services.AddScoped<ISubcategoryService, SubcategoryService>();
             services.AddScoped<ITorrentService, TorrentService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IContextSeed, RutrackerContextSeed>();
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IContextSeed contextSeed)
         {
             app.UseResponseCaching();
             app.UseResponseCompression();
@@ -203,17 +203,7 @@ namespace Rutracker.Server.WebApi
                 endpoints.MapFallbackToClientSideBlazor<Client.Blazor.Startup>(filePath: "index.html");
             });
 
-            using var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
-
-            var context = scope.ServiceProvider.GetRequiredService<RutrackerContext>();
-            var userManager = scope.ServiceProvider.GetService<UserManager<User>>();
-            var roleManager = scope.ServiceProvider.GetService<RoleManager<Role>>();
-            var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
-
-            if (context.Database.EnsureCreated())
-            {
-                RutrackerContextSeed.SeedAsync(context, userManager, roleManager, loggerFactory).Wait();
-            }
+            contextSeed.SeedAsync().Wait();
         }
     }
 }

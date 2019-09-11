@@ -4,6 +4,8 @@ namespace Rutracker.Shared.Models.ViewModels.Comment
 {
     public class CommentUpdateViewModel
     {
-        [Required] public string Text { get; set; }
+        [Required]
+        [MaxLength(300)]
+        public string Text { get; set; }
     }
 }

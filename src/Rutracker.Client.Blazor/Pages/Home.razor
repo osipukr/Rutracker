@@ -2,7 +2,7 @@
 
 <AuthorizeView>
     <Authorized>
-        <h1>Hello, @context.User.Identity.Name!</h1>
+        <h1>Hello, @context.GetUserName()!</h1>
         <p>You can only see this content if you're authenticated.</p>
     </Authorized>
     <Authorizing>
@@ -14,9 +14,9 @@
     </NotAuthorized>
 </AuthorizeView>
 
-<AuthorizeView Roles="@UserRoles.User">
-    <p>You can only see this if you're in the User role.</p>
+<AuthorizeView Policy="@Policies.IsUser">
+    <p>You can only see this if you're in the User policy.</p>
 </AuthorizeView>
-<AuthorizeView Roles="@UserRoles.Admin">
-    <p>You can only see this if you're in the Admin role.</p>
+<AuthorizeView Policy="@Policies.IsAdmin">
+    <p>You can only see this if you're in the Admin policy.</p>
 </AuthorizeView>

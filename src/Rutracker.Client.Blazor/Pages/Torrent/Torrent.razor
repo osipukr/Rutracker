@@ -14,14 +14,15 @@
 <Page Title="torrent information" Action="@LoadAction" Errors="@Errors">
     <TorrentDetails Torrent="@TorrentDetailsModel" />
 
-    <CommentList Items="@Comments"
-                 OnCreate="@CommentCreateAsync"
-                 OnUpdate="@CommentUpdateAsync"
-                 OnDelete="@CommentDeleteAsync"
-                 OnLike="@CommentLikeAsync" />
-
     @if (CommentPagination != null)
     {
+        <CommentList Items="@Comments"
+                     TotalItems="@CommentPagination.TotalItems"
+                     OnCreate="@CommentCreateAsync"
+                     OnUpdate="@CommentUpdateAsync"
+                     OnDelete="@CommentDeleteAsync"
+                     OnLike="@CommentLikeAsync" />
+
         <Pagination Page="@Page"
                     PageSize="@PageSize"
                     TotalPages="@CommentPagination.TotalPages"

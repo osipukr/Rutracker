@@ -37,8 +37,6 @@ namespace Rutracker.Client.Blazor.Services
 
                     return new AuthenticationState(new ClaimsPrincipal(identity));
                 }
-
-                await _localStorageService.RemoveItemAsync(TokenKey);
             }
 
             _httpClientService.RemoveAuthorizationToken();

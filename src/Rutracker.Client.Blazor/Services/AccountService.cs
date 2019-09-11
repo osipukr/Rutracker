@@ -33,6 +33,13 @@ namespace Rutracker.Client.Blazor.Services
             await _httpClientService.PostJsonAsync(_apiUriSettings.Register, model);
         }
 
+        public async Task CompleteRegistration(CompleteRegistrationViewModel model)
+        {
+            var token = await _httpClientService.PostJsonAsync<string>(_apiUriSettings.CompleteRegistration, model);
+
+            await _apiAuthenticationState.MarkUserAsAuthenticated(token);
+        }
+
         public async Task Logout()
         {
             await _httpClientService.PostJsonAsync(_apiUriSettings.Logout, null);

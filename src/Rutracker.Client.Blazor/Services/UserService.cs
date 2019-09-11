@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Rutracker.Client.Blazor.Interfaces;
 using Rutracker.Client.Blazor.Settings;
+using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.User;
-using Rutracker.Shared.Models.ViewModels.User.Change;
-using Rutracker.Shared.Models.ViewModels.User.Confirm;
 
 namespace Rutracker.Client.Blazor.Services
 {
@@ -19,14 +17,16 @@ namespace Rutracker.Client.Blazor.Services
             _apiUrls = apiUrls;
         }
 
-        public async Task<IEnumerable<UserViewModel>> ListAsync()
+        public async Task<PaginationResult<UserViewModel>> ListAsync(int page, int pageSize)
         {
-            return await _httpClientService.GetJsonAsync<IEnumerable<UserViewModel>>(_apiUrls.Users);
+            var url = string.Format(_apiUrls.Users, page.ToString(), pageSize.ToString());
+
+            return await _httpClientService.GetJsonAsync<PaginationResult<UserViewModel>>(url);
         }
 
-        public async Task<UserProfileViewModel> ProfileAsync(string id)
+        public async Task<UserProfileViewModel> ProfileAsync(string userName)
         {
-            var url = string.Format(_apiUrls.UserProfile, id);
+            var url = string.Format(_apiUrls.UserProfile, userName);
 
             return await _httpClientService.GetJsonAsync<UserProfileViewModel>(url);
         }
@@ -59,11 +59,6 @@ namespace Rutracker.Client.Blazor.Services
         public async Task ChangePhoneAsync(ChangePhoneNumberViewModel model)
         {
             await _httpClientService.PutJsonAsync(_apiUrls.ChangePhone, model);
-        }
-
-        public async Task ConfirmEmailAsync(ConfirmEmailViewModel model)
-        {
-            await _httpClientService.PostJsonAsync(_apiUrls.ConfirmEmail, model);
         }
 
         public async Task ConfirmChangeEmailAsync(ConfirmChangeEmailViewModel model)

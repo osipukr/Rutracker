@@ -19,7 +19,7 @@ namespace Rutracker.Client.Blazor.Services
 
         public async Task<IEnumerable<SubcategoryViewModel>> ListAsync(int categoryId)
         {
-            var url = $"{_apiUriSettings.Subcategories}?{nameof(categoryId)}={categoryId}";
+            var url = string.Format(_apiUriSettings.SubcategoriesList, categoryId.ToString());
 
             return await _httpClientService.GetJsonAsync<IEnumerable<SubcategoryViewModel>>(url);
         }

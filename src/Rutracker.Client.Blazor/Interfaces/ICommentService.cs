@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Rutracker.Shared.Models.ViewModels;
+using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.Comment;
 
 namespace Rutracker.Client.Blazor.Interfaces

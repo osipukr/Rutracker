@@ -13,19 +13,20 @@
                               Icon="@MatIconNames.Search"
                               IconTrailing="true"
                               FullWidth="true"
+                              ValidationDisabled="true"
                               InputClass="pr-5"
                               type="search" />
 
                 <ValidationMessage For="@(() => FilterModel.Search)" />
 
-                <div class="row px-0 pt-5 pb-3">
-                    <div class="col">
+                <div class="row px-0 pt-4 pb-3">
+                    <div class="col-md-6 py-3">
                         <MatSelect @bind-Value="@CategoryId"
                                    Label="Category"
                                    Disabled="@(Categories == null)"
                                    Outlined="true"
                                    class="w-100">
-                            <MatOption Value="">No select</MatOption>
+                            <MatOption Value="@null">No select</MatOption>
 
                             @if (Categories != null)
                             {
@@ -37,13 +38,13 @@
                         </MatSelect>
                     </div>
 
-                    <div class="col">
+                    <div class="col-md-6 py-3">
                         <MatSelect @bind-Value="@SubcategoryId"
                                    Label="Subcategory"
                                    Disabled="@(Subcategories == null)"
                                    Outlined="true"
                                    class="w-100">
-                            <MatOption Value="">No select</MatOption>
+                            <MatOption Value="@null">No select</MatOption>
 
                             @if (Subcategories != null)
                             {
@@ -80,9 +81,9 @@
 
 @code
 {
-    [Parameter] public EventCallback<FilterViewModel> OnChange { get; set; }
+    [Parameter] public EventCallback<TorrentFilterViewModel> OnChange { get; set; }
 
-    private FilterViewModel FilterModel { get; set; } = new FilterViewModel();
+    private TorrentFilterViewModel FilterModel { get; set; } = new TorrentFilterViewModel();
     private IEnumerable<CategoryViewModel> Categories { get; set; }
     private IEnumerable<SubcategoryViewModel> Subcategories { get; set; }
 

@@ -1,0 +1,41 @@
+﻿.loading-container {
+    position: relative;
+    text-align: center;
+    background-color: #fff;
+    padding: 40px;
+    margin: auto;
+}
+
+.login-container {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    height: 100%;
+}
+
+    .login-container .mdc-card {
+        padding: 40px 30px;
+        width: 500px;
+    }
+
+.login-body {
+    min-width: 400px;
+    position: relative;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+@media (max-width: 596.98px) {
+    .login-container .mdc-card {
+        padding: 20px;
+        width: 300px;
+    }
+
+    .login-container .mat-accordion {
+        width: 300px;
+    }
+
+    .loading-container {
+        padding: 10px;
+    }
+}

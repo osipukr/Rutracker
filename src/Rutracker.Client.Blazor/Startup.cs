@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Rutracker.Client.Blazor.Interfaces;
 using Rutracker.Client.Blazor.Services;
+using Rutracker.Shared.Models;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace Rutracker.Client.Blazor
@@ -21,11 +22,15 @@ namespace Rutracker.Client.Blazor
             services.AddSingleton(clientSettings.ApiUrlSettings);
             services.AddSingleton(clientSettings.ViewSettings);
 
-            services.AddAuthorizationCore();
             services.AddBlazoredModal();
             services.AddLoadingBar();
             services.AddFileReaderService(options => options.UseWasmSharedBuffer = true);
             services.AddBlazoredLocalStorage();
+            services.AddAuthorizationCore(config =>
+            {
+                config.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
+                config.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
+            });
 
             services.AddScoped<HttpClientService>();
             services.AddScoped<ApiAuthenticationStateProvider>();
@@ -37,7 +42,16 @@ namespace Rutracker.Client.Blazor
             services.AddScoped<ITorrentService, TorrentService>();
             services.AddScoped<ICommentService, CommentService>();
 
-            services.AddMatToaster((MatToastConfiguration)clientSettings.MatToasterSettings);
+            services.AddMatToaster(x =>
+            {
+                x.Position = clientSettings.MatToasterSettings.Position;
+                x.PreventDuplicates = clientSettings.MatToasterSettings.PreventDuplicates;
+                x.NewestOnTop = clientSettings.MatToasterSettings.NewestOnTop;
+                x.ShowProgressBar = clientSettings.MatToasterSettings.ShowProgressBar;
+                x.ShowCloseButton = clientSettings.MatToasterSettings.ShowCloseButton;
+                x.MaximumOpacity = clientSettings.MatToasterSettings.MaximumOpacity;
+                x.VisibleStateDuration = clientSettings.MatToasterSettings.VisibleStateDuration;
+            });
         }
 
         public void Configure(IComponentsApplicationBuilder app)

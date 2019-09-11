@@ -4,46 +4,48 @@
 
 @page "/account/login"
 
-<MatCard>
-    <EditForm Model="@LoginModel" OnValidSubmit="@LoginAsync">
-        <div class="form-group">
-            <DataAnnotationsValidator />
+@if (LoadAction == ActionTypes.Failed)
+{
+    <Alert Type="@AlertTypes.Danger">
+        @Errors
+    </Alert>
+}
 
-            @if (LoadAction == ActionTypes.Failed)
-            {
-                <Alert Type="@AlertTypes.Danger">@Errors</Alert>
-            }
-        </div>
+<EditForm Model="@LoginModel" OnValidSubmit="@LoginAsync">
+    <DataAnnotationsValidator />
 
-        <div class="form-group">
-            <MatTextField @bind-Value="@LoginModel.UserName"
-                          Label="User Name"
-                          Icon="@MatIconNames.Person"
-                          IconTrailing="true"
-                          FullWidth="true"
-                          Required="true" />
-        </div>
+    <div class="form-group">
+        <MatTextField @bind-Value="@LoginModel.UserName"
+                      Label="User Name"
+                      Icon="@MatIconNames.Person"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true" />
 
-        <div class="form-group">
-            <MatTextField @bind-Value="@LoginModel.Password"
-                          Label="Password"
-                          Icon="@MatIconNames.Lock_open"
-                          IconTrailing="true"
-                          FullWidth="true"
-                          Required="true"
-                          type="password" />
-        </div>
+        <ValidationMessage For="@(() => LoginModel.UserName)" />
+    </div>
 
-        <div class="form-group text-right">
-            <MatCheckbox @bind-Checked="@LoginModel.RememberMe" Label="Remember Me ?" class="filled-in chk-col-blue" />
-            <MatButton Label="Login" Raised="true" type="submit" />
-        </div>
+    <div class="form-group">
+        <MatTextField @bind-Value="@LoginModel.Password"
+                      Label="Password"
+                      Icon="@MatIconNames.Lock_open"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true"
+                      type="password" />
 
-        <hr />
+        <ValidationMessage For="@(() => LoginModel.Password)" />
+    </div>
 
-        <MatButton Link="@Constants.Path.Register" Label="Create account" Outlined="true" />
-    </EditForm>
-</MatCard>
+    <div class="form-group text-right">
+        <MatCheckbox @bind-Checked="@LoginModel.RememberMe" Label="Remember Me ?" class="filled-in chk-col-blue" />
+        <MatButton Label="Login" Raised="true" type="submit" />
+    </div>
+
+    <hr />
+
+    <MatButton Link="@Constants.Path.Register" Label="Register" Outlined="true" />
+</EditForm>
 
 @code
 {

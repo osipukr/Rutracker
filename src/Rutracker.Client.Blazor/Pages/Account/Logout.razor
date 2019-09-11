@@ -5,17 +5,13 @@
 
 @page "/account/logout"
 
-@if (LoadAction == ActionTypes.InProgress)
-{
-    <LoadingBackground>
-        <span>You are logged out of your account, please wait..</span>
-    </LoadingBackground>
-}
-else if (LoadAction == ActionTypes.Failed)
+@if (LoadAction == ActionTypes.Failed)
 {
     <Alert Type="@AlertTypes.Danger">
         @Errors
     </Alert>
+
+    <hr />
 
     <div class="d-flex justify-content-center">
         <MatButton Link="@Constants.Path.Login" Label="Login" Raised="true" />

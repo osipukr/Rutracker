@@ -8,8 +8,4 @@
     <RepositoryUrl>https://github.com/osipukr/Rutracker-Blazor</RepositoryUrl>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Ardalis.GuardClauses" Version="1.2.9" />
-  </ItemGroup>
-
 </Project>

@@ -1,6 +1,4 @@
-﻿<h3>Users list</h3>
-
-@if (Items == null || !Items.Any())
+﻿@if (Items == null || !Items.Any())
 {
     <LoadingBackground ShowLoader="false">
         <span>Sorry, but user list is empty...</span>
@@ -8,10 +6,17 @@
 }
 else
 {
+    <hr />
+    <div class="d-flex justify-content-end align-items-center mt-4 pr-4">
+        <span class="pr-2">@TotalItems</span>
+        <h3 class="m-0">Total users</h3>
+    </div>
+    <hr />
+
     <MatList SingleSelection="true" TwoLine="true">
         @foreach (var user in Items)
         {
-            <MatListItem Href="@PageHelpers.UserLink(user.Id)">
+            <MatListItem Href="@PageHelpers.UserLink(user.UserName)">
                 <MatListItemText>
                     <MatListItemPrimaryText>@user.Id</MatListItemPrimaryText>
                     <MatListItemSecondaryText>@user.UserName</MatListItemSecondaryText>
@@ -24,4 +29,5 @@ else
 @code
 {
     [Parameter] public IEnumerable<UserViewModel> Items { get; set; }
+    [Parameter] public int TotalItems { get; set; }
 }   

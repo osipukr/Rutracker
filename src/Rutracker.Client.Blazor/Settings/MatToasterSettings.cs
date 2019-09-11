@@ -11,17 +11,5 @@ namespace Rutracker.Client.Blazor.Settings
         public bool ShowCloseButton { get; set; }
         public int MaximumOpacity { get; set; }
         public int VisibleStateDuration { get; set; }
-
-        public static explicit operator MatToastConfiguration(MatToasterSettings settings) =>
-            new MatToastConfiguration
-            {
-                Position = settings.Position,
-                PreventDuplicates = settings.PreventDuplicates,
-                NewestOnTop = settings.NewestOnTop,
-                ShowProgressBar = settings.ShowProgressBar,
-                ShowCloseButton = settings.ShowCloseButton,
-                MaximumOpacity = settings.MaximumOpacity,
-                VisibleStateDuration = settings.VisibleStateDuration
-            };
     }
 }

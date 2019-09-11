@@ -1,11 +1,10 @@
-﻿@attribute [Authorize(Roles = UserRoles.Admin)]
-
-@inject ICategoryService CategoryService
+﻿@inject ICategoryService CategoryService
 
 @page "/categories"
 
 <Page Title="category list" Action="@LoadAction" Errors="@Errors">
     <CategoryList Items="@CategoriesItems"
+                  TotalItems="@CategoriesItems.Count"
                   OnCreate="@CreateCategoryAsync"
                   OnUpdate="@UpdateCategoryAsync"
                   OnDelete="@DeleteCategoryAsync" />
