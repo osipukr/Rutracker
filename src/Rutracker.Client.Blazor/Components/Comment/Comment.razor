@@ -3,19 +3,22 @@
 <article class="row mb-3 justify-content-center">
     <div class="col-md-2 col-sm-3 p-0 justify-content-center align-items-center">
         <figure class="m-0" style="width: 126px; height: 126px;">
-            @if (IsAuthenticated)
+            @if (Model.User != null)
             {
-                <a href="@(IsUserComment ? Constants.Path.Profile : PageHelpers.UserLink(Model.User.UserName))">
+                if (IsAuthenticated)
+                {
+                    <a href="@PageHelpers.UserLink(Model.User.UserName)">
+                        <img src="@(PageHelpers.IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : Constants.Path.DefaultProfileImage)"
+                             class="w-100 h-100 rounded-circle img-responsive"
+                             alt="User image | @Model.User.UserName" />
+                    </a>
+                }
+                else
+                {
                     <img src="@(PageHelpers.IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : Constants.Path.DefaultProfileImage)"
                          class="w-100 h-100 rounded-circle img-responsive"
                          alt="User image | @Model.User.UserName" />
-                </a>
-            }
-            else
-            {
-                <img src="@(PageHelpers.IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : Constants.Path.DefaultProfileImage)"
-                     class="w-100 h-100 rounded-circle img-responsive"
-                     alt="User image | @Model.User.UserName" />
+                }
             }
         </figure>
     </div>
@@ -27,15 +30,18 @@
                     <div class="comment-user d-flex " title="User name">
                         <MatIcon Icon="@MatIconNames.Account_box" class="mr-1" />
 
-                        @if (IsAuthenticated)
+                        @if (Model.User != null)
                         {
-                            <a href="@(IsUserComment ? Constants.Path.Profile : PageHelpers.UserLink(Model.User.UserName))">
+                            if (IsAuthenticated)
+                            {
+                                <a href="@PageHelpers.UserLink(Model.User.UserName)">
+                                    @Model.User.UserName
+                                </a>
+                            }
+                            else
+                            {
                                 @Model.User.UserName
-                            </a>
-                        }
-                        else
-                        {
-                            @Model.User.UserName
+                            }
                         }
                     </div>
 
@@ -108,7 +114,11 @@
         var state = await AuthenticationStateTask;
 
         IsAuthenticated = state.IsUserAuthenticated();
-        IsUserComment = IsAuthenticated && Model.User.UserName == state.GetUserName();
+
+        if (Model.User != null)
+        {
+            IsUserComment = IsAuthenticated && Model.User.UserName == state.GetUserName();
+        }
     }
 
     private async Task UpdateAsync(CommentUpdateViewModel model) => await OnUpdate(Model, model);

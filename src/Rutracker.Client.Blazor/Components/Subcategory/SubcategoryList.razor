@@ -1,47 +1,44 @@
 ﻿@inject IModalService ModalService
 
-@if (Items == null)
-{
-    <LoadingBackground ShowLoader="false">
-        <p class="m-0">Sorry, but the list of subcategory is not loaded</p>
-    </LoadingBackground>
-}
-else
-{
-    <h4 class="mt-3 mb-1">Subcategories list:</h4>
+<hr />
+<div class="d-flex justify-content-end align-items-center pr-4">
+    <span class="pr-2">@TotalItems</span>
+    <h3 class="m-0">Total subcategories</h3>
+</div>
+<hr />
 
-    <MatTable Items="@Items" AllowSelection="true" class="mat-elevation-z5">
-        <MatTableHeader>
-            <AuthorizeView Policy="@Policies.IsAdmin">
-                <th class="p-2 text-center">
-                    <MatIconButton OnClick="@CreateModalOpened" Icon="@MatIconNames.Add" title="Add new subcategory" />
-                </th>
-            </AuthorizeView>
+<MatTable Items="@Items" AllowSelection="true" class="mat-elevation-z5">
+    <MatTableHeader>
+        <AuthorizeView Policy="@Policies.IsAdmin">
+            <th class="p-2 text-center">
+                <MatIconButton OnClick="@CreateModalOpened" Icon="@MatIconNames.Add" title="Add new subcategory" />
+            </th>
+        </AuthorizeView>
 
-            <th>Id</th>
-            <th>Torrent Count</th>
-            <th>Name</th>
-        </MatTableHeader>
-        <MatTableRow Context="subcategory">
-            <AuthorizeView Policy="@Policies.IsAdmin">
-                <td>
-                    <div style="width:100px;">
-                        <MatIconButton OnClick="@(_ => UpdateModelOpened(subcategory))" Icon="@MatIconNames.Edit" />
-                        <MatIconButton OnClick="@(_ => DeleteModalOpened(subcategory))" Icon="@MatIconNames.Delete" />
-                    </div>
-                </td>
-            </AuthorizeView>
+        <th>Id</th>
+        <th>Torrent Count</th>
+        <th>Name</th>
+    </MatTableHeader>
+    <MatTableRow Context="subcategory">
+        <AuthorizeView Policy="@Policies.IsAdmin">
+            <td>
+                <div style="width:100px;">
+                    <MatIconButton OnClick="@(_ => UpdateModelOpened(subcategory))" Icon="@MatIconNames.Edit" />
+                    <MatIconButton OnClick="@(_ => DeleteModalOpened(subcategory))" Icon="@MatIconNames.Delete" />
+                </div>
+            </td>
+        </AuthorizeView>
 
-            <td>@subcategory.Id</td>
-            <td>@subcategory.TorrentsCount</td>
-            <td>@subcategory.Name</td>
-        </MatTableRow>
-    </MatTable>
-}
+        <td>@subcategory.Id</td>
+        <td>@subcategory.TorrentsCount</td>
+        <td>@subcategory.Name</td>
+    </MatTableRow>
+</MatTable>
 
 @code
 {
     [Parameter] public IEnumerable<SubcategoryViewModel> Items { get; set; }
+    [Parameter] public int TotalItems { get; set; }
     [Parameter] public EventCallback<SubcategoryCreateViewModel> OnCreate { get; set; }
     [Parameter] public Func<SubcategoryViewModel, SubcategoryUpdateViewModel, Task> OnUpdate { get; set; }
     [Parameter] public EventCallback<SubcategoryViewModel> OnDelete { get; set; }

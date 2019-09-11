@@ -16,7 +16,7 @@ namespace Rutracker.Server.WebApi.Controllers
     /// </summary>
     /// <response code="400">If the parameters are not valid.</response>
     /// <response code="404">If the item is null.</response>
-    [Authorize(Policy = Policies.IsAdmin)]
+    [Authorize(Policy = Policies.IsUser)]
     public class TorrentsController : BaseApiController
     {
         private readonly ITorrentService _torrentService;

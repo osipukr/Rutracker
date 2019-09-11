@@ -4,7 +4,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -98,6 +97,7 @@ namespace Rutracker.Server.WebApi
                 config.Password.RequireNonAlphanumeric = false;
                 config.Password.RequireUppercase = false;
                 config.Password.RequireDigit = false;
+                config.Password.RequiredLength = 6;
             })
             .AddRoles<Role>()
             .AddEntityFrameworkStores<RutrackerContext>()
@@ -109,12 +109,7 @@ namespace Rutracker.Server.WebApi
                 options.SlidingExpiration = true;
             });
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
+            services.AddAuthentication().AddJwtBearer(options =>
             {
                 var jwtSettings = _configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
 
