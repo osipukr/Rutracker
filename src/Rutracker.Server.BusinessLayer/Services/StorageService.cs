@@ -17,26 +17,11 @@ namespace Rutracker.Server.BusinessLayer.Services
             _storageAuthOptions = storageOptions.Value;
         }
 
-        public async Task<string> UploadFileFromStreamAsync(string containerName, string fileName, string fileType, Stream stream)
+        public async Task<string> UploadFileAsync(string containerName, string fileName, Stream stream)
         {
             var blockBlob = await GetBlockBlobAsync(containerName, fileName, createIfNotExists: true);
 
             await blockBlob.UploadFromStreamAsync(stream);
-
-            blockBlob.Properties.ContentType = fileType;
-            await blockBlob.SetPropertiesAsync();
-
-            return blockBlob.Uri.AbsoluteUri;
-        }
-
-        public async Task<string> UploadFileFromByteArrayAsync(string containerName, string fileName, string fileType, byte[] bytes)
-        {
-            var blockBlob = await GetBlockBlobAsync(containerName, fileName, createIfNotExists: true);
-
-            await blockBlob.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
-
-            blockBlob.Properties.ContentType = fileType;
-            await blockBlob.SetPropertiesAsync();
 
             return blockBlob.Uri.AbsoluteUri;
         }

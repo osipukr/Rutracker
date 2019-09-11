@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -128,7 +129,9 @@ namespace Rutracker.Server.BusinessLayer.Services
                 throw new RutrackerException("Invalid file type.", ExceptionEventType.NotValidParameters);
             }
 
-            var path = await _storageService.UploadFileFromByteArrayAsync(containerName: id, _imageOptions.FileName, mimeType, imageBytes);
+            await using var stream = new MemoryStream(imageBytes);
+
+            var path = await _storageService.UploadFileAsync(containerName: id, _imageOptions.FileName, stream);
 
             return await ChangeImageAsync(id, path);
         }

@@ -21,6 +21,8 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             TwilioClient.Init(_smsSettings.AccountSid, _smsSettings.AccountToken);
 
+            phone = phone.StartsWith("+") ? phone : $"+{phone}";
+
             await MessageResource.CreateAsync(
                 body: message,
                 from: new PhoneNumber(_smsSettings.AccountFrom),

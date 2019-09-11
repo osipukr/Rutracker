@@ -46,7 +46,7 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<CommentViewModel> Add(CommentCreateViewModel model)
+        public async Task<CommentViewModel> Create(CommentCreateViewModel model)
         {
             var comment = _mapper.Map<Comment>(model);
 

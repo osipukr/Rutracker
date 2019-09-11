@@ -8,6 +8,8 @@ using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.Torrent;
+using Rutracker.Server.DataAccessLayer.Entities;
+using Rutracker.Server.WebApi.Extensions;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
@@ -32,7 +34,7 @@ namespace Rutracker.Server.WebApi.Controllers
         /// <param name="page">Page number.</param>
         /// <param name="pageSize">Number of items per page.</param>
         /// <param name="filter">Information to filter elements.</param>
-        [HttpPost, AllowAnonymous]
+        [HttpPost("search"), AllowAnonymous]
         public async Task<PaginationResult<TorrentViewModel>> Pagination(int page, int pageSize, TorrentFilterViewModel filter)
         {
             var (torrents, count) = await _torrentService.ListAsync(page, pageSize,
@@ -52,7 +54,7 @@ namespace Rutracker.Server.WebApi.Controllers
         [HttpGet("popular/{count}"), AllowAnonymous]
         public async Task<IEnumerable<TorrentViewModel>> Popular(int count)
         {
-            var torrents = await _torrentService.PopularTorrentsAsync(count);
+            var torrents = await _torrentService.PopularAsync(count);
 
             return _mapper.Map<IEnumerable<TorrentViewModel>>(torrents);
         }
@@ -67,6 +69,34 @@ namespace Rutracker.Server.WebApi.Controllers
             var torrent = await _torrentService.FindAsync(id);
 
             return _mapper.Map<TorrentDetailsViewModel>(torrent);
+        }
+
+        [HttpPost]
+        public async Task<TorrentDetailsViewModel> Create(TorrentCreateViewModel model)
+        {
+            var torrent = _mapper.Map<Torrent>(model);
+
+            torrent.UserId = User.GetUserId();
+
+            torrent = await _torrentService.AddAsync(torrent);
+
+            return _mapper.Map<TorrentDetailsViewModel>(torrent);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<TorrentDetailsViewModel> Update(int id, TorrentUpdateViewModel model)
+        {
+            var torrent = _mapper.Map<Torrent>(model);
+
+            torrent = await _torrentService.UpdateAsync(id, User.GetUserId(), torrent);
+
+            return _mapper.Map<TorrentDetailsViewModel>(torrent);
+        }
+
+        [HttpDelete("{id}"), Authorize(Policy = Policies.IsAdmin)]
+        public async Task Delete(int id)
+        {
+            await _torrentService.DeleteAsync(id);
         }
     }
 }

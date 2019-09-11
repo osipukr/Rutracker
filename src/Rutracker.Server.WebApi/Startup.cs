@@ -147,6 +147,7 @@ namespace Rutracker.Server.WebApi
                 options.OutputFormatters.RemoveType<StreamOutputFormatter>();
                 options.OutputFormatters.RemoveType<StringOutputFormatter>();
             })
+            .AddNewtonsoftJson()
             .ConfigureApiBehaviorOptions(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
@@ -160,6 +161,7 @@ namespace Rutracker.Server.WebApi
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
             services.AddScoped<ITorrentRepository, TorrentRepository>();
+            services.AddScoped<IFileRepository, FileRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<ILikeRepository, LikeRepository>();
             services.AddScoped<IStorageService, StorageService>();
@@ -169,6 +171,7 @@ namespace Rutracker.Server.WebApi
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISubcategoryService, SubcategoryService>();
             services.AddScoped<ITorrentService, TorrentService>();
+            services.AddScoped<IFileService, FileService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IContextSeed, RutrackerContextSeed>();
         }

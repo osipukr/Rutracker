@@ -1,8 +1,8 @@
-﻿namespace Rutracker.Shared.Models.ViewModels.Torrent
+﻿namespace Rutracker.Shared.Models.ViewModels.File
 {
     public class FileViewModel : BaseViewModel
     {
-        public long Size { get; set; }
         public string Name { get; set; }
+        public string Url { get; set; }
     }
 }

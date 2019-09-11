@@ -38,7 +38,7 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<SubcategoryViewModel> Add(SubcategoryCreateViewModel model)
+        public async Task<SubcategoryViewModel> Create(SubcategoryCreateViewModel model)
         {
             var subcategory = _mapper.Map<Subcategory>(model);
             var result = await _subcategoryService.AddAsync(subcategory);
