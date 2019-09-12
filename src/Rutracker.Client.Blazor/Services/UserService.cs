@@ -41,9 +41,19 @@ namespace Rutracker.Client.Blazor.Services
             return await _httpClientService.PutJsonAsync<UserDetailsViewModel>(_apiUrls.ChangeUserInfo, model);
         }
 
-        public async Task<UserDetailsViewModel> ChangeImageAsync(ChangeImageViewModel model)
+        public async Task<string> ChangeImageAsync(ChangeImageViewModel model)
         {
-            return await _httpClientService.PutJsonAsync<UserDetailsViewModel>(_apiUrls.ChangeImage, model);
+            return await _httpClientService.PutJsonAsync<string>(_apiUrls.ChangeImage, model);
+        }
+
+        public async Task<string> ChangeImageAsync(ChangeImageFileViewModel model)
+        {
+            return await _httpClientService.PostJsonAsync<string>(_apiUrls.ChangeImage, model);
+        }
+
+        public async Task DeleteImageAsync()
+        {
+            await _httpClientService.DeleteJsonAsync(_apiUrls.ChangeImage);
         }
 
         public async Task<UserDetailsViewModel> ChangePasswordAsync(ChangePasswordViewModel model)

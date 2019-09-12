@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Rutracker.Server.DataAccessLayer.Entities;
 
@@ -13,7 +14,7 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
         Task<User> UpdateAsync(string id, User user);
         Task<IEnumerable<string>> RolesAsync(string id);
         Task<User> ChangeImageAsync(string id, string imageUrl);
-        Task<User> ChangeImageAsync(string id, byte[] imageBytes, string imageType);
+        Task<User> ChangeImageAsync(string id, string mimeType, Stream imageStream);
         Task<User> DeleteImageAsync(string id);
         Task<string> EmailConfirmationTokenAsync(string id);
         Task<string> ChangeEmailTokenAsync(string id, string email);

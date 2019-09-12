@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
-using Rutracker.Server.BusinessLayer.Options;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Shared.Infrastructure.Exceptions;
 
@@ -18,14 +16,12 @@ namespace Rutracker.Server.BusinessLayer.Services
     public class UserService : IUserService
     {
         private readonly UserManager<User> _userManager;
-        private readonly IStorageService _storageService;
-        private readonly FileStorageOptions _imageOptions;
+        private readonly IFileStorageService _fileStorageService;
 
-        public UserService(UserManager<User> userManager, IStorageService storageService, IOptions<FileStorageOptions> imageOptions)
+        public UserService(UserManager<User> userManager, IFileStorageService fileStorageService)
         {
             _userManager = userManager;
-            _storageService = storageService;
-            _imageOptions = imageOptions.Value;
+            _fileStorageService = fileStorageService;
         }
 
         public async Task<Tuple<IEnumerable<User>, int>> ListAsync(int page, int pageSize)
@@ -114,32 +110,18 @@ namespace Rutracker.Server.BusinessLayer.Services
             return user;
         }
 
-        public async Task<User> ChangeImageAsync(string id, byte[] imageBytes, string mimeType)
+        public async Task<User> ChangeImageAsync(string id, string mimeType, Stream imageStream)
         {
             Guard.Against.NullOrWhiteSpace(id, message: "Invalid user id.");
-            Guard.Against.NullNotValid(imageBytes, "Invalid image bytes.");
+            Guard.Against.NullNotValid(imageStream, "Invalid image stream.");
 
-            if (imageBytes.Length > _imageOptions.ImageMaxLength)
-            {
-                throw new RutrackerException("File too large.", ExceptionEventTypes.NotValidParameters);
-            }
-
-            if (string.IsNullOrWhiteSpace(mimeType) || !_imageOptions.ImageMimeTypes.Contains(mimeType.ToLower()))
-            {
-                throw new RutrackerException("Invalid file type.", ExceptionEventTypes.NotValidParameters);
-            }
-
-            await using var stream = new MemoryStream(imageBytes);
-
-            var path = await _storageService.UploadFileAsync(containerName: id, _imageOptions.UserImageName, stream);
+            var path = await _fileStorageService.UploadUserImageAsync(id, mimeType, imageStream);
 
             return await ChangeImageAsync(id, path);
         }
 
         public async Task<User> DeleteImageAsync(string id)
         {
-            await _storageService.DeleteFileAsync(id, _imageOptions.UserImageName);
-
             return await ChangeImageAsync(id, null);
         }
 

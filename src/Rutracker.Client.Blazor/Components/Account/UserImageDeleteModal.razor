@@ -11,11 +11,6 @@
 
 @code
 {
-    private ChangeImageViewModel ChangeImageModel { get; set; } = new ChangeImageViewModel()
-    {
-        IsDelete = true
-    };
-
-    private void DeleteClicked() => ModalService.Close(ModalResult.Ok(ChangeImageModel));
+    private void DeleteClicked() => ModalService.Close(ModalResult.Ok(true));
     private void CancelClicked() => ModalService.Cancel();
 }

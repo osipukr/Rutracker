@@ -7,7 +7,11 @@
 <Page Title="user information" Action="@LoadAction" Errors="@Errors">
     <div class="profile-container">
         <div class="profile-header">
-            <UserImage @key="@ImageRenderKey" Url="@UserModel.ImageUrl" OnChange="@ChangeImageAsync" />
+            <UserImage @key="@ImageRenderKey"
+                       Url="@UserModel.ImageUrl"
+                       OnChange="@ChangeImageAsync"
+                       OnChangeFile="@ChangeImageFileAsync"
+                       OnDelete="@DeleteImageAsync" />
 
             <h1 class="profile-header__name">@UserModel.UserName</h1>
 
@@ -44,7 +48,21 @@
 
     private async Task ChangeImageAsync(ChangeImageViewModel model) => await ActionAsync(async () =>
     {
-        UserModel = await UserService.ChangeImageAsync(model);
+        UserModel.ImageUrl = await UserService.ChangeImageAsync(model);
+        ImageRenderKey = Guid.NewGuid().ToString();
+    }, successMessage: "Image successfully changed.");
+
+    private async Task ChangeImageFileAsync(ChangeImageFileViewModel model) => await ActionAsync(async () =>
+    {
+        UserModel.ImageUrl = await UserService.ChangeImageAsync(model);
+        ImageRenderKey = Guid.NewGuid().ToString();
+    }, successMessage: "Image successfully changed.");
+
+    private async Task DeleteImageAsync() => await ActionAsync(async () =>
+    {
+        await UserService.DeleteImageAsync();
+
+        UserModel.ImageUrl = null;
         ImageRenderKey = Guid.NewGuid().ToString();
     }, successMessage: "Image successfully changed.");
 

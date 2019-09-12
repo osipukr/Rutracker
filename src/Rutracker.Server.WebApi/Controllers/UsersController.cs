@@ -89,14 +89,29 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpPut("change/image")]
-        public async Task<UserViewModel> ChangeImage(ChangeImageViewModel model)
+        public async Task<string> ChangeImage(ChangeImageViewModel model)
         {
             var userId = User.GetUserId();
-            var user = model.IsDelete
-                ? await _userService.DeleteImageAsync(userId)
-                : await _userService.ChangeImageAsync(userId, model.ImageBytes, model.FileType);
+            var user = await _userService.ChangeImageAsync(userId, model.ImageUrl);
 
-            return _mapper.Map<UserDetailsViewModel>(user);
+            return user.ImageUrl;
+        }
+
+        [HttpPost("change/image")]
+        public async Task<string> ChangeImage(ChangeImageFileViewModel model)
+        {
+            var userId = User.GetUserId();
+            var user = await _userService.ChangeImageAsync(userId, model.MimeType, model.Stream);
+
+            return user.ImageUrl;
+        }
+
+        [HttpDelete("change/image")]
+        public async Task ChangeImage()
+        {
+            var userId = User.GetUserId();
+
+            await _userService.DeleteImageAsync(userId);
         }
 
         [HttpPut("change/password")]

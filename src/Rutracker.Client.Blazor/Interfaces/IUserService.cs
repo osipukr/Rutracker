@@ -10,7 +10,9 @@ namespace Rutracker.Client.Blazor.Interfaces
         Task<UserProfileViewModel> ProfileAsync(string userName);
         Task<UserDetailsViewModel> FindAsync();
         Task<UserDetailsViewModel> ChangeInfoAsync(ChangeUserViewModel model);
-        Task<UserDetailsViewModel> ChangeImageAsync(ChangeImageViewModel model);
+        Task<string> ChangeImageAsync(ChangeImageViewModel model);
+        Task<string> ChangeImageAsync(ChangeImageFileViewModel model);
+        Task DeleteImageAsync();
         Task<UserDetailsViewModel> ChangePasswordAsync(ChangePasswordViewModel model);
         Task ChangeEmailAsync(ChangeEmailViewModel model);
         Task ChangePhoneAsync(ChangePhoneNumberViewModel model);

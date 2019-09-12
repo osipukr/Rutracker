@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace Rutracker.Shared.Models
 {
     public class FileModel
     {
-        [Required] public IFormFile File { get; set; }
+        [Required] public Stream Stream { get; set; }
         [Required] public string MimeType { get; set; }
     }
 }
