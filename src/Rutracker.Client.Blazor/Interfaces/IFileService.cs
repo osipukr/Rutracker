@@ -8,7 +8,6 @@ namespace Rutracker.Client.Blazor.Interfaces
     {
         Task<IEnumerable<FileViewModel>> ListAsync(int torrentId);
         Task<FileViewModel> CreateAsync(FileCreateViewModel model);
-        Task<FileViewModel> Update(int id, FileUpdateViewModel model);
         Task DeleteAsync(int id);
     }
 }

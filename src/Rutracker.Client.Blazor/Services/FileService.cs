@@ -29,13 +29,6 @@ namespace Rutracker.Client.Blazor.Services
             return await _httpClientService.PostJsonAsync<FileViewModel>(_apiUrls.Files, model);
         }
 
-        public async Task<FileViewModel> Update(int id, FileUpdateViewModel model)
-        {
-            var url = string.Format(_apiUrls.File, id.ToString());
-
-            return await _httpClientService.PutJsonAsync<FileViewModel>(url, model);
-        }
-
         public async Task DeleteAsync(int id)
         {
             var url = string.Format(_apiUrls.File, id.ToString());

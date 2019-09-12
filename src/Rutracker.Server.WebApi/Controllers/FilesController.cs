@@ -30,7 +30,7 @@ namespace Rutracker.Server.WebApi.Controllers
             return _mapper.Map<IEnumerable<FileViewModel>>(files);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), AllowAnonymous]
         public async Task<FileViewModel> Find(int id)
         {
             var file = await _fileService.FindAsync(id, User.GetUserId());
@@ -44,16 +44,6 @@ namespace Rutracker.Server.WebApi.Controllers
             var file = _mapper.Map<File>(model);
 
             file = await _fileService.AddAsync(User.GetUserId(), file);
-
-            return _mapper.Map<FileViewModel>(file);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<FileViewModel> Update(int id, FileUpdateViewModel model)
-        {
-            var file = _mapper.Map<File>(model);
-
-            file = await _fileService.UpdateAsync(id, User.GetUserId(), file);
 
             return _mapper.Map<FileViewModel>(file);
         }

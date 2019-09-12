@@ -53,7 +53,7 @@ namespace Rutracker.Server.WebApi
             services.Configure<JwtSettings>(_configuration.GetSection(nameof(JwtSettings)));
             services.Configure<ClientSettings>(_configuration.GetSection(nameof(ClientSettings)));
             services.Configure<CacheOptions>(_configuration.GetSection(nameof(CacheOptions)));
-            services.Configure<UserImageOptions>(_configuration.GetSection(nameof(UserImageOptions)));
+            services.Configure<FileStorageOptions>(_configuration.GetSection(nameof(FileStorageOptions)));
             services.Configure<StorageAuthOptions>(_configuration.GetSection(nameof(StorageAuthOptions)));
             services.Configure<EmailAuthOptions>(_configuration.GetSection(nameof(EmailAuthOptions)));
             services.Configure<SmsAuthOptions>(_configuration.GetSection(nameof(SmsAuthOptions)));

@@ -57,13 +57,13 @@
                 <MatTable Items="@Torrent.Files" class="mt-2 mat-elevation-z10">
                     <MatTableHeader>
                         <th>Id</th>
+                        <th>Size</th>
                         <th>Name</th>
-                        <th>Url</th>
                     </MatTableHeader>
                     <MatTableRow Context="file">
                         <td>@file.Id</td>
+                        <td>@file.Size</td>
                         <td>@file.Name</td>
-                        <td>@file.Url</td>
                     </MatTableRow>
                 </MatTable>
             </ChildContent>

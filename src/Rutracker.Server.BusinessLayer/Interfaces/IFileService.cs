@@ -10,7 +10,6 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
         Task<File> FindAsync(int id);
         Task<File> FindAsync(int id, string userId);
         Task<File> AddAsync(string userId, File file);
-        Task<File> UpdateAsync(int id, string userId, File file);
         Task<File> DeleteAsync(int id, string userId);
     }
 }

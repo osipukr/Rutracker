@@ -24,6 +24,13 @@ namespace Rutracker.Client.Blazor.Services
             return await _httpClientService.GetJsonAsync<PaginationResult<CommentViewModel>>(url);
         }
 
+        public async Task<CommentViewModel> FindAsync(int id)
+        {
+            var url = string.Format(_apiUrls.Comment, id.ToString());
+
+            return await _httpClientService.GetJsonAsync<CommentViewModel>(url);
+        }
+
         public async Task<CommentViewModel> AddAsync(CommentCreateViewModel model)
         {
             return await _httpClientService.PostJsonAsync<CommentViewModel>(_apiUrls.Comments, model);

@@ -75,24 +75,6 @@ namespace Rutracker.Server.BusinessLayer.Services
             return file;
         }
 
-        public async Task<File> UpdateAsync(int id, string userId, File file)
-        {
-            Guard.Against.NullNotValid(file, "Invalid file.");
-            Guard.Against.NullOrWhiteSpace(file.Name, message: "The file must contain a name.");
-            Guard.Against.NullOrWhiteSpace(file.Url, message: "The file must contain a url.");
-
-            var result = await FindAsync(id, userId);
-
-            result.Name = file.Name;
-            result.Url = file.Url;
-
-            _fileRepository.Update(result);
-
-            await _unitOfWork.CompleteAsync();
-
-            return result;
-        }
-
         public async Task<File> DeleteAsync(int id, string userId)
         {
             var file = await FindAsync(id, userId);

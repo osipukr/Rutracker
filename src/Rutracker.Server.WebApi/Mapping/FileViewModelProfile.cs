@@ -9,8 +9,6 @@ namespace Rutracker.Server.WebApi.Mapping
         public FileViewModelProfile()
         {
             CreateMap<File, FileViewModel>();
-            CreateMap<FileCreateViewModel, File>();
-            CreateMap<FileUpdateViewModel, File>();
         }
     }
 }

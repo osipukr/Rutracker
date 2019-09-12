@@ -20,7 +20,7 @@
     "Register": "api/accounts/register",
     "CompleteRegistration": "api/accounts/completeRegistration",
     "Logout": "api/accounts/logout",
-    "UserSearch": "api/users/search?page={0}&pageSize={1}",
+    "UsersSearch": "api/users/search?page={0}&pageSize={1}",
     "UserProfile": "api/users/profile/{0}",
     "User": "api/users/details",
     "ChangeUserInfo": "api/users/change/info",

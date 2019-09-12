@@ -72,7 +72,7 @@
 
         var result = await CommentService.AddAsync(comment);
 
-        Comments.Insert(0, result);
+        Comments.Insert(0, await CommentService.FindAsync(result.Id));
     }, successMessage: "Comment created successfully.");
 
     private async Task CommentUpdateAsync(CommentViewModel comment, CommentUpdateViewModel model) => await ActionAsync(async () =>

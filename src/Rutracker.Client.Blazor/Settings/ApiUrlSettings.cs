@@ -35,7 +35,7 @@
         public string Logout { get; set; }
 
         // User
-        public string UserSearch { get; set; }
+        public string UsersSearch { get; set; }
         public string UserProfile { get; set; }
         public string User { get; set; }
         public string ChangeUserInfo { get; set; }

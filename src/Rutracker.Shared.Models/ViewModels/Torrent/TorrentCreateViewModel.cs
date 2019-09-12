@@ -13,8 +13,6 @@ namespace Rutracker.Shared.Models.ViewModels.Torrent
         public string Description { get; set; }
 
         public string Content { get; set; }
-
-        [Url]
         public string ImageUrl { get; set; }
 
         [Required]

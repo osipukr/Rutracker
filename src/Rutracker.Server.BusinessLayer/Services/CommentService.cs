@@ -49,6 +49,17 @@ namespace Rutracker.Server.BusinessLayer.Services
             return Tuple.Create<IEnumerable<Comment>, int>(comments, count);
         }
 
+        public async Task<Comment> FindAsync(int id)
+        {
+            Guard.Against.LessOne(id, "Invalid comment id.");
+
+            var comment = await _commentRepository.GetAsync(id);
+
+            Guard.Against.NullNotFound(comment, $"The comment with id '{id}' not found.");
+
+            return comment;
+        }
+
         public async Task<Comment> FindAsync(int id, string userId)
         {
             Guard.Against.LessOne(id, "Invalid comment id.");

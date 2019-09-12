@@ -19,9 +19,9 @@ namespace Rutracker.Server.BusinessLayer.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly IStorageService _storageService;
-        private readonly UserImageOptions _imageOptions;
+        private readonly FileStorageOptions _imageOptions;
 
-        public UserService(UserManager<User> userManager, IStorageService storageService, IOptions<UserImageOptions> imageOptions)
+        public UserService(UserManager<User> userManager, IStorageService storageService, IOptions<FileStorageOptions> imageOptions)
         {
             _userManager = userManager;
             _storageService = storageService;
@@ -119,26 +119,26 @@ namespace Rutracker.Server.BusinessLayer.Services
             Guard.Against.NullOrWhiteSpace(id, message: "Invalid user id.");
             Guard.Against.NullNotValid(imageBytes, "Invalid image bytes.");
 
-            if (imageBytes.Length > _imageOptions.MaxBytesLength)
+            if (imageBytes.Length > _imageOptions.ImageMaxLength)
             {
                 throw new RutrackerException("File too large.", ExceptionEventTypes.NotValidParameters);
             }
 
-            if (string.IsNullOrWhiteSpace(mimeType) || !_imageOptions.MimeTypes.Contains(mimeType.ToLower()))
+            if (string.IsNullOrWhiteSpace(mimeType) || !_imageOptions.ImageMimeTypes.Contains(mimeType.ToLower()))
             {
                 throw new RutrackerException("Invalid file type.", ExceptionEventTypes.NotValidParameters);
             }
 
             await using var stream = new MemoryStream(imageBytes);
 
-            var path = await _storageService.UploadFileAsync(containerName: id, _imageOptions.FileName, stream);
+            var path = await _storageService.UploadFileAsync(containerName: id, _imageOptions.UserImageName, stream);
 
             return await ChangeImageAsync(id, path);
         }
 
         public async Task<User> DeleteImageAsync(string id)
         {
-            await _storageService.DeleteFileAsync(id, _imageOptions.FileName);
+            await _storageService.DeleteFileAsync(id, _imageOptions.UserImageName);
 
             return await ChangeImageAsync(id, null);
         }

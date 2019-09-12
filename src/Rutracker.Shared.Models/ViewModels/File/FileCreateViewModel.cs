@@ -1,15 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Rutracker.Shared.Models.ViewModels.File
+﻿namespace Rutracker.Shared.Models.ViewModels.File
 {
-    public class FileCreateViewModel
+    public class FileCreateViewModel : FileModel
     {
-        [Required]
-        [MaxLength(100)]
-        public string Name { get; set; }
-
-        [Required]
-        [Url]
-        public string Url { get; set; }
     }
 }

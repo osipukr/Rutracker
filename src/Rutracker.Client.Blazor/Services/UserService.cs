@@ -19,7 +19,7 @@ namespace Rutracker.Client.Blazor.Services
 
         public async Task<PaginationResult<UserViewModel>> ListAsync(int page, int pageSize)
         {
-            var url = string.Format(_apiUrls.UserSearch, page.ToString(), pageSize.ToString());
+            var url = string.Format(_apiUrls.UsersSearch, page.ToString(), pageSize.ToString());
 
             return await _httpClientService.GetJsonAsync<PaginationResult<UserViewModel>>(url);
         }

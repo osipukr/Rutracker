@@ -20,7 +20,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0-preview9.19423.6" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0-dev-00032" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.5.0" />
   </ItemGroup>
 
   <ItemGroup>

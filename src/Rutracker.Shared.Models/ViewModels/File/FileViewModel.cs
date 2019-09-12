@@ -3,6 +3,6 @@
     public class FileViewModel : BaseViewModel
     {
         public string Name { get; set; }
-        public string Url { get; set; }
+        public long Size { get; set; }
     }
 }

@@ -37,10 +37,10 @@ namespace Rutracker.Server.WebApi.Controllers
             };
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), AllowAnonymous]
         public async Task<CommentViewModel> Find(int id)
         {
-            var comment = await _commentService.FindAsync(id, User.GetUserId());
+            var comment = await _commentService.FindAsync(id);
 
             return _mapper.Map<CommentViewModel>(comment);
         }
