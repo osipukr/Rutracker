@@ -201,7 +201,7 @@ namespace Rutracker.Server.WebApi
                 options.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "v1");
             });
 
-            app.UseClientSideBlazorFiles<Client.Blazor.Startup>();
+            app.UseClientSideBlazorFiles<Client.BlazorWasm.Startup>();
 
             app.UseRouting();
             app.UseAuthentication();
@@ -210,7 +210,7 @@ namespace Rutracker.Server.WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapFallbackToClientSideBlazor<Client.Blazor.Startup>(filePath: "index.html");
+                endpoints.MapFallbackToClientSideBlazor<Client.BlazorWasm.Startup>(filePath: "index.html");
             });
 
             contextSeed.SeedAsync().Wait();
