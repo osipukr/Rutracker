@@ -1,13 +1,6 @@
 ﻿<div class="container py-3">
-    <hr />
-    <div class="row m-0 justify-content-end align-items-center pr-4">
-        <span class="pr-2">@TotalItems</span>
-        <h3 class="m-0">Total comments</h3>
-    </div>
-    <hr />
-
-    <div class="row m-0 mb-3 px-4">
-        <AuthorizeView>
+    <div class="row m-0 px-4">
+        <AuthorizeView Policy="@Policies.IsUser">
             <NotAuthorized>
                 <div class="alert alert-success w-100 text-center">
                     <a href="@Constants.Path.Login">Log in</a> to post a message.
@@ -40,7 +33,6 @@
 @code
 {
     [Parameter] public IEnumerable<CommentViewModel> Items { get; set; }
-    [Parameter] public int TotalItems { get; set; }
     [Parameter] public EventCallback<CommentCreateViewModel> OnCreate { get; set; }
     [Parameter] public Func<CommentViewModel, CommentUpdateViewModel, Task> OnUpdate { get; set; }
     [Parameter] public EventCallback<int> OnDelete { get; set; }

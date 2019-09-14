@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -15,12 +16,18 @@ namespace Rutracker.Server.BusinessLayer.Services
     {
         private readonly ITorrentRepository _torrentRepository;
         private readonly ISubcategoryRepository _subcategoryRepository;
+        private readonly IFileStorageService _fileStorageService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public TorrentService(ITorrentRepository torrentRepository, ISubcategoryRepository subcategoryRepository, IUnitOfWork unitOfWork)
+        public TorrentService(
+            ITorrentRepository torrentRepository,
+            ISubcategoryRepository subcategoryRepository,
+            IFileStorageService fileStorageService,
+            IUnitOfWork unitOfWork)
         {
             _torrentRepository = torrentRepository;
             _subcategoryRepository = subcategoryRepository;
+            _fileStorageService = fileStorageService;
             _unitOfWork = unitOfWork;
         }
 
@@ -94,8 +101,8 @@ namespace Rutracker.Server.BusinessLayer.Services
         public async Task<Torrent> AddAsync(Torrent torrent)
         {
             Guard.Against.NullNotValid(torrent, "Invalid torrent.");
-            Guard.Against.NullNotValid(torrent.Name, "The torrent must contain a name.");
-            Guard.Against.NullNotValid(torrent.Description, "The torrent must contain a description.");
+            Guard.Against.NullOrWhiteSpace(torrent.Name, message: "The torrent must contain a name.");
+            Guard.Against.NullOrWhiteSpace(torrent.Description, message: "The torrent must contain a description.");
             Guard.Against.LessOne(torrent.SubcategoryId, "Invalid subcategory id.");
             Guard.Against.NullOrWhiteSpace(torrent.UserId, message: "Invalid user id.");
 
@@ -106,7 +113,36 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             torrent.CreatedAt = DateTime.UtcNow;
 
-            await _torrentRepository.AddAsync(torrent);
+            torrent = await _torrentRepository.AddAsync(torrent);
+            await _unitOfWork.CompleteAsync();
+
+            return torrent;
+        }
+
+        public async Task<Torrent> AddImageAsync(int id, string imageUrl)
+        {
+            Guard.Against.NullOrWhiteSpace(imageUrl, message: "Invalid link to the picture.");
+
+            var torrent = await FindAsync(id);
+
+            torrent.ImageUrl = imageUrl;
+
+            torrent = _torrentRepository.Update(torrent);
+
+            await _unitOfWork.CompleteAsync();
+
+            return torrent;
+        }
+
+        public async Task<Torrent> AddImageAsync(int id, string imageMimeType, Stream imageStream)
+        {
+            var torrent = await FindAsync(id);
+            var path = await _fileStorageService.UploadTorrentImageAsync(id, imageMimeType, imageStream);
+
+            torrent.ImageUrl = path;
+
+            torrent = _torrentRepository.Update(torrent);
+
             await _unitOfWork.CompleteAsync();
 
             return torrent;
@@ -124,7 +160,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             result.Description = torrent.Description;
             result.LastUpdatedAt = DateTime.UtcNow;
 
-            _torrentRepository.Update(result);
+            result = _torrentRepository.Update(result);
 
             await _unitOfWork.CompleteAsync();
 
@@ -135,7 +171,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var torrent = await FindAsync(id);
 
-            _torrentRepository.Remove(torrent);
+            torrent = _torrentRepository.Remove(torrent);
 
             await _unitOfWork.CompleteAsync();
 

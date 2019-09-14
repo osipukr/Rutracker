@@ -1,12 +1,5 @@
 ﻿@inject IModalService ModalService
 
-<hr />
-<div class="d-flex justify-content-end align-items-center pr-4">
-    <span class="pr-2">@TotalItems</span>
-    <h3 class="m-0">Total subcategories</h3>
-</div>
-<hr />
-
 <MatTable Items="@Items" AllowSelection="true" class="mat-elevation-z5">
     <MatTableHeader>
         <AuthorizeView Policy="@Policies.IsAdmin">
@@ -38,7 +31,6 @@
 @code
 {
     [Parameter] public IEnumerable<SubcategoryViewModel> Items { get; set; }
-    [Parameter] public int TotalItems { get; set; }
     [Parameter] public EventCallback<SubcategoryCreateViewModel> OnCreate { get; set; }
     [Parameter] public Func<SubcategoryViewModel, SubcategoryUpdateViewModel, Task> OnUpdate { get; set; }
     [Parameter] public EventCallback<SubcategoryViewModel> OnDelete { get; set; }

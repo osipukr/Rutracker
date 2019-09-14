@@ -1,4 +1,4 @@
-﻿@if (Items == null || !Items.Any())
+﻿@if (Items == null)
 {
     <LoadingBackground ShowLoader="false">
         <span>Sorry, but torrent list is empty...</span>
@@ -6,19 +6,7 @@
 }
 else
 {
-    <hr />
-    <div class="d-flex justify-content-between align-items-center">
-        <MatIconButton Link="@(IsAuthenticated ? Constants.Path.TorrentCreate : Constants.Path.Login)"
-                       Icon="@MatIconNames.Create" />
-
-        <div class="d-flex align-items-center pr-4">
-            <span class="pr-2">@TotalItems</span>
-            <h3 class="m-0">Total torrents</h3>
-        </div>
-    </div>
-    <hr />
-
-    <div class="mat-layout-grid px-0">
+    <div class="mat-layout-grid px-0 mb-3">
         <div class="mat-layout-grid-inner">
             @foreach (var torrent in Items)
             {
@@ -28,21 +16,9 @@ else
             }
         </div>
     </div>
-    <hr />
 }
 
 @code
 {
-    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
     [Parameter] public IEnumerable<TorrentViewModel> Items { get; set; }
-    [Parameter] public int TotalItems { get; set; }
-
-    private bool IsAuthenticated { get; set; }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        var state = await AuthenticationStateTask;
-
-        IsAuthenticated = state.IsUserAuthenticated();
-    }
 }

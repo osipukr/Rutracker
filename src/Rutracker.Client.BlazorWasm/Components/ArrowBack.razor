@@ -1,0 +1,14 @@
+﻿<div class="mat-layout-grid px-0 pb-5">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell">
+            <MatIconButton Link="@Link" Icon="@MatIconNames.Arrow_back" />
+        </div>
+    </div>
+</div>
+
+@code
+{
+    [Parameter] public string Link { get; set; }
+
+    protected override void OnInitialized() => Link = !string.IsNullOrWhiteSpace(Link) ? Link : Constants.Path.Home;
+}

@@ -13,7 +13,6 @@ namespace Rutracker.Shared.Models.ViewModels.Torrent
         public string Description { get; set; }
 
         public string Content { get; set; }
-        public string ImageUrl { get; set; }
 
         [Required]
         [Range(1, int.MaxValue)]

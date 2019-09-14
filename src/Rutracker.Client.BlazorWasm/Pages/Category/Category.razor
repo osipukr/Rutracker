@@ -3,19 +3,14 @@
 
 @page "/categories/{id:int}"
 
-<div class="mat-layout-grid px-0 pb-5">
-    <div class="mat-layout-grid-inner">
-        <div class="mat-layout-grid-cell">
-            <MatIconButton Link="@Constants.Path.Categories" Icon="@MatIconNames.Arrow_back" />
-        </div>
-    </div>
-</div>
+<ArrowBack Link="@Constants.Path.Categories" />
 
-<Page Title="category" Action="@LoadAction" Errors="@Errors">
+<Page Action="@LoadAction" Errors="@Errors">
     <h2>@CategoryModel.Name</h2>
 
+    <ListItemsHeader Title="Total subcategories" TotalItems="@Subcategories.Count" />
+
     <SubcategoryList Items="@Subcategories"
-                     TotalItems="@Subcategories.Count"
                      OnCreate="@CreateSubcategoryAsync"
                      OnUpdate="@UpdateSubcategoryAsync"
                      OnDelete="@DeleteSubcategoryAsync" />
@@ -28,13 +23,11 @@
     private CategoryViewModel CategoryModel { get; set; }
     private List<SubcategoryViewModel> Subcategories { get; set; } = new List<SubcategoryViewModel>();
 
-    protected override async Task OnInitializedAsync() => await LoadAsync(CategoryAsync);
-
-    private async Task CategoryAsync()
+    protected override async Task OnInitializedAsync() => await LoadAsync(async () =>
     {
         CategoryModel = await CategoryService.FindAsync(Id);
-        Subcategories = (await SubcategoryService.ListAsync(Id))?.ToList();
-    }
+        Subcategories = CategoryModel.Subcategories.ToList();
+    });
 
     private async Task CreateSubcategoryAsync(SubcategoryCreateViewModel model) => await ActionAsync(async () =>
     {

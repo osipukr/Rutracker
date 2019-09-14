@@ -86,7 +86,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             comment.CreatedAt = DateTime.UtcNow;
 
-            await _commentRepository.AddAsync(comment);
+            comment = await _commentRepository.AddAsync(comment);
             await _unitOfWork.CompleteAsync();
 
             return comment;
@@ -102,7 +102,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             result.Text = comment.Text;
             result.LastUpdatedAt = DateTime.UtcNow;
 
-            _commentRepository.Update(result);
+            result = _commentRepository.Update(result);
 
             await _unitOfWork.CompleteAsync();
 
@@ -113,7 +113,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var comment = await FindAsync(id, userId);
 
-            _commentRepository.Remove(comment);
+            comment = _commentRepository.Remove(comment);
 
             await _unitOfWork.CompleteAsync();
 

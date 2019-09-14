@@ -4,10 +4,12 @@
 
 @page "/users"
 
-<Page Title="user list" Action="@LoadAction" Errors="@Errors">
+<Page Action="@LoadAction" Errors="@Errors">
     @if (UsersPagination != null)
     {
-        <UserList Items="@UsersPagination.Items" TotalItems="@UsersPagination.TotalItems" />
+        <ListItemsHeader Title="Total users" TotalItems="@UsersPagination.TotalItems" />
+
+        <UserList Items="@UsersPagination.Items" />
 
         <Pagination Page="@Page"
                     PageSize="@PageSize"

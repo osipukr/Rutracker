@@ -1,4 +1,5 @@
-﻿@inject IModalService ModalService
+﻿@inherits PageComponent
+@inject IModalService ModalService
 @inject IFileReaderService FileReaderService
 @inject IUserService UserService
 
@@ -17,19 +18,13 @@
 {
     private ElementReference _inputTypeFileElement;
 
-    private async Task UpdateClicked()
+    private async Task UpdateClicked() => await ActionAsync(async () =>
     {
         var file = (await FileReaderService.CreateReference(_inputTypeFileElement).EnumerateFilesAsync()).FirstOrDefault();
-
-        if (file == null)
-        {
-            return;
-        }
-
         var url = await UserService.ChangeImageAsync(file);
 
         ModalService.Close(ModalResult.Ok(url));
-    }
+    });
 
     private void CancelClicked() => ModalService.Cancel();
 }

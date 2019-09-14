@@ -10,13 +10,16 @@ namespace Rutracker.Client.BlazorWasm.Models
         [Inject]
         public IMatToaster MatToaster { get; set; }
 
-        public ActionTypes LoadAction { get; set; } = ActionTypes.InProgress;
+        public ActionTypes LoadAction { get; set; } = ActionTypes.Succeeded;
         public string Errors { get; set; }
 
-        public async Task LoadAsync(Func<Task> func, bool isToaster = false, string toasterTitle = null)
+        public async Task LoadAsync(Func<Task> func, bool isToaster = false)
         {
             try
             {
+                LoadAction = ActionTypes.InProgress;
+                StateHasChanged();
+
                 await func();
 
                 LoadAction = ActionTypes.Succeeded;
@@ -29,7 +32,7 @@ namespace Rutracker.Client.BlazorWasm.Models
 
                 if (isToaster)
                 {
-                    MatToaster.Add(ex.Message, MatToastType.Warning, toasterTitle);
+                    MatToaster.Add(ex.Message, MatToastType.Danger);
                 }
             }
             finally
@@ -51,7 +54,7 @@ namespace Rutracker.Client.BlazorWasm.Models
             }
             catch (Exception ex)
             {
-                MatToaster.Add(ex.Message, MatToastType.Warning);
+                MatToaster.Add(ex.Message, MatToastType.Danger);
             }
             finally
             {

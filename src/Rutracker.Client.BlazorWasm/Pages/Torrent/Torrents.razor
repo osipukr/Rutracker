@@ -2,12 +2,23 @@
 
 @page "/torrents"
 
-<Page Title="torrent list" Action="@LoadAction" Errors="@Errors">
+<Page Action="@LoadAction" Errors="@Errors">
     <Filtration OnChange="@FilterChanged" />
 
     @if (TorrentsPagination != null)
     {
-        <TorrentList Items="@TorrentsPagination.Items" TotalItems="@TorrentsPagination.TotalItems" />
+        <ListItemsHeader Title="Total torrents" TotalItems="@TorrentsPagination.TotalItems">
+            <AuthorizeView Policy="@Policies.IsUser">
+                <NotAuthorized>
+                    <MatIconButton Link="@Constants.Path.Login" Icon="@MatIconNames.Add" title="Create new torrent" />
+                </NotAuthorized>
+                <Authorized>
+                    <MatIconButton Link="@Constants.Path.TorrentCreate" Icon="@MatIconNames.Add" title="Create new torrent" />
+                </Authorized>
+            </AuthorizeView>
+        </ListItemsHeader>
+
+        <TorrentList Items="@TorrentsPagination.Items" />
 
         <Pagination Page="@Page"
                     PageSize="@PageSize"

@@ -1,6 +1,5 @@
 ﻿@inherits PageComponent
 @inject ICategoryService CategoryService
-@inject ISubcategoryService SubcategoryService
 
 <div class="mat-layout-grid px-0">
     <div class="mat-layout-grid-inner">
@@ -24,7 +23,7 @@
                         <MatSelect @bind-Value="@CategoryId"
                                    Label="Category"
                                    Disabled="@(Categories == null)"
-                                   Outlined="true"
+                                   Enhanced="true"
                                    class="w-100">
                             <MatOption Value="@null">No select</MatOption>
 
@@ -42,7 +41,7 @@
                         <MatSelect @bind-Value="@SubcategoryId"
                                    Label="Subcategory"
                                    Disabled="@(Subcategories == null)"
-                                   Outlined="true"
+                                   Enhanced="true"
                                    class="w-100">
                             <MatOption Value="@null">No select</MatOption>
 
@@ -50,9 +49,7 @@
                             {
                                 @foreach (var subcategory in Subcategories)
                                 {
-                                    <MatOption Value="@subcategory.Id.ToString()">
-                                        @subcategory.Name (@subcategory.TorrentsCount)
-                                    </MatOption>
+                                    <MatOption Value="@subcategory.Id.ToString()">@subcategory.Name</MatOption>
                                 }
                             }
                         </MatSelect>
@@ -87,10 +84,7 @@
     private IEnumerable<CategoryViewModel> Categories { get; set; }
     private IEnumerable<SubcategoryViewModel> Subcategories { get; set; }
 
-    protected override async Task OnInitializedAsync() => await CategoriesAsync();
-
-    private async Task CategoriesAsync() => await ActionAsync(async () => Categories = await CategoryService.ListAsync());
-    private async void SubcategoriesAsync(int categoryId) => await ActionAsync(async () => Subcategories = await SubcategoryService.ListAsync(categoryId));
+    protected override async Task OnInitializedAsync() => await ActionAsync(async () => Categories = await CategoryService.ListAsync());
 
     private string CategoryId
     {
@@ -100,7 +94,7 @@
             if (int.TryParse(value, out var id))
             {
                 FilterModel.CategoryId = id;
-                SubcategoriesAsync(id);
+                Subcategories = Categories.FirstOrDefault(x => x.Id == id)?.Subcategories;
             }
             else
             {
@@ -122,8 +116,8 @@
     private void ResetClicked()
     {
         FilterModel.Search = null;
-        CategoryId = null;
-        SubcategoryId = null;
+        FilterModel.CategoryId = null;
+        FilterModel.SubcategoryId = null;
 
         ApplyClicked();
     }

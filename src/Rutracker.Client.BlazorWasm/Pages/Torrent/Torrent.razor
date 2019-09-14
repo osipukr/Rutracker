@@ -3,21 +3,16 @@
 
 @page "/torrents/{id:int}"
 
-<div class="mat-layout-grid px-0 pb-5">
-    <div class="mat-layout-grid-inner">
-        <div class="mat-layout-grid-cell">
-            <MatIconButton Link="@Constants.Path.Torrents" Icon="@MatIconNames.Arrow_back" />
-        </div>
-    </div>
-</div>
+<ArrowBack Link="@Constants.Path.Torrents" />
 
-<Page Title="torrent information" Action="@LoadAction" Errors="@Errors">
+<Page Action="@LoadAction" Errors="@Errors">
     <TorrentDetails Torrent="@TorrentDetailsModel" />
 
     @if (CommentPagination != null)
     {
+        <ListItemsHeader Title="Total comments" TotalItems="@Comments.Count" />
+
         <CommentList Items="@Comments"
-                     TotalItems="@CommentPagination.TotalItems"
                      OnCreate="@CommentCreateAsync"
                      OnUpdate="@CommentUpdateAsync"
                      OnDelete="@CommentDeleteAsync"
@@ -43,27 +38,25 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadAsync(TorrentAsync);
+        await LoadAsync(async () => TorrentDetailsModel = await TorrentService.FindAsync(Id));
 
         if (LoadAction == ActionTypes.Succeeded)
         {
-            await ActionAsync(CommentsAsync);
+            await CommentsAsync();
         }
     }
 
-    private async Task TorrentAsync() => TorrentDetailsModel = await TorrentService.FindAsync(Id);
-
-    private async Task CommentsAsync()
+    private async Task CommentsAsync() => await ActionAsync(async () =>
     {
         CommentPagination = await CommentService.ListAsync(Page, PageSize, Id);
         Comments = CommentPagination.Items.ToList();
-    }
+    });
 
     private async Task PageChanged(int page)
     {
         Page = page;
 
-        await ActionAsync(CommentsAsync);
+        await CommentsAsync();
     }
 
     private async Task CommentCreateAsync(CommentCreateViewModel comment) => await ActionAsync(async () =>

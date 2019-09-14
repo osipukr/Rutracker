@@ -69,7 +69,7 @@ namespace Rutracker.Server.BusinessLayer.Services
                 throw new RutrackerException($"The torrent with id '{file.TorrentId}' not found.", ExceptionEventTypes.NotValidParameters);
             }
 
-            await _fileRepository.AddAsync(file);
+            file = await _fileRepository.AddAsync(file);
             await _unitOfWork.CompleteAsync();
 
             return file;
@@ -79,7 +79,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var file = await FindAsync(id, userId);
 
-            _fileRepository.Remove(file);
+            file = _fileRepository.Remove(file);
 
             await _unitOfWork.CompleteAsync();
 

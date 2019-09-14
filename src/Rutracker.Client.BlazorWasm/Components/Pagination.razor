@@ -1,40 +1,37 @@
-﻿@if (TotalPages > 1)
-{
-    <div class="mat-layout-grid p-0">
-        <div class="mat-layout-grid-inner">
-            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                <div class="mdc-paginator">
-                    <div class="mdc-paginator-container">
-                        <div class="mdc-paginator-range-actions">
-                            <span class="mdc-paginator-range-label ml-0 mr-1 text-center">
-                                @($"Page {Page} of {TotalPages}") <br />
-                                @($"Total items: {TotalItems}")
-                            </span>
+﻿<div class="mat-layout-grid p-0">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+            <div class="mdc-paginator">
+                <div class="mdc-paginator-container">
+                    <div class="mdc-paginator-range-actions">
+                        <span class="mdc-paginator-range-label ml-0 mr-1 text-center">
+                            @($"Page {Page} of {TotalPages}") <br />
+                            @($"Total items: {TotalItems}")
+                        </span>
 
-                            <div class="mdc-paginator-range-buttons">
-                                <MatIconButton OnClick="@(_ => PageChangeClicked(1))"
-                                               Disabled="@(Page == 1)"
-                                               Icon="@MatIconNames.First_page" />
+                        <div class="mdc-paginator-range-buttons">
+                            <MatIconButton OnClick="@(_ => PageChanged(1))"
+                                           Disabled="@(Page == 1)"
+                                           Icon="@MatIconNames.First_page" />
 
-                                <MatIconButton OnClick="@(_ => PageChangeClicked(Page - 1))"
-                                               Disabled="@(!HasPrevious)"
-                                               Icon="@MatIconNames.Navigate_before" />
+                            <MatIconButton OnClick="@(_ => PageChanged(Page - 1))"
+                                           Disabled="@(!HasPrevious)"
+                                           Icon="@MatIconNames.Navigate_before" />
 
-                                <MatIconButton OnClick="@(_ => PageChangeClicked(Page + 1))"
-                                               Disabled="@(!HasNext)"
-                                               Icon="@MatIconNames.Navigate_next" />
+                            <MatIconButton OnClick="@(_ => PageChanged(Page + 1))"
+                                           Disabled="@(!HasNext)"
+                                           Icon="@MatIconNames.Navigate_next" />
 
-                                <MatIconButton OnClick="@(_ => PageChangeClicked(TotalPages))"
-                                               Disabled="@(Page == TotalPages)"
-                                               Icon="@MatIconNames.Last_page" />
-                            </div>
+                            <MatIconButton OnClick="@(_ => PageChanged(TotalPages))"
+                                           Disabled="@(Page == TotalPages)"
+                                           Icon="@MatIconNames.Last_page" />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-}
+</div>
 
 @code
 {
@@ -47,5 +44,5 @@
     private bool HasPrevious => Page > 1 && TotalPages > 1;
     private bool HasNext => Page < TotalPages;
 
-    private void PageChangeClicked(int page) => OnPageChange.InvokeAsync(page);
+    private void PageChanged(int page) => OnPageChange.InvokeAsync(page);
 }

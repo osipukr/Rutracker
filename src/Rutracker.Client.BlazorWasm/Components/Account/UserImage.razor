@@ -72,7 +72,7 @@
 
     private async void ChangeImageFileModalClosed(ModalResult result)
     {
-        if (!result.Cancelled && result.Data is string model)
+        if (!result.Cancelled && result.Data is string model && !string.IsNullOrWhiteSpace(model))
         {
             await OnChangeFile.InvokeAsync(model);
         }

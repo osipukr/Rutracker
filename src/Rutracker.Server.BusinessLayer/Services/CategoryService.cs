@@ -50,7 +50,7 @@ namespace Rutracker.Server.BusinessLayer.Services
                 throw new RutrackerException($"Category with name '{category.Name}' already exists.", ExceptionEventTypes.NotValidParameters);
             }
 
-            await _categoryRepository.AddAsync(category);
+            category = await _categoryRepository.AddAsync(category);
             await _unitOfWork.CompleteAsync();
 
             return category;
@@ -70,7 +70,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             result.Name = category.Name;
 
-            _categoryRepository.Update(result);
+            result = _categoryRepository.Update(result);
             await _unitOfWork.CompleteAsync();
 
             return result;
@@ -80,7 +80,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var category = await FindAsync(id);
 
-            _categoryRepository.Remove(category);
+            category = _categoryRepository.Remove(category);
             await _unitOfWork.CompleteAsync();
 
             return category;

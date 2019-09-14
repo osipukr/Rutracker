@@ -1,0 +1,145 @@
+﻿@inject ITorrentService TorrentService
+@inject ICategoryService CategoryService
+
+@page "/torrents/create"
+
+<ArrowBack Link="@Constants.Path.Torrents" />
+
+<EditForm Model="@Torrent" OnValidSubmit="@OnValidSubmit" class="w-100 h-100">
+    <DataAnnotationsValidator />
+
+    @*<div class="form-group">
+        <div class="row px-0 pt-4 pb-3">
+            <div class="col-md-6 py-3">
+                <MatSelect @bind-Value="@CategoryId"
+                           Label="Category"
+                           Disabled="@(Categories == null)"
+                           Outlined="true"
+                           class="w-100">
+                    <MatOption Value="@null">No select</MatOption>
+
+                    @if (Categories != null)
+                    {
+                        @foreach (var category in Categories)
+                        {
+                            <MatOption Value="@category.Id.ToString()">@category.Name</MatOption>
+                        }
+                    }
+                </MatSelect>
+            </div>
+
+            <div class="col-md-6 py-3">
+                <MatSelect @bind-Value="@SubcategoryId"
+                           Label="Subcategory"
+                           Disabled="@(Subcategories == null)"
+                           Outlined="true"
+                           class="w-100">
+                    <MatOption Value="@null">No select</MatOption>
+
+                    @if (Subcategories != null)
+                    {
+                        @foreach (var subcategory in Subcategories)
+                        {
+                            <MatOption Value="@subcategory.Id.ToString()">@subcategory.Name</MatOption>
+                        }
+                    }
+                </MatSelect>
+            </div>
+        </div>
+
+        <ValidationMessage For="@(() => Torrent.SubcategoryId)" />
+    </div>*@
+
+    <div class="form-group">
+        <MatTextField @bind-Value="@Torrent.Name"
+                      Label="Name"
+                      Icon="@MatIconNames.Title"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true" />
+
+        <ValidationMessage For="@(() => Torrent.Name)" />
+    </div>
+
+    <div class="form-group">
+        <MatTextField @bind-Value="@Torrent.Description"
+                      Label="Description"
+                      Icon="@MatIconNames.Description"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true" />
+
+        <ValidationMessage For="@(() => Torrent.Description)" />
+    </div>
+
+    <div class="form-group">
+        <MatTextField @bind-Value="@Torrent.Content"
+                      Label="Content"
+                      Icon="@MatIconNames.Text_fields"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      TextArea="true"
+                      InputStyle="min-height: 200px;" />
+
+        <ValidationMessage For="@(() => Torrent.Content)" />
+    </div>
+
+    <div class="d-flex flex-row-reverse my-4">
+        <MatButton Label="Create" Raised="true" Disabled="@(Torrent.SubcategoryId == 0)" type="submit" />
+    </div>
+</EditForm>
+
+@code
+{
+    private TorrentCreateViewModel Torrent { get; set; } = new TorrentCreateViewModel();
+    private int TorrentId { get; set; }
+
+    private int? _categoryId;
+
+    private IEnumerable<CategoryViewModel> Categories { get; set; }
+    private IEnumerable<SubcategoryViewModel> Subcategories { get; set; }
+
+    protected override async Task OnInitializedAsync() => await ActionAsync(async () => Categories = await CategoryService.ListAsync());
+
+    private string CategoryId
+    {
+        get => _categoryId.ToString();
+        set
+        {
+            if (int.TryParse(value, out var id))
+            {
+                _categoryId = id;
+                Subcategories = Categories.FirstOrDefault(x => x.Id == id)?.Subcategories;
+            }
+            else
+            {
+                _categoryId = null;
+                Subcategories = null;
+            }
+
+            SubcategoryId = null;
+            StateHasChanged();
+        }
+    }
+
+    private string SubcategoryId
+    {
+        get => Torrent.SubcategoryId.ToString();
+        set => Torrent.SubcategoryId = int.TryParse(value, out var id) ? id : 0;
+    }
+
+    private async Task OnValidSubmit()
+    {
+        await LoadAsync(async () =>
+        {
+            var result = await TorrentService.CreateAsync(Torrent);
+
+            TorrentId = result.Id;
+        });
+
+        if (LoadAction == ActionTypes.Succeeded)
+        {
+            NavigationManager.NavigateTo(PageHelpers.TorrentLink(TorrentId));
+        }
+    }
+}

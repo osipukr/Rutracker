@@ -2,9 +2,10 @@
 
 @page "/categories"
 
-<Page Title="category list" Action="@LoadAction" Errors="@Errors">
+<Page Action="@LoadAction" Errors="@Errors">
+    <ListItemsHeader Title="Total categories" TotalItems="@CategoriesItems.Count" />
+
     <CategoryList Items="@CategoriesItems"
-                  TotalItems="@CategoriesItems.Count"
                   OnCreate="@CreateCategoryAsync"
                   OnUpdate="@UpdateCategoryAsync"
                   OnDelete="@DeleteCategoryAsync" />
@@ -14,9 +15,10 @@
 {
     private List<CategoryViewModel> CategoriesItems { get; set; } = new List<CategoryViewModel>();
 
-    protected override async Task OnInitializedAsync() => await LoadAsync(CategoriesAsync);
-
-    private async Task CategoriesAsync() => CategoriesItems = (await CategoryService.ListAsync())?.ToList();
+    protected override async Task OnInitializedAsync() => await LoadAsync(async () =>
+    {
+        CategoriesItems = (await CategoryService.ListAsync()).ToList();
+    });
 
     private async Task CreateCategoryAsync(CategoryCreateViewModel model) => await ActionAsync(async () =>
     {

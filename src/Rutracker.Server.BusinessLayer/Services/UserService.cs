@@ -112,9 +112,6 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<User> ChangeImageAsync(string id, string mimeType, Stream imageStream)
         {
-            Guard.Against.NullOrWhiteSpace(id, message: "Invalid user id.");
-            Guard.Against.NullNotValid(imageStream, "Invalid image stream.");
-
             var path = await _fileStorageService.UploadUserImageAsync(id, mimeType, imageStream);
 
             return await ChangeImageAsync(id, path);
