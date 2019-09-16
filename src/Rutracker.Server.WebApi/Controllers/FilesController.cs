@@ -4,7 +4,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rutracker.Server.BusinessLayer.Interfaces;
-using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Extensions;
 using Rutracker.Shared.Models;
@@ -39,13 +38,12 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<FileViewModel> Create(FileCreateViewModel model)
+        public async Task<FileViewModel> Add([FromForm] FileCreateViewModel model)
         {
-            var file = _mapper.Map<File>(model);
+            var stream = model.File.OpenReadStream();
+            var result = await _fileService.AddAsync(User.GetUserId(), model.TorrentId, model.File.ContentType, model.File.FileName, stream);
 
-            file = await _fileService.AddAsync(User.GetUserId(), file);
-
-            return _mapper.Map<FileViewModel>(file);
+            return _mapper.Map<FileViewModel>(result);
         }
 
         [HttpDelete("{id}")]

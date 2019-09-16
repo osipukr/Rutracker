@@ -1,0 +1,87 @@
+﻿@inject IModalService ModalService
+
+@if (Items == null)
+{
+    <LoadingBackground ShowLoader="false">
+        <span>Sorry, but file list is empty...</span>
+    </LoadingBackground>
+}
+else
+{
+    <MatTable Items="@Items" class="mt-2 mat-elevation-z10">
+        <MatTableHeader>
+            @if (ShowActions)
+            {
+                <th class="p-2 text-center">
+                    <MatIconButton OnClick="@CreateModalOpened" Icon="@MatIconNames.Add" title="Add new file" />
+                </th>
+            }
+
+            <th>Size</th>
+            <th>Name</th>
+        </MatTableHeader>
+        <MatTableRow Context="file">
+            @if (ShowActions)
+            {
+                <td>
+                    <div style="width:100px;">
+                        <MatIconButton OnClick="@(_ => DeleteModalOpened(file))" Icon="@MatIconNames.Delete" title="Delete file" />
+                        <MatIconButton Icon="@MatIconNames.Cloud_download" title="Download file" />
+                    </div>
+                </td>
+            }
+
+            <td>@($"{PageHelpers.ConvertBytesToMegabytes(file.Size):F3} mb")</td>
+            <td>@file.Name</td>
+        </MatTableRow>
+    </MatTable>
+}
+
+@code
+{
+    [Parameter] public IEnumerable<FileViewModel> Items { get; set; }
+    [Parameter] public bool ShowActions { get; set; }
+    [Parameter] public int TorrentId { get; set; }
+    [Parameter] public EventCallback<IEnumerable<FileViewModel>> OnCreate { get; set; }
+    [Parameter] public EventCallback<FileViewModel> OnDelete { get; set; }
+
+    private void CreateModalOpened()
+    {
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(TorrentId), TorrentId);
+
+        ModalService.OnClose += CreateModalClosed;
+        ModalService.Show("Add file", typeof(FileAddModal), parameters);
+    }
+
+    private void DeleteModalOpened(FileViewModel model)
+    {
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(FileViewModel), model);
+
+        ModalService.OnClose += DeleteModalClosed;
+        ModalService.Show("Delete file", typeof(FileDeleteModal), parameters);
+    }
+
+    private async void CreateModalClosed(ModalResult result)
+    {
+        if (!result.Cancelled && result.Data is IEnumerable<FileViewModel> model)
+        {
+            await OnCreate.InvokeAsync(model);
+        }
+
+        ModalService.OnClose -= CreateModalClosed;
+    }
+
+    private async void DeleteModalClosed(ModalResult result)
+    {
+        if (!result.Cancelled && result.Data is FileViewModel model)
+        {
+            await OnDelete.InvokeAsync(model);
+        }
+
+        ModalService.OnClose -= DeleteModalClosed;
+    }
+}

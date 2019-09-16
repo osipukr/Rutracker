@@ -65,7 +65,7 @@
 
         UserModel.ImageUrl = null;
         ImageRenderKey = Guid.NewGuid().ToString();
-    }, successMessage: "Image successfully changed.");
+    }, successMessage: "Image successfully deleted.");
 
     private async Task ChangeUserAsync(ChangeUserViewModel model) => await ActionAsync(async () =>
     {

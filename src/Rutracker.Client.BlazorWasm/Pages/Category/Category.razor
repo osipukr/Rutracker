@@ -35,7 +35,7 @@
 
         var subcategory = await SubcategoryService.CreateAsync(model);
 
-        Subcategories.Add(subcategory);
+        Subcategories.Insert(0, subcategory);
     }, successMessage: "Subcategory successfully created.");
 
     private async Task UpdateSubcategoryAsync(SubcategoryViewModel subcategory, SubcategoryUpdateViewModel model) => await ActionAsync(async () =>

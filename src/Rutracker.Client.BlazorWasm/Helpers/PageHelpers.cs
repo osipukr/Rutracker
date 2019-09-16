@@ -17,9 +17,9 @@
             return string.Format(Constants.Path.Category, id.ToString());
         }
 
-        public static string UserLink(string id)
+        public static string UserLink(string userName)
         {
-            return string.Format(Constants.Path.User, id);
+            return string.Format(Constants.Path.User, userName);
         }
 
         public static double ConvertBytesToMegabytes(long bytes)

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Blazor.FileReader;
 using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.Torrent;
 
@@ -11,7 +12,10 @@ namespace Rutracker.Client.BlazorWasm.Interfaces
         Task<IEnumerable<TorrentViewModel>> PopularAsync(int count);
         Task<TorrentDetailsViewModel> FindAsync(int id);
         Task<TorrentDetailsViewModel> CreateAsync(TorrentCreateViewModel model);
-        Task<TorrentDetailsViewModel> Update(int id, TorrentUpdateViewModel model);
+        Task<TorrentDetailsViewModel> UpdateAsync(int id, TorrentUpdateViewModel model);
         Task DeleteAsync(int id);
+        Task<string> ChangeImageAsync(int id, ChangeTorrentImageViewModel model);
+        Task<string> ChangeImageAsync(int id, IFileReference imageReference);
+        Task DeleteImageAsync(int id);
     }
 }

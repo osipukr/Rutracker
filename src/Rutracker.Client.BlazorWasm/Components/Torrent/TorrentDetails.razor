@@ -1,81 +1,153 @@
-<MatList TwoLine="true">
-    <MatListItem>
-        <MatListItemText>
-            <MatListItemPrimaryText>Id</MatListItemPrimaryText>
-            <MatListItemSecondaryText>@Torrent.Id</MatListItemSecondaryText>
-        </MatListItemText>
-    </MatListItem>
+@inject IModalService ModalService
 
-    <MatListItem>
-        <MatListItemText>
-            <MatListItemPrimaryText>Title</MatListItemPrimaryText>
-            <MatListItemSecondaryText>@Torrent.Name</MatListItemSecondaryText>
-        </MatListItemText>
-    </MatListItem>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title mb-4">
+                    <div class="d-flex justify-content-start">
+                        <MatButton OnClick="@MenuOpenClicked" RefBack="@_button" class="p-0 h-100 no-select image-container" style="width: 200px;">
+                            @if (PageHelpers.IsValidImageUrl(Torrent.ImageUrl))
+                            {
+                                <img src="@Torrent.ImageUrl" class="img-thumbnail" alt="Torrent image" />
+                            }
+                            else
+                            {
+                                <img src="@Constants.Path.DefaultTorrentImage" class="img-thumbnail" alt="Default torrent image" />
+                            }
+                        </MatButton>
 
-    <MatListItem>
-        <MatListItemText>
-            <MatListItemPrimaryText>Description</MatListItemPrimaryText>
-            <MatListItemSecondaryText>@Torrent.Description</MatListItemSecondaryText>
-        </MatListItemText>
-    </MatListItem>
+                        <MatMenu @ref="_menu" TargetForwardRef="@_button">
+                            <MatList>
+                                <MatListItem OnClick="@ChangeImageModalOpened">From url</MatListItem>
+                                <MatListItem OnClick="@ChangeImageFileModalOpened">From file</MatListItem>
 
-    <MatListItem>
-        <MatListItemText>
-            <MatListItemPrimaryText>Date</MatListItemPrimaryText>
-            <MatListItemSecondaryText>@Torrent.CreatedAt.ToLongDateString()</MatListItemSecondaryText>
-        </MatListItemText>
-    </MatListItem>
+                                @if (PageHelpers.IsValidImageUrl(Torrent.ImageUrl))
+                                {
+                                    <MatListItem OnClick="@DeleteModalOpened">Delete</MatListItem>
+                                }
+                                else
+                                {
+                                    <MatListItem Disabled="true">Delete</MatListItem>
+                                }
+                            </MatList>
+                        </MatMenu>
 
-    <MatListItem>
-        <MatListItemText>
-            <MatListItemPrimaryText>Content</MatListItemPrimaryText>
-            <MatListItemSecondaryText>@Torrent.Content</MatListItemSecondaryText>
-        </MatListItemText>
-    </MatListItem>
-</MatList>
+                        <div class="ml-3">
+                            <h2 class="d-block" title="Torrent name" style="font-size: 1.5rem; font-weight: bold">
+                                @Torrent.Name
+                            </h2>
 
-@if (Torrent.Files != null)
-{
-    <MatTable Items="@Torrent.Files" class="mt-2 mat-elevation-z10">
-        <MatTableHeader>
-            @if (IsCurrentUserTorrent)
-            {
-                <th class="p-2 text-center">
-                    <MatIconButton Icon="@MatIconNames.Add" title="Add new file" />
-                </th>
-            }
+                            <h6 class="d-block" title="User name">
+                                Created by: <a href="@PageHelpers.UserLink(Torrent.User.UserName)">@Torrent.User.UserName</a>
+                            </h6>
 
-            <th>Size</th>
-            <th>Name</th>
-        </MatTableHeader>
-        <MatTableRow Context="file">
-            @if (IsCurrentUserTorrent)
-            {
-                <td>
-                    <div style="width:100px;">
-                        <MatIconButton Icon="@MatIconNames.Delete" />
+                            <h6 class="d-block" title="Torrent description">
+                                Description: @Torrent.Description
+                            </h6>
+                        </div>
                     </div>
-                </td>
-            }
+                </div>
 
-            <td>@file.Size</td>
-            <td>@file.Name</td>
-        </MatTableRow>
-    </MatTable>
-}
+                <div class="row">
+                    <div class="col-12">
+                        <MatList TwoLine="true" class="mb-4">
+                            <MatListItem>
+                                <MatListItemText>
+                                    <MatListItemPrimaryText>Id</MatListItemPrimaryText>
+                                    <MatListItemSecondaryText>@Torrent.Id</MatListItemSecondaryText>
+                                </MatListItemText>
+                            </MatListItem>
+
+                            <MatListItem>
+                                <MatListItemText>
+                                    <MatListItemPrimaryText>Title</MatListItemPrimaryText>
+                                    <MatListItemSecondaryText>@Torrent.Name</MatListItemSecondaryText>
+                                </MatListItemText>
+                            </MatListItem>
+
+                            <MatListItem>
+                                <MatListItemText>
+                                    <MatListItemPrimaryText>Created At</MatListItemPrimaryText>
+                                    <MatListItemSecondaryText>@Torrent.CreatedAt.ToLongDateString()</MatListItemSecondaryText>
+                                </MatListItemText>
+                            </MatListItem>
+
+                            <MatListItem>
+                                <MatListItemText>
+                                    <MatListItemPrimaryText>Content</MatListItemPrimaryText>
+                                    <MatListItemSecondaryText>@Torrent.Content</MatListItemSecondaryText>
+                                </MatListItemText>
+                            </MatListItem>
+                        </MatList>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code
 {
-    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
     [Parameter] public TorrentDetailsViewModel Torrent { get; set; }
+    [Parameter] public EventCallback<ChangeTorrentImageViewModel> OnImageChange { get; set; }
+    [Parameter] public EventCallback<string> OnImageFileChange { get; set; }
+    [Parameter] public EventCallback OnImageDelete { get; set; }
 
-    private bool IsCurrentUserTorrent { get; set; }
+    private ForwardRef _button = new ForwardRef();
+    private BaseMatMenu _menu;
 
-    protected override async Task OnParametersSetAsync()
+    private async Task MenuOpenClicked() => await _menu.OpenAsync();
+
+    private void ChangeImageModalOpened()
     {
-        var state = await AuthenticationStateTask;
+        ModalService.OnClose += ChangeImageModalClosed;
+        ModalService.Show("Change torrent image", typeof(TorrentImageChangeModal));
+    }
 
-        IsCurrentUserTorrent = state.IsUserAuthenticated() && state.GetUserId() == Torrent.User.Id;
+    private void ChangeImageFileModalOpened()
+    {
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(TorrentDetailsViewModel.Id), Torrent.Id);
+
+        ModalService.OnClose += ChangeImageFileModalClosed;
+        ModalService.Show("Change torrent image", typeof(TorrentImageFileChangeModal), parameters);
+    }
+
+    private void DeleteModalOpened()
+    {
+        ModalService.OnClose += DeleteModalClosed;
+        ModalService.Show("Delete torrent image", typeof(TorrentImageDeleteModal));
+    }
+
+    private async void ChangeImageModalClosed(ModalResult result)
+    {
+        if (!result.Cancelled && result.Data is ChangeTorrentImageViewModel model)
+        {
+            await OnImageChange.InvokeAsync(model);
+        }
+
+        ModalService.OnClose -= ChangeImageModalClosed;
+    }
+
+    private async void ChangeImageFileModalClosed(ModalResult result)
+    {
+        if (!result.Cancelled && result.Data is string model)
+        {
+            await OnImageFileChange.InvokeAsync(model);
+        }
+
+        ModalService.OnClose -= ChangeImageFileModalClosed;
+    }
+
+    private async void DeleteModalClosed(ModalResult result)
+    {
+        if (!result.Cancelled)
+        {
+            await OnImageDelete.InvokeAsync(EventArgs.Empty);
+        }
+
+        ModalService.OnClose -= DeleteModalClosed;
     }
 }

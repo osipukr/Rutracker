@@ -14,7 +14,7 @@
                 }
                 else
                 {
-                    <img class="w-100 h-100 rounded-circle" src="@Constants.Path.DefaultProfileImage" alt="Default user image" />
+                    <img class="w-100 h-100 rounded-circle" src="@Constants.Path.DefaultUserImage" alt="Default user image" />
                 }
             </div>
 
@@ -62,7 +62,7 @@
 
     private UserProfileViewModel UserModel { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync() => await LoadAsync(async () =>
     {
         var state = await AuthenticationStateTask;
 
@@ -72,9 +72,7 @@
         }
         else
         {
-            await LoadAsync(UserAsync);
+            UserModel = await UserService.ProfileAsync(UserName);
         }
-    }
-
-    private async Task UserAsync() => UserModel = await UserService.ProfileAsync(UserName);
+    });
 }

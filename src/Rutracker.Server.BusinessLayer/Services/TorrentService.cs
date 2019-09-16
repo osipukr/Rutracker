@@ -119,33 +119,29 @@ namespace Rutracker.Server.BusinessLayer.Services
             return torrent;
         }
 
-        public async Task<Torrent> AddImageAsync(int id, string imageUrl)
+        public async Task<Torrent> ChangeImageAsync(int id, string userId, string imageUrl)
         {
             Guard.Against.NullOrWhiteSpace(imageUrl, message: "Invalid link to the picture.");
 
-            var torrent = await FindAsync(id);
+            var torrent = await FindAsync(id, userId);
 
-            torrent.ImageUrl = imageUrl;
-
-            torrent = _torrentRepository.Update(torrent);
-
-            await _unitOfWork.CompleteAsync();
-
-            return torrent;
+            return await UpdateImageAsync(torrent, imageUrl);
         }
 
-        public async Task<Torrent> AddImageAsync(int id, string imageMimeType, Stream imageStream)
+        public async Task<Torrent> ChangeImageAsync(int id, string userId, string imageMimeType, Stream imageStream)
         {
-            var torrent = await FindAsync(id);
+            var torrent = await FindAsync(id, userId);
             var path = await _fileStorageService.UploadTorrentImageAsync(id, imageMimeType, imageStream);
 
-            torrent.ImageUrl = path;
+            return await UpdateImageAsync(torrent, path);
+        }
 
-            torrent = _torrentRepository.Update(torrent);
+        public async Task<Torrent> DeleteImageAsync(int id, string userId)
+        {
+            var torrent = await FindAsync(id, userId);
+            await _fileStorageService.DeleteTorrentImageAsync(id);
 
-            await _unitOfWork.CompleteAsync();
-
-            return torrent;
+            return await UpdateImageAsync(torrent, imageUrl: null);
         }
 
         public async Task<Torrent> UpdateAsync(int id, string userId, Torrent torrent)
@@ -172,6 +168,17 @@ namespace Rutracker.Server.BusinessLayer.Services
             var torrent = await FindAsync(id);
 
             torrent = _torrentRepository.Remove(torrent);
+
+            await _unitOfWork.CompleteAsync();
+
+            return torrent;
+        }
+
+        private async Task<Torrent> UpdateImageAsync(Torrent torrent, string imageUrl)
+        {
+            torrent.ImageUrl = imageUrl;
+
+            torrent = _torrentRepository.Update(torrent);
 
             await _unitOfWork.CompleteAsync();
 

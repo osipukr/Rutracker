@@ -16,6 +16,8 @@
         public string TorrentsSearch { get; set; }
         public string PopularTorrentsSearch { get; set; }
         public string Torrent { get; set; }
+        public string TorrentImage { get; set; }
+
 
         // File
         public string Files { get; set; }

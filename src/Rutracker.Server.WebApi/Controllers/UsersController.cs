@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Web;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Rutracker.Server.BusinessLayer.Interfaces;
@@ -99,10 +98,10 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpPost("change/image")]
-        public async Task<string> ChangeImage([FromForm] IFormFile file)
+        public async Task<string> ChangeImage([FromForm] ChangeImageFileViewModel model)
         {
             var userId = User.GetUserId();
-            var user = await _userService.ChangeImageAsync(userId, file?.ContentType, file?.OpenReadStream());
+            var user = await _userService.ChangeImageAsync(userId, model.File.ContentType, model.File.OpenReadStream());
 
             return user.ImageUrl;
         }

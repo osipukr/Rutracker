@@ -7,7 +7,7 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
     {
         Task<string> UploadUserImageAsync(string userId, string mimeType, Stream imageStream);
         Task<string> UploadTorrentImageAsync(int torrentId, string mimeType, Stream imageStream);
-        Task<string> UploadTorrentFileAsync(int torrentId, string name, string mimeType, Stream fileStream);
+        Task<string> UploadTorrentFileAsync(int torrentId, string mimeType, string name, Stream fileStream);
         Task DeleteUserImageAsync(string userId);
         Task DeleteTorrentImageAsync(int torrentId);
         Task DeleteTorrentFileAsync(int torrentId, string name);

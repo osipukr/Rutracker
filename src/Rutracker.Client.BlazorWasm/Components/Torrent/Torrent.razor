@@ -1,6 +1,6 @@
 ﻿<MatCard Class="no-select mat-elevation-z5 h-100">
     <MatCardContent class="h-100">
-        <MatCardMedia Wide="true" ImageUrl="https://material-components.github.io/material-components-web-catalog/static/media/photos/3x2/2.jpg" />
+        <MatCardMedia Wide="true" ImageUrl="@(PageHelpers.IsValidImageUrl(Model.ImageUrl) ? Model.ImageUrl : Constants.Path.DefaultTorrentImage)" />
 
         <div class="p-1">
             <MatHeadline6 class="m-0">@Model.Name</MatHeadline6>

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Blazor.FileReader;
+using Rutracker.Client.BlazorWasm.Helpers;
 using Rutracker.Client.BlazorWasm.Interfaces;
 using Rutracker.Client.BlazorWasm.Settings;
 using Rutracker.Shared.Models;
@@ -44,7 +46,7 @@ namespace Rutracker.Client.BlazorWasm.Services
             return await _httpClientService.PostJsonAsync<TorrentDetailsViewModel>(_apiUrls.Torrents, model);
         }
 
-        public async Task<TorrentDetailsViewModel> Update(int id, TorrentUpdateViewModel model)
+        public async Task<TorrentDetailsViewModel> UpdateAsync(int id, TorrentUpdateViewModel model)
         {
             var url = string.Format(_apiUrls.Torrent, id.ToString());
 
@@ -54,6 +56,27 @@ namespace Rutracker.Client.BlazorWasm.Services
         public async Task DeleteAsync(int id)
         {
             var url = string.Format(_apiUrls.Torrent, id.ToString());
+
+            await _httpClientService.DeleteJsonAsync(url);
+        }
+
+        public async Task<string> ChangeImageAsync(int id, ChangeTorrentImageViewModel model)
+        {
+            var url = string.Format(_apiUrls.TorrentImage, id.ToString());
+
+            return await _httpClientService.PutJsonAsync<string>(url, model);
+        }
+
+        public async Task<string> ChangeImageAsync(int id, IFileReference imageReference)
+        {
+            var url = string.Format(_apiUrls.TorrentImage, id.ToString());
+
+            return await _httpClientService.PostTorrentImageFileAsync<string>(url, imageReference);
+        }
+
+        public async Task DeleteImageAsync(int id)
+        {
+            var url = string.Format(_apiUrls.TorrentImage, id.ToString());
 
             await _httpClientService.DeleteJsonAsync(url);
         }

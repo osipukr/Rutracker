@@ -8,14 +8,14 @@
                 if (IsAuthenticated)
                 {
                     <a href="@PageHelpers.UserLink(Model.User.UserName)">
-                        <img src="@(PageHelpers.IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : Constants.Path.DefaultProfileImage)"
+                        <img src="@(PageHelpers.IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : Constants.Path.DefaultUserImage)"
                              class="w-100 h-100 rounded-circle img-responsive"
                              alt="User image | @Model.User.UserName" />
                     </a>
                 }
                 else
                 {
-                    <img src="@(PageHelpers.IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : Constants.Path.DefaultProfileImage)"
+                    <img src="@(PageHelpers.IsValidImageUrl(Model.User.ImageUrl) ? Model.User.ImageUrl : Constants.Path.DefaultUserImage)"
                          class="w-100 h-100 rounded-circle img-responsive"
                          alt="User image | @Model.User.UserName" />
                 }

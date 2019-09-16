@@ -38,7 +38,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             return await UploadAsync(containerName, fileName, mimeType, imageStream, _fileStorageOptions.ImageMimeTypes, _fileStorageOptions.ImageMaxLength);
         }
 
-        public async Task<string> UploadTorrentFileAsync(int torrentId, string name, string mimeType, Stream fileStream)
+        public async Task<string> UploadTorrentFileAsync(int torrentId, string mimeType, string name, Stream fileStream)
         {
             Guard.Against.LessOne(torrentId, "Invalid torrent id.");
             Guard.Against.NullOrWhiteSpace(name, message: "Invalid file name.");
@@ -96,7 +96,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             Guard.Against.NullOrWhiteSpace(fileMimeType, message: "Invalid mime type.");
             Guard.Against.NullNotValid(fileStream, "Invalid file stream.");
 
-            if (!mimeTypes.Contains(fileMimeType))
+            if (mimeTypes?.Contains(fileMimeType) == false)
             {
                 throw new RutrackerException($"This file type '{fileMimeType}' is not supported.", ExceptionEventTypes.NotValidParameters);
             }
@@ -122,10 +122,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             Guard.Against.NullOrWhiteSpace(containerName, message: "Invalid container name.");
 
-            if (!await _storageService.DeleteContainerAsync(containerName))
-            {
-                throw new RutrackerException("Unable to delete container.", ExceptionEventTypes.NotValidParameters);
-            }
+            await _storageService.DeleteContainerAsync(containerName);
         }
 
         private async Task DeleteAsync(string containerName, string fileName)
@@ -133,10 +130,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             Guard.Against.NullOrWhiteSpace(containerName, message: "Invalid container name.");
             Guard.Against.NullOrWhiteSpace(fileName, message: "Invalid file name.");
 
-            if (!await _storageService.DeleteFileAsync(containerName, fileName))
-            {
-                throw new RutrackerException("Unable to delete user image.", ExceptionEventTypes.NotValidParameters);
-            }
+            await _storageService.DeleteFileAsync(containerName, fileName);
         }
 
         #endregion

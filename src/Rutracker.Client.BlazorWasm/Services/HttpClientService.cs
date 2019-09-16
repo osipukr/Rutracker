@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -14,21 +13,19 @@ namespace Rutracker.Client.BlazorWasm.Services
 
         public HttpClientService(HttpClient httpClient) => _httpClient = httpClient;
 
-        public async Task GetJsonAsync(string url)
-        {
-            using var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var json = await response.Content.ReadAsStringAsync();
-
-                throw new Exception(DeserializeJsonError(json));
-            }
-        }
-
         public async Task<TResult> GetJsonAsync<TResult>(string url)
         {
             using var response = await _httpClient.GetAsync(url);
+            var json = await response.Content.ReadAsStringAsync();
+
+            return response.IsSuccessStatusCode
+                ? DeserializeJson<TResult>(json)
+                : throw new Exception(DeserializeJsonError(json));
+        }
+
+        public async Task<TResult> PostAsync<TResult>(string url, HttpContent content)
+        {
+            using var response = await _httpClient.PostAsync(url, content);
             var json = await response.Content.ReadAsStringAsync();
 
             return response.IsSuccessStatusCode
@@ -61,23 +58,6 @@ namespace Rutracker.Client.BlazorWasm.Services
                 mediaType: "application/json");
 
             using var response = await _httpClient.PostAsync(url, content);
-            var json = await response.Content.ReadAsStringAsync();
-
-            return response.IsSuccessStatusCode
-                ? DeserializeJson<TResult>(json)
-                : throw new Exception(DeserializeJsonError(json));
-        }
-
-        public async Task<TResult> PostFileAsync<TResult>(string url, Stream stream, string mimeType, string fileName)
-        {
-            using var contents = new MultipartFormDataContent();
-            using var fileContent = new StreamContent(stream);
-
-            fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(mimeType);
-
-            contents.Add(fileContent, "file", fileName);
-
-            using var response = await _httpClient.PostAsync(url, contents);
             var json = await response.Content.ReadAsStringAsync();
 
             return response.IsSuccessStatusCode

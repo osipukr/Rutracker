@@ -30,8 +30,4 @@
     <EmbeddedResource Include="clientsettings.json" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Components\File\" />
-  </ItemGroup>
-
 </Project>

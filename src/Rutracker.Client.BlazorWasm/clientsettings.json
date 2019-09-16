@@ -9,6 +9,7 @@
     "TorrentsSearch": "api/torrents/search?page={0}&pageSize={1}",
     "PopularTorrentsSearch": "api/torrents/popular?count={0}",
     "Torrent": "api/torrents/{0}",
+    "TorrentImage": "api/torrents/image/{0}",
     "Files": "api/files",
     "FilesSearch": "api/files/search?torrentId={0}",
     "File": "api/files/{0}",

@@ -98,5 +98,28 @@ namespace Rutracker.Server.WebApi.Controllers
         {
             await _torrentService.DeleteAsync(id);
         }
+
+        [HttpPut("image/{id}")]
+        public async Task<string> ChangeImage(int id, ChangeTorrentImageViewModel model)
+        {
+            var torrent = await _torrentService.ChangeImageAsync(id, User.GetUserId(), model.ImageUrl);
+
+            return torrent.ImageUrl;
+        }
+
+        [HttpPost("image/{id}")]
+        public async Task<string> ChangeImageFile(int id, [FromForm] ChangeTorrentImageFileViewModel model)
+        {
+            var imageStream = model.File.OpenReadStream();
+            var torrent = await _torrentService.ChangeImageAsync(id, User.GetUserId(), model.File.ContentType, imageStream);
+
+            return torrent.ImageUrl;
+        }
+
+        [HttpDelete("image/{id}")]
+        public async Task DeleteImage(int id)
+        {
+            await _torrentService.DeleteImageAsync(id, User.GetUserId());
+        }
     }
 }

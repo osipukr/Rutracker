@@ -1,7 +1,7 @@
 ﻿@inherits PageComponent
 @inject IModalService ModalService
 @inject IFileReaderService FileReaderService
-@inject IUserService UserService
+@inject ITorrentService TorrentService
 
 <div class="form">
     <div class="form-group">
@@ -16,9 +16,15 @@
 
 @code
 {
+    [CascadingParameter] public ModalParameters Parameters { get; set; }
+
+    private int TorrentId { get; set; }
+
+    protected override void OnInitialized() => TorrentId = Parameters.Get<int>(nameof(TorrentDetailsViewModel.Id));
+
     private ElementReference _inputTypeFileElement;
 
-    private async Task UpdateClicked()
+    private async Task UpdateClicked() => await ActionAsync(async () =>
     {
         var file = (await FileReaderService.CreateReference(_inputTypeFileElement).EnumerateFilesAsync()).FirstOrDefault();
 
@@ -26,7 +32,7 @@
         {
             await ActionAsync(async () =>
             {
-                var url = await UserService.ChangeImageAsync(file);
+                var url = await TorrentService.ChangeImageAsync(TorrentId, file);
 
                 ModalService.Close(ModalResult.Ok(url));
             });
@@ -35,7 +41,7 @@
         {
             MatToaster.Add("File not selected.", MatToastType.Danger);
         }
-    }
+    });
 
     private void CancelClicked() => ModalService.Cancel();
 }

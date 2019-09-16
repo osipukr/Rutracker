@@ -21,7 +21,8 @@
             public const string Profile = "/account/profile";
 
             public const string Repository = "https://github.com/osipukr/Rutracker-Blazor";
-            public const string DefaultProfileImage = "img/profile-bg.jpg";
+            public const string DefaultUserImage = "https://icon-library.net/images/no-profile-pic-icon/no-profile-pic-icon-5.jpg";
+            public const string DefaultTorrentImage = "https://www.southtabor.com/newsite/wp-content/themes/consultix/images/no-image-found-360x250.png";
         }
 
         public static class File

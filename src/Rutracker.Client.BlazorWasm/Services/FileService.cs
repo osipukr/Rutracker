@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Blazor.FileReader;
+using Rutracker.Client.BlazorWasm.Helpers;
 using Rutracker.Client.BlazorWasm.Interfaces;
 using Rutracker.Client.BlazorWasm.Settings;
 using Rutracker.Shared.Models.ViewModels.File;
@@ -24,9 +26,9 @@ namespace Rutracker.Client.BlazorWasm.Services
             return await _httpClientService.GetJsonAsync<IEnumerable<FileViewModel>>(url);
         }
 
-        public async Task<FileViewModel> CreateAsync(FileCreateViewModel model)
+        public async Task<FileViewModel> AddAsync(int torrentId, IFileReference file)
         {
-            return await _httpClientService.PostJsonAsync<FileViewModel>(_apiUrls.Files, model);
+            return await _httpClientService.PostTorrentFileAsync<FileViewModel>(_apiUrls.Files, torrentId, file);
         }
 
         public async Task DeleteAsync(int id)
