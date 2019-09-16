@@ -15,7 +15,6 @@ namespace Rutracker.Shared.Models.ViewModels.Torrent
         public string Content { get; set; }
 
         [Required]
-        [Range(1, int.MaxValue)]
         public int SubcategoryId { get; set; }
     }
 }

@@ -1,77 +1,81 @@
-<MatTabGroup>
-    <MatTab id="info">
-        <LabelContent>
-            <MatIcon Icon="@MatIconNames.Description" />
-            <p class="m-0">Description</p>
-        </LabelContent>
+<MatList TwoLine="true">
+    <MatListItem>
+        <MatListItemText>
+            <MatListItemPrimaryText>Id</MatListItemPrimaryText>
+            <MatListItemSecondaryText>@Torrent.Id</MatListItemSecondaryText>
+        </MatListItemText>
+    </MatListItem>
 
-        <ChildContent>
-            <MatList TwoLine="true">
-                <MatListItem>
-                    <MatListItemText>
-                        <MatListItemPrimaryText>Id</MatListItemPrimaryText>
-                        <MatListItemSecondaryText>@Torrent.Id</MatListItemSecondaryText>
-                    </MatListItemText>
-                </MatListItem>
+    <MatListItem>
+        <MatListItemText>
+            <MatListItemPrimaryText>Title</MatListItemPrimaryText>
+            <MatListItemSecondaryText>@Torrent.Name</MatListItemSecondaryText>
+        </MatListItemText>
+    </MatListItem>
 
-                <MatListItem>
-                    <MatListItemText>
-                        <MatListItemPrimaryText>Title</MatListItemPrimaryText>
-                        <MatListItemSecondaryText>@Torrent.Name</MatListItemSecondaryText>
-                    </MatListItemText>
-                </MatListItem>
+    <MatListItem>
+        <MatListItemText>
+            <MatListItemPrimaryText>Description</MatListItemPrimaryText>
+            <MatListItemSecondaryText>@Torrent.Description</MatListItemSecondaryText>
+        </MatListItemText>
+    </MatListItem>
 
-                <MatListItem>
-                    <MatListItemText>
-                        <MatListItemPrimaryText>Description</MatListItemPrimaryText>
-                        <MatListItemSecondaryText>@Torrent.Description</MatListItemSecondaryText>
-                    </MatListItemText>
-                </MatListItem>
+    <MatListItem>
+        <MatListItemText>
+            <MatListItemPrimaryText>Date</MatListItemPrimaryText>
+            <MatListItemSecondaryText>@Torrent.CreatedAt.ToLongDateString()</MatListItemSecondaryText>
+        </MatListItemText>
+    </MatListItem>
 
-                <MatListItem>
-                    <MatListItemText>
-                        <MatListItemPrimaryText>Date</MatListItemPrimaryText>
-                        <MatListItemSecondaryText>@Torrent.CreatedAt.ToLongDateString()</MatListItemSecondaryText>
-                    </MatListItemText>
-                </MatListItem>
+    <MatListItem>
+        <MatListItemText>
+            <MatListItemPrimaryText>Content</MatListItemPrimaryText>
+            <MatListItemSecondaryText>@Torrent.Content</MatListItemSecondaryText>
+        </MatListItemText>
+    </MatListItem>
+</MatList>
 
-                <MatListItem>
-                    <MatListItemText>
-                        <MatListItemPrimaryText>Content</MatListItemPrimaryText>
-                        <MatListItemSecondaryText>@Torrent.Content</MatListItemSecondaryText>
-                    </MatListItemText>
-                </MatListItem>
-            </MatList>
-        </ChildContent>
-    </MatTab>
+@if (Torrent.Files != null)
+{
+    <MatTable Items="@Torrent.Files" class="mt-2 mat-elevation-z10">
+        <MatTableHeader>
+            @if (IsCurrentUserTorrent)
+            {
+                <th class="p-2 text-center">
+                    <MatIconButton Icon="@MatIconNames.Add" title="Add new file" />
+                </th>
+            }
 
-    @if (Torrent.Files != null && Torrent.Files.Any())
-    {
-        <MatTab id="files">
-            <LabelContent>
-                <MatIcon Icon="@MatIconNames.Folder_open" />
-                <p class="m-0">Files</p>
-            </LabelContent>
+            <th>Size</th>
+            <th>Name</th>
+        </MatTableHeader>
+        <MatTableRow Context="file">
+            @if (IsCurrentUserTorrent)
+            {
+                <td>
+                    <div style="width:100px;">
+                        <MatIconButton Icon="@MatIconNames.Delete" />
+                    </div>
+                </td>
+            }
 
-            <ChildContent>
-                <MatTable Items="@Torrent.Files" class="mt-2 mat-elevation-z10">
-                    <MatTableHeader>
-                        <th>Id</th>
-                        <th>Size</th>
-                        <th>Name</th>
-                    </MatTableHeader>
-                    <MatTableRow Context="file">
-                        <td>@file.Id</td>
-                        <td>@file.Size</td>
-                        <td>@file.Name</td>
-                    </MatTableRow>
-                </MatTable>
-            </ChildContent>
-        </MatTab>
-    }
-</MatTabGroup>
+            <td>@file.Size</td>
+            <td>@file.Name</td>
+        </MatTableRow>
+    </MatTable>
+}
 
 @code
 {
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
     [Parameter] public TorrentDetailsViewModel Torrent { get; set; }
+
+    private bool IsCurrentUserTorrent { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var state = await AuthenticationStateTask;
+
+        IsCurrentUserTorrent = state.IsUserAuthenticated() && state.GetUserId() == Torrent.User.Id;
+    }
 }
