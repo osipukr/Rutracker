@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -77,12 +78,15 @@ namespace Rutracker.Server.BusinessLayer.Services
                 throw new RutrackerException($"The torrent with id '{torrentId}' not found.", ExceptionEventTypes.NotValidParameters);
             }
 
-            var path = await _fileStorageService.UploadTorrentFileAsync(torrentId, mimeType, fileName, fileStream);
+            var name = fileName.ToLowerInvariant();
+            var type = mimeType.ToLowerInvariant();
+            var path = await _fileStorageService.UploadTorrentFileAsync(torrentId, type, name, fileStream);
             var file = await _fileRepository.AddAsync(new File
             {
-                Name = fileName,
-                Url = path,
+                Name = name,
                 Size = fileStream.Length,
+                Type = type,
+                Url = path,
                 TorrentId = torrentId
             });
 
@@ -102,6 +106,14 @@ namespace Rutracker.Server.BusinessLayer.Services
             await _unitOfWork.CompleteAsync();
 
             return file;
+        }
+
+        public async Task<Tuple<File, Stream>> DownloadAsync(int id)
+        {
+            var file = await FindAsync(id);
+            var stream = await _fileStorageService.DownloadTorrentFileAsync(file.TorrentId, file.Name);
+
+            return Tuple.Create(file, stream);
         }
     }
 }

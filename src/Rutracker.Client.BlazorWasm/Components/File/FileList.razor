@@ -24,15 +24,18 @@ else
             @if (ShowActions)
             {
                 <td>
-                    <div style="width:100px;">
+                    <div style="width:50px;">
                         <MatIconButton OnClick="@(_ => DeleteModalOpened(file))" Icon="@MatIconNames.Delete" title="Delete file" />
-                        <MatIconButton Icon="@MatIconNames.Cloud_download" title="Download file" />
                     </div>
                 </td>
             }
 
             <td>@($"{PageHelpers.ConvertBytesToMegabytes(file.Size):F3} mb")</td>
-            <td>@file.Name</td>
+            <td>
+                <a href="javascript:void(0)" @onclick="@(_ => DownloadFileClicked(file.Id))" title="Click to download this file">
+                    @file.Name
+                </a>
+            </td>
         </MatTableRow>
     </MatTable>
 }
@@ -44,6 +47,7 @@ else
     [Parameter] public int TorrentId { get; set; }
     [Parameter] public EventCallback<IEnumerable<FileViewModel>> OnCreate { get; set; }
     [Parameter] public EventCallback<FileViewModel> OnDelete { get; set; }
+    [Parameter] public EventCallback<int> OnDownload { get; set; }
 
     private void CreateModalOpened()
     {
@@ -84,4 +88,6 @@ else
 
         ModalService.OnClose -= DeleteModalClosed;
     }
+
+    private async Task DownloadFileClicked(int id) => await OnDownload.InvokeAsync(id);
 }

@@ -9,6 +9,5 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
         Task<Stream> DownloadFileAsync(string containerName, string fileName);
         Task<bool> DeleteFileAsync(string containerName, string fileName);
         Task<bool> DeleteContainerAsync(string containerName);
-        Task<string> PathToFileAsync(string containerName, string fileName);
     }
 }

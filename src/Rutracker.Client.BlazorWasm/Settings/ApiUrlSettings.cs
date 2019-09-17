@@ -8,7 +8,7 @@
 
         // Subcategory
         public string Subcategories { get; set; }
-        public string SubcategoriesSearch{ get; set; }
+        public string SubcategoriesSearch { get; set; }
         public string Subcategory { get; set; }
 
         // Torrent
@@ -23,6 +23,7 @@
         public string Files { get; set; }
         public string FilesSearch { get; set; }
         public string File { get; set; }
+        public string FileDownload { get; set; }
 
         // Comment
         public string Comments { get; set; }

@@ -13,6 +13,7 @@
     "Files": "api/files",
     "FilesSearch": "api/files/search?torrentId={0}",
     "File": "api/files/{0}",
+    "FileDownload": "api/files/download/{0}",
     "Comments": "api/comments",
     "CommentsSearch": "api/comments/search?torrentId={0}&page={1}&pageSize={2}",
     "Comment": "api/comments/{0}",

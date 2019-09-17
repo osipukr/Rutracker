@@ -7,6 +7,8 @@
         public long FileMaxLength { get; set; }
         public long ImageMaxLength { get; set; }
 
+        public string ImageContainer { get; set; }
+        public string TorrentContainer { get; set; }
         public string UserImageName { get; set; }
         public string TorrentImageName { get; set; }
         public string TorrentFileName { get; set; }

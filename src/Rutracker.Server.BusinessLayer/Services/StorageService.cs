@@ -30,10 +30,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var blockBlob = await GetBlockBlobAsync(containerName, fileName);
 
-            await using var stream = File.OpenWrite(fileName);
-            await blockBlob.DownloadToStreamAsync(stream);
-
-            return stream;
+            return await blockBlob.OpenReadAsync();
         }
 
         public async Task<bool> DeleteFileAsync(string containerName, string fileName)
@@ -48,13 +45,6 @@ namespace Rutracker.Server.BusinessLayer.Services
             var container = GetBlobContainer(containerName);
 
             return await container.DeleteIfExistsAsync();
-        }
-
-        public async Task<string> PathToFileAsync(string containerName, string fileName)
-        {
-            var blockBlob = await GetBlockBlobAsync(containerName, fileName);
-
-            return blockBlob.Uri.AbsoluteUri;
         }
 
         private CloudBlobContainer GetBlobContainer(string containerName)

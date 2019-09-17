@@ -34,57 +34,19 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
         {
             try
             {
-                if (!await _context.Database.EnsureCreatedAsync())
+                if (await _context.Database.EnsureCreatedAsync())
                 {
-                    return;
-                }
+                    if (!await _context.Roles.AnyAsync())
+                    {
+                        await SeedRolesAsync(_roleManager);
+                        await _context.SaveChangesAsync();
+                    }
 
-                if (!await _context.Roles.AnyAsync())
-                {
-                    await SeedRolesAsync(_roleManager);
-                    await _context.SaveChangesAsync();
-                }
-
-                if (!await _context.Users.AnyAsync())
-                {
-                    await SeedUsersAsync(_userManager);
-                    await _context.SaveChangesAsync();
-                }
-
-                if (!await _context.Categories.AnyAsync())
-                {
-                    await _context.Categories.AddRangeAsync(GetPreconfiguredCategories());
-                    await _context.SaveChangesAsync();
-                }
-
-                if (!await _context.Subcategories.AnyAsync())
-                {
-                    await _context.Subcategories.AddRangeAsync(GetPreconfiguredSubcategories());
-                    await _context.SaveChangesAsync();
-                }
-
-                if (!await _context.Torrents.AnyAsync())
-                {
-                    await _context.Torrents.AddRangeAsync(GetPreconfiguredTorrents());
-                    await _context.SaveChangesAsync();
-                }
-
-                if (!await _context.Files.AnyAsync())
-                {
-                    await _context.Files.AddRangeAsync(GetPreconfiguredFiles());
-                    await _context.SaveChangesAsync();
-                }
-
-                if (!await _context.Comments.AnyAsync())
-                {
-                    await _context.Comments.AddRangeAsync(GetPreconfiguredComments());
-                    await _context.SaveChangesAsync();
-                }
-
-                if (!await _context.Likes.AnyAsync())
-                {
-                    await _context.Likes.AddRangeAsync(GetPreconfiguredLikes());
-                    await _context.SaveChangesAsync();
+                    if (!await _context.Users.AnyAsync())
+                    {
+                        await SeedUsersAsync(_userManager);
+                        await _context.SaveChangesAsync();
+                    }
                 }
             }
             catch (Exception ex)
@@ -92,8 +54,6 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
                 _logger.LogError(ex.Message);
             }
         }
-
-        #region Generate preconfigured items
 
         private static readonly User Admin = new User
         {
@@ -109,6 +69,8 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
             RegisteredAt = DateTime.UtcNow,
             IsRegistrationFinished = true
         };
+
+        private const string AdminPassword = "Admin_Password_123";
 
         private static readonly IEnumerable<Role> Roles = new[]
         {
@@ -126,66 +88,8 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
 
         private static async Task SeedUsersAsync(UserManager<User> userManager)
         {
-            await userManager.CreateAsync(Admin, "Admin_Password_123");
+            await userManager.CreateAsync(Admin, AdminPassword);
             await userManager.AddToRolesAsync(Admin, Roles.Select(x => x.Name));
         }
-
-        private static readonly Random Random = new Random();
-        private const int CategoryMaxCount = 10;
-        private const int SubcategoryMaxCount = 50;
-        private const int TorrentMaxCount = 1000;
-        private const int FileMaxCount = 30000;
-        private const int CommentMaxCount = 100;
-        private static readonly int LikeMaxCount = Random.Next(1, CommentMaxCount);
-
-        private static IEnumerable<Category> GetPreconfiguredCategories() =>
-            Enumerable.Range(1, CategoryMaxCount).Select(id => new Category
-            {
-                Name = Guid.NewGuid().ToString()
-            });
-
-        private static IEnumerable<Subcategory> GetPreconfiguredSubcategories() =>
-            Enumerable.Range(1, SubcategoryMaxCount).Select(id => new Subcategory
-            {
-                Name = Guid.NewGuid().ToString(),
-                CategoryId = Random.Next(1, CategoryMaxCount)
-            });
-
-        private static IEnumerable<Torrent> GetPreconfiguredTorrents() =>
-            Enumerable.Range(1, TorrentMaxCount).Select(id => new Torrent
-            {
-                Name = Guid.NewGuid().ToString(),
-                Description = Guid.NewGuid().ToString(),
-                Content = Guid.NewGuid().ToString(),
-                CreatedAt = DateTime.Now,
-                SubcategoryId = Random.Next(1, SubcategoryMaxCount),
-                UserId = Admin.Id
-            });
-
-        private static IEnumerable<File> GetPreconfiguredFiles() =>
-            Enumerable.Range(1, FileMaxCount).Select(id => new File
-            {
-                Name = Guid.NewGuid().ToString(),
-                Url = Guid.NewGuid().ToString(),
-                TorrentId = Random.Next(1, TorrentMaxCount)
-            });
-
-        private static IEnumerable<Comment> GetPreconfiguredComments() =>
-            Enumerable.Range(1, CommentMaxCount).Select(id => new Comment
-            {
-                Text = Guid.NewGuid().ToString(),
-                CreatedAt = DateTime.Now,
-                TorrentId = Random.Next(1, TorrentMaxCount),
-                UserId = Admin.Id
-            });
-
-        private static IEnumerable<Like> GetPreconfiguredLikes() =>
-            Enumerable.Range(1, LikeMaxCount).Select(id => new Like
-            {
-                CommentId = id,
-                UserId = Admin.Id
-            });
-
-        #endregion
     }
 }

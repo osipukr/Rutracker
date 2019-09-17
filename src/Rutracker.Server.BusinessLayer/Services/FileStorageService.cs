@@ -22,20 +22,24 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<string> UploadUserImageAsync(string userId, string mimeType, Stream imageStream)
         {
-            var containerName = userId;
-            var fileName = _fileStorageOptions.UserImageName;
+            var containerName = _fileStorageOptions.ImageContainer;
+            var fileName = string.Format(_fileStorageOptions.UserImageName, userId);
+            var types = _fileStorageOptions.ImageMimeTypes;
+            var length = _fileStorageOptions.ImageMaxLength;
 
-            return await UploadAsync(containerName, fileName, mimeType, imageStream, _fileStorageOptions.ImageMimeTypes, _fileStorageOptions.ImageMaxLength);
+            return await UploadAsync(containerName, fileName, mimeType, imageStream, types, length);
         }
 
         public async Task<string> UploadTorrentImageAsync(int torrentId, string mimeType, Stream imageStream)
         {
             Guard.Against.LessOne(torrentId, "Invalid torrent id.");
 
-            var containerName = torrentId.ToString();
-            var fileName = _fileStorageOptions.TorrentImageName;
+            var containerName = _fileStorageOptions.ImageContainer;
+            var fileName = string.Format(_fileStorageOptions.TorrentImageName, torrentId.ToString());
+            var types = _fileStorageOptions.ImageMimeTypes;
+            var length = _fileStorageOptions.ImageMaxLength;
 
-            return await UploadAsync(containerName, fileName, mimeType, imageStream, _fileStorageOptions.ImageMimeTypes, _fileStorageOptions.ImageMaxLength);
+            return await UploadAsync(containerName, fileName, mimeType, imageStream, types, length);
         }
 
         public async Task<string> UploadTorrentFileAsync(int torrentId, string mimeType, string name, Stream fileStream)
@@ -43,28 +47,41 @@ namespace Rutracker.Server.BusinessLayer.Services
             Guard.Against.LessOne(torrentId, "Invalid torrent id.");
             Guard.Against.NullOrWhiteSpace(name, message: "Invalid file name.");
 
-            var containerName = torrentId.ToString();
+            var containerName = string.Format(_fileStorageOptions.TorrentContainer, torrentId.ToString());
+            var fileName = string.Format(_fileStorageOptions.TorrentFileName, name);
+            var types = _fileStorageOptions.FileMimeTypes;
+            var length = _fileStorageOptions.FileMaxLength;
+
+            return await UploadAsync(containerName, fileName, mimeType, fileStream, types, length);
+        }
+
+        public async Task<Stream> DownloadTorrentFileAsync(int torrentId, string name)
+        {
+            Guard.Against.LessOne(torrentId, "Invalid torrent id.");
+            Guard.Against.NullOrWhiteSpace(name, message: "Invalid file name.");
+
+            var containerName = string.Format(_fileStorageOptions.TorrentContainer, torrentId.ToString());
             var fileName = string.Format(_fileStorageOptions.TorrentFileName, name);
 
-            return await UploadAsync(containerName, fileName, mimeType, fileStream, _fileStorageOptions.FileMimeTypes, _fileStorageOptions.FileMaxLength);
+            return await _storageService.DownloadFileAsync(containerName, fileName);
         }
 
         public async Task DeleteUserImageAsync(string userId)
         {
-            var containerName = userId;
-            var fileName = _fileStorageOptions.UserImageName;
+            var containerName = _fileStorageOptions.ImageContainer;
+            var fileName = string.Format(_fileStorageOptions.UserImageName, userId);
 
-            await DeleteAsync(containerName, fileName);
+            await _storageService.DeleteFileAsync(containerName, fileName);
         }
 
         public async Task DeleteTorrentImageAsync(int torrentId)
         {
             Guard.Against.LessOne(torrentId, "Invalid torrent id.");
 
-            var containerName = torrentId.ToString();
-            var fileName = _fileStorageOptions.TorrentImageName;
+            var containerName = _fileStorageOptions.ImageContainer;
+            var fileName = string.Format(_fileStorageOptions.TorrentImageName, torrentId.ToString());
 
-            await DeleteAsync(containerName, fileName);
+            await _storageService.DeleteFileAsync(containerName, fileName);
         }
 
         public async Task DeleteTorrentFileAsync(int torrentId, string name)
@@ -72,19 +89,19 @@ namespace Rutracker.Server.BusinessLayer.Services
             Guard.Against.LessOne(torrentId, "Invalid torrent id.");
             Guard.Against.NullOrWhiteSpace(name, message: "Invalid file name.");
 
-            var containerName = torrentId.ToString();
+            var containerName = string.Format(_fileStorageOptions.TorrentContainer, torrentId.ToString());
             var fileName = string.Format(_fileStorageOptions.TorrentFileName, name);
 
-            await DeleteAsync(containerName, fileName);
+            await _storageService.DeleteFileAsync(containerName, fileName);
         }
 
         public async Task DeleteTorrentFilesAsync(int torrentId)
         {
             Guard.Against.LessOne(torrentId, "Invalid torrent id.");
 
-            var containerName = torrentId.ToString();
+            var containerName = string.Format(_fileStorageOptions.TorrentContainer, torrentId.ToString());
 
-            await DeleteAsync(containerName);
+            await _storageService.DeleteContainerAsync(containerName);
         }
 
         #region Generic
@@ -108,7 +125,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (fileStream.Length > maxLength)
             {
-                throw new RutrackerException($"File too large (max {ConvertBytesToMegabytes(maxLength)} mb).", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"File too large (max {ConvertBytesToMegabytes(maxLength):F2} mb).", ExceptionEventTypes.NotValidParameters);
             }
 
             var path = await _storageService.UploadFileAsync(containerName, fileName, fileStream);
@@ -116,21 +133,6 @@ namespace Rutracker.Server.BusinessLayer.Services
             await fileStream.DisposeAsync();
 
             return path;
-        }
-
-        private async Task DeleteAsync(string containerName)
-        {
-            Guard.Against.NullOrWhiteSpace(containerName, message: "Invalid container name.");
-
-            await _storageService.DeleteContainerAsync(containerName);
-        }
-
-        private async Task DeleteAsync(string containerName, string fileName)
-        {
-            Guard.Against.NullOrWhiteSpace(containerName, message: "Invalid container name.");
-            Guard.Against.NullOrWhiteSpace(fileName, message: "Invalid file name.");
-
-            await _storageService.DeleteFileAsync(containerName, fileName);
         }
 
         #endregion

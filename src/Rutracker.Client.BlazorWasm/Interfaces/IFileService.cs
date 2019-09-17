@@ -10,5 +10,6 @@ namespace Rutracker.Client.BlazorWasm.Interfaces
         Task<IEnumerable<FileViewModel>> ListAsync(int torrentId);
         Task<FileViewModel> AddAsync(int torrentId, IFileReference file);
         Task DeleteAsync(int id);
+        Task DownloadAsync(int id);
     }
 }

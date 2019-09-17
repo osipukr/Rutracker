@@ -22,7 +22,8 @@
                           ShowActions="@IsCurrentUserTorrent"
                           TorrentId="@Id"
                           OnCreate="@FileCreateAsync"
-                          OnDelete="@FileDeleteAsync" />
+                          OnDelete="@FileDeleteAsync"
+                          OnDownload="@FileDownloadAsync" />
             </MatExpansionPanelDetails>
         </MatExpansionPanel>
 
@@ -129,6 +130,11 @@
 
         Files.Remove(model);
     }, successMessage: "File deleted successfully.");
+
+    private async Task FileDownloadAsync(int id) => await ActionAsync(async () =>
+    {
+        await FileService.DownloadAsync(id);
+    }, successMessage: "File successfully downloaded.");
 
     private async Task CommentCreateAsync(CommentCreateViewModel comment) => await ActionAsync(async () =>
     {

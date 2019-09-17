@@ -52,5 +52,12 @@ namespace Rutracker.Client.BlazorWasm.Services
 
             await _httpClientService.DeleteJsonAsync(url);
         }
+
+        public async Task DownloadAsync(int id)
+        {
+            var url = string.Format(_apiUrls.FileDownload, id.ToString());
+
+            await _httpClientService.GetJsonAsync(url);
+        }
     }
 }
