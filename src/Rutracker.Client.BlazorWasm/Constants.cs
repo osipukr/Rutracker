@@ -27,7 +27,8 @@
 
         public static class File
         {
-            public const long MaxImageSize = 300 * 1024;
+            public const long MaxImageSize = 2 * 1024 * 1024;
+            public const long MaxFileSize = 50 * 1024 * 1024;
         }
     }
 }

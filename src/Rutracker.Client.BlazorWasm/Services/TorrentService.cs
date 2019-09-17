@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blazor.FileReader;
 using Rutracker.Client.BlazorWasm.Helpers;
@@ -69,9 +70,22 @@ namespace Rutracker.Client.BlazorWasm.Services
 
         public async Task<string> ChangeImageAsync(int id, IFileReference imageReference)
         {
+            if (imageReference == null)
+            {
+                throw new Exception("File is not selected.");
+            }
+
+            var fileInfo = await imageReference.ReadFileInfoAsync();
+
+            if (fileInfo.Size > Constants.File.MaxImageSize)
+            {
+                throw new Exception("File is too large");
+            }
+
+            var stream = await imageReference.OpenReadAsync();
             var url = string.Format(_apiUrls.TorrentImage, id.ToString());
 
-            return await _httpClientService.PostTorrentImageFileAsync<string>(url, imageReference);
+            return await _httpClientService.PostTorrentImageFileAsync<string>(url, fileInfo.Type, fileInfo.Name, stream);
         }
 
         public async Task DeleteImageAsync(int id)

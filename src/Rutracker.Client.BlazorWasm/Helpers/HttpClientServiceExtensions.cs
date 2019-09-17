@@ -1,7 +1,7 @@
-﻿using System.Net.Http;
+﻿using System.IO;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Blazor.FileReader;
 using Rutracker.Client.BlazorWasm.Services;
 using Rutracker.Shared.Models.ViewModels.File;
 using Rutracker.Shared.Models.ViewModels.Torrent;
@@ -11,32 +11,42 @@ namespace Rutracker.Client.BlazorWasm.Helpers
 {
     public static class HttpClientServiceExtensions
     {
-        public static async Task<TResult> PostUserImageFileAsync<TResult>(this HttpClientService httpClientService, string url, IFileReference file)
+        private static MultipartFormDataContent BuildFormDataContent(
+            string name,
+            string mimeType,
+            string fileName,
+            Stream fileStream)
         {
-            var fileStream = await file.OpenReadAsync();
-            var fileInfo = await file.ReadFileInfoAsync();
+            var contents = new MultipartFormDataContent();
+            var fileContent = new StreamContent(fileStream);
 
-            using var contents = new MultipartFormDataContent();
-            using var fileContent = new StreamContent(fileStream);
+            fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(mimeType);
 
-            fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(fileInfo.Type);
+            contents.Add(fileContent, name, fileName);
 
-            contents.Add(fileContent, nameof(ChangeImageFileViewModel.File), fileInfo.Name);
+            return contents;
+        }
+
+        public static async Task<TResult> PostUserImageFileAsync<TResult>(
+            this HttpClientService httpClientService,
+            string url,
+            string mimeType,
+            string fileName,
+            Stream imageStream)
+        {
+            var contents = BuildFormDataContent(nameof(ChangeImageFileViewModel.File), mimeType, fileName, imageStream);
 
             return await httpClientService.PostAsync<TResult>(url, contents);
         }
 
-        public static async Task<TResult> PostTorrentImageFileAsync<TResult>(this HttpClientService httpClientService, string url, IFileReference file)
+        public static async Task<TResult> PostTorrentImageFileAsync<TResult>(
+            this HttpClientService httpClientService,
+            string url,
+            string mimeType,
+            string fileName,
+            Stream imageStream)
         {
-            var fileStream = await file.OpenReadAsync();
-            var fileInfo = await file.ReadFileInfoAsync();
-
-            using var contents = new MultipartFormDataContent();
-            using var fileContent = new StreamContent(fileStream);
-
-            fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(fileInfo.Type);
-
-            contents.Add(fileContent, nameof(ChangeTorrentImageFileViewModel.File), fileInfo.Name);
+            using var contents = BuildFormDataContent(nameof(ChangeTorrentImageFileViewModel.File), mimeType, fileName, imageStream);
 
             return await httpClientService.PostAsync<TResult>(url, contents);
         }
@@ -45,17 +55,11 @@ namespace Rutracker.Client.BlazorWasm.Helpers
             this HttpClientService httpClientService,
             string url,
             int torrentId,
-            IFileReference file)
+            string mimeType,
+            string fileName,
+            Stream imageStream)
         {
-            var fileStream = await file.OpenReadAsync();
-            var fileInfo = await file.ReadFileInfoAsync();
-
-            using var contents = new MultipartFormDataContent();
-            using var fileContent = new StreamContent(fileStream);
-
-            fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(fileInfo.Type);
-
-            contents.Add(fileContent, nameof(FileCreateViewModel.File), fileInfo.Name);
+            var contents = BuildFormDataContent(nameof(FileCreateViewModel.File), mimeType, fileName, imageStream);
 
             contents.Add(new StringContent(torrentId.ToString()), nameof(FileCreateViewModel.TorrentId));
 

@@ -6,7 +6,11 @@
             <div class="card-body">
                 <div class="card-title mb-4">
                     <div class="d-flex justify-content-start">
-                        <MatButton OnClick="@MenuOpenClicked" RefBack="@_button" class="p-0 h-100 no-select image-container" style="width: 200px;">
+                        <MatButton @key="@ImageRenderKey"
+                                   OnClick="@MenuOpenClicked"
+                                   RefBack="@_button"
+                                   class="p-0 h-100 no-select image-container"
+                                   style="width: 200px;">
                             @if (PageHelpers.IsValidImageUrl(Torrent.ImageUrl))
                             {
                                 <img src="@Torrent.ImageUrl" class="img-thumbnail" alt="Torrent image" />
@@ -94,6 +98,7 @@
     [Parameter] public EventCallback<string> OnImageFileChange { get; set; }
     [Parameter] public EventCallback OnImageDelete { get; set; }
 
+    private string ImageRenderKey { get; set; }
     private ForwardRef _button = new ForwardRef();
     private BaseMatMenu _menu;
 
@@ -126,6 +131,8 @@
         if (!result.Cancelled && result.Data is ChangeTorrentImageViewModel model)
         {
             await OnImageChange.InvokeAsync(model);
+            ImageRenderKey = Guid.NewGuid().ToString();
+            StateHasChanged();
         }
 
         ModalService.OnClose -= ChangeImageModalClosed;
@@ -136,6 +143,8 @@
         if (!result.Cancelled && result.Data is string model)
         {
             await OnImageFileChange.InvokeAsync(model);
+            ImageRenderKey = Guid.NewGuid().ToString();
+            StateHasChanged();
         }
 
         ModalService.OnClose -= ChangeImageFileModalClosed;

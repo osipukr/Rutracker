@@ -28,19 +28,12 @@
     {
         var file = (await FileReaderService.CreateReference(_inputTypeFileElement).EnumerateFilesAsync()).FirstOrDefault();
 
-        if (file != null)
+        await ActionAsync(async () =>
         {
-            await ActionAsync(async () =>
-            {
-                var url = await TorrentService.ChangeImageAsync(TorrentId, file);
+            var url = await TorrentService.ChangeImageAsync(TorrentId, file);
 
-                ModalService.Close(ModalResult.Ok(url));
-            });
-        }
-        else
-        {
-            MatToaster.Add("File not selected.", MatToastType.Danger);
-        }
+            ModalService.Close(ModalResult.Ok(url));
+        });
     });
 
     private void CancelClicked() => ModalService.Cancel();

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blazor.FileReader;
 using Rutracker.Client.BlazorWasm.Helpers;
@@ -28,7 +29,21 @@ namespace Rutracker.Client.BlazorWasm.Services
 
         public async Task<FileViewModel> AddAsync(int torrentId, IFileReference file)
         {
-            return await _httpClientService.PostTorrentFileAsync<FileViewModel>(_apiUrls.Files, torrentId, file);
+            if (file == null)
+            {
+                throw new Exception("File is not selected.");
+            }
+
+            var fileInfo = await file.ReadFileInfoAsync();
+
+            if (fileInfo.Size > Constants.File.MaxFileSize)
+            {
+                throw new Exception($"File '{fileInfo.Name}' is too large.");
+            }
+
+            var stream = await file.OpenReadAsync();
+
+            return await _httpClientService.PostTorrentFileAsync<FileViewModel>(_apiUrls.Files, torrentId, fileInfo.Type, fileInfo.Name, stream);
         }
 
         public async Task DeleteAsync(int id)

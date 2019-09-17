@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Blazor.FileReader;
 using Rutracker.Client.BlazorWasm.Helpers;
 using Rutracker.Client.BlazorWasm.Interfaces;
@@ -50,7 +51,21 @@ namespace Rutracker.Client.BlazorWasm.Services
 
         public async Task<string> ChangeImageAsync(IFileReference file)
         {
-            return await _httpClientService.PostUserImageFileAsync<string>(_apiUrls.ChangeImage, file);
+            if (file == null)
+            {
+                throw new Exception("File is not selected.");
+            }
+
+            var fileInfo = await file.ReadFileInfoAsync();
+
+            if (fileInfo.Size > Constants.File.MaxImageSize)
+            {
+                throw new Exception("File is too large");
+            }
+
+            var stream = await file.OpenReadAsync();
+
+            return await _httpClientService.PostUserImageFileAsync<string>(_apiUrls.ChangeImage, fileInfo.Type, fileInfo.Name, stream);
         }
 
         public async Task DeleteImageAsync()
