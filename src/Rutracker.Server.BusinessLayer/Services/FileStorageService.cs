@@ -55,17 +55,6 @@ namespace Rutracker.Server.BusinessLayer.Services
             return await UploadAsync(containerName, fileName, mimeType, fileStream, types, length);
         }
 
-        public async Task<Stream> DownloadTorrentFileAsync(int torrentId, string name)
-        {
-            Guard.Against.LessOne(torrentId, "Invalid torrent id.");
-            Guard.Against.NullOrWhiteSpace(name, message: "Invalid file name.");
-
-            var containerName = string.Format(_fileStorageOptions.TorrentContainer, torrentId.ToString());
-            var fileName = string.Format(_fileStorageOptions.TorrentFileName, name);
-
-            return await _storageService.DownloadFileAsync(containerName, fileName);
-        }
-
         public async Task DeleteUserImageAsync(string userId)
         {
             var containerName = _fileStorageOptions.ImageContainer;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -54,11 +53,9 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpGet("download/{id}"), AllowAnonymous]
-        public async Task<IActionResult> Download(int id)
+        public async Task<string> Download(int id)
         {
-            var (file, stream) = await _fileService.DownloadAsync(id);
-
-            return File(stream, file.Type, file.Name);
+            return await _fileService.DownloadAsync(id);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -108,12 +107,11 @@ namespace Rutracker.Server.BusinessLayer.Services
             return file;
         }
 
-        public async Task<Tuple<File, Stream>> DownloadAsync(int id)
+        public async Task<string> DownloadAsync(int id)
         {
             var file = await FindAsync(id);
-            var stream = await _fileStorageService.DownloadTorrentFileAsync(file.TorrentId, file.Name);
 
-            return Tuple.Create(file, stream);
+            return file.Url;
         }
     }
 }

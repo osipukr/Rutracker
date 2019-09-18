@@ -1,6 +1,7 @@
 ﻿@inject ITorrentService TorrentService
 @inject IFileService FileService
 @inject ICommentService CommentService
+@inject IJSRuntime JsRuntime
 
 @page "/torrents/{id:int}"
 
@@ -8,6 +9,7 @@
 
 <Page Action="@LoadAction" Errors="@Errors">
     <TorrentDetails Torrent="@TorrentDetailsModel"
+                    ShowActions="@IsCurrentUserTorrent"
                     OnImageChange="@ChangeImageAsync"
                     OnImageFileChange="@ChangeImageFileAsync"
                     OnImageDelete="@DeleteImageAsync" />
@@ -133,8 +135,10 @@
 
     private async Task FileDownloadAsync(int id) => await ActionAsync(async () =>
     {
-        await FileService.DownloadAsync(id);
-    }, successMessage: "File successfully downloaded.");
+        var url = await FileService.DownloadAsync(id);
+
+        await JsRuntime.InvokeAsync<object>("openInNewTab", url);
+    });
 
     private async Task CommentCreateAsync(CommentCreateViewModel comment) => await ActionAsync(async () =>
     {

@@ -8,6 +8,7 @@
                     <div class="d-flex justify-content-start">
                         <MatButton @key="@ImageRenderKey"
                                    OnClick="@MenuOpenClicked"
+                                   Disabled="@(!ShowActions)"
                                    RefBack="@_button"
                                    class="p-0 h-100 no-select image-container"
                                    style="width: 200px;">
@@ -94,6 +95,7 @@
 @code
 {
     [Parameter] public TorrentDetailsViewModel Torrent { get; set; }
+    [Parameter] public bool ShowActions { get; set; }
     [Parameter] public EventCallback<ChangeTorrentImageViewModel> OnImageChange { get; set; }
     [Parameter] public EventCallback<string> OnImageFileChange { get; set; }
     [Parameter] public EventCallback OnImageDelete { get; set; }
