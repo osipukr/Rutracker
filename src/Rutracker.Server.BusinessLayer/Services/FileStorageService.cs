@@ -20,6 +20,22 @@ namespace Rutracker.Server.BusinessLayer.Services
             _fileStorageOptions = fileStorageOptions.Value;
         }
 
+        public async Task CreateImagesContainerAsync()
+        {
+            var containerName = _fileStorageOptions.ImageContainer;
+
+            await _storageService.CreateContainerAsync(containerName, isPrivate: false);
+        }
+
+        public async Task CreateTorrentContainerAsync(int torrentId)
+        {
+            Guard.Against.LessOne(torrentId, "Invalid torrent id.");
+
+            var containerName = string.Format(_fileStorageOptions.TorrentContainer, torrentId.ToString());
+
+            await _storageService.CreateContainerAsync(containerName, isPrivate: true);
+        }
+
         public async Task<string> UploadUserImageAsync(string userId, string mimeType, Stream imageStream)
         {
             var containerName = _fileStorageOptions.ImageContainer;
@@ -93,9 +109,13 @@ namespace Rutracker.Server.BusinessLayer.Services
             await _storageService.DeleteContainerAsync(containerName);
         }
 
-        #region Generic
-
-        private async Task<string> UploadAsync(string containerName, string fileName, string fileMimeType, Stream fileStream, string[] mimeTypes, long maxLength)
+        private async Task<string> UploadAsync(
+            string containerName,
+            string fileName,
+            string fileMimeType,
+            Stream fileStream,
+            string[] mimeTypes,
+            long maxLength)
         {
             Guard.Against.NullOrWhiteSpace(containerName, message: "Invalid container name.");
             Guard.Against.NullOrWhiteSpace(fileName, message: "Invalid file name.");
@@ -123,8 +143,6 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             return path;
         }
-
-        #endregion
 
         private static double ConvertBytesToMegabytes(long bytes) => bytes / 1024f / 1024f;
     }

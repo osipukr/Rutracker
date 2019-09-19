@@ -10,64 +10,57 @@ namespace Rutracker.Server.BusinessLayer.Services
 {
     public class StorageService : IStorageService
     {
+        private readonly CloudStorageAccount _account;
         private readonly StorageAuthOptions _storageAuthOptions;
 
         public StorageService(IOptions<StorageAuthOptions> storageOptions)
         {
             _storageAuthOptions = storageOptions.Value;
+
+            CloudStorageAccount.TryParse(_storageAuthOptions.ConnectionString, out _account);
+        }
+
+        public async Task<bool> CreateContainerAsync(string containerName, bool isPrivate)
+        {
+            var container = _account.CreateCloudBlobClient().GetContainerReference(containerName);
+            var result = await container.CreateIfNotExistsAsync();
+
+            if (result)
+            {
+                await container.SetPermissionsAsync(new BlobContainerPermissions
+                {
+                    PublicAccess = isPrivate
+                        ? BlobContainerPublicAccessType.Off
+                        : BlobContainerPublicAccessType.Blob
+                });
+            }
+
+            return result;
         }
 
         public async Task<string> UploadFileAsync(string containerName, string fileName, Stream stream)
         {
-            var blockBlob = await GetBlockBlobAsync(containerName, fileName, createIfNotExists: true);
+            var container = _account.CreateCloudBlobClient().GetContainerReference(containerName);
+            var block = container.GetBlockBlobReference(fileName);
 
-            await blockBlob.UploadFromStreamAsync(stream);
+            await block.UploadFromStreamAsync(stream);
 
-            return blockBlob.Uri.AbsoluteUri;
-        }
-
-        public async Task<Stream> DownloadFileAsync(string containerName, string fileName)
-        {
-            var blockBlob = await GetBlockBlobAsync(containerName, fileName);
-
-            return await blockBlob.OpenReadAsync();
+            return block.Uri.AbsoluteUri;
         }
 
         public async Task<bool> DeleteFileAsync(string containerName, string fileName)
         {
-            var blockBlob = await GetBlockBlobAsync(containerName, fileName);
+            var container = _account.CreateCloudBlobClient().GetContainerReference(containerName);
+            var block = container.GetBlockBlobReference(fileName);
 
-            return await blockBlob.DeleteIfExistsAsync();
+            return await block.DeleteIfExistsAsync();
         }
 
         public async Task<bool> DeleteContainerAsync(string containerName)
         {
-            var container = GetBlobContainer(containerName);
+            var container = _account.CreateCloudBlobClient().GetContainerReference(containerName);
 
             return await container.DeleteIfExistsAsync();
-        }
-
-        private CloudBlobContainer GetBlobContainer(string containerName)
-        {
-            var client = CloudStorageAccount.Parse(_storageAuthOptions.ConnectionString).CreateCloudBlobClient();
-
-            return client.GetContainerReference(containerName);
-        }
-
-        private async Task<CloudBlockBlob> GetBlockBlobAsync(string containerName, string fileName, bool createIfNotExists = false)
-        {
-            var container = GetBlobContainer(containerName);
-
-            if (createIfNotExists)
-            {
-                await container.CreateIfNotExistsAsync();
-                await container.SetPermissionsAsync(new BlobContainerPermissions
-                {
-                    PublicAccess = BlobContainerPublicAccessType.Container
-                });
-            }
-
-            return container.GetBlockBlobReference(fileName);
         }
     }
 }
