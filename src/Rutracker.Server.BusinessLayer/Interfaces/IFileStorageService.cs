@@ -13,6 +13,6 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
         Task DeleteUserImageAsync(string userId);
         Task DeleteTorrentImageAsync(int torrentId);
         Task DeleteTorrentFileAsync(int torrentId, string name);
-        Task DeleteTorrentFilesAsync(int torrentId);
+        Task DeleteTorrentAsync(int torrentId);
     }
 }

@@ -109,9 +109,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<string> DownloadAsync(int id)
         {
-            var file = await FindAsync(id);
-
-            return file.Url;
+            return (await FindAsync(id)).Url;
         }
     }
 }

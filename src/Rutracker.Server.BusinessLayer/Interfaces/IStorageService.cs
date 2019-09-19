@@ -5,9 +5,9 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
 {
     public interface IStorageService
     {
-        Task<bool> CreateContainerAsync(string containerName, bool isPrivate);
+        Task<bool> CreateContainerAsync(string containerName);
         Task<string> UploadFileAsync(string containerName, string fileName, Stream stream);
-        Task<bool> DeleteFileAsync(string containerName, string fileName);
         Task<bool> DeleteContainerAsync(string containerName);
+        Task<bool> DeleteFileAsync(string containerName, string fileName);
     }
 }

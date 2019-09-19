@@ -24,7 +24,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var containerName = _fileStorageOptions.ImageContainer;
 
-            await _storageService.CreateContainerAsync(containerName, isPrivate: false);
+            await _storageService.CreateContainerAsync(containerName);
         }
 
         public async Task CreateTorrentContainerAsync(int torrentId)
@@ -33,7 +33,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var containerName = string.Format(_fileStorageOptions.TorrentContainer, torrentId.ToString());
 
-            await _storageService.CreateContainerAsync(containerName, isPrivate: true);
+            await _storageService.CreateContainerAsync(containerName);
         }
 
         public async Task<string> UploadUserImageAsync(string userId, string mimeType, Stream imageStream)
@@ -100,7 +100,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             await _storageService.DeleteFileAsync(containerName, fileName);
         }
 
-        public async Task DeleteTorrentFilesAsync(int torrentId)
+        public async Task DeleteTorrentAsync(int torrentId)
         {
             Guard.Against.LessOne(torrentId, "Invalid torrent id.");
 

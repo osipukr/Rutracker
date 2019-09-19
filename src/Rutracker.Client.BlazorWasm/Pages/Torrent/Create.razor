@@ -1,4 +1,6 @@
-﻿@inject ITorrentService TorrentService
+﻿@attribute [Authorize(Policy = Policies.IsUser)]
+
+@inject ITorrentService TorrentService
 @inject ICategoryService CategoryService
 
 @page "/torrents/create"

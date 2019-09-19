@@ -10,6 +10,8 @@
 <Page Action="@LoadAction" Errors="@Errors">
     <TorrentDetails Torrent="@TorrentDetailsModel"
                     ShowActions="@IsCurrentUserTorrent"
+                    OnUpdate="@UpdateAsync"
+                    OnDelete="@DeleteAsync"
                     OnImageChange="@ChangeImageAsync"
                     OnImageFileChange="@ChangeImageFileAsync"
                     OnImageDelete="@DeleteImageAsync" />
@@ -102,6 +104,27 @@
         await CommentsAsync();
     }
 
+    private async Task UpdateAsync(TorrentUpdateViewModel model) => await ActionAsync(async () =>
+    {
+        if (TorrentDetailsModel.Name == model.Name &&
+            TorrentDetailsModel.Description == model.Description &&
+            TorrentDetailsModel.Content == model.Content)
+        {
+            return;
+        }
+
+        TorrentDetailsModel = await TorrentService.UpdateAsync(Id, model);
+
+        MatToaster.Add("Torrent updated successfully.", MatToastType.Success);
+    });
+
+    private async Task DeleteAsync() => await ActionAsync(async () =>
+    {
+        await TorrentService.DeleteAsync(Id);
+
+        NavigationManager.NavigateTo(Constants.Path.Torrents);
+    }, successMessage: "Torrent successfully deleted.");
+
     private async Task ChangeImageAsync(ChangeTorrentImageViewModel model) => await ActionAsync(async () =>
     {
         TorrentDetailsModel.ImageUrl = await TorrentService.ChangeImageAsync(Id, model);
@@ -151,7 +174,10 @@
 
     private async Task CommentUpdateAsync(CommentViewModel comment, CommentUpdateViewModel model) => await ActionAsync(async () =>
     {
-        if (comment.Text == model.Text) return;
+        if (comment.Text == model.Text)
+        {
+            return;
+        }
 
         var result = await CommentService.UpdateAsync(comment.Id, model);
         var index = Comments.FindIndex(x => x.Id == comment.Id);

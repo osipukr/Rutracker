@@ -164,14 +164,14 @@ namespace Rutracker.Server.WebApi
             services.AddSingleton<ISmsSender, SmsSender>();
             services.AddSingleton<IEmailService, EmailService>();
             services.AddSingleton<ISmsService, SmsService>();
+            services.AddSingleton<IStorageService, StorageService>();
+            services.AddSingleton<IFileStorageService, FileStorageService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
             services.AddScoped<ITorrentRepository, TorrentRepository>();
             services.AddScoped<IFileRepository, FileRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<ILikeRepository, LikeRepository>();
-            services.AddScoped<IStorageService, StorageService>();
-            services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();

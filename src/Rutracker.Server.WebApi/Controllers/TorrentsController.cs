@@ -93,10 +93,10 @@ namespace Rutracker.Server.WebApi.Controllers
             return _mapper.Map<TorrentDetailsViewModel>(torrent);
         }
 
-        [HttpDelete("{id}"), Authorize(Policy = Policies.IsAdmin)]
+        [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
-            await _torrentService.DeleteAsync(id);
+            await _torrentService.DeleteAsync(id, User.GetUserId());
         }
 
         [HttpPut("image/{id}")]

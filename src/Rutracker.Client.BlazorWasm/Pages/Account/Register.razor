@@ -4,17 +4,14 @@
 
 @page "/account/register"
 
-@if (LoadAction == ActionTypes.Succeeded)
+@if (LoadAction == ActionTypes.Failed)
 {
-    <Alert Type="@AlertTypes.Success">
-        To complete registration, check the email.
-    </Alert>
+    <Alert Type="@AlertTypes.Danger">@Errors</Alert>
 }
-else if (LoadAction == ActionTypes.Failed)
+
+@if (Message != null)
 {
-    <Alert Type="@AlertTypes.Danger">
-        @Errors
-    </Alert>
+    <Alert Type="@AlertTypes.Success">@Message</Alert>
 }
 
 <EditForm Model="@RegisterModel" OnValidSubmit="@RegisterAsync">
@@ -54,6 +51,19 @@ else if (LoadAction == ActionTypes.Failed)
 @code
 {
     private RegisterViewModel RegisterModel { get; set; } = new RegisterViewModel();
+    private string Message { get; set; }
 
-    private async Task RegisterAsync() => await LoadAsync(() => AccountService.Register(RegisterModel));
+    private async Task RegisterAsync()
+    {
+        await LoadAsync(() => AccountService.Register(RegisterModel));
+
+        Message = null;
+        StateHasChanged();
+
+        if (LoadAction == ActionTypes.Succeeded)
+        {
+            Message = "To complete registration, check the email.";
+            StateHasChanged();
+        }
+    }
 }

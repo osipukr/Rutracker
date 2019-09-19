@@ -112,6 +112,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<User> ChangeImageAsync(string id, string mimeType, Stream imageStream)
         {
+            await _fileStorageService.CreateImagesContainerAsync();
             var path = await _fileStorageService.UploadUserImageAsync(id, mimeType, imageStream);
 
             return await ChangeImageAsync(id, path);
@@ -119,6 +120,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<User> DeleteImageAsync(string id)
         {
+            await _fileStorageService.DeleteUserImageAsync(id);
+
             return await ChangeImageAsync(id, null);
         }
 

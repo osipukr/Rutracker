@@ -114,7 +114,9 @@ namespace Rutracker.Server.BusinessLayer.Services
             torrent.CreatedAt = DateTime.UtcNow;
 
             torrent = await _torrentRepository.AddAsync(torrent);
+
             await _unitOfWork.CompleteAsync();
+            await _fileStorageService.CreateTorrentContainerAsync(torrent.Id);
 
             return torrent;
         }
@@ -131,6 +133,9 @@ namespace Rutracker.Server.BusinessLayer.Services
         public async Task<Torrent> ChangeImageAsync(int id, string userId, string imageMimeType, Stream imageStream)
         {
             var torrent = await FindAsync(id, userId);
+
+            await _fileStorageService.CreateImagesContainerAsync();
+
             var path = await _fileStorageService.UploadTorrentImageAsync(id, imageMimeType, imageStream);
 
             return await UpdateImageAsync(torrent, path);
@@ -163,13 +168,14 @@ namespace Rutracker.Server.BusinessLayer.Services
             return result;
         }
 
-        public async Task<Torrent> DeleteAsync(int id)
+        public async Task<Torrent> DeleteAsync(int id, string userId)
         {
-            var torrent = await FindAsync(id);
+            var torrent = await FindAsync(id, userId);
 
             torrent = _torrentRepository.Remove(torrent);
 
             await _unitOfWork.CompleteAsync();
+            await _fileStorageService.DeleteTorrentAsync(id);
 
             return torrent;
         }

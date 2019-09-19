@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
@@ -20,7 +21,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             CloudStorageAccount.TryParse(_storageAuthOptions.ConnectionString, out _account);
         }
 
-        public async Task<bool> CreateContainerAsync(string containerName, bool isPrivate)
+        public async Task<bool> CreateContainerAsync(string containerName)
         {
             var container = _account.CreateCloudBlobClient().GetContainerReference(containerName);
             var result = await container.CreateIfNotExistsAsync();
@@ -29,9 +30,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             {
                 await container.SetPermissionsAsync(new BlobContainerPermissions
                 {
-                    PublicAccess = isPrivate
-                        ? BlobContainerPublicAccessType.Off
-                        : BlobContainerPublicAccessType.Blob
+                    PublicAccess = BlobContainerPublicAccessType.Blob
                 });
             }
 
@@ -48,19 +47,19 @@ namespace Rutracker.Server.BusinessLayer.Services
             return block.Uri.AbsoluteUri;
         }
 
+        public async Task<bool> DeleteContainerAsync(string containerName)
+        {
+            var container = _account.CreateCloudBlobClient().GetContainerReference(containerName);
+
+            return await container.DeleteIfExistsAsync();
+        }
+
         public async Task<bool> DeleteFileAsync(string containerName, string fileName)
         {
             var container = _account.CreateCloudBlobClient().GetContainerReference(containerName);
             var block = container.GetBlockBlobReference(fileName);
 
             return await block.DeleteIfExistsAsync();
-        }
-
-        public async Task<bool> DeleteContainerAsync(string containerName)
-        {
-            var container = _account.CreateCloudBlobClient().GetContainerReference(containerName);
-
-            return await container.DeleteIfExistsAsync();
         }
     }
 }
