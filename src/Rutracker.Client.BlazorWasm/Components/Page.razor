@@ -1,8 +1,6 @@
-﻿@if (Action == ActionTypes.InProgress)
+﻿@if (Action == ActionTypes.Succeeded)
 {
-    <LoadingBackground>
-        <span>Loading page model, please wait...</span>
-    </LoadingBackground>
+    @ChildContent
 }
 else if (Action == ActionTypes.Failed)
 {
@@ -12,7 +10,9 @@ else if (Action == ActionTypes.Failed)
 }
 else
 {
-    @ChildContent
+    <LoadingBackground>
+        <span>Loading page model, please wait...</span>
+    </LoadingBackground>
 }
 
 @code

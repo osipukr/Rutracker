@@ -29,7 +29,10 @@
 
     private async Task UpdateCategoryAsync(CategoryViewModel category, CategoryUpdateViewModel model) => await ActionAsync(async () =>
     {
-        if (category.Name == model.Name) return;
+        if (category.Name == model.Name)
+        {
+            return;
+        }
 
         var result = await CategoryService.UpdateAsync(category.Id, model);
         var index = CategoriesItems.FindIndex(x => x.Id == category.Id);

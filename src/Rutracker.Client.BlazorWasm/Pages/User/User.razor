@@ -4,6 +4,8 @@
 
 @page "/users/{username}"
 
+<ArrowBack Link="@Constants.Path.Users" />
+
 <Page Action="@LoadAction" Errors="@Errors">
     <div class="profile-container">
         <div class="profile-header">
@@ -62,7 +64,7 @@
 
     private UserProfileViewModel UserModel { get; set; }
 
-    protected override async Task OnInitializedAsync() => await LoadAsync(async () =>
+    protected override async Task OnInitializedAsync()
     {
         var state = await AuthenticationStateTask;
 
@@ -72,7 +74,7 @@
         }
         else
         {
-            UserModel = await UserService.ProfileAsync(UserName);
+            await LoadAsync(async () => UserModel = await UserService.ProfileAsync(UserName));
         }
-    });
+    }
 }

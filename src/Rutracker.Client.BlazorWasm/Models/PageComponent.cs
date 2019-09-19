@@ -10,8 +10,8 @@ namespace Rutracker.Client.BlazorWasm.Models
         [Inject]
         public IMatToaster MatToaster { get; set; }
 
-        public ActionTypes LoadAction { get; set; } = ActionTypes.Succeeded;
-        public string Errors { get; set; }
+        public ActionTypes LoadAction { get; private set; }
+        public string Errors { get; private set; }
 
         public async Task LoadAsync(Func<Task> func, bool isToaster = false)
         {

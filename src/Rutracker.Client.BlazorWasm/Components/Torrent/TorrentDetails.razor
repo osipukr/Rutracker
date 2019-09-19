@@ -62,7 +62,11 @@
                             </p>
 
                             <p class="m-0" title="Creation date">
-                                Created at: <span>@Torrent.CreatedAt.ToLongDateString()</span>
+                                Created at: <span>@Torrent.CreatedAt.ToShortDateString() @Torrent.CreatedAt.ToShortTimeString()</span>
+                            </p>
+
+                            <p class="m-0" title="Latest update">
+                                Last updated at: <span>@Torrent.LastUpdatedAt.ToShortDateString() @Torrent.LastUpdatedAt.ToShortTimeString()</span>
                             </p>
                         </div>
                     </div>

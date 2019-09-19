@@ -22,15 +22,20 @@ else
         </MatTableHeader>
         <MatTableRow Context="file">
             @if (ShowActions)
-            {
+                {
                 <td>
                     <div style="width:50px;">
                         <MatIconButton OnClick="@(_ => DeleteModalOpened(file))" Icon="@MatIconNames.Delete" title="Delete file" />
                     </div>
                 </td>
-            }
+                }
 
-            <td>@($"{PageHelpers.ConvertBytesToMegabytes(file.Size):F3} mb")</td>
+            <td>
+                <div style="width:100px;">
+                    @($"{PageHelpers.ConvertBytesToMegabytes(file.Size):F3} mb")
+                </div>
+            </td>
+
             <td>
                 <a href="javascript:void(0)" @onclick="@(_ => DownloadFileClicked(file.Id))" title="Click to download this file">
                     @file.Name

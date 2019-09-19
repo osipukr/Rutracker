@@ -40,7 +40,10 @@
 
     private async Task UpdateSubcategoryAsync(SubcategoryViewModel subcategory, SubcategoryUpdateViewModel model) => await ActionAsync(async () =>
     {
-        if (subcategory.Name == model.Name) return;
+        if (subcategory.Name == model.Name)
+        {
+            return;
+        }
 
         var result = await SubcategoryService.UpdateAsync(subcategory.Id, model);
         var index = Subcategories.FindIndex(x => x.Id == subcategory.Id);

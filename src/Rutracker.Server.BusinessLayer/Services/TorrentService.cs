@@ -159,6 +159,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             result.Name = torrent.Name;
             result.Description = torrent.Description;
+            result.Content = torrent.Content;
             result.LastUpdatedAt = DateTime.UtcNow;
 
             result = _torrentRepository.Update(result);
