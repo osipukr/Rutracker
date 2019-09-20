@@ -401,10 +401,10 @@ ul.mdc-nav-menu {
   background-image: linear-gradient(to bottom, #111111 0, #4c4c4c 23%, #4c4c4c 23%, #474747 72%, #111111 99%); }
 
 app {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center; }
+  height: 100vh; }
+
+.loading {
+  background-color: #60368e; }
 
 .mdc-icon-button .fa {
   font-size: 30px; }

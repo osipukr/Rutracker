@@ -18,9 +18,10 @@
 
 app {
     height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+}
+
+.loading {
+    background-color: #60368e;
 }
 
 .mdc-icon-button .fa {

@@ -19,7 +19,9 @@
     <MatAccordion class="mt-3">
         <MatExpansionPanel>
             <MatExpansionPanelSummary class="no-select">
-                <MatExpansionPanelSubHeader>Files (@Files.Count)</MatExpansionPanelSubHeader>
+                <MatExpansionPanelSubHeader style="flex-basis: auto;">
+                    Files (@Files.Count)
+                </MatExpansionPanelSubHeader>
             </MatExpansionPanelSummary>
             <MatExpansionPanelDetails>
                 <FileList Items="@Files"
@@ -35,7 +37,9 @@
         {
             <MatExpansionPanel>
                 <MatExpansionPanelSummary class="no-select">
-                    <MatExpansionPanelSubHeader>Comments (@CommentPagination.TotalItems)</MatExpansionPanelSubHeader>
+                    <MatExpansionPanelSubHeader style="flex-basis: auto;">
+                        Comments (@CommentPagination.TotalItems)
+                    </MatExpansionPanelSubHeader>
                 </MatExpansionPanelSummary>
                 <MatExpansionPanelDetails>
                     <ListItemsHeader Title="Total comments" TotalItems="@CommentPagination.TotalItems" />
