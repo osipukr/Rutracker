@@ -1,0 +1,119 @@
+﻿@import 'Partials/Login', 'Partials/App-Bar', 'Partials/User-Profile', 'Partials/Comments';
+
+::-webkit-scrollbar {
+    width: 9px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px #000000;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #e1e1e1;
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background-image: linear-gradient(to bottom, rgba(17, 17, 17, 1) 0, rgba(76, 76, 76, 1) 23%, rgba(76, 76, 76, 1) 23%, rgba(71, 71, 71, 1) 72%, rgba(17, 17, 17, 1) 99%);
+}
+
+app {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mdc-icon-button .fa {
+    font-size: 30px;
+}
+
+.triangle-container {
+    background-color: #5D2E8F;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: calc(-50vw + 50%);
+    left: calc(-50vw + 50%);
+    z-index: -1;
+}
+
+.triangles {
+    background: url("../img/background.svg") center center;
+    background-size: cover;
+    height: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    mix-blend-mode: hard-light;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.validation-message {
+    margin-top: 10px;
+    font-size: 13px;
+    color: red;
+    text-align: left;
+}
+
+.no-select {
+    user-select: none;
+}
+
+.filter-group-btn {
+    width: 210px;
+}
+
+.filter-btn {
+    width: 100px;
+}
+
+div.mdc-form-field > label {
+    margin: 0;
+}
+
+.mat-tab-group-content {
+    padding-top: 1rem;
+}
+
+div {
+    &.mat-accordion div.mat-expansion-panel__header {
+        width: 100%;
+        flex-basis: inherit;
+    }
+
+    &.mdc-paginator-range-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    &.mdc-tab-scroller__scroll-content {
+        flex: auto;
+        flex-wrap: wrap;
+    }
+
+    &.mdc-form-field {
+        width: 100%;
+        margin-bottom: 1rem;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.additional-info {
+    color: #636c72;
+    background-color: #000000;
+    background-color: rgba(0, 0, 0, 0.04);
+    padding: 10px 6px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: .875rem;
+}

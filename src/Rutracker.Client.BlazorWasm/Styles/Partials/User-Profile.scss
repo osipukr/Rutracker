@@ -7,21 +7,21 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-bottom: 1rem
+    margin-bottom: 1rem;
 }
 
 .profile-header__image {
     width: 200px;
     height: 200px;
-}
 
-    .profile-header__image .delete {
+    .delete {
         display: none;
     }
 
-    .profile-header__image:hover .delete {
+    &:hover .delete {
         display: block;
     }
+}
 
 .profile-header__name {
     font-size: 2rem;
