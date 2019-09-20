@@ -7,7 +7,8 @@ WORKDIR /src
 COPY ["src/Rutracker.Server.DataAccessLayer/Rutracker.Server.DataAccessLayer.csproj", "src/Rutracker.Server.DataAccessLayer/"]
 COPY ["src/Rutracker.Server.BusinessLayer/Rutracker.Server.BusinessLayer.csproj", "src/Rutracker.Server.BusinessLayer/"]
 COPY ["src/Rutracker.Server.WebApi/Rutracker.Server.WebApi.csproj", "src/Rutracker.Server.WebApi/"]
-COPY ["src/Rutracker.Client.Blazor/Rutracker.Client.Blazor.csproj", "src/Rutracker.Client.Blazor/"]
+COPY ["src/Rutracker.Client.Blazor/Rutracker.Client.BlazorWasm.csproj", "src/Rutracker.Client.BlazorWasm/"]
+COPY ["src/Rutracker.Shared.Models/Rutracker.Shared.Infrastructure.csproj", "src/Rutracker.Shared.Infrastructure/"]
 COPY ["src/Rutracker.Shared.Models/Rutracker.Shared.Models.csproj", "src/Rutracker.Shared.Models/"]
 RUN dotnet restore "src/Rutracker.Server.WebApi/Rutracker.Server.WebApi.csproj"
 COPY . .

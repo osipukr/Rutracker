@@ -11,10 +11,7 @@ namespace Rutracker.Client.BlazorWasm.Services
         private readonly ApiUrlSettings _apiUriSettings;
         private readonly ApiAuthenticationStateProvider _apiAuthenticationState;
 
-        public AccountService(
-            HttpClientService httpClientService,
-            ApiUrlSettings apiUri,
-            ApiAuthenticationStateProvider apiAuthenticationState)
+        public AccountService(HttpClientService httpClientService, ApiUrlSettings apiUri, ApiAuthenticationStateProvider apiAuthenticationState)
         {
             _httpClientService = httpClientService;
             _apiUriSettings = apiUri;

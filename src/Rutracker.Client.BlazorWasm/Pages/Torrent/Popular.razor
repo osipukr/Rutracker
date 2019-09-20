@@ -3,7 +3,9 @@
 @page "/torrents/popular"
 
 <Page Action="@LoadAction" Errors="@Errors">
-    <TorrentList Items="@Torrents" />
+    <div class="container">
+        <TorrentList Items="@Torrents" />
+    </div>
 </Page>
 
 @code

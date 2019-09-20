@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -20,10 +19,7 @@ namespace Rutracker.Server.DataAccessLayer.Interfaces
         Task<int> CountAsync();
         Task<int> CountAsync(Expression<Func<TEntity, bool>> expression);
         Task<TEntity> AddAsync(TEntity entity);
-        Task AddRangeAsync(IEnumerable<TEntity> entities);
         TEntity Update(TEntity entity);
-        void UpdateRange(IEnumerable<TEntity> entities);
         TEntity Remove(TEntity entity);
-        void RemoveRange(IEnumerable<TEntity> entities);
     }
 }

@@ -18,13 +18,15 @@
             </AuthorizeView>
         </ListItemsHeader>
 
-        <TorrentList Items="@TorrentsPagination.Items" />
+        <div class="container">
+            <TorrentList Items="@TorrentsPagination.Items" />
 
-        <Pagination Page="@Page"
-                    PageSize="@PageSize"
-                    TotalPages="@TorrentsPagination.TotalPages"
-                    TotalItems="@TorrentsPagination.TotalItems"
-                    OnPageChange="@PageChanged" />
+            <Pagination Page="@Page"
+                        PageSize="@PageSize"
+                        TotalPages="@TorrentsPagination.TotalPages"
+                        TotalItems="@TorrentsPagination.TotalItems"
+                        OnPageChange="@PageChanged" />
+        </div>
     }
 </Page>
 

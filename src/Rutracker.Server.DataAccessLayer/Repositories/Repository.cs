@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -68,29 +67,14 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
             return (await _dbSet.AddAsync(entity)).Entity;
         }
 
-        public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
-        {
-            await _dbSet.AddRangeAsync(entities);
-        }
-
         public virtual TEntity Update(TEntity entity)
         {
             return _dbSet.Update(entity).Entity;
         }
 
-        public virtual void UpdateRange(IEnumerable<TEntity> entities)
-        {
-            _dbSet.UpdateRange(entities);
-        }
-
         public virtual TEntity Remove(TEntity entity)
         {
             return _dbSet.Remove(entity).Entity;
-        }
-
-        public virtual void RemoveRange(IEnumerable<TEntity> entities)
-        {
-            _dbSet.RemoveRange(entities);
         }
     }
 }
