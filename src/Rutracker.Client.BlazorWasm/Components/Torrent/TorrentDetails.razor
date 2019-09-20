@@ -8,8 +8,8 @@
 
             <MatMenu @ref="@_settingsMenu" TargetForwardRef="@_settingsButton">
                 <MatList>
-                    <MatListItem OnClick="@TorrentUpdateModalOpened">Edit torrent</MatListItem>
-                    <MatListItem OnClick="@TorrentDeleteModalOpened">Delete torrent</MatListItem>
+                    <MatListItem OnClick="@UpdateTorrentModalOpened">Edit torrent</MatListItem>
+                    <MatListItem OnClick="@DeleteTorrentModalOpened">Delete torrent</MatListItem>
                 </MatList>
             </MatMenu>
         </div>
@@ -39,7 +39,7 @@
                         <MatMenu @ref="@_imageMenu" TargetForwardRef="@_imageButton">
                             <MatList>
                                 <MatListItem OnClick="@ChangeImageModalOpened">From url</MatListItem>
-                                <MatListItem OnClick="@ImageFileChangeModalOpened">From file</MatListItem>
+                                <MatListItem OnClick="@ChangeImageFileModalOpened">From file</MatListItem>
 
                                 @if (PageHelpers.IsValidImageUrl(Torrent.ImageUrl))
                                 {
@@ -109,7 +109,7 @@
     private async Task ImageMenuOpenClicked() => await _imageMenu.OpenAsync();
     private async Task SettingsMenuOpenClicked() => await _settingsMenu.OpenAsync();
 
-    private void TorrentUpdateModalOpened()
+    private void UpdateTorrentModalOpened()
     {
         var parameters = new ModalParameters();
 
@@ -124,31 +124,31 @@
         ModalService.Show("Edit torrent", typeof(TorrentUpdateModal), parameters);
     }
 
-    private void TorrentDeleteModalOpened()
+    private void DeleteTorrentModalOpened()
     {
-        ModalService.OnClose += TorrentDeleteModalClosed;
+        ModalService.OnClose += DeleteTorrentModalClosed;
         ModalService.Show("Delete torrent", typeof(TorrentDeleteModal));
     }
 
     private void ChangeImageModalOpened()
     {
-        ModalService.OnClose += ImageModalChangeClosed;
+        ModalService.OnClose += ChangeImageModalClosed;
         ModalService.Show("Change torrent image", typeof(TorrentImageChangeModal));
     }
 
-    private void ImageFileChangeModalOpened()
+    private void ChangeImageFileModalOpened()
     {
         var parameters = new ModalParameters();
 
         parameters.Add(nameof(TorrentDetailsViewModel.Id), Torrent.Id);
 
-        ModalService.OnClose += ImageFileChangeModalClosed;
+        ModalService.OnClose += ChangeImageFileModalClosed;
         ModalService.Show("Change torrent image", typeof(TorrentImageFileChangeModal), parameters);
     }
 
     private void ImageDeleteModalOpened()
     {
-        ModalService.OnClose += ImageDeleteModalClosed;
+        ModalService.OnClose += DeleteImageModalClosed;
         ModalService.Show("Delete torrent image", typeof(TorrentImageDeleteModal));
     }
 
@@ -162,29 +162,30 @@
         ModalService.OnClose -= TorrentUpdateModalClosed;
     }
 
-    private async void TorrentDeleteModalClosed(ModalResult result)
+    private async void DeleteTorrentModalClosed(ModalResult result)
     {
         if (!result.Cancelled)
         {
             await OnDelete.InvokeAsync(EventArgs.Empty);
         }
 
-        ModalService.OnClose -= TorrentDeleteModalClosed;
+        ModalService.OnClose -= DeleteTorrentModalClosed;
     }
 
-    private async void ImageModalChangeClosed(ModalResult result)
+    private async void ChangeImageModalClosed(ModalResult result)
     {
         if (!result.Cancelled && result.Data is ChangeTorrentImageViewModel model)
         {
             await OnImageChange.InvokeAsync(model);
+
             ImageRenderKey = Guid.NewGuid().ToString();
             StateHasChanged();
         }
 
-        ModalService.OnClose -= ImageModalChangeClosed;
+        ModalService.OnClose -= ChangeImageModalClosed;
     }
 
-    private async void ImageFileChangeModalClosed(ModalResult result)
+    private async void ChangeImageFileModalClosed(ModalResult result)
     {
         if (!result.Cancelled && result.Data is string model)
         {
@@ -193,16 +194,16 @@
             StateHasChanged();
         }
 
-        ModalService.OnClose -= ImageFileChangeModalClosed;
+        ModalService.OnClose -= ChangeImageFileModalClosed;
     }
 
-    private async void ImageDeleteModalClosed(ModalResult result)
+    private async void DeleteImageModalClosed(ModalResult result)
     {
         if (!result.Cancelled)
         {
             await OnImageDelete.InvokeAsync(EventArgs.Empty);
         }
 
-        ModalService.OnClose -= ImageDeleteModalClosed;
+        ModalService.OnClose -= DeleteImageModalClosed;
     }
 }

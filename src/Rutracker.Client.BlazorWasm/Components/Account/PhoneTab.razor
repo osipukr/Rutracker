@@ -36,7 +36,10 @@
 
     private async Task ChangeClicked()
     {
-        if (Phone == ChangePhoneNumberModel.PhoneNumber) return;
+        if (Phone == ChangePhoneNumberModel.PhoneNumber)
+        {
+            return;
+        }
 
         await OnChange.InvokeAsync(ChangePhoneNumberModel);
 

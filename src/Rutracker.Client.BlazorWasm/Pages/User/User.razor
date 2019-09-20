@@ -68,7 +68,11 @@
     {
         var state = await AuthenticationStateTask;
 
-        if (UserName == state.GetUserName())
+        if (string.IsNullOrWhiteSpace(UserName))
+        {
+            NavigationManager.NavigateTo(Constants.Path.Home);
+        }
+        else if (UserName == state.GetUserName())
         {
             NavigationManager.NavigateTo(Constants.Path.Profile);
         }

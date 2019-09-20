@@ -1,27 +1,34 @@
 ﻿<MatCard Class="no-select mat-elevation-z5 h-100">
     <MatCardContent class="h-100">
-        <MatCardMedia Wide="true" ImageUrl="@(PageHelpers.IsValidImageUrl(Model.ImageUrl) ? Model.ImageUrl : Constants.Path.DefaultTorrentImage)" />
+        <MatCardMedia ImageUrl="@(PageHelpers.IsValidImageUrl(Model.ImageUrl) ? Model.ImageUrl : Constants.Path.DefaultTorrentImage)"
+                      Wide="true"
+                      class="m-2" />
 
-        <div class="p-1">
-            <MatHeadline6 class="m-0">@Model.Name</MatHeadline6>
-        </div>
+        <div class="px-3">
+            <MatHeadline6 style="word-break: break-all;">
+                @Model.Name
+            </MatHeadline6>
 
-        <div class="p-2 mt-3">
-            <MatBody2 class="m-0">@Model.CreatedAt.ToShortDateString()</MatBody2>
-            <MatBody2 class="m-0">@Model.Description</MatBody2>
+            <MatBody2 class="m-0">
+                Created at: <span style="word-break: break-all; font-style: italic; font-weight: 500;">@Model.CreatedAt.ToShortDateString()</span>
+            </MatBody2>
+
+            <MatBody2 class="m-0">
+                Description: <span style="word-break: break-all; font-style: italic; font-weight: 500;">@Model.Description</span>
+            </MatBody2>
         </div>
     </MatCardContent>
 
-    <MatCardActions>
+    <MatCardActions class="p-3">
         <MatCardActionButtons>
-            <MatButton Link="@PageHelpers.TorrentLink(Model.Id)" Label="Details" />
+            <MatButton Link="@PageHelpers.TorrentLink(Model.Id)" Label="Details" Raised="true" />
         </MatCardActionButtons>
 
         <MatCardActionIcons>
-            <div class="m-0 p-0 d-flex justify-content-center align-items-center">
+            <div class="d-flex justify-content-center align-items-center" title="Number of comments">
                 <span>@Model.CommentsCount</span>
 
-                <MatIcon Icon="@MatIconNames.Comment" class="ml-1" />
+                <MatIcon Icon="@MatIconNames.Comment" class="px-1" />
             </div>
         </MatCardActionIcons>
     </MatCardActions>

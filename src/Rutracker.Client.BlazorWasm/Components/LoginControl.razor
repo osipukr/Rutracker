@@ -5,7 +5,7 @@
         </MatTooltip>
 
         <MatTooltip Tooltip="Menu" Wrap="true">
-            <MatIconButton OnClick="@MenuOpenClicked" Icon="@MatIconNames.Menu" @ref="_menuButton" />
+            <MatIconButton OnClick="@MenuOpenClicked" Icon="@MatIconNames.Menu" @ref="_button" />
         </MatTooltip>
 
         <MatMenu @ref="_menu">
@@ -29,8 +29,8 @@
 
 @code
 {
-    private BaseMatIconButton _menuButton;
+    private BaseMatIconButton _button;
     private BaseMatMenu _menu;
 
-    private async Task MenuOpenClicked() => await _menu.OpenAsync(_menuButton.Ref);
+    private async Task MenuOpenClicked() => await _menu.OpenAsync(_button.Ref);
 }

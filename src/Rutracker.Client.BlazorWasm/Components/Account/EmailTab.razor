@@ -30,10 +30,5 @@
 
     protected override void OnParametersSet() => ChangeEmailModel.Email = Email;
 
-    private async Task ChangeClicked()
-    {
-        if (Email == ChangeEmailModel.Email) return;
-
-        await OnChange.InvokeAsync(ChangeEmailModel);
-    }
+    private async Task ChangeClicked() => await OnChange.InvokeAsync(ChangeEmailModel);
 }

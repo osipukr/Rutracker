@@ -67,7 +67,10 @@
 
     private async Task ChangeUserAsync(ChangeUserViewModel model) => await ActionAsync(async () =>
     {
-        if (UserModel.FirstName == model.FirstName && UserModel.LastName == model.LastName) return;
+        if (UserModel.FirstName == model.FirstName && UserModel.LastName == model.LastName)
+        {
+            return;
+        }
 
         UserModel = await UserService.ChangeInfoAsync(model);
 

@@ -14,8 +14,8 @@
 
     <MatMenu @ref="_menu" TargetForwardRef="@_button">
         <MatList>
-            <MatListItem OnClick="@ChangeImageModalOpened">From url</MatListItem>
-            <MatListItem OnClick="@ChangeImageFileModalOpened">From file</MatListItem>
+            <MatListItem OnClick="@ChangeUrlModalOpened">From url</MatListItem>
+            <MatListItem OnClick="@ChangeFileModalOpened">From file</MatListItem>
 
             @if (PageHelpers.IsValidImageUrl(Url))
             {
@@ -41,15 +41,15 @@
 
     private async Task MenuOpenClicked() => await _menu.OpenAsync();
 
-    private void ChangeImageModalOpened()
+    private void ChangeUrlModalOpened()
     {
-        ModalService.OnClose += ChangeImageModalClosed;
+        ModalService.OnClose += ChangeUrlModalClosed;
         ModalService.Show("Change user image", typeof(UserImageChangeModal));
     }
 
-    private void ChangeImageFileModalOpened()
+    private void ChangeFileModalOpened()
     {
-        ModalService.OnClose += ChangeImageFileModalClosed;
+        ModalService.OnClose += ChangeFileModalClosed;
         ModalService.Show("Change user image", typeof(UserImageFileChangeModal));
     }
 
@@ -59,25 +59,24 @@
         ModalService.Show("Delete user image", typeof(UserImageDeleteModal));
     }
 
-
-    private async void ChangeImageModalClosed(ModalResult result)
+    private async void ChangeUrlModalClosed(ModalResult result)
     {
         if (!result.Cancelled && result.Data is ChangeImageViewModel model)
         {
             await OnChange.InvokeAsync(model);
         }
 
-        ModalService.OnClose -= ChangeImageModalClosed;
+        ModalService.OnClose -= ChangeUrlModalClosed;
     }
 
-    private async void ChangeImageFileModalClosed(ModalResult result)
+    private async void ChangeFileModalClosed(ModalResult result)
     {
-        if (!result.Cancelled && result.Data is string model && !string.IsNullOrWhiteSpace(model))
+        if (!result.Cancelled && result.Data is string model)
         {
             await OnChangeFile.InvokeAsync(model);
         }
 
-        ModalService.OnClose -= ChangeImageFileModalClosed;
+        ModalService.OnClose -= ChangeFileModalClosed;
     }
 
     private async void DeleteModalClosed(ModalResult result)

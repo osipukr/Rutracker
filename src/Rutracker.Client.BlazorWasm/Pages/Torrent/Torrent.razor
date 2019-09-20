@@ -46,11 +46,14 @@
                                  OnDelete="@CommentDeleteAsync"
                                  OnLike="@CommentLikeAsync" />
 
-                    <Pagination Page="@Page"
-                                PageSize="@PageSize"
-                                TotalPages="@CommentPagination.TotalPages"
-                                TotalItems="@CommentPagination.TotalItems"
-                                OnPageChange="@PageChanged" />
+                    @if (CommentPagination.TotalPages > 1)
+                    {
+                        <Pagination Page="@Page"
+                                    PageSize="@PageSize"
+                                    TotalPages="@CommentPagination.TotalPages"
+                                    TotalItems="@CommentPagination.TotalItems"
+                                    OnPageChange="@PageChanged" />
+                    }
                 </MatExpansionPanelDetails>
             </MatExpansionPanel>
         }

@@ -11,11 +11,14 @@
 
         <UserList Items="@UsersPagination.Items" />
 
-        <Pagination Page="@Page"
-                    PageSize="@PageSize"
-                    TotalPages="@UsersPagination.TotalPages"
-                    TotalItems="@UsersPagination.TotalItems"
-                    OnPageChange="@PageChanged" />
+        @if (UsersPagination.TotalPages > 1)
+        {
+            <Pagination Page="@Page"
+                        PageSize="@PageSize"
+                        TotalPages="@UsersPagination.TotalPages"
+                        TotalItems="@UsersPagination.TotalItems"
+                        OnPageChange="@PageChanged" />
+        }
     }
 </Page>
 
