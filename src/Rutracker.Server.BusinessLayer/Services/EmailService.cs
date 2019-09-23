@@ -21,7 +21,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             await _emailSender.SendAsync(
                 email: email,
                 subject: "Confirm your email",
-                message: $"Confirm your email by following this <a href='{confirmationUrl}'>link</a>");
+                message: $"Confirm your email by following this <a href='{confirmationUrl}' target='_blank'>link</a>");
         }
 
         public async Task SendEmailChangeConfirmation(string email, string confirmationUrl)
@@ -32,7 +32,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             await _emailSender.SendAsync(
                 email: email,
                 subject: "Confirm change email",
-                message: $"Confirm your email change by following this <a href='{confirmationUrl}'>link</a>");
+                message: $"Confirm your email change by following this <a href='{confirmationUrl}' target='_blank'>link</a>");
         }
     }
 }

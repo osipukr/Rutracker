@@ -1,0 +1,15 @@
+<div class="loading-container mat-elevation-z5" style="@Style">
+    @ChildContent
+
+    @if (ShowLoader)
+    {
+        <MatProgressBar Indeterminate="true" class="mt-3" />
+    }
+</div>
+
+@code
+{
+    [Parameter] public bool ShowLoader { get; set; } = true;
+    [Parameter] public string Style { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}

@@ -43,7 +43,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _likeService.LikeCommentAsync(-10, null));
 
-            Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
         }
 
         [Fact(DisplayName = "LikeCommentAsync() with an invalid parameters should throw RutrackerException.")]
@@ -53,7 +53,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _likeService.LikeCommentAsync(1000, "1"));
 
-            Assert.Equal(ExceptionEventType.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
         }
     }
 }

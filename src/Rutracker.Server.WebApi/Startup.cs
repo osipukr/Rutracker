@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -53,7 +54,7 @@ namespace Rutracker.Server.WebApi
             services.Configure<JwtSettings>(_configuration.GetSection(nameof(JwtSettings)));
             services.Configure<ClientSettings>(_configuration.GetSection(nameof(ClientSettings)));
             services.Configure<CacheOptions>(_configuration.GetSection(nameof(CacheOptions)));
-            services.Configure<UserImageOptions>(_configuration.GetSection(nameof(UserImageOptions)));
+            services.Configure<FileStorageOptions>(_configuration.GetSection(nameof(FileStorageOptions)));
             services.Configure<StorageAuthOptions>(_configuration.GetSection(nameof(StorageAuthOptions)));
             services.Configure<EmailAuthOptions>(_configuration.GetSection(nameof(EmailAuthOptions)));
             services.Configure<SmsAuthOptions>(_configuration.GetSection(nameof(SmsAuthOptions)));
@@ -109,7 +110,12 @@ namespace Rutracker.Server.WebApi
                 options.SlidingExpiration = true;
             });
 
-            services.AddAuthentication().AddJwtBearer(options =>
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
             {
                 var jwtSettings = _configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
 
@@ -147,6 +153,7 @@ namespace Rutracker.Server.WebApi
                 options.OutputFormatters.RemoveType<StreamOutputFormatter>();
                 options.OutputFormatters.RemoveType<StringOutputFormatter>();
             })
+            .AddNewtonsoftJson()
             .ConfigureApiBehaviorOptions(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
@@ -157,18 +164,21 @@ namespace Rutracker.Server.WebApi
             services.AddSingleton<ISmsSender, SmsSender>();
             services.AddSingleton<IEmailService, EmailService>();
             services.AddSingleton<ISmsService, SmsService>();
+            services.AddSingleton<IStorageService, StorageService>();
+            services.AddSingleton<IFileStorageService, FileStorageService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
             services.AddScoped<ITorrentRepository, TorrentRepository>();
+            services.AddScoped<IFileRepository, FileRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<ILikeRepository, LikeRepository>();
-            services.AddScoped<IStorageService, StorageService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISubcategoryService, SubcategoryService>();
             services.AddScoped<ITorrentService, TorrentService>();
+            services.AddScoped<IFileService, FileService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IContextSeed, RutrackerContextSeed>();
         }
@@ -191,7 +201,7 @@ namespace Rutracker.Server.WebApi
                 options.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "v1");
             });
 
-            app.UseClientSideBlazorFiles<Client.Blazor.Startup>();
+            app.UseClientSideBlazorFiles<Client.BlazorWasm.Startup>();
 
             app.UseRouting();
             app.UseAuthentication();
@@ -200,7 +210,7 @@ namespace Rutracker.Server.WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapFallbackToClientSideBlazor<Client.Blazor.Startup>(filePath: "index.html");
+                endpoints.MapFallbackToClientSideBlazor<Client.BlazorWasm.Startup>(filePath: "index.html");
             });
 
             contextSeed.SeedAsync().Wait();

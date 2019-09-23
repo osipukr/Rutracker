@@ -1,0 +1,39 @@
+﻿@inherits PageComponent
+@inject IModalService ModalService
+@inject IFileReaderService FileReaderService
+@inject ITorrentService TorrentService
+
+<div class="form">
+    <div class="form-group">
+        Select image from computer: <input type="file" required accept="image/*" @ref="_inputReference" />
+    </div>
+
+    <div class="d-flex flex-row-reverse mt-4">
+        <MatButton OnClick="@UpdateClicked" Label="Update" />
+        <MatButton OnClick="@CancelClicked" Label="Cancel" />
+    </div>
+</div>
+
+@code
+{
+    [CascadingParameter] public ModalParameters Parameters { get; set; }
+
+    private ElementReference _inputReference;
+    private int TorrentId { get; set; }
+
+    protected override void OnInitialized() => TorrentId = Parameters.Get<int>(nameof(TorrentDetailsViewModel.Id));
+
+    private async Task UpdateClicked() => await ActionAsync(async () =>
+    {
+        var file = (await FileReaderService.CreateReference(_inputReference).EnumerateFilesAsync()).FirstOrDefault();
+
+        await ActionAsync(async () =>
+        {
+            var url = await TorrentService.ChangeImageAsync(TorrentId, file);
+
+            ModalService.Close(ModalResult.Ok(url));
+        });
+    });
+
+    private void CancelClicked() => ModalService.Cancel();
+}

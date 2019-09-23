@@ -1,0 +1,56 @@
+﻿@inject IModalService ModalService
+
+<EditForm Model="@Torrent" OnValidSubmit="@UpdateClicked">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <MatTextField @bind-Value="@Torrent.Name"
+                      Label="Name"
+                      Icon="@MatIconNames.Create"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true" />
+
+        <ValidationMessage For="@(() => Torrent.Name)" />
+    </div>
+
+    <div class="form-group">
+        <MatTextField @bind-Value="@Torrent.Description"
+                      Label="Description"
+                      Icon="@MatIconNames.Description"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true" />
+
+        <ValidationMessage For="@(() => Torrent.Description)" />
+    </div>
+
+    <div class="form-group">
+        <MatTextField @bind-Value="@Torrent.Content"
+                      Label="Content"
+                      Icon="@MatIconNames.Text_fields"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      TextArea="true"
+                      InputStyle="min-height: 200px; max-height: 400px;" />
+
+        <ValidationMessage For="@(() => Torrent.Content)" />
+    </div>
+
+    <div class="d-flex flex-row-reverse mt-4">
+        <MatButton Label="Update" type="submit" />
+        <MatButton OnClick="@CancelClicked" Label="Cancel" />
+    </div>
+</EditForm>
+
+@code
+{
+    [CascadingParameter] public ModalParameters Parameters { get; set; }
+
+    private TorrentUpdateViewModel Torrent { get; set; }
+
+    protected override void OnInitialized() => Torrent = Parameters.Get<TorrentUpdateViewModel>(nameof(TorrentUpdateViewModel));
+
+    private void UpdateClicked() => ModalService.Close(ModalResult.Ok(Torrent));
+    private void CancelClicked() => ModalService.Cancel();
+}

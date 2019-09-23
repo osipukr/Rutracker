@@ -1,0 +1,209 @@
+@inject IModalService ModalService
+
+<div class="row">
+    @if (ShowActions)
+    {
+        <div class="col-12 d-flex flex-row-reverse">
+            <MatIconButton Icon="@MatIconNames.Settings" OnClick="@SettingsMenuOpenClicked" RefBack="@_settingsButton" />
+
+            <MatMenu @ref="@_settingsMenu" TargetForwardRef="@_settingsButton">
+                <MatList>
+                    <MatListItem OnClick="@UpdateTorrentModalOpened">Edit torrent</MatListItem>
+                    <MatListItem OnClick="@DeleteTorrentModalOpened">Delete torrent</MatListItem>
+                </MatList>
+            </MatMenu>
+        </div>
+    }
+
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title mb-4">
+                    <div class="d-flex flex-wrap">
+                        <MatButton @key="@ImageRenderKey"
+                                   OnClick="@ImageMenuOpenClicked"
+                                   Disabled="@(!ShowActions)"
+                                   RefBack="@_imageButton"
+                                   class="p-0 h-100 no-select image-container"
+                                   style="width: 200px;">
+                            @if (PageHelpers.IsValidImageUrl(Torrent.ImageUrl))
+                            {
+                                <img src="@Torrent.ImageUrl" class="img-thumbnail" alt="Torrent image" />
+                            }
+                            else
+                            {
+                                <img src="@Constants.Path.DefaultTorrentImage" class="img-thumbnail" alt="Default torrent image" />
+                            }
+                        </MatButton>
+
+                        <MatMenu @ref="@_imageMenu" TargetForwardRef="@_imageButton">
+                            <MatList>
+                                <MatListItem OnClick="@ChangeImageModalOpened">From url</MatListItem>
+                                <MatListItem OnClick="@ChangeImageFileModalOpened">From file</MatListItem>
+
+                                @if (PageHelpers.IsValidImageUrl(Torrent.ImageUrl))
+                                {
+                                    <MatListItem OnClick="@ImageDeleteModalOpened">Delete</MatListItem>
+                                }
+                                else
+                                {
+                                    <MatListItem Disabled="true">Delete</MatListItem>
+                                }
+                            </MatList>
+                        </MatMenu>
+
+                        <div class="p-3">
+                            <h5 class="font-weight-bold" style="word-break: break-all;" title="Torrent name">
+                                @Torrent.Name
+                            </h5>
+
+                            <p class="m-0" title="User name">
+                                Created by: <a href="@PageHelpers.UserLink(Torrent.User.UserName)">@Torrent.User.UserName</a>
+                            </p>
+
+                            <p class="m-0" title="Creation date">
+                                Created at: <span>@Torrent.CreatedAt.ToShortDateString() @Torrent.CreatedAt.ToShortTimeString()</span>
+                            </p>
+
+                            <p class="m-0" title="Latest update">
+                                Last updated at: <span>@Torrent.LastUpdatedAt.ToShortDateString() @Torrent.LastUpdatedAt.ToShortTimeString()</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <MatRipple Color="@MatRippleColor.Primary" class="p-3">
+                            <p>Description:</p>
+                            <span style="word-break: break-all;">@Torrent.Description</span>
+                        </MatRipple>
+
+                        <MatRipple Color="@MatRippleColor.Primary" class="p-3">
+                            <p>Content:</p>
+                            <span style="word-break: break-all;">@Torrent.Content</span>
+                        </MatRipple>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    [Parameter] public TorrentDetailsViewModel Torrent { get; set; }
+    [Parameter] public bool ShowActions { get; set; }
+    [Parameter] public EventCallback<ChangeTorrentImageViewModel> OnImageChange { get; set; }
+    [Parameter] public EventCallback<string> OnImageFileChange { get; set; }
+    [Parameter] public EventCallback OnImageDelete { get; set; }
+    [Parameter] public EventCallback<TorrentUpdateViewModel> OnUpdate { get; set; }
+    [Parameter] public EventCallback OnDelete { get; set; }
+
+    private string ImageRenderKey { get; set; }
+    private ForwardRef _imageButton = new ForwardRef();
+    private ForwardRef _settingsButton = new ForwardRef();
+    private BaseMatMenu _imageMenu;
+    private BaseMatMenu _settingsMenu;
+
+    private async Task ImageMenuOpenClicked() => await _imageMenu.OpenAsync();
+    private async Task SettingsMenuOpenClicked() => await _settingsMenu.OpenAsync();
+
+    private void UpdateTorrentModalOpened()
+    {
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(TorrentUpdateViewModel), new TorrentUpdateViewModel
+        {
+            Name = Torrent.Name,
+            Description = Torrent.Description,
+            Content = Torrent.Content
+        });
+
+        ModalService.OnClose += TorrentUpdateModalClosed;
+        ModalService.Show("Edit torrent", typeof(TorrentUpdateModal), parameters);
+    }
+
+    private void DeleteTorrentModalOpened()
+    {
+        ModalService.OnClose += DeleteTorrentModalClosed;
+        ModalService.Show("Delete torrent", typeof(TorrentDeleteModal));
+    }
+
+    private void ChangeImageModalOpened()
+    {
+        ModalService.OnClose += ChangeImageModalClosed;
+        ModalService.Show("Change torrent image", typeof(TorrentImageChangeModal));
+    }
+
+    private void ChangeImageFileModalOpened()
+    {
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(TorrentDetailsViewModel.Id), Torrent.Id);
+
+        ModalService.OnClose += ChangeImageFileModalClosed;
+        ModalService.Show("Change torrent image", typeof(TorrentImageFileChangeModal), parameters);
+    }
+
+    private void ImageDeleteModalOpened()
+    {
+        ModalService.OnClose += DeleteImageModalClosed;
+        ModalService.Show("Delete torrent image", typeof(TorrentImageDeleteModal));
+    }
+
+    private async void TorrentUpdateModalClosed(ModalResult result)
+    {
+        if (!result.Cancelled && result.Data is TorrentUpdateViewModel model)
+        {
+            await OnUpdate.InvokeAsync(model);
+        }
+
+        ModalService.OnClose -= TorrentUpdateModalClosed;
+    }
+
+    private async void DeleteTorrentModalClosed(ModalResult result)
+    {
+        if (!result.Cancelled)
+        {
+            await OnDelete.InvokeAsync(EventArgs.Empty);
+        }
+
+        ModalService.OnClose -= DeleteTorrentModalClosed;
+    }
+
+    private async void ChangeImageModalClosed(ModalResult result)
+    {
+        if (!result.Cancelled && result.Data is ChangeTorrentImageViewModel model)
+        {
+            await OnImageChange.InvokeAsync(model);
+
+            ImageRenderKey = Guid.NewGuid().ToString();
+            StateHasChanged();
+        }
+
+        ModalService.OnClose -= ChangeImageModalClosed;
+    }
+
+    private async void ChangeImageFileModalClosed(ModalResult result)
+    {
+        if (!result.Cancelled && result.Data is string model)
+        {
+            await OnImageFileChange.InvokeAsync(model);
+            ImageRenderKey = Guid.NewGuid().ToString();
+            StateHasChanged();
+        }
+
+        ModalService.OnClose -= ChangeImageFileModalClosed;
+    }
+
+    private async void DeleteImageModalClosed(ModalResult result)
+    {
+        if (!result.Cancelled)
+        {
+            await OnImageDelete.InvokeAsync(EventArgs.Empty);
+        }
+
+        ModalService.OnClose -= DeleteImageModalClosed;
+    }
+}

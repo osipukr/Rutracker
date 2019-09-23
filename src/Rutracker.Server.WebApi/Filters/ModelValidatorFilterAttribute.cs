@@ -30,7 +30,7 @@ namespace Rutracker.Server.WebApi.Filters
 
             var message = context.ModelState.GetError();
 
-            throw new RutrackerException(message, ExceptionEventType.NotValidParameters);
+            throw new RutrackerException(message, ExceptionEventTypes.NotValidParameters);
         }
     }
 }

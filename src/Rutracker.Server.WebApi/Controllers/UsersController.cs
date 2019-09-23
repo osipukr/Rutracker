@@ -44,8 +44,8 @@ namespace Rutracker.Server.WebApi.Controllers
             _clientSettings = clientOptions.Value;
         }
 
-        [HttpGet, Authorize(Policy = Policies.IsAdmin)]
-        public async Task<PaginationResult<UserViewModel>> List(int page, int pageSize)
+        [HttpGet("search"), Authorize(Policy = Policies.IsAdmin)]
+        public async Task<PaginationResult<UserViewModel>> Search(int page, int pageSize)
         {
             var (users, count) = await _userService.ListAsync(page, pageSize);
 
@@ -89,14 +89,29 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpPut("change/image")]
-        public async Task<UserViewModel> ChangeImage(ChangeImageViewModel model)
+        public async Task<string> ChangeImage(ChangeImageViewModel model)
         {
             var userId = User.GetUserId();
-            var user = model.IsDelete
-                ? await _userService.DeleteImageAsync(userId)
-                : await _userService.ChangeImageAsync(userId, model.ImageBytes, model.FileType);
+            var user = await _userService.ChangeImageAsync(userId, model.ImageUrl);
 
-            return _mapper.Map<UserDetailsViewModel>(user);
+            return user.ImageUrl;
+        }
+
+        [HttpPost("change/image")]
+        public async Task<string> ChangeImage([FromForm] ChangeImageFileViewModel model)
+        {
+            var userId = User.GetUserId();
+            var user = await _userService.ChangeImageAsync(userId, model.File.ContentType, model.File.OpenReadStream());
+
+            return user.ImageUrl;
+        }
+
+        [HttpDelete("change/image")]
+        public async Task DeleteImage()
+        {
+            var userId = User.GetUserId();
+
+            await _userService.DeleteImageAsync(userId);
         }
 
         [HttpPut("change/password")]

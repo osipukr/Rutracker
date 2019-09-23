@@ -1,0 +1,24 @@
+﻿@if (Items == null)
+{
+    <LoadingBackground ShowLoader="false">
+        <span>Sorry, but torrent list is empty...</span>
+    </LoadingBackground>
+}
+else
+{
+    <div class="mat-layout-grid">
+        <div class="mat-layout-grid-inner">
+            @foreach (var torrent in Items)
+            {
+                <div class="mat-layout-grid-cell">
+                    <Torrent Model="@torrent" />
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code
+{
+    [Parameter] public IEnumerable<TorrentViewModel> Items { get; set; }
+}

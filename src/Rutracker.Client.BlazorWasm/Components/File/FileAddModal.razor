@@ -1,0 +1,61 @@
+﻿@inherits PageComponent
+@inject IModalService ModalService
+@inject IFileReaderService FileReaderService
+@inject IFileService FileService
+
+<div class="form">
+    <div class="form-group">
+        Select files from computer: <input type="file" multiple @ref="_inputTypeFileElement" />
+    </div>
+
+    <div class="d-flex flex-row-reverse mt-4">
+        <MatButton OnClick="@AddClicked" Label="Add" />
+        <MatButton OnClick="@CancelClicked" Label="Cancel" />
+    </div>
+</div>
+
+@code
+{
+    [CascadingParameter] public ModalParameters Parameters { get; set; }
+
+    private int TorrentId { get; set; }
+    private ElementReference _inputTypeFileElement;
+
+    protected override void OnInitialized() => TorrentId = Parameters.Get<int>(nameof(TorrentId));
+
+    private async Task AddClicked()
+    {
+        var files = await FileReaderService.CreateReference(_inputTypeFileElement).EnumerateFilesAsync();
+
+        if (files == null)
+        {
+            MatToaster.Add("Files is not selected.", MatToastType.Danger);
+
+            return;
+        }
+
+        var result = new List<FileViewModel>();
+
+        foreach (var file in files)
+        {
+            await ActionAsync(async () =>
+            {
+                var response = await FileService.AddAsync(TorrentId, file);
+
+                result.Add(response);
+                MatToaster.Add($"File '{response.Name}' successfully added.", MatToastType.Success);
+            });
+        }
+
+        if (result.Count > 0)
+        {
+            ModalService.Close(ModalResult.Ok(result.AsEnumerable()));
+        }
+        else
+        {
+            CancelClicked();
+        }
+    }
+
+    private void CancelClicked() => ModalService.Cancel();
+}

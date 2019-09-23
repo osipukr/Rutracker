@@ -1,0 +1,23 @@
+﻿@if (Action == ActionTypes.Succeeded)
+{
+    @ChildContent
+}
+else if (Action == ActionTypes.Failed)
+{
+    <Alert Type="@AlertTypes.Danger">
+        @Errors
+    </Alert>
+}
+else
+{
+    <LoadingBackground>
+        <span>Loading page, please wait...</span>
+    </LoadingBackground>
+}
+
+@code
+{
+    [Parameter] public ActionTypes Action { get; set; }
+    [Parameter] public string Errors { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}

@@ -10,22 +10,22 @@ namespace Rutracker.Shared.Infrastructure.Exceptions
         {
         }
 
-        public RutrackerException(ExceptionEventType exceptionEvent)
-            : this(null, exceptionEvent)
+        public RutrackerException(ExceptionEventTypes exceptionEventType)
+            : this(null, exceptionEventType)
         {
         }
 
-        public RutrackerException(string message, ExceptionEventType exceptionEventType)
+        public RutrackerException(string message, ExceptionEventTypes exceptionEventType)
             : this(message, exceptionEventType, null)
         {
         }
 
-        public RutrackerException(string message, ExceptionEventType exceptionEventType, Exception innerException)
+        public RutrackerException(string message, ExceptionEventTypes exceptionEventType, Exception innerException)
             : base(message, innerException)
         {
             ExceptionEventType = exceptionEventType;
         }
 
-        public ExceptionEventType ExceptionEventType { get; protected set; }
+        public ExceptionEventTypes ExceptionEventType { get; protected set; }
     }
 }

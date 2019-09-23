@@ -1,0 +1,40 @@
+﻿<MatCard Class="no-select mat-elevation-z5 h-100">
+    <MatCardContent class="h-100">
+        <MatCardMedia ImageUrl="@(PageHelpers.IsValidImageUrl(Model.ImageUrl) ? Model.ImageUrl : Constants.Path.DefaultTorrentImage)"
+                      Wide="true"
+                      class="m-2" />
+
+        <div class="px-3">
+            <MatHeadline6 style="word-break: break-all;">
+                @Model.Name
+            </MatHeadline6>
+
+            <MatBody2 class="m-0">
+                Created at: <span style="word-break: break-all; font-style: italic; font-weight: 500;">@Model.CreatedAt.ToShortDateString()</span>
+            </MatBody2>
+
+            <MatBody2 class="m-0" style="max-height: 60px; overflow: hidden;">
+                Description: <span style="word-break: break-all; font-style: italic; font-weight: 500;">@Model.Description</span>
+            </MatBody2>
+        </div>
+    </MatCardContent>
+
+    <MatCardActions class="p-3">
+        <MatCardActionButtons>
+            <MatButton Link="@PageHelpers.TorrentLink(Model.Id)" Label="Details" Raised="true" />
+        </MatCardActionButtons>
+
+        <MatCardActionIcons>
+            <div class="d-flex justify-content-center align-items-center" title="Number of comments">
+                <span>@Model.CommentsCount</span>
+
+                <MatIcon Icon="@MatIconNames.Comment" class="px-1" />
+            </div>
+        </MatCardActionIcons>
+    </MatCardActions>
+</MatCard>
+
+@code
+{
+    [Parameter] public TorrentViewModel Model { get; set; }
+}

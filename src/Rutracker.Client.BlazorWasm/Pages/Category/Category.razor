@@ -1,0 +1,62 @@
+﻿@inject ICategoryService CategoryService
+@inject ISubcategoryService SubcategoryService
+
+@page "/categories/{id:int}"
+
+<ArrowBack Link="@Constants.Path.Categories" />
+
+<Page Action="@LoadAction" Errors="@Errors">
+    <h2>@CategoryModel.Name</h2>
+
+    <ListItemsHeader Title="Total subcategories" TotalItems="@Subcategories.Count" />
+
+    <SubcategoryList Items="@Subcategories"
+                     OnCreate="@CreateSubcategoryAsync"
+                     OnUpdate="@UpdateSubcategoryAsync"
+                     OnDelete="@DeleteSubcategoryAsync" />
+</Page>
+
+@code
+{
+    [Parameter] public int Id { get; set; }
+
+    private CategoryViewModel CategoryModel { get; set; }
+    private List<SubcategoryViewModel> Subcategories { get; set; } = new List<SubcategoryViewModel>();
+
+    protected override async Task OnInitializedAsync() => await LoadAsync(async () =>
+    {
+        CategoryModel = await CategoryService.FindAsync(Id);
+        Subcategories = CategoryModel.Subcategories.ToList();
+    });
+
+    private async Task CreateSubcategoryAsync(SubcategoryCreateViewModel model) => await ActionAsync(async () =>
+    {
+        model.CategoryId = Id;
+
+        var subcategory = await SubcategoryService.CreateAsync(model);
+
+        Subcategories.Insert(0, subcategory);
+    }, successMessage: "Subcategory successfully created.");
+
+    private async Task UpdateSubcategoryAsync(SubcategoryViewModel subcategory, SubcategoryUpdateViewModel model) => await ActionAsync(async () =>
+    {
+        if (subcategory.Name == model.Name)
+        {
+            return;
+        }
+
+        var result = await SubcategoryService.UpdateAsync(subcategory.Id, model);
+        var index = Subcategories.FindIndex(x => x.Id == subcategory.Id);
+
+        Subcategories[index] = result;
+
+        MatToaster.Add("Subcategory successfully updated.", MatToastType.Success);
+    });
+
+    private async Task DeleteSubcategoryAsync(SubcategoryViewModel model) => await ActionAsync(async () =>
+    {
+        await SubcategoryService.DeleteAsync(model.Id);
+
+        Subcategories.Remove(model);
+    }, successMessage: "Subcategory successfully deleted.");
+}

@@ -1,0 +1,23 @@
+﻿@layout LoginLayout
+@attribute [Authorize]
+
+@inject IAccountService AccountService
+
+@page "/account/logout"
+
+<Page Action="@LoadAction" Errors="@Errors" />
+
+@code
+{
+    protected override async Task OnInitializedAsync() => await LogoutAsync();
+
+    private async Task LogoutAsync()
+    {
+        await LoadAsync(() => AccountService.Logout());
+
+        if (LoadAction == ActionTypes.Succeeded || LoadAction == ActionTypes.Failed)
+        {
+            NavigationManager.NavigateTo(Constants.Path.Home);
+        }
+    }
+}

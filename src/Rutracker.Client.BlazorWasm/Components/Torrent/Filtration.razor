@@ -1,0 +1,125 @@
+﻿@inherits PageComponent
+@inject ICategoryService CategoryService
+
+<div class="mat-layout-grid px-0">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+            <EditForm Model="@FilterModel" OnValidSubmit="@ApplyClicked">
+                <DataAnnotationsValidator />
+
+                <MatTextField @bind-Value="@FilterModel.Search"
+                              Label="Search"
+                              Icon="@MatIconNames.Search"
+                              IconTrailing="true"
+                              FullWidth="true"
+                              ValidationDisabled="true"
+                              InputClass="pr-5"
+                              type="search" />
+
+                <ValidationMessage For="@(() => FilterModel.Search)" />
+
+                <div class="row px-0 pt-4 pb-3">
+                    <div class="col-md-6 py-3">
+                        <MatSelect @bind-Value="@CategoryId"
+                                   Label="Category"
+                                   Disabled="@(Categories == null)"
+                                   Enhanced="true"
+                                   class="w-100">
+                            <MatOption Value="@null">No select</MatOption>
+
+                            @if (Categories != null)
+                            {
+                                @foreach (var category in Categories)
+                                {
+                                    <MatOption Value="@category.Id.ToString()">@category.Name</MatOption>
+                                }
+                            }
+                        </MatSelect>
+                    </div>
+
+                    <div class="col-md-6 py-3">
+                        <MatSelect @bind-Value="@SubcategoryId"
+                                   Label="Subcategory"
+                                   Disabled="@(Subcategories == null)"
+                                   Enhanced="true"
+                                   class="w-100">
+                            <MatOption Value="@null">No select</MatOption>
+
+                            @if (Subcategories != null)
+                            {
+                                @foreach (var subcategory in Subcategories)
+                                {
+                                    <MatOption Value="@subcategory.Id.ToString()">@subcategory.Name</MatOption>
+                                }
+                            }
+                        </MatSelect>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-between filter-group-btn">
+                        <MatButton OnClick="@ResetClicked"
+                                   Label="All"
+                                   Outlined="true"
+                                   class="filter-btn mat-elevation-z5"
+                                   type="reset" />
+
+                        <MatButton Label="Apply"
+                                   TrailingIcon="@MatIconNames.Search"
+                                   Raised="true"
+                                   class="filter-btn mat-elevation-z5"
+                                   type="submit" />
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    [Parameter] public EventCallback<TorrentFilterViewModel> OnChange { get; set; }
+
+    private TorrentFilterViewModel FilterModel { get; set; } = new TorrentFilterViewModel();
+    private IEnumerable<CategoryViewModel> Categories { get; set; }
+    private IEnumerable<SubcategoryViewModel> Subcategories { get; set; }
+
+    protected override async Task OnInitializedAsync() => await ActionAsync(async () => Categories = await CategoryService.ListAsync());
+
+    private string CategoryId
+    {
+        get => FilterModel.CategoryId.ToString();
+        set
+        {
+            if (int.TryParse(value, out var id))
+            {
+                FilterModel.CategoryId = id;
+                Subcategories = Categories.FirstOrDefault(x => x.Id == id)?.Subcategories;
+            }
+            else
+            {
+                FilterModel.CategoryId = null;
+                Subcategories = null;
+            }
+
+            SubcategoryId = null;
+        }
+    }
+
+    private string SubcategoryId
+    {
+        get => FilterModel.SubcategoryId.ToString();
+        set => FilterModel.SubcategoryId = int.TryParse(value, out var id) ? (int?)id : null;
+    }
+
+    private void ResetClicked()
+    {
+        FilterModel.Search = null;
+        FilterModel.CategoryId = null;
+        FilterModel.SubcategoryId = null;
+
+        ApplyClicked();
+    }
+
+    private void ApplyClicked() => OnChange.InvokeAsync(FilterModel);
+}

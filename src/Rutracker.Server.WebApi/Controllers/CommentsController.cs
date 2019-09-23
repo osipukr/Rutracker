@@ -23,8 +23,8 @@ namespace Rutracker.Server.WebApi.Controllers
             _commentService = commentService;
         }
 
-        [HttpGet, AllowAnonymous]
-        public async Task<PaginationResult<CommentViewModel>> List(int page, int pageSize, int torrentId)
+        [HttpGet("search"), AllowAnonymous]
+        public async Task<PaginationResult<CommentViewModel>> Search(int page, int pageSize, int torrentId)
         {
             var (comments, count) = await _commentService.ListAsync(page, pageSize, torrentId);
 
@@ -37,16 +37,16 @@ namespace Rutracker.Server.WebApi.Controllers
             };
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), AllowAnonymous]
         public async Task<CommentViewModel> Find(int id)
         {
-            var comment = await _commentService.FindAsync(id, User.GetUserId());
+            var comment = await _commentService.FindAsync(id);
 
             return _mapper.Map<CommentViewModel>(comment);
         }
 
         [HttpPost]
-        public async Task<CommentViewModel> Add(CommentCreateViewModel model)
+        public async Task<CommentViewModel> Create(CommentCreateViewModel model)
         {
             var comment = _mapper.Map<Comment>(model);
 

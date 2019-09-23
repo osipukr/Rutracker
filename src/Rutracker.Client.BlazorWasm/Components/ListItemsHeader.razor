@@ -1,0 +1,21 @@
+﻿<hr />
+
+<div class="d-flex justify-content-between align-items-center px-4">
+    <div class="d-flex justify-content-start align-items-center flex-fill">
+        @ChildContent
+    </div>
+
+    <div class="d-flex justify-content-end align-items-center flex-fill">
+        <span class="pr-2">@TotalItems</span>
+        <h3 class="m-0">@Title</h3>
+    </div>
+</div>
+
+<hr />
+
+@code
+{
+    [Parameter] public int TotalItems { get; set; }
+    [Parameter] public string Title { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}

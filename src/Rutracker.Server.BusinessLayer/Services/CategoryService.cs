@@ -31,7 +31,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Category> FindAsync(int id)
         {
-            Guard.Against.LessOne(id, $"The {nameof(id)} is less than 1.");
+            Guard.Against.LessOne(id, "Invalid category id.");
 
             var category = await _categoryRepository.GetAsync(id);
 
@@ -42,9 +42,15 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Category> AddAsync(Category category)
         {
-            await ThrowIfInvalidCategory(category);
+            Guard.Against.NullNotValid(category, "Invalid category.");
+            Guard.Against.NullOrWhiteSpace(category.Name, message: "The category must contain a name.");
 
-            await _categoryRepository.AddAsync(category);
+            if (await _categoryRepository.ExistAsync(x => x.Name == category.Name))
+            {
+                throw new RutrackerException($"Category with name '{category.Name}' already exists.", ExceptionEventTypes.NotValidParameters);
+            }
+
+            category = await _categoryRepository.AddAsync(category);
             await _unitOfWork.CompleteAsync();
 
             return category;
@@ -52,13 +58,19 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Category> UpdateAsync(int id, Category category)
         {
-            await ThrowIfInvalidCategory(category);
+            Guard.Against.NullNotValid(category, "Invalid category.");
+            Guard.Against.NullOrWhiteSpace(category.Name, message: "The category must contain a name.");
+
+            if (await _categoryRepository.ExistAsync(x => x.Name == category.Name))
+            {
+                throw new RutrackerException($"Category with name '{category.Name}' already exists.", ExceptionEventTypes.NotValidParameters);
+            }
 
             var result = await FindAsync(id);
 
             result.Name = category.Name;
 
-            _categoryRepository.Update(result);
+            result = _categoryRepository.Update(result);
             await _unitOfWork.CompleteAsync();
 
             return result;
@@ -68,21 +80,10 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var category = await FindAsync(id);
 
-            _categoryRepository.Remove(category);
+            category = _categoryRepository.Remove(category);
             await _unitOfWork.CompleteAsync();
 
             return category;
-        }
-
-        private async Task ThrowIfInvalidCategory(Category category)
-        {
-            Guard.Against.NullNotValid(category, "Invalid category model.");
-            Guard.Against.NullOrWhiteSpace(category.Name, message: "The category must contain a name.");
-
-            if (await _categoryRepository.ExistAsync(x => x.Name == category.Name))
-            {
-                throw new RutrackerException($"Category with name '{category.Name}' already exists.", ExceptionEventType.NotValidParameters);
-            }
         }
     }
 }

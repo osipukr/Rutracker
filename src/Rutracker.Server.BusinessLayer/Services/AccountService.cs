@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
@@ -33,7 +32,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!user.IsRegistrationFinished)
             {
-                throw new RutrackerException("The user has not completed the registration.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("The user has not completed the registration.", ExceptionEventTypes.NotValidParameters);
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: true);
@@ -47,12 +46,12 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (result.IsLockedOut)
             {
-                throw new RutrackerException("Too many login attempts, try again later.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("Too many login attempts, try again later.", ExceptionEventTypes.LoginFailed);
             }
 
             if (result.IsNotAllowed)
             {
-                throw new RutrackerException("Confirm your account before logging in.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("Confirm your account before logging in.", ExceptionEventTypes.LoginFailed);
             }
 
             if (result.RequiresTwoFactor)
@@ -60,7 +59,7 @@ namespace Rutracker.Server.BusinessLayer.Services
                 // RequiresTwoFactor
             }
 
-            throw new RutrackerException("Wrong password.", ExceptionEventType.NotValidParameters);
+            throw new RutrackerException("Wrong password.", ExceptionEventTypes.NotValidParameters);
         }
 
         public async Task<User> RegisterAsync(string userName, string email)
@@ -84,13 +83,13 @@ namespace Rutracker.Server.BusinessLayer.Services
 
                 if (!result.Succeeded)
                 {
-                    throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
+                    throw new RutrackerException(result.GetError(), ExceptionEventTypes.RegistrationFailed);
                 }
             }
 
             if (user.IsRegistrationFinished)
             {
-                throw new RutrackerException($"A user with this name '{userName}' is already registered.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"A user with this name '{userName}' is already registered.", ExceptionEventTypes.RegistrationFailed);
             }
 
             if (user.Email != email)
@@ -112,26 +111,26 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (user == null)
             {
-                throw new RutrackerException("No user with this id found.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("No user with this id found.", ExceptionEventTypes.NotValidParameters);
             }
 
             if (user.IsRegistrationFinished)
             {
-                throw new RutrackerException($"A user with this name '{user.UserName}' is already registered.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException($"A user with this name '{user.UserName}' is already registered.", ExceptionEventTypes.NotValidParameters);
             }
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
 
             if (!result.Succeeded)
             {
-                throw new RutrackerException("Invalid confirmation email token.", ExceptionEventType.NotValidParameters);
+                throw new RutrackerException("Invalid confirmation email token.", ExceptionEventTypes.NotValidParameters);
             }
 
             result = await _userManager.AddPasswordAsync(user, password);
 
             if (!result.Succeeded)
             {
-                throw new RutrackerException(result.GetError(), ExceptionEventType.NotValidParameters);
+                throw new RutrackerException(result.GetError(), ExceptionEventTypes.NotValidParameters);
             }
 
             user.FirstName = firstName;

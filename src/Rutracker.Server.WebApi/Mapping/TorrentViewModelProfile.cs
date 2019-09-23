@@ -13,6 +13,8 @@ namespace Rutracker.Server.WebApi.Mapping
                     x => x.MapFrom(y => y.Comments.Count));
 
             CreateMap<Torrent, TorrentDetailsViewModel>();
+            CreateMap<TorrentCreateViewModel, Torrent>();
+            CreateMap<TorrentUpdateViewModel, Torrent>();
         }
     }
 }

@@ -1,0 +1,25 @@
+﻿@if (Items == null)
+{
+    <LoadingBackground ShowLoader="false">
+        <span>Sorry, but user list is empty...</span>
+    </LoadingBackground>
+}
+else
+{
+    <MatList SingleSelection="true" TwoLine="true">
+        @foreach (var user in Items)
+        {
+            <MatListItem Href="@PageHelpers.UserLink(user.UserName)">
+                <MatListItemText>
+                    <MatListItemPrimaryText>@user.Id</MatListItemPrimaryText>
+                    <MatListItemSecondaryText>@user.UserName</MatListItemSecondaryText>
+                </MatListItemText>
+            </MatListItem>
+        }
+    </MatList>
+}
+
+@code
+{
+    [Parameter] public IEnumerable<UserViewModel> Items { get; set; }
+}   
