@@ -24,11 +24,5 @@
             public const string DefaultUserImage = "https://icon-library.net/images/no-profile-pic-icon/no-profile-pic-icon-5.jpg";
             public const string DefaultTorrentImage = "https://www.southtabor.com/newsite/wp-content/themes/consultix/images/no-image-found-360x250.png";
         }
-
-        public static class File
-        {
-            public const long MaxImageSize = 2 * 1024 * 1024;
-            public const long MaxFileSize = 50 * 1024 * 1024;
-        }
     }
 }

@@ -1,3 +1,4 @@
+using System.IO;
 using Blazor.FileReader;
 using Blazored.LocalStorage;
 using Blazored.Modal;
@@ -6,8 +7,10 @@ using Microsoft.AspNetCore.Blazor.Http;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Rutracker.Client.BlazorWasm.Interfaces;
-using Rutracker.Client.BlazorWasm.Services;
+using Newtonsoft.Json;
+using Rutracker.Client.BusinessLayer.Interfaces;
+using Rutracker.Client.BusinessLayer.Providers;
+using Rutracker.Client.BusinessLayer.Services;
 using Rutracker.Shared.Models;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
@@ -17,9 +20,10 @@ namespace Rutracker.Client.BlazorWasm
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            var clientSettings = ClientSettingsService.GetSettings("clientsettings.json");
+            var clientSettings = GetClientSettings();
 
-            services.AddSingleton(clientSettings.ApiUrlSettings);
+            services.AddSingleton(clientSettings.ApiUrlOptions);
+            services.AddSingleton(clientSettings.FileOptions);
             services.AddSingleton(clientSettings.ViewSettings);
 
             services.AddBlazoredModal();
@@ -61,6 +65,18 @@ namespace Rutracker.Client.BlazorWasm
 
             app.UseLoadingBar();
             app.AddComponent<App>("app");
+        }
+
+        private static ClientSettings GetClientSettings()
+        {
+            var assembly = typeof(Startup).Assembly;
+
+            var resource = $"{assembly.GetName().Name}.clientsettings.json";
+
+            using var stream = assembly.GetManifestResourceStream(resource);
+            using var reader = new StreamReader(stream);
+
+            return JsonConvert.DeserializeObject<ClientSettings>(reader.ReadToEnd());
         }
     }
 }

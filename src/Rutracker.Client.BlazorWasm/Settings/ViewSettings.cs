@@ -1,6 +1,6 @@
 ﻿namespace Rutracker.Client.BlazorWasm.Settings
 {
-    public class ViewSettings
+    public class PageSettings
     {
         public string ServiceName { get; set; }
         public int UsersPerPageCount { get; set; }

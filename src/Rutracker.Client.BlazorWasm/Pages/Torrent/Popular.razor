@@ -11,7 +11,7 @@
 @code
 {
     private IEnumerable<TorrentViewModel> Torrents { get; set; }
-    private int Count => ViewSettings.PopularTorrentsCount;
+    private int Count => PageSettings.PopularTorrentsCount;
 
     protected override async Task OnInitializedAsync() => await LoadAsync(TorrentsAsync);
 

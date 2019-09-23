@@ -1,9 +1,9 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace Rutracker.Client.BlazorWasm.Helpers
+namespace Rutracker.Client.BusinessLayer.Extensions
 {
-    public static class AuthenticationStateExtension
+    public static class AuthenticationStateExtensions
     {
         public static bool IsUserAuthenticated(this AuthenticationState state)
         {

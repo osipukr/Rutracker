@@ -75,7 +75,7 @@
     private List<CommentViewModel> Comments { get; set; } = new List<CommentViewModel>();
 
     private int Page { get; set; } = 1;
-    private int PageSize => ViewSettings.CommentsPerPageCount;
+    private int PageSize => PageSettings.CommentsPerPageCount;
     private bool IsCurrentUserTorrent { get; set; }
 
     protected override async Task OnInitializedAsync()

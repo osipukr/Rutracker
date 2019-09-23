@@ -2,7 +2,7 @@
 using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.Comment;
 
-namespace Rutracker.Client.BlazorWasm.Interfaces
+namespace Rutracker.Client.BusinessLayer.Interfaces
 {
     public interface ICommentService
     {

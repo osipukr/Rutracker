@@ -2,12 +2,12 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Rutracker.Client.BlazorWasm.Services;
+using Rutracker.Client.BusinessLayer.Services;
 using Rutracker.Shared.Models.ViewModels.File;
 using Rutracker.Shared.Models.ViewModels.Torrent;
 using Rutracker.Shared.Models.ViewModels.User;
 
-namespace Rutracker.Client.BlazorWasm.Helpers
+namespace Rutracker.Client.BusinessLayer.Extensions
 {
     public static class HttpClientServiceExtensions
     {

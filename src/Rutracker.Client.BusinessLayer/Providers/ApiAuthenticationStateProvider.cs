@@ -4,8 +4,9 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
+using Rutracker.Client.BusinessLayer.Services;
 
-namespace Rutracker.Client.BlazorWasm.Services
+namespace Rutracker.Client.BusinessLayer.Providers
 {
     public class ApiAuthenticationStateProvider : AuthenticationStateProvider
     {

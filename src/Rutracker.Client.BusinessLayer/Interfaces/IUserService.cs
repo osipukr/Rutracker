@@ -3,7 +3,7 @@ using Blazor.FileReader;
 using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.User;
 
-namespace Rutracker.Client.BlazorWasm.Interfaces
+namespace Rutracker.Client.BusinessLayer.Interfaces
 {
     public interface IUserService
     {

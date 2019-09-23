@@ -1,5 +1,5 @@
 ﻿@inherits LayoutComponentBase
-@inject ViewSettings ViewSettings
+@inject PageSettings PageSettings
 
 <MatDrawerContainer style="width: 100vw; height: 100vh;" class="@_bbDrawerClass">
     <MatDrawer @bind-Opened="@_navMenuOpened">
@@ -69,7 +69,7 @@
     private bool _navMinified;
     private string _bbDrawerClass;
 
-    private string BrandName => ViewSettings.ServiceName;
+    private string BrandName => PageSettings.ServiceName;
 
     private void NavToggleClicked()
     {

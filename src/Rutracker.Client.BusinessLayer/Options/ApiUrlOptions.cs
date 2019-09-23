@@ -1,6 +1,6 @@
-﻿namespace Rutracker.Client.BlazorWasm.Settings
+﻿namespace Rutracker.Client.BusinessLayer.Settings
 {
-    public class ApiUrlSettings
+    public class ApiUrlOptions
     {
         // Category
         public string Categories { get; set; }

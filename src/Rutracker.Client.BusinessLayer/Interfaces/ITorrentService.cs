@@ -4,7 +4,7 @@ using Blazor.FileReader;
 using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.Torrent;
 
-namespace Rutracker.Client.BlazorWasm.Interfaces
+namespace Rutracker.Client.BusinessLayer.Interfaces
 {
     public interface ITorrentService
     {

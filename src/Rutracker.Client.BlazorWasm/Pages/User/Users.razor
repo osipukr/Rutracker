@@ -26,7 +26,7 @@
 {
     private PaginationResult<UserViewModel> UsersPagination { get; set; }
     private int Page { get; set; } = 1;
-    private int PageSize => ViewSettings.UsersPerPageCount;
+    private int PageSize => PageSettings.UsersPerPageCount;
 
     protected override async Task OnInitializedAsync() => await LoadAsync(UsersAsync);
 

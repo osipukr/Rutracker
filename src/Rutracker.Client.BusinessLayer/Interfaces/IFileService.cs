@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Blazor.FileReader;
 using Rutracker.Shared.Models.ViewModels.File;
 
-namespace Rutracker.Client.BlazorWasm.Interfaces
+namespace Rutracker.Client.BusinessLayer.Interfaces
 {
     public interface IFileService
     {

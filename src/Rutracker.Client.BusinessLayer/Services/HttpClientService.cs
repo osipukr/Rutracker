@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Rutracker.Client.BlazorWasm.Services
+namespace Rutracker.Client.BusinessLayer.Services
 {
     public class HttpClientService
     {

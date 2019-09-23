@@ -1,5 +1,5 @@
 {
-  "ApiUrlSettings": {
+  "ApiUrlOptions": {
     "Categories": "api/categories",
     "Category": "api/categories/{0}",
     "Subcategories": "api/subcategories",
@@ -33,7 +33,11 @@
     "ConfirmPhone": "api/users/confirm/phone",
     "ConfirmChangeEmail": "api/users/confirm/changeEmail"
   },
-  "ViewSettings": {
+  "FileOptions": {
+    "MaxImageSize": 2097152,
+    "MaxFileSize": 52428800
+  },
+  "PageSettings": {
     "ServiceName": "Rutracker",
     "UsersPerPageCount": 6,
     "TorrentsPerPageCount": 6,

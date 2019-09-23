@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Rutracker.Shared.Models.ViewModels.Category;
 
-namespace Rutracker.Client.BlazorWasm.Interfaces
+namespace Rutracker.Client.BusinessLayer.Interfaces
 {
     public interface ICategoryService
     {
