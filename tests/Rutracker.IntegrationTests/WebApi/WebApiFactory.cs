@@ -15,6 +15,14 @@ namespace Rutracker.IntegrationTests.WebApi
                 services
                     .AddEntityFrameworkInMemoryDatabase()
                     .AddDbContext<RutrackerContext>(options => options.UseInMemoryDatabase(nameof(WebApiFactory)));
+
+                using var scope = services.BuildServiceProvider().CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<RutrackerContext>();
+
+                if (context.Database.EnsureCreated())
+                {
+                    new WebApiContextSeed(context).SeedAsync().Wait();
+                }
             });
     }
 }

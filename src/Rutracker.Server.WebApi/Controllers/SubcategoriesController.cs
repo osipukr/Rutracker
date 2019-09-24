@@ -21,6 +21,14 @@ namespace Rutracker.Server.WebApi.Controllers
             _subcategoryService = subcategoryService;
         }
 
+        [HttpGet, AllowAnonymous]
+        public async Task<IEnumerable<SubcategoryViewModel>> List()
+        {
+            var subcategories = await _subcategoryService.ListAsync();
+
+            return _mapper.Map<IEnumerable<SubcategoryViewModel>>(subcategories);
+        }
+
         [HttpGet("search"), AllowAnonymous]
         public async Task<IEnumerable<SubcategoryViewModel>> Search(int categoryId)
         {

@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
-using Rutracker.Shared.Models.ViewModels.Torrent;
+using Rutracker.Shared.Models.ViewModels.Category;
 using Xunit;
 
 namespace Rutracker.IntegrationTests.WebApi.Controllers
@@ -15,11 +15,11 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
 
         public CategoriesControllerTests(WebApiFactory factory) => _client = factory.CreateClient();
 
-        [Fact(DisplayName = "List() with valid parameters should return 200OK status.")]
-        public async Task List_10_ReturnsStatus200OK()
+        [Fact]
+        public async Task List_30_ReturnsStatus200OK()
         {
             // Arrange
-            const int expectedCount = 10;
+            const int expectedCount = WebApiContextSeed.CategoryMaxCount;
 
             // Act
             var categories = await _client.GetJsonAsync<IEnumerable<CategoryViewModel>>("api/categories");
@@ -29,36 +29,36 @@ namespace Rutracker.IntegrationTests.WebApi.Controllers
             Assert.Equal(expectedCount, categories.Count());
         }
 
-        [Fact(DisplayName = "Find() with valid parameters should return 200OK status.")]
+        [Fact]
         public async Task Find_5_ReturnsStatus200OK()
         {
             // Arrange
             const int expectedId = 5;
 
             // Act
-            var category = await _client.GetJsonAsync<CategoryViewModel>($"api/categories/find/?id={expectedId}");
+            var category = await _client.GetJsonAsync<CategoryViewModel>($"api/categories/{expectedId}");
 
             // Assert
             Assert.NotNull(category);
             Assert.Equal(expectedId, category.Id);
         }
 
-        [Fact(DisplayName = "Find() with an invalid parameter should return 400BadRequest status.")]
+        [Fact]
         public async Task Find_NegativeNumber_ReturnsStatus400BadRequest()
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.GetJsonAsync<CategoryViewModel>("api/categories/find/?id=-10"));
+                await _client.GetJsonAsync<CategoryViewModel>("api/categories/-10"));
 
             Assert.Contains(StatusCodes.Status400BadRequest.ToString(), exception.Message);
         }
 
-        [Fact(DisplayName = "Find() with an invalid parameter should return 404NotFound status.")]
-        public async Task Find_1000_ReturnsStatus404NotFound()
+        [Fact]
+        public async Task Find_10000_ReturnsStatus404NotFound()
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.GetJsonAsync<CategoryViewModel>("api/categories/find/?id=10000"));
+                await _client.GetJsonAsync<CategoryViewModel>("api/categories/10000"));
 
             Assert.Contains(StatusCodes.Status404NotFound.ToString(), exception.Message);
         }

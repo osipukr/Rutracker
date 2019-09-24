@@ -22,6 +22,15 @@ namespace Rutracker.Server.BusinessLayer.Services
             _unitOfWork = unitOfWork;
         }
 
+        public async Task<IEnumerable<Subcategory>> ListAsync()
+        {
+            var subcategories = await _subcategoryRepository.GetAll().ToListAsync();
+
+            Guard.Against.NullNotFound(subcategories, "The subcategories not found.");
+
+            return subcategories;
+        }
+
         public async Task<IEnumerable<Subcategory>> ListAsync(int categoryId)
         {
             Guard.Against.LessOne(categoryId, "Invalid category id.");
