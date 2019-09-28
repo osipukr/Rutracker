@@ -2,7 +2,7 @@
 
 namespace Rutracker.Client.BlazorWasm.Settings
 {
-    public class MatToasterSettings
+    public class ToasterSettings
     {
         public MatToastPosition Position { get; set; }
         public bool PreventDuplicates { get; set; }

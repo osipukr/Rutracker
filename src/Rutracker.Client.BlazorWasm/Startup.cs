@@ -24,10 +24,10 @@ namespace Rutracker.Client.BlazorWasm
 
             services.AddSingleton(clientSettings.ApiUrlOptions);
             services.AddSingleton(clientSettings.FileOptions);
-            services.AddSingleton(clientSettings.ViewSettings);
+            services.AddSingleton(clientSettings.PageSettings);
 
-            services.AddBlazoredModal();
             services.AddLoadingBar();
+            services.AddBlazoredModal();
             services.AddFileReaderService(options => options.UseWasmSharedBuffer = true);
             services.AddBlazoredLocalStorage();
             services.AddAuthorizationCore(config =>
@@ -49,13 +49,13 @@ namespace Rutracker.Client.BlazorWasm
 
             services.AddMatToaster(x =>
             {
-                x.Position = clientSettings.MatToasterSettings.Position;
-                x.PreventDuplicates = clientSettings.MatToasterSettings.PreventDuplicates;
-                x.NewestOnTop = clientSettings.MatToasterSettings.NewestOnTop;
-                x.ShowProgressBar = clientSettings.MatToasterSettings.ShowProgressBar;
-                x.ShowCloseButton = clientSettings.MatToasterSettings.ShowCloseButton;
-                x.MaximumOpacity = clientSettings.MatToasterSettings.MaximumOpacity;
-                x.VisibleStateDuration = clientSettings.MatToasterSettings.VisibleStateDuration;
+                x.Position = clientSettings.ToasterSettings.Position;
+                x.PreventDuplicates = clientSettings.ToasterSettings.PreventDuplicates;
+                x.NewestOnTop = clientSettings.ToasterSettings.NewestOnTop;
+                x.ShowProgressBar = clientSettings.ToasterSettings.ShowProgressBar;
+                x.ShowCloseButton = clientSettings.ToasterSettings.ShowCloseButton;
+                x.MaximumOpacity = clientSettings.ToasterSettings.MaximumOpacity;
+                x.VisibleStateDuration = clientSettings.ToasterSettings.VisibleStateDuration;
             });
         }
 

@@ -33,9 +33,6 @@ namespace Rutracker.Server.WebApi.Services
 
         public async Task<string> GenerateTokenAsync(User user, IEnumerable<string> roles)
         {
-            Guard.Against.Null(user, nameof(user));
-            Guard.Against.Null(roles, nameof(roles));
-
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),

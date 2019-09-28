@@ -62,19 +62,24 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
             return await _dbSet.CountAsync(expression);
         }
 
-        public virtual async Task<TEntity> AddAsync(TEntity entity)
+        public TEntity Create()
         {
-            return (await _dbSet.AddAsync(entity)).Entity;
+            return _dbSet.CreateProxy();
         }
 
-        public virtual TEntity Update(TEntity entity)
+        public virtual async Task AddAsync(TEntity entity)
         {
-            return _dbSet.Update(entity).Entity;
+            await _dbSet.AddAsync(entity);
         }
 
-        public virtual TEntity Remove(TEntity entity)
+        public virtual void Update(TEntity entity)
         {
-            return _dbSet.Remove(entity).Entity;
+            _dbSet.Update(entity);
+        }
+
+        public virtual void Remove(TEntity entity)
+        {
+            _dbSet.Remove(entity);
         }
     }
 }

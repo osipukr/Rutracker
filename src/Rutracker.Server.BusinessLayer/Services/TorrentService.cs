@@ -111,14 +111,19 @@ namespace Rutracker.Server.BusinessLayer.Services
                 throw new RutrackerException($"The subcategory with id {torrent.SubcategoryId} not found.", ExceptionEventTypes.NotValidParameters);
             }
 
-            torrent.CreatedAt = DateTime.UtcNow;
+            var result = _torrentRepository.Create();
 
-            torrent = await _torrentRepository.AddAsync(torrent);
+            result.Name = torrent.Name;
+            result.Description = torrent.Description;
+            result.SubcategoryId = torrent.SubcategoryId;
+            result.UserId = torrent.UserId;
+            result.CreatedAt = DateTime.UtcNow;
 
+            await _torrentRepository.AddAsync(result);
             await _unitOfWork.CompleteAsync();
-            await _fileStorageService.CreateTorrentContainerAsync(torrent.Id);
+            await _fileStorageService.CreateTorrentContainerAsync(result.Id);
 
-            return torrent;
+            return result;
         }
 
         public async Task<Torrent> ChangeImageAsync(int id, string userId, string imageUrl)
@@ -162,8 +167,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             result.Content = torrent.Content;
             result.LastUpdatedAt = DateTime.UtcNow;
 
-            result = _torrentRepository.Update(result);
-
+            _torrentRepository.Update(result);
             await _unitOfWork.CompleteAsync();
 
             return result;
@@ -173,8 +177,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var torrent = await FindAsync(id, userId);
 
-            torrent = _torrentRepository.Remove(torrent);
-
+            _torrentRepository.Remove(torrent);
             await _unitOfWork.CompleteAsync();
             await _fileStorageService.DeleteTorrentAsync(id);
 
@@ -185,8 +188,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             torrent.ImageUrl = imageUrl;
 
-            torrent = _torrentRepository.Update(torrent);
-
+            _torrentRepository.Update(torrent);
             await _unitOfWork.CompleteAsync();
 
             return torrent;

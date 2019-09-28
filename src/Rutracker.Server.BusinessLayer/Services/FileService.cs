@@ -80,18 +80,18 @@ namespace Rutracker.Server.BusinessLayer.Services
             var name = fileName.ToLowerInvariant();
             var type = mimeType.ToLowerInvariant();
             var path = await _fileStorageService.UploadTorrentFileAsync(torrentId, type, name, fileStream);
-            var file = await _fileRepository.AddAsync(new File
-            {
-                Name = name,
-                Size = fileStream.Length,
-                Type = type,
-                Url = path,
-                TorrentId = torrentId
-            });
+            var result = _fileRepository.Create();
 
+            result.Name = name;
+            result.Size = fileStream.Length;
+            result.Type = type;
+            result.Url = path;
+            result.TorrentId = torrentId;
+
+            await _fileRepository.AddAsync(result);
             await _unitOfWork.CompleteAsync();
 
-            return file;
+            return result;
         }
 
         public async Task<File> DeleteAsync(int id, string userId)
@@ -100,8 +100,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             await _fileStorageService.DeleteTorrentFileAsync(file.TorrentId, file.Name);
 
-            file = _fileRepository.Remove(file);
-
+            _fileRepository.Remove(file);
             await _unitOfWork.CompleteAsync();
 
             return file;
