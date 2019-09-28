@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Shared.Infrastructure.Exceptions;
@@ -71,12 +70,9 @@ namespace Rutracker.Server.BusinessLayer.Services
             result.FirstName = user.FirstName;
             result.LastName = user.LastName;
 
-            var identityResult = await _userManager.UpdateAsync(result);
+            var updateResult = await _userManager.UpdateAsync(result);
 
-            if (!identityResult.Succeeded)
-            {
-                throw new RutrackerException(identityResult.GetError(), ExceptionEventTypes.NotValidParameters);
-            }
+            Guard.Against.IsSucceeded(updateResult);
 
             return result;
         }
@@ -86,10 +82,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             var user = await FindAsync(id);
             var roles = await _userManager.GetRolesAsync(user);
 
-            if (roles == null)
-            {
-                throw new RutrackerException("The roles not found.", ExceptionEventTypes.NotFound);
-            }
+            Guard.Against.NullNotFound(roles, "The roles not found.");
 
             return roles;
         }
@@ -102,10 +95,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var result = await _userManager.UpdateAsync(user);
 
-            if (!result.Succeeded)
-            {
-                throw new RutrackerException(result.GetError(), ExceptionEventTypes.NotValidParameters);
-            }
+            Guard.Against.IsSucceeded(result);
 
             return user;
         }
@@ -113,6 +103,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         public async Task<User> ChangeImageAsync(string id, string mimeType, Stream imageStream)
         {
             await _fileStorageService.CreateImagesContainerAsync();
+
             var path = await _fileStorageService.UploadUserImageAsync(id, mimeType, imageStream);
 
             return await ChangeImageAsync(id, path);
@@ -128,11 +119,15 @@ namespace Rutracker.Server.BusinessLayer.Services
         public async Task<string> EmailConfirmationTokenAsync(string id)
         {
             var user = await FindAsync(id);
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-            Guard.Against.NullOrWhiteSpace(token, message: "Invalid token.");
+            return await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        }
 
-            return token;
+        public async Task<string> PasswordResetTokenAsync(string id)
+        {
+            var user = await FindAsync(id);
+
+            return await _userManager.GeneratePasswordResetTokenAsync(user);
         }
 
         public async Task<string> ChangeEmailTokenAsync(string id, string email)
@@ -141,21 +136,17 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var user = await FindAsync(id);
 
-            if (await _userManager.FindByEmailAsync(email) != null)
+            if (!user.EmailConfirmed)
             {
-                throw new RutrackerException("This email is already.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"The email '{user.Email}' is not confirmed.", ExceptionEventTypes.NotValidParameters);
             }
 
-            if (!string.IsNullOrWhiteSpace(user.Email) && !user.EmailConfirmed)
+            if (!await _userManager.Users.AnyAsync(x => x.Email == email && x.IsRegistrationFinished))
             {
-                throw new RutrackerException("The email is not confirmed.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"This email '{email}' is already.", ExceptionEventTypes.NotValidParameters);
             }
 
-            var token = await _userManager.GenerateChangeEmailTokenAsync(user, email);
-
-            Guard.Against.NullOrWhiteSpace(token, message: "Invalid token.");
-
-            return token;
+            return await _userManager.GenerateChangeEmailTokenAsync(user, email);
         }
 
         public async Task<string> ChangePhoneNumberTokenAsync(string id, string phone)
@@ -164,16 +155,22 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var user = await FindAsync(id);
 
-            if (!string.IsNullOrWhiteSpace(user.PhoneNumber) && !user.PhoneNumberConfirmed)
+            if (!user.PhoneNumberConfirmed)
             {
-                throw new RutrackerException("The phone number is not confirmed.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"The phone number '{user.PhoneNumber}' is not confirmed.", ExceptionEventTypes.NotValidParameters);
             }
 
-            var token = await _userManager.GenerateChangePhoneNumberTokenAsync(user, phone);
+            return await _userManager.GenerateChangePhoneNumberTokenAsync(user, phone);
+        }
 
-            Guard.Against.NullOrWhiteSpace(token, message: "Invalid token.");
+        public async Task<User> ResetPasswordAsync(string id, string password, string token)
+        {
+            var user = await FindAsync(id);
+            var result = await _userManager.ResetPasswordAsync(user, token, password);
 
-            return token;
+            Guard.Against.IsSucceeded(result);
+
+            return user;
         }
 
         public async Task<User> ChangePasswordAsync(string id, string oldPassword, string newPassword)
@@ -195,10 +192,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
 
-            if (!result.Succeeded)
-            {
-                throw new RutrackerException(result.GetError(), ExceptionEventTypes.NotValidParameters);
-            }
+            Guard.Against.IsSucceeded(result);
 
             return user;
         }
@@ -211,10 +205,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             var user = await FindAsync(id);
             var result = await _userManager.ChangeEmailAsync(user, email, token);
 
-            if (!result.Succeeded)
-            {
-                throw new RutrackerException(result.GetError(), ExceptionEventTypes.NotValidParameters);
-            }
+            Guard.Against.IsSucceeded(result);
 
             return user;
         }
@@ -227,10 +218,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             var user = await FindAsync(id);
             var result = await _userManager.ChangePhoneNumberAsync(user, phone, token);
 
-            if (!result.Succeeded)
-            {
-                throw new RutrackerException(result.GetError(), ExceptionEventTypes.NotValidParameters);
-            }
+            Guard.Against.IsSucceeded(result);
 
             return user;
         }

@@ -1,4 +1,6 @@
-﻿using Rutracker.Shared.Infrastructure.Exceptions;
+﻿using Microsoft.AspNetCore.Identity;
+using Rutracker.Server.BusinessLayer.Extensions;
+using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Ardalis.GuardClauses
 {
@@ -32,6 +34,14 @@ namespace Ardalis.GuardClauses
             if (string.IsNullOrWhiteSpace(input))
             {
                 throw new RutrackerException(message, ExceptionEventTypes.NotValidParameters);
+            }
+        }
+
+        public static void IsSucceeded(this IGuardClause guardClause, IdentityResult result)
+        {
+            if (!result.Succeeded)
+            {
+                throw new RutrackerException(result.GetError(), ExceptionEventTypes.NotValidParameters);
             }
         }
 
