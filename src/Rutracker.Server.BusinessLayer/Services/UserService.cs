@@ -141,11 +141,6 @@ namespace Rutracker.Server.BusinessLayer.Services
                 throw new RutrackerException($"The email '{user.Email}' is not confirmed.", ExceptionEventTypes.NotValidParameters);
             }
 
-            if (!await _userManager.Users.AnyAsync(x => x.Email == email && x.IsRegistrationFinished))
-            {
-                throw new RutrackerException($"This email '{email}' is already.", ExceptionEventTypes.NotValidParameters);
-            }
-
             return await _userManager.GenerateChangeEmailTokenAsync(user, email);
         }
 

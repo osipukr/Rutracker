@@ -91,7 +91,6 @@ namespace Rutracker.Server.WebApi
 
             services.AddIdentity<User, Role>(config =>
             {
-                config.User.RequireUniqueEmail = true;
                 config.SignIn.RequireConfirmedEmail = true;
                 config.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
                 config.Password.RequireNonAlphanumeric = false;
