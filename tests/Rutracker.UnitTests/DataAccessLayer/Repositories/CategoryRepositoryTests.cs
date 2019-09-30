@@ -10,6 +10,7 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
     public class CategoryRepositoryTests
     {
         private readonly ICategoryRepository _categoryRepository;
+        private const int CategoriesCount = DataInitializer.CategoriesCount;
 
         public CategoryRepositoryTests()
         {
@@ -18,63 +19,69 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
             _categoryRepository = new CategoryRepository(context);
         }
 
-        [Fact(DisplayName = "GetAll() with valid parameter should return valid categories.")]
+        [Fact]
         public void GetAll_10_ReturnsValidCategories()
         {
             // Arrange
-            const int expectedCount = 10;
+            const int expectedCount = CategoriesCount;
 
             // Act
-            var count = _categoryRepository.GetAll().Count();
+            var categories = _categoryRepository.GetAll();
 
             // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.NotNull(categories);
+            Assert.Equal(expectedCount, categories.Count());
         }
 
-        [Fact(DisplayName = "GetAll() with valid parameter should return valid categories.")]
+        [Fact]
         public void GetAll_10_ReturnsValidCategoriesByExpression()
         {
             // Arrange
-            const int expectedCount = 1;
+            const int expectedId = CategoriesCount;
 
             // Act
-            var count = _categoryRepository.GetAll(x => x.Id == 10).Count();
+            var categories = _categoryRepository.GetAll(x => x.Id.Equals(expectedId));
 
             // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.NotNull(categories);
+            Assert.Single(categories);
         }
 
-        [Fact(DisplayName = "GetAsync() with valid parameter should return valid category.")]
+        [Fact]
         public async Task GetAsync_5_ReturnsValidCategory()
         {
             // Arrange
-            const int expectedId = 5;
+            const int expectedId = CategoriesCount;
 
             // Act
-            var categoryId = (await _categoryRepository.GetAsync(expectedId)).Id;
+            var category = await _categoryRepository.GetAsync(expectedId);
 
             // Assert
-            Assert.Equal(expectedId, categoryId);
+            Assert.NotNull(category);
+            Assert.NotNull(category.Name);
+            Assert.Equal(expectedId, category.Id);
         }
 
-        [Fact(DisplayName = "GetAsync() with valid parameter should return valid category.")]
+        [Fact]
         public async Task GetAsync_5_ReturnsValidCategoryByExpression()
         {
             // Arrange
-            const int expectedId = 5;
+            const int expectedId = CategoriesCount;
 
             // Act
-            var categoryId = (await _categoryRepository.GetAsync(x => x.Id == expectedId)).Id;
+            var category = await _categoryRepository.GetAsync(x => x.Id.Equals(expectedId));
 
             // Assert
-            Assert.Equal(expectedId, categoryId);
+            Assert.NotNull(category);
+            Assert.NotNull(category.Name);
+            Assert.Equal(expectedId, category.Id);
         }
 
-        [Fact(DisplayName = "CountAsync() with valid parameters should return the number of items.")]
+        [Fact]
         public async Task CountAsync_10_ReturnsValidCount()
         {
             // Arrange
-            const int expectedCount = 10;
+            const int expectedCount = CategoriesCount;
 
             // Act
             var count = await _categoryRepository.CountAsync();
@@ -83,43 +90,46 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
             Assert.Equal(expectedCount, count);
         }
 
-        [Fact(DisplayName = "CountAsync() with valid parameters should return the number of items.")]
+        [Fact]
         public async Task CountAsync_10_ReturnsValidCountByExpression()
         {
             // Arrange
+            const int expectedId = CategoriesCount;
             const int expectedCount = 1;
 
             // Act
-            var count = await _categoryRepository.CountAsync(x => x.Id == 10);
+            var count = await _categoryRepository.CountAsync(x => x.Id.Equals(expectedId));
 
             // Assert
             Assert.Equal(expectedCount, count);
         }
 
-        [Fact(DisplayName = "ExistAsync() with valid parameters should return whether the object exists.")]
+        [Fact]
         public async Task ExistAsync_10_ReturnsValidIsExist()
         {
             // Arrange
-            const bool expected = true;
+            const int expectedId = CategoriesCount;
+            const bool expectedCondition = true;
 
             // Act
-            var result = await _categoryRepository.ExistAsync(10);
+            var isExist = await _categoryRepository.ExistAsync(expectedId);
 
             // Assert
-            Assert.Equal(expected, result);
+            Assert.Equal(expectedCondition, isExist);
         }
 
-        [Fact(DisplayName = "ExistAsync() with valid parameters should return whether the object exists.")]
+        [Fact]
         public async Task ExistAsync_10_ReturnsValidIsExistByExpression()
         {
             // Arrange
-            const bool expected = true;
+            const int expectedId = CategoriesCount;
+            const bool expectedCondition = true;
 
             // Act
-            var result = await _categoryRepository.ExistAsync(x => x.Id == 10);
+            var isExist = await _categoryRepository.ExistAsync(x => x.Id.Equals(expectedId));
 
             // Assert
-            Assert.Equal(expected, result);
+            Assert.Equal(expectedCondition, isExist);
         }
     }
 }

@@ -16,22 +16,22 @@ namespace Rutracker.UnitTests.Setup
         public static RutrackerContext GetRutrackerContext()
         {
             var options = new DbContextOptionsBuilder<RutrackerContext>().Options;
-            var mockContext = new DbContextMock<RutrackerContext>(options);
+            var contextMock = new DbContextMock<RutrackerContext>(options);
 
-            mockContext.CreateDbSetMock(x => x.Categories, DataInitializer.GetTestCategories());
-            mockContext.CreateDbSetMock(x => x.Subcategories, DataInitializer.GetTestSubcategories());
-            mockContext.CreateDbSetMock(x => x.Torrents, DataInitializer.GeTestTorrents());
-            mockContext.CreateDbSetMock(x => x.Files, DataInitializer.GetTestFiles());
-            mockContext.CreateDbSetMock(x => x.Comments, DataInitializer.GetTestComments());
-            mockContext.CreateDbSetMock(x => x.Likes, DataInitializer.GetTestLikes());
+            contextMock.CreateDbSetMock(x => x.Categories, DataInitializer.GetCategories());
+            contextMock.CreateDbSetMock(x => x.Subcategories, DataInitializer.GetSubcategories());
+            contextMock.CreateDbSetMock(x => x.Torrents, DataInitializer.GeTorrents());
+            contextMock.CreateDbSetMock(x => x.Files, DataInitializer.GetFiles());
+            contextMock.CreateDbSetMock(x => x.Comments, DataInitializer.GetComments());
+            contextMock.CreateDbSetMock(x => x.Likes, DataInitializer.GetLikes());
 
-            return mockContext.Object;
+            return contextMock.Object;
         }
 
         public static ICategoryRepository GetCategoryRepository()
         {
             var repositoryMock = new Mock<ICategoryRepository>();
-            var categories = new DbQueryMock<Category>(DataInitializer.GetTestCategories()).Object;
+            var categories = new DbQueryMock<Category>(DataInitializer.GetCategories()).Object;
 
             repositoryMock.Setup(x => x.GetAll()).Returns(categories);
 
@@ -44,7 +44,7 @@ namespace Rutracker.UnitTests.Setup
         public static ISubcategoryRepository GetSubcategoryRepository()
         {
             var repositoryMock = new Mock<ISubcategoryRepository>();
-            var subcategories = new DbQueryMock<Subcategory>(DataInitializer.GetTestSubcategories()).Object;
+            var subcategories = new DbQueryMock<Subcategory>(DataInitializer.GetSubcategories()).Object;
 
             repositoryMock.Setup(x => x.GetAll(It.IsAny<Expression<Func<Subcategory, bool>>>()))
                 .Returns<Expression<Func<Subcategory, bool>>>(subcategories.Where);
@@ -58,7 +58,7 @@ namespace Rutracker.UnitTests.Setup
         public static ITorrentRepository GetTorrentRepository()
         {
             var repositoryMock = new Mock<ITorrentRepository>();
-            var torrents = new DbQueryMock<Torrent>(DataInitializer.GeTestTorrents()).Object;
+            var torrents = new DbQueryMock<Torrent>(DataInitializer.GeTorrents()).Object;
 
             repositoryMock.Setup(x => x.GetAll()).Returns(torrents);
 
@@ -79,19 +79,13 @@ namespace Rutracker.UnitTests.Setup
             repositoryMock.Setup(x => x.ExistAsync(It.IsAny<int>()))
                 .ReturnsAsync((int id) => torrents.Any(x => x.Id == id));
 
-            repositoryMock.Setup(x => x.Search(null, null, null))
-                .Returns<string, long?, long?>((search, sizeFrom, sizeTo) => torrents);
-
-            repositoryMock.Setup(x => x.PopularTorrents(It.IsAny<int>()))
-                .Returns<int>(x => torrents.Take(x));
-
             return repositoryMock.Object;
         }
 
         public static ICommentRepository GetCommentRepository()
         {
             var repositoryMock = new Mock<ICommentRepository>();
-            var comments = new DbQueryMock<Comment>(DataInitializer.GetTestComments()).Object;
+            var comments = new DbQueryMock<Comment>(DataInitializer.GetComments()).Object;
 
             repositoryMock.Setup(x => x.GetAll(It.IsAny<Expression<Func<Comment, bool>>>()))
                 .Returns<Expression<Func<Comment, bool>>>(comments.Where);
@@ -105,7 +99,7 @@ namespace Rutracker.UnitTests.Setup
         public static ILikeRepository GetLikeRepository()
         {
             var repositoryMock = new Mock<ILikeRepository>();
-            var likes = new DbQueryMock<Like>(DataInitializer.GetTestLikes()).Object;
+            var likes = new DbQueryMock<Like>(DataInitializer.GetLikes()).Object;
 
             repositoryMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Like, bool>>>()))
                 .ReturnsAsync((Expression<Func<Like, bool>> expression) => likes.SingleOrDefault(expression));

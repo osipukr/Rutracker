@@ -10,6 +10,7 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
     public class LikeRepositoryTests
     {
         private readonly ILikeRepository _likeRepository;
+        private const int LikesCount = DataInitializer.LikesCount;
 
         public LikeRepositoryTests()
         {
@@ -18,63 +19,71 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
             _likeRepository = new LikeRepository(context);
         }
 
-        [Fact(DisplayName = "GetAll() with valid parameter should return valid likes.")]
+        [Fact]
         public void GetAll_5_ReturnsValidLikes()
         {
             // Arrange
-            const int expectedCount = 5;
+            const int expectedCount = LikesCount;
 
             // Act
-            var count = _likeRepository.GetAll().Count();
+            var likes = _likeRepository.GetAll();
 
             // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.NotNull(likes);
+            Assert.Equal(expectedCount, likes.Count());
         }
 
-        [Fact(DisplayName = "GetAll() with valid parameter should return valid likes.")]
+        [Fact]
         public void GetAll_5_ReturnsValidLikesByExpression()
         {
             // Arrange
-            const int expectedCount = 1;
+            const int expectedId = 1;
 
             // Act
-            var count = _likeRepository.GetAll(x => x.Id == 5).Count();
+            var likes = _likeRepository.GetAll(x => x.Id.Equals(expectedId));
 
             // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.NotNull(likes);
+            Assert.Single(likes);
         }
 
-        [Fact(DisplayName = "GetAsync() with valid parameter should return valid like.")]
+        [Fact]
         public async Task GetAsync_5_ReturnsValidLike()
         {
             // Arrange
-            const int expectedId = 5;
+            const int expectedId = LikesCount;
 
             // Act
-            var categoryId = (await _likeRepository.GetAsync(expectedId)).Id;
+            var like = await _likeRepository.GetAsync(expectedId);
 
             // Assert
-            Assert.Equal(expectedId, categoryId);
+            Assert.NotNull(like);
+            Assert.NotNull(like.UserId);
+            Assert.InRange(like.CommentId, 1, int.MaxValue);
+            Assert.Equal(expectedId, like.Id);
         }
 
-        [Fact(DisplayName = "GetAsync() with valid parameter should return valid like.")]
+        [Fact]
         public async Task GetAsync_5_ReturnsValidLikeByExpression()
         {
             // Arrange
-            const int expectedId = 5;
+            const int expectedId = LikesCount;
 
             // Act
-            var categoryId = (await _likeRepository.GetAsync(x => x.Id == expectedId)).Id;
+            var like = await _likeRepository.GetAsync(x => x.Id.Equals(expectedId));
 
             // Assert
-            Assert.Equal(expectedId, categoryId);
+            Assert.NotNull(like);
+            Assert.NotNull(like.UserId);
+            Assert.InRange(like.CommentId, 1, int.MaxValue);
+            Assert.Equal(expectedId, like.Id);
         }
 
-        [Fact(DisplayName = "CountAsync() with valid parameters should return the number of items.")]
+        [Fact]
         public async Task CountAsync_5_ReturnsValidCount()
         {
             // Arrange
-            const int expectedCount = 5;
+            const int expectedCount = LikesCount;
 
             // Act
             var count = await _likeRepository.CountAsync();
@@ -83,43 +92,46 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
             Assert.Equal(expectedCount, count);
         }
 
-        [Fact(DisplayName = "CountAsync() with valid parameters should return the number of items.")]
+        [Fact]
         public async Task CountAsync_5_ReturnsValidCountByExpression()
         {
             // Arrange
+            const int expectedId = LikesCount;
             const int expectedCount = 1;
 
             // Act
-            var count = await _likeRepository.CountAsync(x => x.Id == 5);
+            var count = await _likeRepository.CountAsync(x => x.Id.Equals(expectedId));
 
             // Assert
             Assert.Equal(expectedCount, count);
         }
 
-        [Fact(DisplayName = "ExistAsync() with valid parameters should return whether the object exists.")]
+        [Fact]
         public async Task ExistAsync_5_ReturnsValidIsExist()
         {
             // Arrange
-            const bool expected = true;
+            const int expectedId = LikesCount;
+            const bool expectedCondition = true;
 
             // Act
-            var result = await _likeRepository.ExistAsync(5);
+            var isExist = await _likeRepository.ExistAsync(expectedId);
 
             // Assert
-            Assert.Equal(expected, result);
+            Assert.Equal(expectedCondition, isExist);
         }
 
-        [Fact(DisplayName = "ExistAsync() with valid parameters should return whether the object exists.")]
+        [Fact]
         public async Task ExistAsync_5_ReturnsValidIsExistByExpression()
         {
             // Arrange
-            const bool expected = true;
+            const int expectedId = LikesCount;
+            const bool expectedCondition = true;
 
             // Act
-            var result = await _likeRepository.ExistAsync(x => x.Id == 5);
+            var isExist = await _likeRepository.ExistAsync(x => x.Id.Equals(expectedId));
 
             // Assert
-            Assert.Equal(expected, result);
+            Assert.Equal(expectedCondition, isExist);
         }
     }
 }

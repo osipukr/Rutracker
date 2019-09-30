@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Rutracker.Server.DataAccessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Repositories;
@@ -10,6 +11,7 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
     public class TorrentRepositoryTests
     {
         private readonly ITorrentRepository _torrentRepository;
+        private const int TorrentsCount = DataInitializer.TorrentsCount;
 
         public TorrentRepositoryTests()
         {
@@ -18,63 +20,75 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
             _torrentRepository = new TorrentRepository(context);
         }
 
-        [Fact(DisplayName = "GetAll() with valid parameter should return valid torrents.")]
+        [Fact]
         public void GetAll_10_ReturnsValidTorrents()
         {
             // Arrange
-            const int expectedCount = 10;
+            const int expectedCount = TorrentsCount;
 
             // Act
-            var count = _torrentRepository.GetAll().Count();
+            var torrents = _torrentRepository.GetAll();
 
             // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.NotNull(torrents);
+            Assert.Equal(expectedCount, torrents.Count());
         }
 
-        [Fact(DisplayName = "GetAll() with valid parameter should return valid torrents.")]
+        [Fact]
         public void GetAll_10_ReturnsValidTorrentsByExpression()
         {
             // Arrange
-            const int expectedCount = 1;
+            const int expectedId = 1;
 
             // Act
-            var count = _torrentRepository.GetAll(x => x.Id == 10).Count();
+            var torrents = _torrentRepository.GetAll(x => x.Id.Equals(expectedId));
 
             // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.NotNull(torrents);
+            Assert.Single(torrents);
         }
 
-        [Fact(DisplayName = "GetAsync() with valid parameter should return valid torrent.")]
-        public async Task GetAsync_5_ReturnsValidTorrent()
+        [Fact]
+        public async Task GetAsync_10_ReturnsValidTorrent()
         {
             // Arrange
-            const int expectedId = 5;
+            const int expectedId = TorrentsCount;
 
             // Act
-            var torrentId = (await _torrentRepository.GetAsync(expectedId)).Id;
+            var torrent = await _torrentRepository.GetAsync(expectedId);
 
             // Assert
-            Assert.Equal(expectedId, torrentId);
+            Assert.NotNull(torrent);
+            Assert.NotNull(torrent.Name);
+            Assert.NotNull(torrent.Description);
+            Assert.NotNull(torrent.UserId);
+            Assert.InRange(torrent.SubcategoryId, 1, int.MaxValue);
+            Assert.Equal(expectedId, torrent.Id);
         }
 
-        [Fact(DisplayName = "GetAsync() with valid parameter should return valid torrent.")]
-        public async Task GetAsync_5_ReturnsValidTorrentByExpression()
+        [Fact]
+        public async Task GetAsync_10_ReturnsValidTorrentByExpression()
         {
             // Arrange
-            const int expectedId = 5;
+            const int expectedId = TorrentsCount;
 
             // Act
-            var torrentId = (await _torrentRepository.GetAsync(x => x.Id == expectedId)).Id;
+            var torrent = await _torrentRepository.GetAsync(x => x.Id.Equals(expectedId));
 
             // Assert
-            Assert.Equal(expectedId, torrentId);
+            Assert.NotNull(torrent);
+            Assert.NotNull(torrent.Name);
+            Assert.NotNull(torrent.Description);
+            Assert.NotNull(torrent.UserId);
+            Assert.InRange(torrent.SubcategoryId, 1, int.MaxValue);
+            Assert.Equal(expectedId, torrent.Id);
         }
 
-        [Fact(DisplayName = "CountAsync() with valid parameters should return the number of items.")]
+        [Fact]
         public async Task CountAsync_10_ReturnsValidCount()
         {
             // Arrange
-            const int expectedCount = 10;
+            const int expectedCount = TorrentsCount;
 
             // Act
             var count = await _torrentRepository.CountAsync();
@@ -83,69 +97,46 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
             Assert.Equal(expectedCount, count);
         }
 
-        [Fact(DisplayName = "CountAsync() with valid parameters should return the number of items.")]
+        [Fact]
         public async Task CountAsync_10_ReturnsValidCountByExpression()
         {
             // Arrange
+            const int expectedId = TorrentsCount;
             const int expectedCount = 1;
 
             // Act
-            var count = await _torrentRepository.CountAsync(x => x.Id == 10);
+            var count = await _torrentRepository.CountAsync(x => x.Id.Equals(expectedId));
 
             // Assert
             Assert.Equal(expectedCount, count);
         }
 
-        [Fact(DisplayName = "ExistAsync() with valid parameters should return whether the object exists.")]
+        [Fact]
         public async Task ExistAsync_10_ReturnsValidIsExist()
         {
             // Arrange
-            const bool expected = true;
+            const int expectedId = TorrentsCount;
+            const bool expectedCondition = true;
 
             // Act
-            var result = await _torrentRepository.ExistAsync(10);
+            var isExist = await _torrentRepository.ExistAsync(expectedId);
 
             // Assert
-            Assert.Equal(expected, result);
+            Assert.Equal(expectedCondition, isExist);
         }
 
-        [Fact(DisplayName = "ExistAsync() with valid parameters should return whether the object exists.")]
+        [Fact]
         public async Task ExistAsync_10_ReturnsValidIsExistByExpression()
         {
             // Arrange
-            const bool expected = true;
+            const int expectedId = TorrentsCount;
+            const bool expectedCondition = true;
 
             // Act
-            var result = await _torrentRepository.ExistAsync(x => x.Id == 10);
+            var isExist = await _torrentRepository.ExistAsync(x => x.Id.Equals(expectedId));
 
             // Assert
-            Assert.Equal(expected, result);
-        }
-
-        [Fact(DisplayName = "Search() with valid parameter should return the number of items.")]
-        public void Search_4_ReturnsValidCount()
-        {
-            // Arrange
-            const int expectedCount = 4;
-
-            // Act
-            var count = _torrentRepository.Search("1234567", null, null).Count();
-
-            // Assert
-            Assert.Equal(expectedCount, count);
-        }
-
-        [Fact(DisplayName = "PopularTorrents() with valid parameter should return the popular torrent count.")]
-        public void PopularTorrents_5_ReturnsValidPopularTorrents()
-        {
-            // Arrange
-            const int expectedCount = 5;
-
-            // Act
-            var count = _torrentRepository.PopularTorrents(expectedCount).Count();
-
-            // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.Equal(expectedCondition, isExist);
         }
     }
 }

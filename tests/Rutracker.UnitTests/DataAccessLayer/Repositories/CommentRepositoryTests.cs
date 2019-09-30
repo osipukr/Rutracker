@@ -10,6 +10,7 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
     public class CommentRepositoryTests
     {
         private readonly ICommentRepository _commentRepository;
+        private const int CommentsCount = DataInitializer.CommentsCount;
 
         public CommentRepositoryTests()
         {
@@ -18,63 +19,73 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
             _commentRepository = new CommentRepository(context);
         }
 
-        [Fact(DisplayName = "GetAll() with valid parameter should return valid comments.")]
+        [Fact]
         public void GetAll_10_ReturnsValidComments()
         {
             // Arrange
-            const int expectedCount = 10;
+            const int expectedCount = CommentsCount;
 
             // Act
-            var count = _commentRepository.GetAll().Count();
+            var comments = _commentRepository.GetAll();
 
             // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.NotNull(comments);
+            Assert.Equal(expectedCount, comments.Count());
         }
 
-        [Fact(DisplayName = "GetAll() with valid parameter should return valid comments.")]
+        [Fact]
         public void GetAll_10_ReturnsValidCommentsByExpression()
         {
             // Arrange
-            const int expectedCount = 1;
+            const int expectedId = CommentsCount;
 
             // Act
-            var count = _commentRepository.GetAll(x => x.Id == 10).Count();
+            var comments = _commentRepository.GetAll(x => x.Id.Equals(expectedId));
 
             // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.NotNull(comments);
+            Assert.Single(comments);
         }
 
-        [Fact(DisplayName = "GetAsync() with valid parameter should return valid comment.")]
-        public async Task GetAsync_5_ReturnsValidComment()
+        [Fact]
+        public async Task GetAsync_10_ReturnsValidComment()
         {
             // Arrange
-            const int expectedId = 5;
+            const int expectedId = CommentsCount;
 
             // Act
-            var categoryId = (await _commentRepository.GetAsync(expectedId)).Id;
+            var comment = await _commentRepository.GetAsync(expectedId);
 
             // Assert
-            Assert.Equal(expectedId, categoryId);
+            Assert.NotNull(comment);
+            Assert.NotNull(comment.Text);
+            Assert.NotNull(comment.UserId);
+            Assert.InRange(comment.TorrentId, 1, int.MaxValue);
+            Assert.Equal(expectedId, comment.Id);
         }
 
-        [Fact(DisplayName = "GetAsync() with valid parameter should return valid comment.")]
-        public async Task GetAsync_5_ReturnsValidCommentByExpression()
+        [Fact]
+        public async Task GetAsync_10_ReturnsValidCommentByExpression()
         {
             // Arrange
-            const int expectedId = 5;
+            const int expectedId = CommentsCount;
 
             // Act
-            var categoryId = (await _commentRepository.GetAsync(x => x.Id == expectedId)).Id;
+            var comment = await _commentRepository.GetAsync(x => x.Id == expectedId);
 
             // Assert
-            Assert.Equal(expectedId, categoryId);
+            Assert.NotNull(comment);
+            Assert.NotNull(comment.Text);
+            Assert.NotNull(comment.UserId);
+            Assert.InRange(comment.TorrentId, 1, int.MaxValue);
+            Assert.Equal(expectedId, comment.Id);
         }
 
-        [Fact(DisplayName = "CountAsync() with valid parameters should return the number of items.")]
+        [Fact]
         public async Task CountAsync_10_ReturnsValidCount()
         {
             // Arrange
-            const int expectedCount = 10;
+            const int expectedCount = CommentsCount;
 
             // Act
             var count = await _commentRepository.CountAsync();
@@ -83,43 +94,46 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
             Assert.Equal(expectedCount, count);
         }
 
-        [Fact(DisplayName = "CountAsync() with valid parameters should return the number of items.")]
+        [Fact]
         public async Task CountAsync_10_ReturnsValidCountByExpression()
         {
             // Arrange
+            const int expectedId = CommentsCount;
             const int expectedCount = 1;
 
             // Act
-            var count = await _commentRepository.CountAsync(x => x.Id == 10);
+            var count = await _commentRepository.CountAsync(x => x.Id.Equals(expectedId));
 
             // Assert
             Assert.Equal(expectedCount, count);
         }
 
-        [Fact(DisplayName = "ExistAsync() with valid parameters should return whether the object exists.")]
+        [Fact]
         public async Task ExistAsync_10_ReturnsValidIsExist()
         {
             // Arrange
-            const bool expected = true;
+            const int expectedId = CommentsCount;
+            const bool expectedCondition = true;
 
             // Act
-            var result = await _commentRepository.ExistAsync(10);
+            var isExist = await _commentRepository.ExistAsync(expectedId);
 
             // Assert
-            Assert.Equal(expected, result);
+            Assert.Equal(expectedCondition, isExist);
         }
 
-        [Fact(DisplayName = "ExistAsync() with valid parameters should return whether the object exists.")]
+        [Fact]
         public async Task ExistAsync_10_ReturnsValidIsExistByExpression()
         {
             // Arrange
-            const bool expected = true;
+            const int expectedId = CommentsCount;
+            const bool expectedCondition = true;
 
             // Act
-            var result = await _commentRepository.ExistAsync(x => x.Id == 10);
+            var isExist = await _commentRepository.ExistAsync(x => x.Id.Equals(expectedId));
 
             // Assert
-            Assert.Equal(expected, result);
+            Assert.Equal(expectedCondition, isExist);
         }
     }
 }
