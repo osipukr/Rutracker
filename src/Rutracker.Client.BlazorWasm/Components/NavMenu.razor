@@ -7,7 +7,7 @@
         <MatIcon Icon="@MatIconNames.Person" /> <span class="miniHover">Profile</span>
     </MatNavItem>
 
-    <MatNavItem Href="@Constants.Path.Users" Disabled="@(!IsAdmin)">
+    <MatNavItem Href="@Constants.Path.Users">
         <MatIcon Icon="@MatIconNames.Group" /> <span class="miniHover">Users</span>
     </MatNavItem>
 
@@ -33,13 +33,11 @@
     [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
     private bool IsAuthenticated { get; set; }
-    private bool IsAdmin { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
         var state = await AuthenticationStateTask;
 
         IsAuthenticated = state.IsUserAuthenticated();
-        IsAdmin = state.IsUserInRole(UserRoles.Admin);
     }
 }

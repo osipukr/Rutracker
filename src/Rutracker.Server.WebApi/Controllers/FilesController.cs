@@ -32,7 +32,7 @@ namespace Rutracker.Server.WebApi.Controllers
         [HttpGet("{id}"), AllowAnonymous]
         public async Task<FileViewModel> Find(int id)
         {
-            var file = await _fileService.FindAsync(id, User.GetUserId());
+            var file = await _fileService.FindAsync(id);
 
             return _mapper.Map<FileViewModel>(file);
         }

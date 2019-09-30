@@ -1,6 +1,4 @@
-﻿@attribute [Authorize(Policy = Policies.IsUser)]
-
-@inject IUserService UserService
+﻿@inject IUserService UserService
 
 @page "/users/{username}"
 
@@ -68,11 +66,7 @@
     {
         var state = await AuthenticationStateTask;
 
-        if (string.IsNullOrWhiteSpace(UserName))
-        {
-            NavigationManager.NavigateTo(Constants.Path.Home);
-        }
-        else if (UserName == state.GetUserName())
+        if (state.IsUserAuthenticated() && UserName == state.GetUserName())
         {
             NavigationManager.NavigateTo(Constants.Path.Profile);
         }

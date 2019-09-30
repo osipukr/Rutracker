@@ -1,61 +1,99 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
-using Rutracker.Shared.Models.ViewModels.Torrent;
+using Rutracker.IntegrationTests.WebApi.Controllers.Base;
+using Rutracker.Shared.Models.ViewModels.Subcategory;
 using Xunit;
 
 namespace Rutracker.IntegrationTests.WebApi.Controllers
 {
-    public class SubcategoriesControllerTests : IClassFixture<WebApiFactory>
+    public class SubcategoriesControllerTests : BaseTestController
     {
-        private readonly HttpClient _client;
+        private const int CategoriesCount = WebApiContextSeed.CategoryMaxCount;
+        private const int SubcategoriesCount = WebApiContextSeed.SubcategoryMaxCount;
+        private const string ListPath = "api/subcategories";
+        private const string SearchPath = "api/subcategories/search?categoryId={0}";
+        private const string FindPath = "api/subcategories/{0}";
 
-        public SubcategoriesControllerTests(WebApiFactory factory) => _client = factory.CreateClient();
-
-        [Fact(DisplayName = "List() with valid parameters should return 200OK status.")]
-        public async Task List_1_ReturnsStatus200OK()
+        public SubcategoriesControllerTests(WebApiFactory factory) : base(factory)
         {
+        }
+
+        [Fact]
+        public async Task List_20_ReturnsStatus200OK()
+        {
+            // Arrange
+            const int expectedCount = SubcategoriesCount;
+
             // Act
-            var subcategories = await _client.GetJsonAsync<IEnumerable<SubcategoryViewModel>>(
-                "api/subcategories/?categoryId=1");
+            var subcategories = await _client.GetJsonAsync<IEnumerable<SubcategoryViewModel>>(ListPath);
 
             // Assert
             Assert.NotNull(subcategories);
+            Assert.Equal(expectedCount, subcategories.Count());
         }
 
-        [Fact(DisplayName = "Find() with valid parameters should return 200OK status.")]
-        public async Task Find_5_ReturnsStatus200OK()
+        [Fact]
+        public async Task Search_20_20_ReturnsStatus200OK()
         {
             // Arrange
-            const int expectedId = 5;
+            const int expectedCategoryId = CategoriesCount;
+            const int expectedCount = SubcategoriesCount;
 
             // Act
-            var subcategory = await _client.GetJsonAsync<SubcategoryViewModel>(
-                $"api/subcategories/find/?id={expectedId}");
+            var subcategories = await _client.GetJsonAsync<IEnumerable<SubcategoryViewModel>>(
+                string.Format(SearchPath, expectedCategoryId));
+
+            // Assert
+            Assert.NotNull(subcategories);
+            Assert.Equal(expectedCount, subcategories.Count());
+        }
+
+        [Fact]
+        public async Task Find_20_ReturnsStatus200OK()
+        {
+            // Arrange
+            const int expectedId = SubcategoriesCount;
+
+            // Act
+            var subcategory = await _client.GetJsonAsync<SubcategoryViewModel>(string.Format(FindPath, expectedId));
 
             // Assert
             Assert.NotNull(subcategory);
+            Assert.NotNull(subcategory.Name);
             Assert.Equal(expectedId, subcategory.Id);
         }
 
-        [Fact(DisplayName = "Find() with an invalid parameter should return 400BadRequest status.")]
-        public async Task Find_NegativeNumber_ReturnsStatus400BadRequest()
+        [Fact]
+        public async Task Search_NegativeNumber_ReturnsStatus400BadRequest()
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.GetJsonAsync<SubcategoryViewModel>("api/subcategories/find/?id=-10"));
+                await _client.GetJsonAsync<IEnumerable<SubcategoryViewModel>>(
+                    string.Format(SearchPath, -10)));
 
             Assert.Contains(StatusCodes.Status400BadRequest.ToString(), exception.Message);
         }
 
-        [Fact(DisplayName = "Find() with an invalid parameter should return 404NotFound status.")]
-        public async Task Find_1000_ReturnsStatus404NotFound()
+        [Fact]
+        public async Task Find_NegativeNumber_ReturnsStatus400BadRequest()
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
-                await _client.GetJsonAsync<SubcategoryViewModel>("api/subcategories/find/?id=10000"));
+                await _client.GetJsonAsync<SubcategoryViewModel>(string.Format(FindPath, -10)));
+
+            Assert.Contains(StatusCodes.Status400BadRequest.ToString(), exception.Message);
+        }
+
+        [Fact]
+        public async Task Find_31_ReturnsStatus404NotFound()
+        {
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<HttpRequestException>(async () =>
+                await _client.GetJsonAsync<SubcategoryViewModel>(string.Format(FindPath, SubcategoriesCount + 1)));
 
             Assert.Contains(StatusCodes.Status404NotFound.ToString(), exception.Message);
         }
