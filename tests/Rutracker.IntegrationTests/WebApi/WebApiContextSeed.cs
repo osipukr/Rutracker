@@ -9,17 +9,16 @@ namespace Rutracker.IntegrationTests.WebApi
 {
     public class WebApiContextSeed
     {
-        private static readonly string UserId = Guid.NewGuid().ToString();
-
+        private const string UserId = "dc205ba0-084c-44ad-86ae-36e6a8c88deb";
         private readonly RutrackerContext _context;
 
         public WebApiContextSeed(RutrackerContext context) => _context = context;
 
-        public const int CategoryMaxCount = 10;
-        public const int SubcategoryMaxCount = 30;
-        public const int TorrentMaxCount = 100;
-        public const int FileMaxCount = 200;
-        public const int CommentMaxCount = 100;
+        public const int CategoryMaxCount = 20;
+        public const int SubcategoryMaxCount = 20;
+        public const int TorrentMaxCount = 20;
+        public const int FileMaxCount = 20;
+        public const int CommentMaxCount = 20;
 
         public async Task SeedAsync()
         {
@@ -42,7 +41,7 @@ namespace Rutracker.IntegrationTests.WebApi
             Enumerable.Range(1, SubcategoryMaxCount).Select(id => new Subcategory
             {
                 Name = Guid.NewGuid().ToString(),
-                CategoryId = 1
+                CategoryId = CategoryMaxCount
             });
 
         private static IEnumerable<Torrent> GetPreconfiguredTorrents() =>
@@ -52,7 +51,7 @@ namespace Rutracker.IntegrationTests.WebApi
                 Description = Guid.NewGuid().ToString(),
                 Content = Guid.NewGuid().ToString(),
                 CreatedAt = DateTime.Now,
-                SubcategoryId = 1,
+                SubcategoryId = SubcategoryMaxCount,
                 UserId = UserId
             });
 
@@ -62,7 +61,7 @@ namespace Rutracker.IntegrationTests.WebApi
                 Name = Guid.NewGuid().ToString(),
                 Type = Guid.NewGuid().ToString(),
                 Url = Guid.NewGuid().ToString(),
-                TorrentId = 1
+                TorrentId = TorrentMaxCount
             });
 
         private static IEnumerable<Comment> GetPreconfiguredComments() =>
@@ -70,7 +69,7 @@ namespace Rutracker.IntegrationTests.WebApi
             {
                 Text = Guid.NewGuid().ToString(),
                 CreatedAt = DateTime.Now,
-                TorrentId = 1,
+                TorrentId = TorrentMaxCount,
                 UserId = UserId
             });
     }

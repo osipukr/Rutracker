@@ -44,7 +44,7 @@ namespace Rutracker.Server.WebApi.Controllers
             _clientSettings = clientOptions.Value;
         }
 
-        [HttpGet("search"), Authorize(Policy = Policies.IsAdmin)]
+        [HttpGet("search"), AllowAnonymous]
         public async Task<PaginationResult<UserViewModel>> Search(int page, int pageSize)
         {
             var (users, count) = await _userService.ListAsync(page, pageSize);
@@ -58,7 +58,7 @@ namespace Rutracker.Server.WebApi.Controllers
             };
         }
 
-        [HttpGet("profile/{username}")]
+        [HttpGet("profile/{username}"), AllowAnonymous]
         public async Task<UserProfileViewModel> Profile(string userName)
         {
             var user = await _userService.FindByNameAsync(userName);
