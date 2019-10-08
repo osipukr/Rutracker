@@ -13,26 +13,42 @@ namespace Rutracker.Server.BusinessLayer.Services
             _emailSender = emailSender;
         }
 
-        public async Task SendConfirmationEmailAsync(string email, string confirmationUrl)
+        public async Task SendConfirmationEmailAsync(string email, string url)
         {
-            Guard.Against.NullOrWhiteSpace(email, message: "Invalid email.");
-            Guard.Against.NullOrWhiteSpace(confirmationUrl, message: "Invalid confirmation url.");
+            CheckParameters(email, url);
 
             await _emailSender.SendAsync(
                 email: email,
-                subject: "Confirm your email",
-                message: $"Confirm your email by following this <a href='{confirmationUrl}' target='_blank'>link</a>");
+                subject: "Rutracker | Confirm your email",
+                message: $"Confirm your email by following this {GenerateHtmlLink(url, "link")}");
         }
 
-        public async Task SendEmailChangeConfirmation(string email, string confirmationUrl)
+        public async Task SendEmailChangeConfirmationAsync(string email, string url)
         {
-            Guard.Against.NullOrWhiteSpace(email, message: "Invalid email.");
-            Guard.Against.NullOrWhiteSpace(confirmationUrl, message: "Invalid confirmation url.");
+            CheckParameters(email, url);
 
             await _emailSender.SendAsync(
                 email: email,
-                subject: "Confirm change email",
-                message: $"Confirm your email change by following this <a href='{confirmationUrl}' target='_blank'>link</a>");
+                subject: "Rutracker | Confirm change email",
+                message: $"Confirm your email change by following this {GenerateHtmlLink(url, "link")}");
         }
+
+        public async Task SendResetPasswordAsync(string email, string url)
+        {
+            CheckParameters(email, url);
+
+            await _emailSender.SendAsync(
+                email: email,
+                subject: "Rutracker | Reset Password",
+                message: $"Reset password by following this {GenerateHtmlLink(url, "link")}");
+        }
+
+        private static void CheckParameters(string email, string url)
+        {
+            Guard.Against.NullOrWhiteSpace(email, message: "Invalid email.");
+            Guard.Against.NullOrWhiteSpace(url, message: "Invalid url.");
+        }
+
+        private static string GenerateHtmlLink(string url, string message) => $"<a href='{url}' target='_blank'>{message}</a>";
     }
 }

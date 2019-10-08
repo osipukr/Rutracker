@@ -38,6 +38,16 @@ namespace Rutracker.Client.BusinessLayer.Services
             await _apiAuthenticationState.MarkUserAsAuthenticated(token);
         }
 
+        public async Task ForgotPassword(ForgotPasswordViewModel model)
+        {
+            await _httpClientService.PostJsonAsync(_apiUrlOptions.ForgotPassword, model);
+        }
+
+        public async Task ResetPassword(ResetPasswordViewModel model)
+        {
+            await _httpClientService.PostJsonAsync(_apiUrlOptions.ResetPassword, model);
+        }
+
         public async Task Logout()
         {
             await _httpClientService.PostJsonAsync(_apiUrlOptions.Logout, null);

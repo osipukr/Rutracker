@@ -4,49 +4,53 @@
 
 @page "/account/register"
 
-@if (LoadAction == ActionTypes.Failed)
-{
-    <Alert Type="@AlertTypes.Danger">@Errors</Alert>
-}
+<MatCard>
+    @if (LoadAction == ActionTypes.Failed)
+    {
+        <Alert Type="@AlertTypes.Danger">@Errors</Alert>
+    }
 
-@if (Message != null)
-{
-    <Alert Type="@AlertTypes.Success">@Message</Alert>
-}
+    @if (Message != null)
+    {
+        <Alert Type="@AlertTypes.Success">@Message</Alert>
+    }
 
-<EditForm Model="@RegisterModel" OnValidSubmit="@RegisterAsync">
-    <DataAnnotationsValidator />
+    <EditForm Model="@RegisterModel" OnValidSubmit="@RegisterAsync">
+        <DataAnnotationsValidator />
 
-    <div class="form-group">
-        <MatTextField @bind-Value="@RegisterModel.UserName"
-                      Label="User Name"
-                      Icon="@MatIconNames.Person"
-                      IconTrailing="true"
-                      FullWidth="true"
-                      Required="true" />
+        <div class="form-group">
+            <MatTextField @bind-Value="@RegisterModel.UserName"
+                          Label="User Name"
+                          Icon="@MatIconNames.Person"
+                          IconTrailing="true"
+                          FullWidth="true"
+                          Required="true" />
 
-        <ValidationMessage For="@(() => RegisterModel.UserName)" />
-    </div>
+            <ValidationMessage For="@(() => RegisterModel.UserName)" />
+        </div>
 
-    <div class="form-group">
-        <MatTextField @bind-Value="@RegisterModel.Email"
-                      Label="Email"
-                      Icon="@MatIconNames.Mail_outline"
-                      IconTrailing="true"
-                      FullWidth="true"
-                      Required="true" />
+        <div class="form-group">
+            <MatTextField @bind-Value="@RegisterModel.Email"
+                          Label="Email"
+                          Icon="@MatIconNames.Mail_outline"
+                          IconTrailing="true"
+                          FullWidth="true"
+                          Required="true" />
 
-        <ValidationMessage For="@(() => RegisterModel.Email)" />
-    </div>
+            <ValidationMessage For="@(() => RegisterModel.Email)" />
+        </div>
 
-    <div class="d-flex flex-row-reverse my-4">
-        <MatButton Label="Register" Raised="true" type="submit" />
-    </div>
+        <div class="d-flex flex-row-reverse my-4">
+            <MatButton Label="Register" Raised="true" type="submit" />
+        </div>
 
-    <hr />
+        <hr />
 
-    <MatButton Link="@Constants.Path.Login" Label="Login" Outlined="true" />
-</EditForm>
+        <div class="d-flex justify-content-center align-items-center">
+            <MatButton Link="@Constants.Path.Login" Label="Login" Outlined="true" />
+        </div>
+    </EditForm>
+</MatCard>
 
 @code
 {
@@ -55,15 +59,14 @@
 
     private async Task RegisterAsync()
     {
-        await LoadAsync(() => AccountService.Register(RegisterModel));
-
         Message = null;
         StateHasChanged();
+
+        await LoadAsync(() => AccountService.Register(RegisterModel));
 
         if (LoadAction == ActionTypes.Succeeded)
         {
             Message = "To complete registration, check the email.";
-            StateHasChanged();
         }
     }
 }

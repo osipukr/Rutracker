@@ -139,7 +139,7 @@ namespace Rutracker.Server.WebApi.Controllers
                 Query = parameters.ToString()
             };
 
-            await _emailService.SendEmailChangeConfirmation(model.Email, urlBuilder.Uri.ToString());
+            await _emailService.SendEmailChangeConfirmationAsync(model.Email, urlBuilder.Uri.ToString());
         }
 
         [HttpPut("change/phone")]

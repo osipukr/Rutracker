@@ -35,6 +35,8 @@
         public string Login { get; set; }
         public string Register { get; set; }
         public string CompleteRegistration { get; set; }
+        public string ForgotPassword { get; set; }
+        public string ResetPassword { get; set; }
         public string Logout { get; set; }
 
         // User

@@ -23,7 +23,6 @@ namespace Rutracker.Server.WebApi.Controllers
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
         private readonly IJwtFactory _jwtFactory;
-
         private readonly ClientSettings _clientSettings;
 
         public AccountsController(
@@ -75,6 +74,31 @@ namespace Rutracker.Server.WebApi.Controllers
             var roles = await _userService.RolesAsync(user.Id);
 
             return await _jwtFactory.GenerateTokenAsync(user, roles);
+        }
+
+        [HttpPost("forgotPassword")]
+        public async Task ForgotPassword(ForgotPasswordViewModel model)
+        {
+            var user = await _userService.FindByNameAsync(model.UserName);
+            var token = await _userService.PasswordResetTokenAsync(user.Id);
+            var parameters = HttpUtility.ParseQueryString(string.Empty);
+
+            parameters.Add(nameof(ResetPasswordViewModel.UserId), user.Id);
+            parameters.Add(nameof(ResetPasswordViewModel.Token), token);
+
+            var urlBuilder = new UriBuilder(_clientSettings.BaseUrl)
+            {
+                Path = _clientSettings.ResetPasswordPath,
+                Query = parameters.ToString()
+            };
+
+            await _emailService.SendResetPasswordAsync(user.Email, urlBuilder.Uri.ToString());
+        }
+
+        [HttpPost("resetPassword")]
+        public async Task ResetPassword(ResetPasswordViewModel model)
+        {
+            await _userService.ResetPasswordAsync(model.UserId, model.Password, model.Token);
         }
 
         [Authorize, HttpPost("logout")]

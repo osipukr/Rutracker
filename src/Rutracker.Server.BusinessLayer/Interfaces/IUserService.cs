@@ -17,8 +17,10 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
         Task<User> ChangeImageAsync(string id, string mimeType, Stream imageStream);
         Task<User> DeleteImageAsync(string id);
         Task<string> EmailConfirmationTokenAsync(string id);
+        Task<string> PasswordResetTokenAsync(string id);
         Task<string> ChangeEmailTokenAsync(string id, string email);
         Task<string> ChangePhoneNumberTokenAsync(string id, string phone);
+        Task<User> ResetPasswordAsync(string id, string password, string token);
         Task<User> ChangePasswordAsync(string id, string oldPassword, string newPassword);
         Task<User> ChangeEmailAsync(string id, string email, string token);
         Task<User> ChangePhoneNumberAsync(string id, string phone, string token);

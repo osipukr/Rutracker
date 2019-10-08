@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
-using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Shared.Infrastructure.Entities;
@@ -75,16 +74,12 @@ namespace Rutracker.Server.BusinessLayer.Services
                 {
                     UserName = userName,
                     Email = email,
-                    RegisteredAt = DateTime.UtcNow,
                     IsRegistrationFinished = false
                 };
 
                 var result = await _userManager.CreateAsync(user);
 
-                if (!result.Succeeded)
-                {
-                    throw new RutrackerException(result.GetError(), ExceptionEventTypes.RegistrationFailed);
-                }
+                Guard.Against.IsSucceeded(result);
             }
 
             if (user.IsRegistrationFinished)
@@ -92,12 +87,10 @@ namespace Rutracker.Server.BusinessLayer.Services
                 throw new RutrackerException($"A user with this name '{userName}' is already registered.", ExceptionEventTypes.RegistrationFailed);
             }
 
-            if (user.Email != email)
-            {
-                user.Email = email;
+            user.Email = email;
+            user.RegisteredAt = DateTime.UtcNow;
 
-                await _userManager.UpdateAsync(user);
-            }
+            await _userManager.UpdateAsync(user);
 
             return user;
         }
@@ -109,10 +102,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var user = await _userManager.FindByIdAsync(userId);
 
-            if (user == null)
-            {
-                throw new RutrackerException("No user with this id found.", ExceptionEventTypes.NotValidParameters);
-            }
+            Guard.Against.NullNotFound(user, "No user with this id found.");
 
             if (user.IsRegistrationFinished)
             {
@@ -121,17 +111,11 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
 
-            if (!result.Succeeded)
-            {
-                throw new RutrackerException("Invalid confirmation email token.", ExceptionEventTypes.NotValidParameters);
-            }
+            Guard.Against.IsSucceeded(result);
 
             result = await _userManager.AddPasswordAsync(user, password);
 
-            if (!result.Succeeded)
-            {
-                throw new RutrackerException(result.GetError(), ExceptionEventTypes.NotValidParameters);
-            }
+            Guard.Against.IsSucceeded(result);
 
             user.FirstName = firstName;
             user.LastName = lastName;

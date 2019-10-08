@@ -21,6 +21,8 @@
     "Login": "api/accounts/login",
     "Register": "api/accounts/register",
     "CompleteRegistration": "api/accounts/completeRegistration",
+    "ForgotPassword": "api/accounts/forgotPassword",
+    "ResetPassword": "api/accounts/resetPassword",
     "Logout": "api/accounts/logout",
     "UsersSearch": "api/users/search?page={0}&pageSize={1}",
     "UserProfile": "api/users/profile/{0}",

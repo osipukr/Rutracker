@@ -35,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Shared.Infrastruc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Client.BlazorWasm", "src\Rutracker.Client.BlazorWasm\Rutracker.Client.BlazorWasm.csproj", "{2EE29C82-E95E-4F03-BB1D-DAD5EE1CEF31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rutracker.Client.BusinessLayer", "src\Rutracker.Client.BusinessLayer\Rutracker.Client.BusinessLayer.csproj", "{0C4D5871-2D55-4362-98AE-38ED6EBD24AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Client.BusinessLayer", "src\Rutracker.Client.BusinessLayer\Rutracker.Client.BusinessLayer.csproj", "{0C4D5871-2D55-4362-98AE-38ED6EBD24AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
