@@ -11,33 +11,54 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
     public class TorrentServiceTests
     {
         private readonly ITorrentService _torrentService;
+        private const int TorrentsCount = DataInitializer.TorrentsCount;
 
         public TorrentServiceTests()
         {
-            var repository = MockInitializer.GetTorrentRepository();
+            var torrentRepository = MockInitializer.GetTorrentRepository();
+            var subcategoryRepository = MockInitializer.GetSubcategoryRepository();
+            var fileStorageService = MockInitializer.GetFileStorageService();
+            var unitOfWork = MockInitializer.GetUnitOfWork();
 
-            _torrentService = new TorrentService(repository);
+            _torrentService =
+                new TorrentService(torrentRepository, subcategoryRepository, fileStorageService, unitOfWork);
         }
 
-        [Fact(DisplayName = "ListAsync() with valid parameters should return the torrents list.")]
-        public async Task ListAsync_1_10_ReturnsValidTorrents()
+        [Fact]
+        public async Task ListAsync_1_9_ReturnsValidTorrents()
         {
             // Arrange
-            const int expectedCount = 10;
+            const int expectedCount = TorrentsCount - 1;
+            const int expectedTotalCount = TorrentsCount;
 
             // Act
             var torrents = await _torrentService.ListAsync(1, expectedCount, null, null, null);
 
             // Assert
             Assert.NotNull(torrents);
+            Assert.Equal(expectedCount, torrents.Item1.Count());
+            Assert.Equal(expectedTotalCount, torrents.Item2);
+        }
+
+        [Fact]
+        public async Task PopularAsync_10_ReturnsValidTorrents()
+        {
+            // Arrange
+            const int expectedCount = TorrentsCount;
+
+            // Act
+            var torrents = await _torrentService.PopularAsync(expectedCount);
+
+            // Assert
+            Assert.NotNull(torrents);
             Assert.Equal(expectedCount, torrents.Count());
         }
 
-        [Fact(DisplayName = "FindAsync() with valid parameter should return the torrent with id.")]
-        public async Task FindAsync_5_ReturnsValidTorrent()
+        [Fact]
+        public async Task FindAsync_10_ReturnsValidTorrent()
         {
             // Arrange
-            const int expectedId = 5;
+            const int expectedId = TorrentsCount;
 
             // Act
             var torrent = await _torrentService.FindAsync(expectedId);
@@ -47,35 +68,8 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             Assert.Equal(expectedId, torrent.Id);
         }
 
-        [Fact(DisplayName = "CountAsync() with valid parameters should return the number of torrents.")]
-        public async Task CountAsync_Null_ReturnsValidCount()
-        {
-            // Arrange
-            const int expectedCount = 10;
-
-            // Act
-            var count = await _torrentService.CountAsync(null, null, null);
-
-            // Assert
-            Assert.Equal(expectedCount, count);
-        }
-
-        [Fact(DisplayName = "PopularTorrentsAsync() with valid parameters should return the popular torrents.")]
-        public async Task PopularTorrentsAsync_5_ReturnsValidTorrents()
-        {
-            // Arrange
-            const int expectedCount = 5;
-
-            // Act
-            var forums = await _torrentService.PopularAsync(expectedCount);
-
-            // Assert
-            Assert.NotNull(forums);
-            Assert.Equal(expectedCount, forums.Count());
-        }
-
-        [Fact(DisplayName = "ListAsync() with an invalid parameters should throw RutrackerException.")]
-        public async Task ListAsync_NegativeNumbers_ThrowTorrentException()
+        [Fact]
+        public async Task ListAsync_NegativeNumbers_ThrowRutrackerException()
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
@@ -84,8 +78,18 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
         }
 
-        [Fact(DisplayName = "FindAsync() with an invalid parameters should throw RutrackerException.")]
-        public async Task FindAsync_NegativeNumber_ThrowTorrentException()
+        [Fact]
+        public async Task PopularAsync_NegativeNumber_ThrowRutrackerException()
+        {
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
+                await _torrentService.PopularAsync(-10));
+
+            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
+        }
+
+        [Fact]
+        public async Task FindAsync_NegativeNumber_ThrowRutrackerException()
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
@@ -94,22 +98,42 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
         }
 
-        [Fact(DisplayName = "FindAsync() with an invalid parameters should throw RutrackerException.")]
-        public async Task FindAsync_1000_ThrowTorrentException()
+        [Fact]
+        public async Task FindAsync_11_ThrowRutrackerException()
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
-                await _torrentService.FindAsync(1000));
+                await _torrentService.FindAsync(TorrentsCount + 1));
 
             Assert.Equal(ExceptionEventTypes.NotFound, exception.ExceptionEventType);
         }
 
-        [Fact(DisplayName = "PopularTorrentsAsync() with an invalid parameters should throw RutrackerException.")]
-        public async Task PopularTorrentsAsync_NegativeNumber_ThrowTorrentException()
+        [Fact]
+        public async Task AddAsync_Null_ThrowRutrackerException()
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
-                await _torrentService.PopularAsync(-10));
+                await _torrentService.AddAsync(null));
+
+            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_NegativeNumber_Nulls_ThrowRutrackerException()
+        {
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
+                await _torrentService.UpdateAsync(-10, null, null));
+
+            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_NegativeNumber_Null_ThrowRutrackerException()
+        {
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
+                await _torrentService.DeleteAsync(-10, null));
 
             Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
         }

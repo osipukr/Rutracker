@@ -11,19 +11,21 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
     public class CategoryServiceTests
     {
         private readonly ICategoryService _categoryService;
+        private const int CategoriesCount = DataInitializer.CategoriesCount;
 
         public CategoryServiceTests()
         {
-            var repository = MockInitializer.GetCategoryRepository();
+            var categoryRepository = MockInitializer.GetCategoryRepository();
+            var unitOfWork = MockInitializer.GetUnitOfWork();
 
-            _categoryService = new CategoryService(repository);
+            _categoryService = new CategoryService(categoryRepository, unitOfWork);
         }
 
-        [Fact(DisplayName = "ListAsync() with valid parameters should return the categories list.")]
+        [Fact]
         public async Task ListAsync_10_ReturnsValidCategories()
         {
             // Arrange
-            const int expectedCount = 10;
+            const int expectedCount = CategoriesCount;
 
             // Act
             var categories = await _categoryService.ListAsync();
@@ -33,11 +35,11 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             Assert.Equal(expectedCount, categories.Count());
         }
 
-        [Fact(DisplayName = "FindAsync() with valid parameter should return the category with id.")]
-        public async Task FindAsync_5_ReturnsValidCategory()
+        [Fact]
+        public async Task FindAsync_10_ReturnsValidCategory()
         {
             // Arrange
-            const int expectedId = 5;
+            const int expectedId = CategoriesCount;
 
             // Act
             var category = await _categoryService.FindAsync(expectedId);
@@ -47,8 +49,8 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             Assert.Equal(expectedId, category.Id);
         }
 
-        [Fact(DisplayName = "FindAsync() with an invalid parameters should throw RutrackerException.")]
-        public async Task FindAsync_NegativeNumber_ThrowTorrentException()
+        [Fact]
+        public async Task FindAsync_NegativeNumber_ThrowRutrackerException()
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
@@ -57,14 +59,44 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
         }
 
-        [Fact(DisplayName = "FindAsync() with an invalid parameters should throw RutrackerException.")]
-        public async Task FindAsync_1000_ThrowTorrentException()
+        [Fact]
+        public async Task FindAsync_11_ThrowRutrackerException()
         {
             // Act & Assert
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
-                await _categoryService.FindAsync(1000));
+                await _categoryService.FindAsync(CategoriesCount + 1));
 
             Assert.Equal(ExceptionEventTypes.NotFound, exception.ExceptionEventType);
+        }
+
+        [Fact]
+        public async Task AddAsync_Null_ThrowRutrackerException()
+        {
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
+                await _categoryService.AddAsync(null));
+
+            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_NegativeNumber_Null_ThrowRutrackerException()
+        {
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
+                await _categoryService.UpdateAsync(-10, null));
+
+            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
+        }
+
+        [Fact]
+        public async Task DeleteAsync_NegativeNumber_ThrowRutrackerException()
+        {
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
+                await _categoryService.DeleteAsync(-10));
+
+            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
         }
     }
 }

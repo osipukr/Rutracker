@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
@@ -105,6 +106,15 @@ namespace Rutracker.UnitTests.Setup
                 .ReturnsAsync((Expression<Func<Like, bool>> expression) => likes.SingleOrDefault(expression));
 
             return repositoryMock.Object;
+        }
+
+        public static IFileStorageService GetFileStorageService()
+        {
+            var fileStorageServiceMock = new Mock<IFileStorageService>();
+
+            // setup
+
+            return fileStorageServiceMock.Object;
         }
 
         public static IUnitOfWork GetUnitOfWork()
