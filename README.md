@@ -1,11 +1,34 @@
 # Rutracker Blazor
 
-The application was built on the basis of the Blazor-Hosted template, which includes **Server (RESTful API)** and **Client (Blazor-client)**.
+The application was built on the basis of the Blazor-Hosted template, which includes **Server (RESTful API)**, **Client (Blazor)** and **Shared (Сommon between client and server)**.
 
+The project that allows the user to create an account, add or find a torrent file and upload it. And also allows you to exchange messages between users. It's possible to leave your comments under your torrent.
+
+
+## Project structure
+
+```
+Rutracker
+│
+└─── Client
+│   │   Rutracker.Client.BusinessLayer
+│   │   Rutracker.Client.BlazorWasm
+│   
+└─── Server
+│   │   Rutracker.Server.DataAccessLayer
+│   │   Rutracker.Server.BusinessLayer
+│   │   Rutracker.Server.WebApi
+│
+└─── Shared
+    │   Rutracker.Shared.Infrastructure
+    │   Rutracker.Shared.Models
+```
 
 ## Demo and Documentation
 
-You can see an example of a ready-made application on **Github Pages** - [Demo](https://rutracker.azurewebsites.net/). Also, you can see the api endpoints documentation here - [Documentation](https://osipukr.github.io/Rutracker-Blazor/).
+You can see an example of a ready-made application on **Github Pages** - [Demo](https://rutracker.azurewebsites.net/).
+
+Also, you can see the api endpoints **documentation** here - [Documentation](https://osipukr.github.io/Rutracker-Blazor/).
 
 
 ## Running the sample using Docker
