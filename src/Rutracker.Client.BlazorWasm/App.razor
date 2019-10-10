@@ -1,4 +1,7 @@
 ﻿<MatThemeProvider Theme="@_theme">
+    <BlazoredModal HideCloseButton="false" Position="blazored-modal-center" />
+    <MatToastContainer />
+
     <Router AppAssembly="@typeof(Program).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="routeData" DefaultLayout="@typeof(MainLayout)">
@@ -25,8 +28,6 @@
             </CascadingAuthenticationState>
         </NotFound>
     </Router>
-    <BlazoredModal />
-    <MatToastContainer />
 </MatThemeProvider>
 
 @code
