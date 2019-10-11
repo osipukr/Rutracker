@@ -1,4 +1,4 @@
-# Rutracker Blazor
+# Rutracker
 
 The application was built on the basis of the Blazor-Hosted template, which includes **Server (RESTful API)**, **Client (Blazor)** and **Shared (Сommon between client and server)**.
 
@@ -24,11 +24,12 @@ Rutracker
     │   Rutracker.Shared.Models
 ```
 
+
 ## Demo and Documentation
 
-You can see an example of a ready-made application on **Github Pages** - [Demo](https://rutracker.azurewebsites.net/).
+You can see an example of a **demo** application here - [Demo](https://rutracker.azurewebsites.net).
 
-Also, you can see the api endpoints **documentation** here - [Documentation](https://osipukr.github.io/Rutracker-Blazor/).
+Also, you can see the api endpoints **documentation** here - [Documentation](https://osipukr.github.io/Rutracker-Blazor).
 
 
 ## Running the sample using Docker
