@@ -10,6 +10,7 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
     public class SubcategoryRepositoryTests
     {
         private readonly ISubcategoryRepository _subcategoryRepository;
+        private const int SubcategoriesCount = DataInitializer.SubcategoriesCount;
 
         public SubcategoryRepositoryTests()
         {
@@ -18,63 +19,71 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
             _subcategoryRepository = new SubcategoryRepository(context);
         }
 
-        [Fact(DisplayName = "GetAll() with valid parameter should return valid subcategories.")]
+        [Fact]
         public void GetAll_10_ReturnsValidSubcategories()
         {
             // Arrange
-            const int expectedCount = 10;
+            const int expectedCount = SubcategoriesCount;
 
             // Act
-            var count = _subcategoryRepository.GetAll().Count();
+            var subcategories = _subcategoryRepository.GetAll();
 
             // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.NotNull(subcategories);
+            Assert.Equal(expectedCount, subcategories.Count());
         }
 
-        [Fact(DisplayName = "GetAll() with valid parameter should return valid subcategories.")]
+        [Fact]
         public void GetAll_10_ReturnsValidSubcategoriesByExpression()
         {
             // Arrange
-            const int expectedCount = 1;
+            const int expectedId = SubcategoriesCount;
 
             // Act
-            var count = _subcategoryRepository.GetAll(x => x.Id == 10).Count();
+            var subcategories = _subcategoryRepository.GetAll(x => x.Id.Equals(expectedId));
 
             // Assert
-            Assert.Equal(expectedCount, count);
+            Assert.NotNull(subcategories);
+            Assert.Single(subcategories);
         }
 
-        [Fact(DisplayName = "GetAsync() with valid parameter should return valid subcategory.")]
-        public async Task GetAsync_5_ReturnsValidSubcategory()
+        [Fact]
+        public async Task GetAsync_10_ReturnsValidSubcategory()
         {
             // Arrange
-            const int expectedId = 5;
+            const int expectedId = SubcategoriesCount;
 
             // Act
-            var categoryId = (await _subcategoryRepository.GetAsync(expectedId)).Id;
+            var subcategory = await _subcategoryRepository.GetAsync(expectedId);
 
             // Assert
-            Assert.Equal(expectedId, categoryId);
+            Assert.NotNull(subcategory);
+            Assert.NotNull(subcategory.Name);
+            Assert.InRange(subcategory.CategoryId, 1, int.MaxValue);
+            Assert.Equal(expectedId, subcategory.Id);
         }
 
-        [Fact(DisplayName = "GetAsync() with valid parameter should return valid subcategory.")]
-        public async Task GetAsync_5_ReturnsValidSubcategoryByExpression()
+        [Fact]
+        public async Task GetAsync_10_ReturnsValidSubcategoryByExpression()
         {
             // Arrange
-            const int expectedId = 5;
+            const int expectedId = SubcategoriesCount;
 
             // Act
-            var categoryId = (await _subcategoryRepository.GetAsync(x => x.Id == expectedId)).Id;
+            var subcategory = await _subcategoryRepository.GetAsync(x => x.Id.Equals(expectedId));
 
             // Assert
-            Assert.Equal(expectedId, categoryId);
+            Assert.NotNull(subcategory);
+            Assert.NotNull(subcategory.Name);
+            Assert.InRange(subcategory.CategoryId, 1, int.MaxValue);
+            Assert.Equal(expectedId, subcategory.Id);
         }
 
-        [Fact(DisplayName = "CountAsync() with valid parameters should return the number of items.")]
+        [Fact]
         public async Task CountAsync_10_ReturnsValidCount()
         {
             // Arrange
-            const int expectedCount = 10;
+            const int expectedCount = SubcategoriesCount;
 
             // Act
             var count = await _subcategoryRepository.CountAsync();
@@ -83,43 +92,46 @@ namespace Rutracker.UnitTests.DataAccessLayer.Repositories
             Assert.Equal(expectedCount, count);
         }
 
-        [Fact(DisplayName = "CountAsync() with valid parameters should return the number of items.")]
+        [Fact]
         public async Task CountAsync_10_ReturnsValidCountByExpression()
         {
             // Arrange
+            const int expectedId = SubcategoriesCount;
             const int expectedCount = 1;
 
             // Act
-            var count = await _subcategoryRepository.CountAsync(x => x.Id == 10);
+            var count = await _subcategoryRepository.CountAsync(x => x.Id.Equals(expectedId));
 
             // Assert
             Assert.Equal(expectedCount, count);
         }
 
-        [Fact(DisplayName = "ExistAsync() with valid parameters should return whether the object exists.")]
+        [Fact]
         public async Task ExistAsync_10_ReturnsValidIsExist()
         {
             // Arrange
-            const bool expected = true;
+            const int expectedId = SubcategoriesCount;
+            const bool expectedCondition = true;
 
             // Act
-            var result = await _subcategoryRepository.ExistAsync(10);
+            var isExist = await _subcategoryRepository.ExistAsync(expectedId);
 
             // Assert
-            Assert.Equal(expected, result);
+            Assert.Equal(expectedCondition, isExist);
         }
 
-        [Fact(DisplayName = "ExistAsync() with valid parameters should return whether the object exists.")]
+        [Fact]
         public async Task ExistAsync_10_ReturnsValidIsExistByExpression()
         {
             // Arrange
-            const bool expected = true;
+            const int expectedId = SubcategoriesCount;
+            const bool expectedCondition = true;
 
             // Act
-            var result = await _subcategoryRepository.ExistAsync(x => x.Id == 10);
+            var isExist = await _subcategoryRepository.ExistAsync(x => x.Id.Equals(expectedId));
 
             // Assert
-            Assert.Equal(expected, result);
+            Assert.Equal(expectedCondition, isExist);
         }
     }
 }

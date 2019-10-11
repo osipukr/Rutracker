@@ -3,26 +3,28 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Rutracker.Server.DataAccessLayer.Contexts;
+using Rutracker.Server.DataAccessLayer.Interfaces;
 using Rutracker.Server.WebApi;
 
 namespace Rutracker.IntegrationTests.WebApi
 {
     public class WebApiFactory : WebApplicationFactory<Startup>
     {
+        private const string DatabaseName = nameof(WebApiFactory);
+
         protected override void ConfigureWebHost(IWebHostBuilder builder) =>
             builder.ConfigureServices(services =>
             {
                 services
                     .AddEntityFrameworkInMemoryDatabase()
-                    .AddDbContext<RutrackerContext>(options => options.UseInMemoryDatabase(nameof(WebApiFactory)));
+                    .AddDbContext<RutrackerContext>(options => options.UseInMemoryDatabase(DatabaseName));
+
+                services.AddScoped<IContextSeed, WebApiContextSeed>();
 
                 using var scope = services.BuildServiceProvider().CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<RutrackerContext>();
+                var contextSeed = scope.ServiceProvider.GetRequiredService<IContextSeed>();
 
-                if (context.Database.EnsureCreated())
-                {
-                    new WebApiContextSeed(context).SeedAsync().Wait();
-                }
+                contextSeed.SeedAsync().Wait();
             });
     }
 }

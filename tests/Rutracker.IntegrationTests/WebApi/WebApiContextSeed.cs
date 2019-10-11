@@ -4,13 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities;
+using Rutracker.Server.DataAccessLayer.Interfaces;
 
 namespace Rutracker.IntegrationTests.WebApi
 {
-    public class WebApiContextSeed
+    public class WebApiContextSeed : IContextSeed
     {
-        private const string UserId = "dc205ba0-084c-44ad-86ae-36e6a8c88deb";
         private readonly RutrackerContext _context;
+        private const string UserId = "dc205ba0-084c-44ad-86ae-36e6a8c88deb";
 
         public WebApiContextSeed(RutrackerContext context) => _context = context;
 
@@ -22,6 +23,11 @@ namespace Rutracker.IntegrationTests.WebApi
 
         public async Task SeedAsync()
         {
+            if (!await _context.Database.EnsureCreatedAsync())
+            {
+                return;
+            }
+
             await _context.Categories.AddRangeAsync(GetPreconfiguredCategories());
             await _context.Subcategories.AddRangeAsync(GetPreconfiguredSubcategories());
             await _context.Torrents.AddRangeAsync(GetPreconfiguredTorrents());

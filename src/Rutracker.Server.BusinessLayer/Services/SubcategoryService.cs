@@ -15,10 +15,13 @@ namespace Rutracker.Server.BusinessLayer.Services
         private readonly ISubcategoryRepository _subcategoryRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public SubcategoryService(ICategoryRepository categoryRepository, ISubcategoryRepository subcategoryRepository, IUnitOfWork unitOfWork)
+        public SubcategoryService(
+            ISubcategoryRepository subcategoryRepository,
+            ICategoryRepository categoryRepository,
+            IUnitOfWork unitOfWork)
         {
-            _categoryRepository = categoryRepository;
             _subcategoryRepository = subcategoryRepository;
+            _categoryRepository = categoryRepository;
             _unitOfWork = unitOfWork;
         }
 
