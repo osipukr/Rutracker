@@ -14,21 +14,21 @@ namespace Rutracker.Server.WebApi.Services
 {
     public class JwtFactory : IJwtFactory
     {
-        private readonly JwtSettings _jwtOptions;
+        private readonly JwtSettings _jwtSettings;
 
         public JwtFactory(IOptions<JwtSettings> jwtOptions)
         {
-            _jwtOptions = jwtOptions.Value;
+            _jwtSettings = jwtOptions.Value;
 
-            Guard.Against.Null(_jwtOptions, nameof(_jwtOptions));
+            Guard.Against.Null(_jwtSettings, nameof(_jwtSettings));
 
-            if (_jwtOptions.ValidFor <= TimeSpan.Zero)
+            if (_jwtSettings.ValidFor <= TimeSpan.Zero)
             {
-                throw new ArgumentException("Must be a non-zero TimeSpan.", nameof(_jwtOptions.ValidFor));
+                throw new ArgumentException("Must be a non-zero TimeSpan.", nameof(_jwtSettings.ValidFor));
             }
 
-            Guard.Against.Null(_jwtOptions.SigningCredentials, nameof(_jwtOptions.SigningCredentials));
-            Guard.Against.Null(_jwtOptions.JtiGenerator, nameof(_jwtOptions.JtiGenerator));
+            Guard.Against.Null(_jwtSettings.SigningCredentials, nameof(_jwtSettings.SigningCredentials));
+            Guard.Against.Null(_jwtSettings.JtiGenerator, nameof(_jwtSettings.JtiGenerator));
         }
 
         public async Task<string> GenerateTokenAsync(User user, IEnumerable<string> roles)
@@ -38,27 +38,26 @@ namespace Rutracker.Server.WebApi.Services
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
-                new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64)
+                new Claim(JwtRegisteredClaimNames.Jti, await _jwtSettings.JtiGenerator()),
+                new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtSettings.IssuedAt).ToString(), ClaimValueTypes.Integer64)
             };
 
             var roleClaims = roles.Select(x => new Claim(ClaimTypes.Role, x));
 
             var jwt = new JwtSecurityToken(
-                issuer: _jwtOptions.Issuer,
-                audience: _jwtOptions.Audience,
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.Audience,
                 claims: claims.Concat(roleClaims),
-                notBefore: _jwtOptions.NotBefore,
-                expires: _jwtOptions.Expiration,
-                signingCredentials: _jwtOptions.SigningCredentials);
+                notBefore: _jwtSettings.NotBefore,
+                expires: _jwtSettings.Expiration,
+                signingCredentials: _jwtSettings.SigningCredentials);
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
         private static long ToUnixEpochDate(DateTime date)
         {
-            return (long)Math.Round((date.ToUniversalTime() -
-                                      new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
+            return (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
         }
     }
 }

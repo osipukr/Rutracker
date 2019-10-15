@@ -17,6 +17,9 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
         public virtual DbSet<File> Files { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<Like> Likes { get; set; }
+        public virtual DbSet<Dialog> Dialogs { get; set; }
+        public virtual DbSet<Message> Messages { get; set; }
+        public virtual DbSet<UserDialog> UserDialogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -28,7 +31,10 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
                    .ApplyConfiguration(new TorrentConfiguration())
                    .ApplyConfiguration(new FileConfiguration())
                    .ApplyConfiguration(new CommentConfiguration())
-                   .ApplyConfiguration(new LikeConfiguration());
+                   .ApplyConfiguration(new LikeConfiguration())
+                   .ApplyConfiguration(new DialogConfiguration())
+                   .ApplyConfiguration(new MessageConfiguration())
+                   .ApplyConfiguration(new UserDialogConfiguration());
         }
     }
 }
