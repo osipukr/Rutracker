@@ -15,5 +15,7 @@ namespace Rutracker.Server.DataAccessLayer.Entities
         public virtual ICollection<Torrent> Torrents { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Like> Likes { get; set; }
+        public virtual ICollection<UserDialog> UserDialogs { get; set; }
+        public virtual ICollection<Message> Messages { get; set; }
     }
 }
