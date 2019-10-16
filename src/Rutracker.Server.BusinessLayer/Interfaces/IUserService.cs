@@ -9,6 +9,7 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
     public interface IUserService
     {
         Task<Tuple<IEnumerable<User>, int>> ListAsync(int page, int pageSize);
+        Task<IEnumerable<User>> ListAsync(string search);
         Task<User> FindAsync(string id);
         Task<User> FindByNameAsync(string userName);
         Task<User> UpdateAsync(string id, User user);

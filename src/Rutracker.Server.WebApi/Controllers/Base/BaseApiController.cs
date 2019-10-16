@@ -8,11 +8,11 @@ namespace Rutracker.Server.WebApi.Controllers.Base
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    public class BaseApiController : ControllerBase
+    public abstract class BaseApiController : ControllerBase
     {
         protected readonly IMapper _mapper;
 
-        public BaseApiController(IMapper mapper)
+        protected BaseApiController(IMapper mapper)
         {
             _mapper = mapper;
         }

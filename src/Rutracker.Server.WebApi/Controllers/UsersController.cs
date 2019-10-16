@@ -58,6 +58,14 @@ namespace Rutracker.Server.WebApi.Controllers
             };
         }
 
+        [HttpGet("find")]
+        public async Task<IEnumerable<UserViewModel>> Find(string search)
+        {
+            var users = await _userService.ListAsync(search);
+
+            return _mapper.Map<IEnumerable<UserViewModel>>(users);
+        }
+
         [HttpGet("profile/{username}"), AllowAnonymous]
         public async Task<UserProfileViewModel> Profile(string userName)
         {
@@ -67,7 +75,7 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpGet("details")]
-        public async Task<UserDetailsViewModel> Find()
+        public async Task<UserDetailsViewModel> Details()
         {
             var userId = User.GetUserId();
             var user = await _userService.FindAsync(userId);

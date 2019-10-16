@@ -11,6 +11,10 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
             builder.Property(d => d.Id).ValueGeneratedOnAdd().IsRequired();
             builder.Property(d => d.Title).IsRequired();
 
+            builder.HasOne(d => d.User)
+                .WithMany(u => u.Dialogs)
+                .HasForeignKey(d => d.UserId);
+
             builder.HasMany(d => d.Messages)
                 .WithOne(m => m.Dialog)
                 .HasForeignKey(m => m.DialogId);

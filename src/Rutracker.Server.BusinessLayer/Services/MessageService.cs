@@ -77,5 +77,16 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             return result;
         }
+
+        public async Task<Message> DeleteAsync(int id, string userId)
+        {
+            var message = await FindAsync(id, userId);
+
+            _messageRepository.Remove(message);
+
+            await _unitOfWork.CompleteAsync();
+
+            return message;
+        }
     }
 }

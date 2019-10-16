@@ -8,6 +8,8 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
     {
         Task<IEnumerable<Dialog>> ListAsync(string userId);
         Task<Dialog> FindAsync(int id, string userId);
+        Task<Dialog> FindByOwnerAsync(int id, string userId);
         Task<Dialog> AddAsync(Dialog dialog, IEnumerable<string> userIds);
+        Task<Dialog> DeleteAsync(int id, string userId);
     }
 }

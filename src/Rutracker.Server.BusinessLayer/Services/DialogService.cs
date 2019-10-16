@@ -28,7 +28,10 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             Guard.Against.NullOrWhiteSpace(userId, message: "Invalid user id.");
 
-            var dialogs = await _dialogRepository.GetAll(x => x.UserDialogs.Any(ud => ud.UserId == userId)).ToListAsync();
+            var dialogs = await _dialogRepository.GetAll()
+                .SelectMany(x => x.UserDialogs.Where(y => y.UserId == userId)
+                    .Select(y => y.Dialog))
+                .ToListAsync();
 
             Guard.Against.NullNotFound(dialogs, "The dialogs not found.");
 
@@ -40,9 +43,24 @@ namespace Rutracker.Server.BusinessLayer.Services
             Guard.Against.LessOne(id, "Invalid dialog id.");
             Guard.Against.NullOrWhiteSpace(userId, message: "Invalid user id.");
 
-            var dialog = await _dialogRepository.GetAsync(x => x.Id == id && x.UserDialogs.Any(ud => ud.UserId == userId));
+            var dialog = await _dialogRepository.GetAll()
+                .SelectMany(x => x.UserDialogs.Where(y => y.UserId == userId)
+                    .Select(y => y.Dialog))
+                .SingleOrDefaultAsync();
 
-            Guard.Against.NullNotFound(dialog, "The dialog not found.");
+            Guard.Against.NullNotFound(dialog, $"The dialog with id '{id}' not found.");
+
+            return dialog;
+        }
+
+        public async Task<Dialog> FindByOwnerAsync(int id, string userId)
+        {
+            Guard.Against.LessOne(id, "Invalid dialog id.");
+            Guard.Against.NullOrWhiteSpace(userId, message: "Invalid user id.");
+
+            var dialog = await _dialogRepository.GetAsync(x => x.Id == id && x.UserId == userId);
+
+            Guard.Against.NullNotFound(dialog, $"The dialog with id '{id}' not found.");
 
             return dialog;
         }
@@ -51,28 +69,52 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             Guard.Against.NullNotValid(dialog, "Invalid dialog.");
             Guard.Against.NullOrWhiteSpace(dialog.Title, message: "Invalid dialog title.");
+            Guard.Against.NullOrWhiteSpace(dialog.UserId, message: "Invalid dialog user id.");
             Guard.Against.NullNotValid(userIds, "Invalid user ids.");
 
-            var users = await Task.WhenAll(userIds.Select(_userManager.FindByIdAsync));
+            var ids = userIds.Where(x => !string.IsNullOrWhiteSpace(x)).Concat(new[] { dialog.UserId }).Distinct().ToArray();
 
-            if (users.Length == 0)
+            if (ids.Length == 1)
             {
                 throw new RutrackerException("No selected user.", ExceptionEventTypes.NotValidParameters);
+            }
+
+            var users = new List<User>(ids.Length);
+
+            foreach (var id in ids)
+            {
+                var user = await _userManager.FindByIdAsync(id);
+
+                Guard.Against.NullNotValid(user, $"The user with id '{id}' not found.");
+
+                users.Add(user);
             }
 
             var result = _dialogRepository.Create();
 
             result.Title = dialog.Title;
+            result.UserId = dialog.UserId;
             result.UserDialogs = users.Select(user => new UserDialog
             {
                 Dialog = result,
                 User = user
-            }).ToList();
+            }).ToArray();
 
             await _dialogRepository.AddAsync(result);
             await _unitOfWork.CompleteAsync();
 
             return result;
+        }
+
+        public async Task<Dialog> DeleteAsync(int id, string userId)
+        {
+            var dialog = await FindByOwnerAsync(id, userId);
+
+            _dialogRepository.Remove(dialog);
+
+            await _unitOfWork.CompleteAsync();
+
+            return dialog;
         }
     }
 }

@@ -170,6 +170,8 @@ namespace Rutracker.Server.WebApi
             services.AddScoped<IFileRepository, FileRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<ILikeRepository, LikeRepository>();
+            services.AddScoped<IDialogRepository, DialogRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -178,6 +180,8 @@ namespace Rutracker.Server.WebApi
             services.AddScoped<ITorrentService, TorrentService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IDialogService, DialogService>();
+            services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IContextSeed, RutrackerContextSeed>();
         }
 

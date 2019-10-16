@@ -25,6 +25,10 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
             builder.HasMany(u => u.Messages)
                 .WithOne(m => m.User)
                 .HasForeignKey(m => m.UserId);
+
+            builder.HasMany(u => u.Dialogs)
+                .WithOne(d => d.User)
+                .HasForeignKey(d => d.UserId);
         }
     }
 }
