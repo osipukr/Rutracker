@@ -4,7 +4,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rutracker.Server.BusinessLayer.Interfaces;
-using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Extensions;
 using Rutracker.Shared.Models;
@@ -38,22 +37,10 @@ namespace Rutracker.Server.WebApi.Controllers
             return _mapper.Map<MessageViewModel>(dialog);
         }
 
-        [HttpPost]
-        public async Task<MessageViewModel> Create(MessageCreateViewModel model)
-        {
-            var message = _mapper.Map<Message>(model);
-
-            message.UserId = User.GetUserId();
-
-            var result = await _messageService.AddAsync(message);
-
-            return _mapper.Map<MessageViewModel>(result);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task Delete(int id)
-        {
-            await _messageService.DeleteAsync(id, User.GetUserId());
-        }
+        //[HttpDelete("{id}")]
+        //public async Task Delete(int id)
+        //{
+        //    await _messageService.DeleteAsync(id, User.GetUserId());
+        //}
     }
 }

@@ -101,7 +101,7 @@ namespace Rutracker.Server.WebApi.Controllers
             await _userService.ResetPasswordAsync(model.UserId, model.Password, model.Token);
         }
 
-        [Authorize, HttpPost("logout")]
+        [HttpPost("logout"), Authorize]
         public async Task Logout()
         {
             await _accountService.LogoutAsync();

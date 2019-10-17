@@ -28,10 +28,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             Guard.Against.NullOrWhiteSpace(userId, message: "Invalid user id.");
 
-            var dialogs = await _dialogRepository.GetAll()
-                .SelectMany(x => x.UserDialogs.Where(y => y.UserId == userId)
-                    .Select(y => y.Dialog))
-                .ToListAsync();
+            var dialogs = await _dialogRepository.GetAll(x => x.UserDialogs.Any(y => y.UserId == userId)).ToListAsync();
 
             Guard.Against.NullNotFound(dialogs, "The dialogs not found.");
 
@@ -43,10 +40,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             Guard.Against.LessOne(id, "Invalid dialog id.");
             Guard.Against.NullOrWhiteSpace(userId, message: "Invalid user id.");
 
-            var dialog = await _dialogRepository.GetAll()
-                .SelectMany(x => x.UserDialogs.Where(y => y.UserId == userId)
-                    .Select(y => y.Dialog))
-                .SingleOrDefaultAsync();
+            var dialog = await _dialogRepository.GetAsync(x => x.UserDialogs.Any(y => y.DialogId == id && y.UserId == userId));
 
             Guard.Against.NullNotFound(dialog, $"The dialog with id '{id}' not found.");
 

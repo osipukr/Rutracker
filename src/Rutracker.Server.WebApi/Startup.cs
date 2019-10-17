@@ -23,6 +23,7 @@ using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Repositories;
 using Rutracker.Server.WebApi.Filters;
+using Rutracker.Server.WebApi.Hubs;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Services;
 using Rutracker.Server.WebApi.Settings;
@@ -157,6 +158,8 @@ namespace Rutracker.Server.WebApi
                 options.SuppressModelStateInvalidFilter = true;
             });
 
+            services.AddSignalR();
+
             services.AddSingleton<IJwtFactory, JwtFactory>();
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddSingleton<ISmsSender, SmsSender>();
@@ -212,6 +215,7 @@ namespace Rutracker.Server.WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/hubs/chat");
                 endpoints.MapFallbackToClientSideBlazor<Client.BlazorWasm.Startup>(filePath: "index.html");
             });
 
