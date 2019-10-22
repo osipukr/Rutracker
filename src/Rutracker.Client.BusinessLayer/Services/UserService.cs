@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blazor.FileReader;
 using Rutracker.Client.BusinessLayer.Extensions;
@@ -27,6 +28,13 @@ namespace Rutracker.Client.BusinessLayer.Services
             var url = string.Format(_apiUrlOptions.UsersSearch, page.ToString(), pageSize.ToString());
 
             return await _httpClientService.GetJsonAsync<PaginationResult<UserViewModel>>(url);
+        }
+
+        public async Task<IEnumerable<UserViewModel>> ListAsync(string search)
+        {
+            var url = string.Format(_apiUrlOptions.UsersFind, search);
+
+            return await _httpClientService.GetJsonAsync<IEnumerable<UserViewModel>>(url);
         }
 
         public async Task<UserProfileViewModel> ProfileAsync(string userName)

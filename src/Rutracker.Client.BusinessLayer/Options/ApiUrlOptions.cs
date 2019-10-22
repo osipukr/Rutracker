@@ -41,6 +41,7 @@
 
         // User
         public string UsersSearch { get; set; }
+        public string UsersFind { get; set; }
         public string UserProfile { get; set; }
         public string User { get; set; }
         public string ChangeUserInfo { get; set; }
@@ -50,5 +51,13 @@
         public string ChangePhone { get; set; }
         public string ConfirmPhone { get; set; }
         public string ConfirmChangeEmail { get; set; }
+
+        // Dialog
+        public string Dialogs { get; set; }
+        public string Dialog { get; set; }
+
+        // Message
+        public string MessagesSearch { get; set; }
+        public string Message { get; set; }
     }
 }
