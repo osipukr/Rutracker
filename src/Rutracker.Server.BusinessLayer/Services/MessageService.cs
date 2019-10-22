@@ -29,9 +29,9 @@ namespace Rutracker.Server.BusinessLayer.Services
             Guard.Against.LessOne(dialogId, "Invalid dialog id.");
             Guard.Against.NullOrWhiteSpace(userId, message: "Invalid user id.");
 
-            if (!await _dialogRepository.ExistAsync(x => x.UserDialogs.Any(ud => ud.UserId == userId)))
+            if (!await _dialogRepository.ExistAsync(x => x.UserDialogs.Any(ud => ud.DialogId == dialogId && ud.UserId == userId)))
             {
-                throw new RutrackerException($"The messages with dialog id '{dialogId}' not found.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"The dialog with id '{dialogId}' not found.", ExceptionEventTypes.InvalidParameters);
             }
 
             var messages = await _messageRepository.GetAll(x => x.DialogId == dialogId).ToListAsync();
@@ -62,7 +62,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!await _dialogRepository.ExistAsync(message.DialogId))
             {
-                throw new RutrackerException($"The dialog with id '{message.DialogId}' not found.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"The dialog with id '{message.DialogId}' not found.", ExceptionEventTypes.InvalidParameters);
             }
 
             var result = _messageRepository.Create();

@@ -13,14 +13,14 @@ namespace Ardalis.GuardClauses
 
         public static void NullNotValid<T>(this IGuardClause guardClause, T input, string message) where T : class
         {
-            Null(guardClause, input, message, ExceptionEventTypes.NotValidParameters);
+            Null(guardClause, input, message, ExceptionEventTypes.InvalidParameters);
         }
 
         public static void OutOfRange(this IGuardClause guardClause, int input, int rangeFrom, int rangeTo, string message)
         {
             if (input < rangeFrom || input > rangeTo)
             {
-                throw new RutrackerException(message, ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException(message, ExceptionEventTypes.InvalidParameters);
             }
         }
 
@@ -33,7 +33,7 @@ namespace Ardalis.GuardClauses
         {
             if (string.IsNullOrWhiteSpace(input))
             {
-                throw new RutrackerException(message, ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException(message, ExceptionEventTypes.InvalidParameters);
             }
         }
 
@@ -41,7 +41,7 @@ namespace Ardalis.GuardClauses
         {
             if (!result.Succeeded)
             {
-                throw new RutrackerException(result.GetError(), ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException(result.GetError(), ExceptionEventTypes.InvalidParameters);
             }
         }
 

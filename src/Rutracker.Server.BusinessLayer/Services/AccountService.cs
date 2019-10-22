@@ -31,7 +31,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!user.IsRegistrationFinished)
             {
-                throw new RutrackerException("The user has not completed the registration.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException("The user has not completed the registration.", ExceptionEventTypes.InvalidParameters);
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: true);
@@ -58,7 +58,7 @@ namespace Rutracker.Server.BusinessLayer.Services
                 // RequiresTwoFactor
             }
 
-            throw new RutrackerException("Wrong password.", ExceptionEventTypes.NotValidParameters);
+            throw new RutrackerException("Wrong password.", ExceptionEventTypes.InvalidParameters);
         }
 
         public async Task<User> RegisterAsync(string userName, string email)
@@ -106,7 +106,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (user.IsRegistrationFinished)
             {
-                throw new RutrackerException($"A user with this name '{user.UserName}' is already registered.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"A user with this name '{user.UserName}' is already registered.", ExceptionEventTypes.InvalidParameters);
             }
 
             var result = await _userManager.ConfirmEmailAsync(user, token);

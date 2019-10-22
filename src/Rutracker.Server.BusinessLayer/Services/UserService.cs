@@ -153,7 +153,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!user.EmailConfirmed)
             {
-                throw new RutrackerException($"The email '{user.Email}' is not confirmed.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"The email '{user.Email}' is not confirmed.", ExceptionEventTypes.InvalidParameters);
             }
 
             return await _userManager.GenerateChangeEmailTokenAsync(user, email);
@@ -167,7 +167,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!user.PhoneNumberConfirmed)
             {
-                throw new RutrackerException($"The phone number '{user.PhoneNumber}' is not confirmed.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"The phone number '{user.PhoneNumber}' is not confirmed.", ExceptionEventTypes.InvalidParameters);
             }
 
             return await _userManager.GenerateChangePhoneNumberTokenAsync(user, phone);
@@ -192,12 +192,12 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!await _userManager.CheckPasswordAsync(user, oldPassword))
             {
-                throw new RutrackerException("The old password is not correct.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException("The old password is not correct.", ExceptionEventTypes.InvalidParameters);
             }
 
             if (oldPassword == newPassword)
             {
-                throw new RutrackerException("The new password must not match the old password.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException("The new password must not match the old password.", ExceptionEventTypes.InvalidParameters);
             }
 
             var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);

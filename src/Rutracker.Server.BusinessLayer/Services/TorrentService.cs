@@ -108,7 +108,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!await _subcategoryRepository.ExistAsync(torrent.SubcategoryId))
             {
-                throw new RutrackerException($"The subcategory with id {torrent.SubcategoryId} not found.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"The subcategory with id {torrent.SubcategoryId} not found.", ExceptionEventTypes.InvalidParameters);
             }
 
             var result = _torrentRepository.Create();

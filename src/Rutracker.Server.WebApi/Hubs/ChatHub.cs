@@ -38,7 +38,6 @@ namespace Rutracker.Server.WebApi.Hubs
             var dialog = _mapper.Map<Dialog>(dialogCreateView);
 
             dialog.UserId = Context.User.GetUserId();
-
             dialog = await _dialogService.AddAsync(dialog, dialogCreateView.UserIds);
 
             var result = _mapper.Map<DialogViewModel>(dialog);
@@ -51,7 +50,6 @@ namespace Rutracker.Server.WebApi.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, dialogId.ToString());
 
             var user = await _userService.FindAsync(Context.User.GetUserId());
-
             var result = _mapper.Map<UserViewModel>(user);
 
             await Clients.Caller.JoinDialogAsync(result);
@@ -62,7 +60,6 @@ namespace Rutracker.Server.WebApi.Hubs
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, dialogId.ToString());
 
             var user = await _userService.FindAsync(Context.User.GetUserId());
-
             var result = _mapper.Map<UserViewModel>(user);
 
             await Clients.Caller.LeaveDialogAsync(result);
@@ -73,7 +70,6 @@ namespace Rutracker.Server.WebApi.Hubs
             var message = _mapper.Map<Message>(messageCreateView);
 
             message.UserId = Context.User.GetUserId();
-
             message = await _messageService.AddAsync(message);
 
             var result = _mapper.Map<MessageViewModel>(message);

@@ -70,7 +70,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (ids.Length == 1)
             {
-                throw new RutrackerException("No selected user.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException("No selected user.", ExceptionEventTypes.InvalidParameters);
             }
 
             var users = new List<User>(ids.Length);
