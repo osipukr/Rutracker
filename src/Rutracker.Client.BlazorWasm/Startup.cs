@@ -1,4 +1,6 @@
 using System.IO;
+using System.Reflection;
+using Blazor.Extensions;
 using Blazor.FileReader;
 using Blazored.LocalStorage;
 using Blazored.Modal;
@@ -24,6 +26,7 @@ namespace Rutracker.Client.BlazorWasm
 
             services.AddSingleton(clientSettings.ApiUrlOptions);
             services.AddSingleton(clientSettings.FileOptions);
+            services.AddSingleton(clientSettings.HubSettings);
             services.AddSingleton(clientSettings.PageSettings);
 
             services.AddLoadingBar();
@@ -37,6 +40,7 @@ namespace Rutracker.Client.BlazorWasm
             });
 
             services.AddScoped<HttpClientService>();
+            services.AddTransient<HubConnectionBuilder>();
             services.AddScoped<ApiAuthenticationStateProvider>();
             services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<ApiAuthenticationStateProvider>());
             services.AddScoped<IAccountService, AccountService>();
@@ -46,6 +50,8 @@ namespace Rutracker.Client.BlazorWasm
             services.AddScoped<ITorrentService, TorrentService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IDialogService, DialogService>();
+            services.AddScoped<IMessageService, MessageService>();
 
             services.AddMatToaster(x =>
             {
@@ -69,11 +75,8 @@ namespace Rutracker.Client.BlazorWasm
 
         private static ClientSettings GetClientSettings()
         {
-            var assembly = typeof(Startup).Assembly;
-
-            var resource = $"{assembly.GetName().Name}.clientsettings.json";
-
-            using var stream = assembly.GetManifestResourceStream(resource);
+            var name = "clientsettings.json";
+            using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name);
             using var reader = new StreamReader(stream);
 
             return JsonConvert.DeserializeObject<ClientSettings>(reader.ReadToEnd());

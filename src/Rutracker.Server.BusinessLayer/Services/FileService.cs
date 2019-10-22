@@ -74,7 +74,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!await _torrentRepository.ExistAsync(x => x.Id == torrentId && x.UserId == userId))
             {
-                throw new RutrackerException($"The torrent with id '{torrentId}' not found.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"The torrent with id '{torrentId}' not found.", ExceptionEventTypes.InvalidParameters);
             }
 
             var name = fileName.ToLowerInvariant();

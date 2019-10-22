@@ -124,17 +124,17 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (mimeTypes?.Contains(fileMimeType) == false)
             {
-                throw new RutrackerException($"This file type '{fileMimeType}' is not supported.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"This file type '{fileMimeType}' is not supported.", ExceptionEventTypes.InvalidParameters);
             }
 
             if (!fileStream.CanRead)
             {
-                throw new RutrackerException("Can't read file.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException("Can't read file.", ExceptionEventTypes.InvalidParameters);
             }
 
             if (fileStream.Length > maxLength)
             {
-                throw new RutrackerException($"File too large (max {ConvertBytesToMegabytes(maxLength):F2} mb).", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"File too large (max {ConvertBytesToMegabytes(maxLength):F2} mb).", ExceptionEventTypes.InvalidParameters);
             }
 
             var path = await _storageService.UploadFileAsync(containerName, fileName, fileStream);

@@ -25,6 +25,7 @@
     "ResetPassword": "api/accounts/resetPassword",
     "Logout": "api/accounts/logout",
     "UsersSearch": "api/users/search?page={0}&pageSize={1}",
+    "UsersFind": "api/users/find?search={0}",
     "UserProfile": "api/users/profile/{0}",
     "User": "api/users/details",
     "ChangeUserInfo": "api/users/change/info",
@@ -33,11 +34,18 @@
     "ChangeEmail": "api/users/change/email",
     "ChangePhone": "api/users/change/phone",
     "ConfirmPhone": "api/users/confirm/phone",
-    "ConfirmChangeEmail": "api/users/confirm/changeEmail"
+    "ConfirmChangeEmail": "api/users/confirm/changeEmail",
+    "Dialogs": "api/dialogs",
+    "Dialog": "api/dialogs/{0}",
+    "MessagesSearch": "api/messages/search?dialogid={0}",
+    "Message": "api/messages/{0}"
   },
   "FileOptions": {
     "MaxImageSize": 2097152,
     "MaxFileSize": 52428800
+  },
+  "HubSettings": {
+    "ChatHubPath": "/hubs/chat"
   },
   "PageSettings": {
     "ServiceName": "Rutracker",

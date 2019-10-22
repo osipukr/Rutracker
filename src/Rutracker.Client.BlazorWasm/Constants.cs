@@ -19,6 +19,8 @@
             public const string Register = "/account/register";
             public const string Logout = "/account/logout";
             public const string Profile = "/account/profile";
+            public const string Dialogs = "/account/dialogs";
+            public const string Dialog = "/account/dialogs/{0}";
 
             public const string Repository = "https://github.com/osipukr/Rutracker-Blazor";
             public const string DefaultUserImage = "https://icon-library.net/images/no-profile-pic-icon/no-profile-pic-icon-5.jpg";

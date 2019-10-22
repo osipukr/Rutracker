@@ -45,7 +45,7 @@ namespace Rutracker.Server.WebApi.Filters
                 statusCode = exception.ExceptionEventType switch
                 {
                     ExceptionEventTypes.NotFound => StatusCodes.Status404NotFound,
-                    ExceptionEventTypes.NotValidParameters => StatusCodes.Status400BadRequest,
+                    ExceptionEventTypes.InvalidParameters => StatusCodes.Status400BadRequest,
                     ExceptionEventTypes.LoginFailed => StatusCodes.Status400BadRequest,
                     ExceptionEventTypes.RegistrationFailed => StatusCodes.Status400BadRequest,
                     _ => StatusCodes.Status500InternalServerError

@@ -17,6 +17,8 @@ namespace Rutracker.Server.BusinessLayer.Services
         private readonly UserManager<User> _userManager;
         private readonly IFileStorageService _fileStorageService;
 
+        private const int SearchTakeCount = 10;
+
         public UserService(UserManager<User> userManager, IFileStorageService fileStorageService)
         {
             _userManager = userManager;
@@ -28,7 +30,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             Guard.Against.LessOne(page, $"The {nameof(page)} is less than 1.");
             Guard.Against.OutOfRange(pageSize, rangeFrom: 1, rangeTo: 100, $"The {nameof(pageSize)} is out of range ({1} - {100}).");
 
-            var query = _userManager.Users.OrderBy(x => x.RegisteredAt);
+            var query = _userManager.Users.Where(x => x.IsRegistrationFinished).OrderBy(x => x.RegisteredAt);
             var users = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
             Guard.Against.NullNotFound(users, "The users not found.");
@@ -38,11 +40,24 @@ namespace Rutracker.Server.BusinessLayer.Services
             return Tuple.Create<IEnumerable<User>, int>(users, count);
         }
 
+        public async Task<IEnumerable<User>> ListAsync(string search)
+        {
+            var users = await _userManager.Users.Where(x => x.IsRegistrationFinished)
+                .OrderBy(x => x.RegisteredAt)
+                .Where(x => string.IsNullOrWhiteSpace(search) ||
+                            x.UserName.Contains(search,
+                                StringComparison.OrdinalIgnoreCase))
+                .Take(SearchTakeCount)
+                .ToListAsync();
+
+            return users;
+        }
+
         public async Task<User> FindAsync(string id)
         {
             Guard.Against.NullOrWhiteSpace(id, message: "Invalid user id.");
 
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.Users.SingleOrDefaultAsync(x => x.Id == id);
 
             Guard.Against.NullNotFound(user, $"The user with id '{id}' not found.");
 
@@ -53,7 +68,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             Guard.Against.NullOrWhiteSpace(userName, message: "Invalid user name.");
 
-            var user = await _userManager.FindByNameAsync(userName);
+            var user = await _userManager.Users.SingleOrDefaultAsync(x => x.UserName == userName);
 
             Guard.Against.NullNotFound(user, $"The user with name '{userName}' not found.");
 
@@ -138,7 +153,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!user.EmailConfirmed)
             {
-                throw new RutrackerException($"The email '{user.Email}' is not confirmed.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"The email '{user.Email}' is not confirmed.", ExceptionEventTypes.InvalidParameters);
             }
 
             return await _userManager.GenerateChangeEmailTokenAsync(user, email);
@@ -152,7 +167,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!user.PhoneNumberConfirmed)
             {
-                throw new RutrackerException($"The phone number '{user.PhoneNumber}' is not confirmed.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"The phone number '{user.PhoneNumber}' is not confirmed.", ExceptionEventTypes.InvalidParameters);
             }
 
             return await _userManager.GenerateChangePhoneNumberTokenAsync(user, phone);
@@ -177,12 +192,12 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!await _userManager.CheckPasswordAsync(user, oldPassword))
             {
-                throw new RutrackerException("The old password is not correct.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException("The old password is not correct.", ExceptionEventTypes.InvalidParameters);
             }
 
             if (oldPassword == newPassword)
             {
-                throw new RutrackerException("The new password must not match the old password.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException("The new password must not match the old password.", ExceptionEventTypes.InvalidParameters);
             }
 
             var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);

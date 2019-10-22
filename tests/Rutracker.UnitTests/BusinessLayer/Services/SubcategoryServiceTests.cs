@@ -72,7 +72,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _subcategoryService.ListAsync(-10));
 
-            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.InvalidParameters, exception.ExceptionEventType);
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _subcategoryService.FindAsync(-10));
 
-            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.InvalidParameters, exception.ExceptionEventType);
         }
 
         [Fact]
@@ -102,7 +102,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _subcategoryService.AddAsync(null));
 
-            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.InvalidParameters, exception.ExceptionEventType);
         }
 
         [Fact]
@@ -112,7 +112,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _subcategoryService.UpdateAsync(-10, null));
 
-            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.InvalidParameters, exception.ExceptionEventType);
         }
 
         [Fact]
@@ -122,7 +122,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _subcategoryService.DeleteAsync(-10));
 
-            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.InvalidParameters, exception.ExceptionEventType);
         }
     }
 }
