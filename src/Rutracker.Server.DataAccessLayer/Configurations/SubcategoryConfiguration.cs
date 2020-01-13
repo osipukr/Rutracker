@@ -6,8 +6,12 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
 {
     public class SubcategoryConfiguration : IEntityTypeConfiguration<Subcategory>
     {
+        private const string SUBCATEGORY_TABLE_NAME = "Subcategories";
+
         public void Configure(EntityTypeBuilder<Subcategory> builder)
         {
+            builder.ToTable(SUBCATEGORY_TABLE_NAME);
+            builder.HasKey(s => s.Id);
             builder.Property(s => s.Id).ValueGeneratedOnAdd().IsRequired();
             builder.Property(s => s.Name).IsRequired();
 

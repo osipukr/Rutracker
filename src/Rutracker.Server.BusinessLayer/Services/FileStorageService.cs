@@ -61,7 +61,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         public async Task<string> UploadTorrentFileAsync(int torrentId, string mimeType, string name, Stream fileStream)
         {
             Guard.Against.LessOne(torrentId, "Invalid torrent id.");
-            Guard.Against.NullOrWhiteSpace(name, message: "Invalid file name.");
+            Guard.Against.NullString(name, message: "Invalid file name.");
 
             var containerName = string.Format(_fileStorageOptions.TorrentContainer, torrentId.ToString());
             var fileName = string.Format(_fileStorageOptions.TorrentFileName, name);
@@ -92,7 +92,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         public async Task DeleteTorrentFileAsync(int torrentId, string name)
         {
             Guard.Against.LessOne(torrentId, "Invalid torrent id.");
-            Guard.Against.NullOrWhiteSpace(name, message: "Invalid file name.");
+            Guard.Against.NullString(name, message: "Invalid file name.");
 
             var containerName = string.Format(_fileStorageOptions.TorrentContainer, torrentId.ToString());
             var fileName = string.Format(_fileStorageOptions.TorrentFileName, name);
@@ -117,24 +117,24 @@ namespace Rutracker.Server.BusinessLayer.Services
             string[] mimeTypes,
             long maxLength)
         {
-            Guard.Against.NullOrWhiteSpace(containerName, message: "Invalid container name.");
-            Guard.Against.NullOrWhiteSpace(fileName, message: "Invalid file name.");
-            Guard.Against.NullOrWhiteSpace(fileMimeType, message: "Invalid mime type.");
+            Guard.Against.NullString(containerName, message: "Invalid container name.");
+            Guard.Against.NullString(fileName, message: "Invalid file name.");
+            Guard.Against.NullString(fileMimeType, message: "Invalid mime type.");
             Guard.Against.NullNotValid(fileStream, "Invalid file stream.");
 
             if (mimeTypes?.Contains(fileMimeType) == false)
             {
-                throw new RutrackerException($"This file type '{fileMimeType}' is not supported.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"This file type '{fileMimeType}' is not supported.", ExceptionEventTypes.InvalidParameters);
             }
 
             if (!fileStream.CanRead)
             {
-                throw new RutrackerException("Can't read file.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException("Can't read file.", ExceptionEventTypes.InvalidParameters);
             }
 
             if (fileStream.Length > maxLength)
             {
-                throw new RutrackerException($"File too large (max {ConvertBytesToMegabytes(maxLength):F2} mb).", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"File too large (max {ConvertBytesToMegabytes(maxLength):F2} mb).", ExceptionEventTypes.InvalidParameters);
             }
 
             var path = await _storageService.UploadFileAsync(containerName, fileName, fileStream);

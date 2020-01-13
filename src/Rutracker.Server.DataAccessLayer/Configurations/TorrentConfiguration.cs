@@ -6,11 +6,17 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
 {
     public class TorrentConfiguration : IEntityTypeConfiguration<Torrent>
     {
+        private const string TORRENT_TABLE_NAME = "Torrents";
+
         public void Configure(EntityTypeBuilder<Torrent> builder)
         {
+            builder.ToTable(TORRENT_TABLE_NAME);
+            builder.HasKey(t => t.Id);
             builder.Property(t => t.Id).ValueGeneratedOnAdd().IsRequired();
             builder.Property(t => t.Name).IsRequired();
             builder.Property(t => t.Description).IsRequired();
+            builder.Property(t => t.Content).IsRequired();
+            builder.Property(t => t.ImageUrl);
 
             builder.HasOne(t => t.Subcategory)
                 .WithMany(s => s.Torrents)

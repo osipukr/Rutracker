@@ -23,6 +23,7 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
             base.OnModelCreating(builder);
 
             builder.ApplyConfiguration(new UserConfiguration())
+                   .ApplyConfiguration(new RoleConfiguration())
                    .ApplyConfiguration(new CategoryConfiguration())
                    .ApplyConfiguration(new SubcategoryConfiguration())
                    .ApplyConfiguration(new TorrentConfiguration())

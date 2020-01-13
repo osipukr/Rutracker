@@ -1,9 +1,9 @@
 ﻿namespace Rutracker.Shared.Infrastructure.Exceptions
 {
-    public enum ExceptionEventTypes : byte
+    public enum ExceptionEventTypes
     {
         NotFound = 1,
-        NotValidParameters = 2,
+        InvalidParameters = 2,
         LoginFailed = 3,
         RegistrationFailed = 4
     }

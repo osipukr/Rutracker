@@ -6,8 +6,12 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
 {
     public class CommentConfiguration : IEntityTypeConfiguration<Comment>
     {
+        private const string COMMENT_TABLE_NAME = "Comments";
+
         public void Configure(EntityTypeBuilder<Comment> builder)
         {
+            builder.ToTable(COMMENT_TABLE_NAME);
+            builder.HasKey(c => c.Id);
             builder.Property(c => c.Id).ValueGeneratedOnAdd().IsRequired();
             builder.Property(c => c.Text).IsRequired();
 

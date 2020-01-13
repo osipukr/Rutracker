@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Ardalis.GuardClauses;
 using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Server.BusinessLayer.Properties;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
@@ -15,10 +15,9 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task SendConfirmationPhoneAsync(string phone, string code)
         {
-            Guard.Against.NullOrWhiteSpace(phone, message: "Invalid phone number.");
-            Guard.Against.NullOrWhiteSpace(code, message: "Invalid phone verification code.");
+            var message = string.Format(Resources.SmsService_ConfirmationCodeMessage, code);
 
-            await _smsSender.SendAsync(phone, $"Confirmation code: {code}");
+            await _smsSender.SendAsync(phone, message);
         }
     }
 }

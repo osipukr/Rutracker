@@ -58,7 +58,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         public async Task<File> FindAsync(int id, string userId)
         {
             Guard.Against.LessOne(id, "Invalid file id.");
-            Guard.Against.NullOrWhiteSpace(userId, message: "Invalid user id.");
+            Guard.Against.NullString(userId, message: "Invalid user id.");
 
             var file = await _fileRepository.GetAsync(x => x.Id == id && x.Torrent.UserId == userId);
 
@@ -69,12 +69,12 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<File> AddAsync(string userId, int torrentId, string mimeType, string fileName, Stream fileStream)
         {
-            Guard.Against.NullOrWhiteSpace(userId, message: "Invalid user id.");
+            Guard.Against.NullString(userId, message: "Invalid user id.");
             Guard.Against.LessOne(torrentId, "Invalid torrent id.");
 
             if (!await _torrentRepository.ExistAsync(x => x.Id == torrentId && x.UserId == userId))
             {
-                throw new RutrackerException($"The torrent with id '{torrentId}' not found.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"The torrent with id '{torrentId}' not found.", ExceptionEventTypes.InvalidParameters);
             }
 
             var name = fileName.ToLowerInvariant();

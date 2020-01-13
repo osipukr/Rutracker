@@ -63,7 +63,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         public async Task<Comment> FindAsync(int id, string userId)
         {
             Guard.Against.LessOne(id, "Invalid comment id.");
-            Guard.Against.NullOrWhiteSpace(userId, message: "Invalid user id.");
+            Guard.Against.NullString(userId, message: "Invalid user id.");
 
             var comment = await _commentRepository.GetAsync(x => x.Id == id && x.UserId == userId);
 
@@ -75,13 +75,13 @@ namespace Rutracker.Server.BusinessLayer.Services
         public async Task<Comment> AddAsync(Comment comment)
         {
             Guard.Against.NullNotValid(comment, "Invalid comment.");
-            Guard.Against.NullOrWhiteSpace(comment.Text, message: "The comment must contain text.");
-            Guard.Against.NullOrWhiteSpace(comment.UserId, message: "Invalid user id.");
+            Guard.Against.NullString(comment.Text, message: "The comment must contain text.");
+            Guard.Against.NullString(comment.UserId, message: "Invalid user id.");
             Guard.Against.LessOne(comment.TorrentId, "Invalid torrent id.");
 
             if (!await _torrentRepository.ExistAsync(comment.TorrentId))
             {
-                throw new RutrackerException($"The torrent with id '{comment.TorrentId}' not found.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"The torrent with id '{comment.TorrentId}' not found.", ExceptionEventTypes.InvalidParameters);
             }
 
             var result = _commentRepository.Create();
@@ -100,7 +100,7 @@ namespace Rutracker.Server.BusinessLayer.Services
         public async Task<Comment> UpdateAsync(int id, string userId, Comment comment)
         {
             Guard.Against.NullNotValid(comment, "Invalid comment.");
-            Guard.Against.NullOrWhiteSpace(comment.Text, message: "The comment must contain text.");
+            Guard.Against.NullString(comment.Text, message: "The comment must contain text.");
 
             var result = await FindAsync(id, userId);
 
@@ -126,13 +126,13 @@ namespace Rutracker.Server.BusinessLayer.Services
         public async Task<Comment> LikeCommentAsync(int id, string userId)
         {
             Guard.Against.LessOne(id, "Invalid comment id.");
-            Guard.Against.NullOrWhiteSpace(userId, message: "Invalid user id.");
+            Guard.Against.NullString(userId, message: "Invalid user id.");
 
             var comment = await _commentRepository.GetAsync(id);
 
             if (comment == null)
             {
-                throw new RutrackerException($"The comment with id '{id}' not found.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"The comment with id '{id}' not found.", ExceptionEventTypes.InvalidParameters);
             }
 
             var like = await _likeRepository.GetAsync(x => x.CommentId == id && x.UserId == userId);

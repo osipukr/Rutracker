@@ -6,5 +6,7 @@ namespace Rutracker.Server.DataAccessLayer.Entities.Base
         where TPrimaryKey : IEquatable<TPrimaryKey>
     {
         public TPrimaryKey Id { get; set; }
+        public DateTime AddedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
     }
 }

@@ -42,7 +42,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             var container = _account.CreateCloudBlobClient().GetContainerReference(containerName);
             var block = container.GetBlockBlobReference(fileName);
 
-            await block.UploadFromStreamAsync(stream);
+            await block.UploadFromStreamAsync(stream, stream.Length);
 
             return block.Uri.AbsoluteUri;
         }

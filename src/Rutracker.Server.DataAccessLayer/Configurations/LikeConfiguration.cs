@@ -6,8 +6,12 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
 {
     public class LikeConfiguration : IEntityTypeConfiguration<Like>
     {
+        private const string LIKE_TABLE_NAME = "Likes";
+
         public void Configure(EntityTypeBuilder<Like> builder)
         {
+            builder.ToTable(LIKE_TABLE_NAME);
+            builder.HasKey(l => l.Id);
             builder.Property(l => l.Id).ValueGeneratedOnAdd().IsRequired();
 
             builder.HasOne(l => l.Comment)

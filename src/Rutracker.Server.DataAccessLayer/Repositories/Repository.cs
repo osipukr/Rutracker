@@ -9,14 +9,14 @@ using Rutracker.Server.DataAccessLayer.Interfaces;
 
 namespace Rutracker.Server.DataAccessLayer.Repositories
 {
-    public class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TPrimaryKey>
+    public abstract class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TPrimaryKey>
         where TEntity : BaseEntity<TPrimaryKey>
         where TPrimaryKey : IEquatable<TPrimaryKey>
     {
         protected readonly RutrackerContext _context;
         protected readonly DbSet<TEntity> _dbSet;
 
-        public Repository(RutrackerContext context)
+        protected Repository(RutrackerContext context)
         {
             _context = context;
             _dbSet = _context.Set<TEntity>();
@@ -42,12 +42,12 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
             return await _dbSet.SingleOrDefaultAsync(expression);
         }
 
-        public async Task<bool> ExistAsync(TPrimaryKey id)
+        public virtual async Task<bool> ExistAsync(TPrimaryKey id)
         {
             return await _dbSet.AnyAsync(x => x.Id.Equals(id));
         }
 
-        public async Task<bool> ExistAsync(Expression<Func<TEntity, bool>> expression)
+        public virtual async Task<bool> ExistAsync(Expression<Func<TEntity, bool>> expression)
         {
             return await _dbSet.AnyAsync(expression);
         }
@@ -62,14 +62,13 @@ namespace Rutracker.Server.DataAccessLayer.Repositories
             return await _dbSet.CountAsync(expression);
         }
 
-        public TEntity Create()
-        {
-            return _dbSet.CreateProxy();
-        }
-
         public virtual async Task AddAsync(TEntity entity)
         {
-            await _dbSet.AddAsync(entity);
+            var toCreate = _dbSet.CreateProxy();
+
+            _context.Entry(toCreate).CurrentValues.SetValues(entity);
+
+            await _dbSet.AddAsync(toCreate);
         }
 
         public virtual void Update(TEntity entity)

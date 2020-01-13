@@ -3,18 +3,20 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
 using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Server.BusinessLayer.Properties;
+using Rutracker.Server.BusinessLayer.Services.Base;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Shared.Infrastructure.Entities;
 using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
-    public class AccountService : IAccountService
+    public class AccountService : BaseService, IAccountService
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 
-        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager) : base(null)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -22,8 +24,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<User> LoginAsync(string userName, string password, bool rememberMe)
         {
-            Guard.Against.NullOrWhiteSpace(userName, message: "Invalid user name.");
-            Guard.Against.NullOrWhiteSpace(password, message: "Invalid password.");
+            Guard.Against.NullString(userName, message: "Invalid user name.");
+            Guard.Against.NullString(password, message: "Invalid password.");
 
             var user = await _userManager.FindByNameAsync(userName);
 
@@ -31,7 +33,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (!user.IsRegistrationFinished)
             {
-                throw new RutrackerException("The user has not completed the registration.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException("The user has not completed the registration.", ExceptionEventTypes.InvalidParameters);
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: true);
@@ -58,13 +60,13 @@ namespace Rutracker.Server.BusinessLayer.Services
                 // RequiresTwoFactor
             }
 
-            throw new RutrackerException("Wrong password.", ExceptionEventTypes.NotValidParameters);
+            throw new RutrackerException("Wrong password.", ExceptionEventTypes.InvalidParameters);
         }
 
         public async Task<User> RegisterAsync(string userName, string email)
         {
-            Guard.Against.NullOrWhiteSpace(userName, message: "Invalid user name.");
-            Guard.Against.NullOrWhiteSpace(email, message: "Invalid email.");
+            Guard.Against.NullString(userName, message: "Invalid user name.");
+            Guard.Against.NullString(email, message: "Invalid email.");
 
             var user = await _userManager.FindByNameAsync(userName);
 
@@ -97,8 +99,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<User> CompleteRegistrationAsync(string userId, string token, string firstName, string lastName, string password)
         {
-            Guard.Against.NullOrWhiteSpace(userId, message: "Invalid user id.");
-            Guard.Against.NullOrWhiteSpace(token, message: "Invalid confirmation email token.");
+            Guard.Against.NullString(userId, message: Resources.User_InvalidId_ErrorMessage);
+            Guard.Against.NullString(token, message: "Invalid confirmation email token.");
 
             var user = await _userManager.FindByIdAsync(userId);
 
@@ -106,7 +108,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (user.IsRegistrationFinished)
             {
-                throw new RutrackerException($"A user with this name '{user.UserName}' is already registered.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException($"A user with this name '{user.UserName}' is already registered.", ExceptionEventTypes.InvalidParameters);
             }
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
