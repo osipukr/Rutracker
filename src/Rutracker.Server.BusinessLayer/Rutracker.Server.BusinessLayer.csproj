@@ -12,13 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ardalis.GuardClauses" Version="1.3.2" />
-    <PackageReference Include="MailKit" Version="2.4.1" />
+    <PackageReference Include="Ardalis.GuardClauses" Version="1.4.2" />
+    <PackageReference Include="MailKit" Version="2.6.0" />
     <PackageReference Include="MimeTypes" Version="1.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Twilio" Version="5.37.2" />
+    <PackageReference Include="Twilio" Version="5.39.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
