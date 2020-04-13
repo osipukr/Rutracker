@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Rutracker.Server.DataAccessLayer\Rutracker.Server.DataAccessLayer.csproj" />
+    <ProjectReference Include="..\..\Rutracker.Shared.Infrastructure\Rutracker.Shared.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

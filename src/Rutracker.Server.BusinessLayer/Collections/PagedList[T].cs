@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rutracker.Shared.Infrastructure.Collections;
 
-namespace Rutracker.Shared.Infrastructure.Collections
+namespace Rutracker.Server.BusinessLayer.Collections
 {
     public class PagedList<T> : IPagedList<T>
     {

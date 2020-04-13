@@ -1,4 +1,4 @@
-﻿using Rutracker.Shared.Infrastructure.Interfaces;
+﻿using Rutracker.Shared.Infrastructure.Filters;
 
 namespace Rutracker.Shared.Models.ViewModels.User
 {

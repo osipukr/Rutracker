@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Rutracker.Server.BusinessLayer.Collections;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Controllers.Base;
@@ -20,9 +21,6 @@ namespace Rutracker.Server.WebApi.Controllers
     /// <summary>
     ///     The User API controller.
     /// </summary>
-    /// <response code="400">If the parameters are not valid.</response>
-    /// <response code="401">If the user is not authorized.</response>
-    /// <response code="404">If the item is null.</response>
     [Authorize(Policy = Policies.IsUser)]
     public class UsersController : ApiController
     {

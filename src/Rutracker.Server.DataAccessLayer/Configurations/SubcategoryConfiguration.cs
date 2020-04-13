@@ -12,7 +12,7 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
 
             builder.HasKey(subcategory => subcategory.Id);
 
-            builder.HasIndex(subcategory => subcategory.Name).HasName("Name");
+            builder.HasIndex(subcategory => subcategory.Name).HasName("Name").IsUnique();
 
             builder.Property(subcategory => subcategory.Id).HasColumnName("Id").ValueGeneratedOnAdd();
             builder.Property(subcategory => subcategory.Name).HasColumnName("Name").HasMaxLength(100).IsRequired();

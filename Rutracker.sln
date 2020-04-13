@@ -37,6 +37,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Client.BlazorWasm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Client.BusinessLayer", "src\Rutracker.Client.BusinessLayer\Rutracker.Client.BusinessLayer.csproj", "{0C4D5871-2D55-4362-98AE-38ED6EBD24AD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{44AAFDF4-3172-4089-A058-B81657E9FB92}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rutracker.Utils.DatabaseSeed", "src\Utils\Rutracker.Utils.DatabaseSeed\Rutracker.Utils.DatabaseSeed.csproj", "{5BA3C9F3-2A35-42DA-AA44-AFA466462ED5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +83,10 @@ Global
 		{0C4D5871-2D55-4362-98AE-38ED6EBD24AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C4D5871-2D55-4362-98AE-38ED6EBD24AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C4D5871-2D55-4362-98AE-38ED6EBD24AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BA3C9F3-2A35-42DA-AA44-AFA466462ED5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BA3C9F3-2A35-42DA-AA44-AFA466462ED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BA3C9F3-2A35-42DA-AA44-AFA466462ED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BA3C9F3-2A35-42DA-AA44-AFA466462ED5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +104,8 @@ Global
 		{DB242510-79CC-43FA-8F29-90AC92A5A903} = {327F4B87-575C-4C6B-92E6-C85D89D7DFC6}
 		{2EE29C82-E95E-4F03-BB1D-DAD5EE1CEF31} = {E01C8C6A-2605-455E-9438-C06089901779}
 		{0C4D5871-2D55-4362-98AE-38ED6EBD24AD} = {E01C8C6A-2605-455E-9438-C06089901779}
+		{44AAFDF4-3172-4089-A058-B81657E9FB92} = {9DDA32B2-5282-4CD1-B459-09FF1AD22889}
+		{5BA3C9F3-2A35-42DA-AA44-AFA466462ED5} = {44AAFDF4-3172-4089-A058-B81657E9FB92}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C27CBEED-49AD-475E-ADD1-58A34CC74CB5}

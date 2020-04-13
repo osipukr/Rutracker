@@ -9,6 +9,9 @@ using Rutracker.Shared.Models.ViewModels.File;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [AllowAnonymous]
     public class FilesController : ApiController
     {

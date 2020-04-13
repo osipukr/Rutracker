@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rutracker.Shared.Infrastructure.Collections;
 
-namespace Rutracker.Shared.Infrastructure.Collections
+namespace Rutracker.Server.BusinessLayer.Collections
 {
     /// <summary>
     /// Provides some help methods for <see cref="IPagedList{T}"/> interface.

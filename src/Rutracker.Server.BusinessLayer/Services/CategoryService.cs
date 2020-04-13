@@ -28,7 +28,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<IEnumerable<Category>> ListAsync()
         {
-            var categories = await _categoryRepository.GetAll().ToListAsync();
+            var categories = await _categoryRepository.GetAll().AsNoTracking().ToListAsync();
 
             Guard.Against.NullNotFound(categories, Resources.Category_NotFound_ErrorMessage);
 

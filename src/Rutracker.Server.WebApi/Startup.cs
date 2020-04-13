@@ -19,7 +19,6 @@ using Rutracker.Server.BusinessLayer.Options;
 using Rutracker.Server.BusinessLayer.Services;
 using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities;
-using Rutracker.Server.DataAccessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Interfaces.Base;
 using Rutracker.Server.DataAccessLayer.Services;
 using Rutracker.Server.WebApi.Filters;
@@ -27,6 +26,8 @@ using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Services;
 using Rutracker.Server.WebApi.Settings;
 using Rutracker.Shared.Models;
+using Rutracker.Utils.DatabaseSeed.Interfaces;
+using Rutracker.Utils.DatabaseSeed.Services;
 
 namespace Rutracker.Server.WebApi
 {
@@ -171,10 +172,11 @@ namespace Rutracker.Server.WebApi
             services.AddScoped<ITorrentService, TorrentService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ICommentService, CommentService>();
+
             services.AddScoped<IContextSeed, RutrackerContextSeed>();
         }
 
-        public void Configure(IApplicationBuilder app, IContextSeed contextSeed)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseResponseCaching();
             app.UseResponseCompression();
@@ -182,6 +184,7 @@ namespace Rutracker.Server.WebApi
             if (_environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDirectoryBrowser();
             }
 
             app.UseSwagger();
@@ -193,6 +196,7 @@ namespace Rutracker.Server.WebApi
             });
 
             app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -201,7 +205,15 @@ namespace Rutracker.Server.WebApi
                 endpoints.MapControllers();
             });
 
-            contextSeed.SeedAsync().Wait();
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var provider = scope.ServiceProvider;
+
+                foreach (var service in provider.GetServices<IContextSeed>())
+                {
+                    service.SeedAsync().Wait();
+                }
+            }
         }
     }
 }

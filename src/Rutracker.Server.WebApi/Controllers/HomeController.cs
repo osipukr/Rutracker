@@ -2,6 +2,9 @@
 
 namespace Rutracker.Server.WebApi.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Route("")]
     [ApiExplorerSettings(IgnoreApi = true)]
     public class HomeController : ControllerBase

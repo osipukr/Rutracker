@@ -1,4 +1,4 @@
-﻿namespace Rutracker.Shared.Infrastructure.Interfaces
+﻿namespace Rutracker.Shared.Infrastructure.Filters
 {
     public interface IUserFilter : IPagedFilter
     {

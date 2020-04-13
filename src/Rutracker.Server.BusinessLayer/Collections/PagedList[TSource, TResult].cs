@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rutracker.Shared.Infrastructure.Collections;
 
-namespace Rutracker.Shared.Infrastructure.Collections
+namespace Rutracker.Server.BusinessLayer.Collections
 {
     /// <summary>
     /// Provides the implementation of the <see cref="IPagedList{T}"/> and converter.

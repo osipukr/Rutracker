@@ -24,7 +24,7 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
             builder.Property(torrent => torrent.SubcategoryId).HasColumnName("SubcategoryId");
 
             builder.HasOne(torrent => torrent.Subcategory)
-                .WithMany(s => s.Torrents)
+                .WithMany(subcategory => subcategory.Torrents)
                 .HasForeignKey(torrent => torrent.SubcategoryId);
         }
     }

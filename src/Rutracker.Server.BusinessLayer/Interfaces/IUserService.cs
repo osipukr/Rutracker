@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Shared.Infrastructure.Collections;
-using Rutracker.Shared.Infrastructure.Interfaces;
+using Rutracker.Shared.Infrastructure.Filters;
 
 namespace Rutracker.Server.BusinessLayer.Interfaces
 {

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
+using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Exceptions;
 using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
@@ -11,7 +12,7 @@ using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Interfaces.Base;
 using Rutracker.Shared.Infrastructure.Collections;
-using Rutracker.Shared.Infrastructure.Interfaces;
+using Rutracker.Shared.Infrastructure.Filters;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
@@ -39,7 +40,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var query = _commentRepository.GetAll(x => x.TorrentId == filter.TorrentId)
                 .OrderByDescending(x => x.Likes.Count)
-                .ThenByDescending(x => x.AddedDate);
+                .ThenByDescending(x => x.AddedDate)
+                .AsNoTracking();
 
             var pagedList = await ApplyFilterAsync(query, filter);
 

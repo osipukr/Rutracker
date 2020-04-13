@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Rutracker.Server.BusinessLayer.Collections;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Controllers.Base;
@@ -14,6 +15,9 @@ using Rutracker.Shared.Models.ViewModels.Comment;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Authorize(Policy = Policies.IsUser)]
     public class CommentsController : ApiController
     {

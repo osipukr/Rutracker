@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Exceptions;
 using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
@@ -11,7 +12,7 @@ using Rutracker.Server.BusinessLayer.Properties;
 using Rutracker.Server.BusinessLayer.Services.Base;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Shared.Infrastructure.Collections;
-using Rutracker.Shared.Infrastructure.Interfaces;
+using Rutracker.Shared.Infrastructure.Filters;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
@@ -33,7 +34,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             Guard.Against.OutOfRange(filter.Page, Constants.Filter.PageRangeFrom, Constants.Filter.PageRangeTo, Resources.Page_InvalidPageNumber);
             Guard.Against.OutOfRange(filter.PageSize, Constants.Filter.PageSizeRangeFrom, Constants.Filter.PageSizeRangeTo, Resources.PageSize_InvalidPageSizeNumber);
 
-            var query = _userManager.Users.OrderBy(x => x.AddedDate);
+            var query = _userManager.Users.OrderBy(x => x.AddedDate).AsNoTracking();
 
             var pagedList = await ApplyFilterAsync(query, filter);
 

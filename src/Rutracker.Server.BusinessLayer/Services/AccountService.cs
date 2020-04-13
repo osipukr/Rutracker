@@ -81,7 +81,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             };
 
             await _userManager.CreateAsync(user, password);
-            await _userManager.AddToRoleAsync(user, UserRoles.User);
+            await _userManager.AddToRoleAsync(user, StockRoles.User);
 
             return user;
         }

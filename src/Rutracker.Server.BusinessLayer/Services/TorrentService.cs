@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
+using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Exceptions;
 using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
@@ -11,7 +12,7 @@ using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Interfaces.Base;
 using Rutracker.Shared.Infrastructure.Collections;
-using Rutracker.Shared.Infrastructure.Interfaces;
+using Rutracker.Shared.Infrastructure.Filters;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
@@ -54,7 +55,7 @@ namespace Rutracker.Server.BusinessLayer.Services
                 query = query.Where(x => x.SubcategoryId == filter.SubcategoryId.Value);
             }
 
-            query = query.OrderBy(x => x.AddedDate);
+            query = query.OrderBy(x => x.AddedDate).AsNoTracking();
 
             var pagedList = await ApplyFilterAsync(query, filter);
 
@@ -81,13 +82,16 @@ namespace Rutracker.Server.BusinessLayer.Services
             Guard.Against.NullString(torrent.Description, Resources.Torrent_InvalidDescription_ErrorMessage);
             Guard.Against.NullString(torrent.Content, Resources.Torrent_InvalidContent_ErrorMessage);
 
-            Guard.Against.LessOne(torrent.SubcategoryId, Resources.Torrent_InvalidSubcategoryId_ErrorMessage);
-
-            if (!await _subcategoryRepository.ExistAsync(torrent.SubcategoryId))
+            if (torrent.SubcategoryId.HasValue)
             {
-                throw new RutrackerException(
-                    string.Format(Resources.Subcategory_NotFoundById_ErrorMessage, torrent.SubcategoryId),
-                    ExceptionEventTypes.InvalidParameters);
+                Guard.Against.LessOne(torrent.SubcategoryId.Value, Resources.Torrent_InvalidSubcategoryId_ErrorMessage);
+
+                if (!await _subcategoryRepository.ExistAsync(torrent.SubcategoryId.Value))
+                {
+                    throw new RutrackerException(
+                        string.Format(Resources.Subcategory_NotFoundById_ErrorMessage, torrent.SubcategoryId),
+                        ExceptionEventTypes.InvalidParameters);
+                }
             }
 
             torrent.AddedDate = _dateService.Now();
