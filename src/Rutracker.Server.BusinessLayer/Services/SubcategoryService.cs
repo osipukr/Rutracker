@@ -1,49 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.EntityFrameworkCore;
+using Rutracker.Server.BusinessLayer.Exceptions;
+using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.BusinessLayer.Properties;
 using Rutracker.Server.BusinessLayer.Services.Base;
+using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
-using Rutracker.Shared.Infrastructure.Exceptions;
+using Rutracker.Server.DataAccessLayer.Interfaces.Base;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
-    public class SubcategoryService : BaseService, ISubcategoryService
+    public class SubcategoryService : Service, ISubcategoryService
     {
+        private readonly IDateService _dateService;
+
         private readonly ICategoryRepository _categoryRepository;
         private readonly ISubcategoryRepository _subcategoryRepository;
 
-        public SubcategoryService(ISubcategoryRepository subcategoryRepository, ICategoryRepository categoryRepository, IUnitOfWork unitOfWork) : base(unitOfWork)
+        public SubcategoryService(IUnitOfWork<RutrackerContext> unitOfWork, IDateService dateService) : base(unitOfWork)
         {
-            _subcategoryRepository = subcategoryRepository;
-            _categoryRepository = categoryRepository;
+            _dateService = dateService;
+
+            _categoryRepository = _unitOfWork.GetRepository<ICategoryRepository>();
+            _subcategoryRepository = _unitOfWork.GetRepository<ISubcategoryRepository>();
         }
 
-        public async Task<IEnumerable<Subcategory>> ListAsync()
+        public async Task<IEnumerable<Subcategory>> ListAsync(int? categoryId)
         {
-            var subcategories = await _subcategoryRepository.GetAll().ToListAsync();
+            Expression<Func<Subcategory, bool>> predicate = null;
 
-            Guard.Against.NullNotFound(subcategories, Resources.Subcategory_NotFoundList_ErrorMessage);
-
-            return subcategories;
-        }
-
-        public async Task<IEnumerable<Subcategory>> ListAsync(int categoryId)
-        {
-            Guard.Against.LessOne(categoryId, Resources.Category_InvalidId_ErrorMessage);
-
-            if (!await _categoryRepository.ExistAsync(categoryId))
+            if (categoryId.HasValue)
             {
-                var message = string.Format(Resources.Category_NotFoundById_ErrorMessage, categoryId);
+                Guard.Against.LessOne(categoryId.Value, Resources.Category_InvalidId_ErrorMessage);
 
-                throw new RutrackerException(message, ExceptionEventTypes.InvalidParameters);
+                if (!await _categoryRepository.ExistAsync(categoryId.Value))
+                {
+                    throw new RutrackerException(
+                        string.Format(Resources.Category_NotFoundById_ErrorMessage, categoryId),
+                        ExceptionEventTypes.InvalidParameters);
+                }
+
+                predicate = x => x.CategoryId == categoryId;
             }
 
-            var subcategories = await _subcategoryRepository.GetAll(x => x.CategoryId == categoryId).ToListAsync();
+            var subcategories = await _subcategoryRepository.GetAll(predicate).ToListAsync();
 
             Guard.Against.NullNotFound(subcategories, string.Format(Resources.Subcategory_NotFoundByCategoryId_ErrorMessage, categoryId));
 
@@ -81,10 +87,10 @@ namespace Rutracker.Server.BusinessLayer.Services
                 throw new RutrackerException(message, ExceptionEventTypes.InvalidParameters);
             }
 
-            subcategory.AddedDate = DateTime.UtcNow;
+            subcategory.AddedDate = _dateService.Now();
 
             await _subcategoryRepository.AddAsync(subcategory);
-            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return subcategory;
         }
@@ -104,11 +110,11 @@ namespace Rutracker.Server.BusinessLayer.Services
             var result = await FindAsync(id);
 
             result.Name = subcategory.Name;
-            result.ModifiedDate = DateTime.UtcNow;
+            result.ModifiedDate = _dateService.Now();
 
             _subcategoryRepository.Update(result);
 
-            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return result;
         }
@@ -117,9 +123,9 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var subcategory = await FindAsync(id);
 
-            _subcategoryRepository.Remove(subcategory);
+            _subcategoryRepository.Delete(subcategory);
 
-            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return subcategory;
         }

@@ -6,26 +6,31 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
 {
     public class CommentConfiguration : IEntityTypeConfiguration<Comment>
     {
-        private const string COMMENT_TABLE_NAME = "Comments";
-
         public void Configure(EntityTypeBuilder<Comment> builder)
         {
-            builder.ToTable(COMMENT_TABLE_NAME);
-            builder.HasKey(c => c.Id);
-            builder.Property(c => c.Id).ValueGeneratedOnAdd().IsRequired();
-            builder.Property(c => c.Text).IsRequired();
+            builder.ToTable("Comments");
 
-            builder.HasOne(c => c.Torrent)
-                .WithMany(t => t.Comments)
-                .HasForeignKey(c => c.TorrentId);
+            builder.HasKey(comment => comment.Id);
 
-            builder.HasOne(c => c.User)
-                .WithMany(u => u.Comments)
-                .HasForeignKey(c => c.UserId);
+            builder.Property(comment => comment.Id).HasColumnName("CommentID").ValueGeneratedOnAdd();
+            builder.Property(comment => comment.Text).HasColumnName("Text");
+            builder.Property(comment => comment.AddedDate).HasColumnName("AddedDate").HasColumnType("datetime");
+            builder.Property(comment => comment.ModifiedDate).HasColumnName("ModifiedDate").HasColumnType("datetime");
+            builder.Property(comment => comment.TorrentId).HasColumnName("TorrentID");
+            builder.Property(comment => comment.UserId).HasColumnName("UserID");
 
-            builder.HasMany(c => c.Likes)
-                .WithOne(l => l.Comment)
-                .HasForeignKey(l => l.CommentId);
+            builder.HasOne(comment => comment.Torrent)
+                .WithMany(torrent => torrent.Comments)
+                .HasForeignKey(comment => comment.TorrentId);
+
+            builder.HasOne(comment => comment.User)
+                .WithMany(user => user.Comments)
+                .HasForeignKey(comment => comment.UserId);
+
+            //builder.HasMany(c => c.Likes)
+            //    .WithOne(l => l.Comment)
+            //    .HasForeignKey(l => l.CommentId)
+            //    .IsRequired();
         }
     }
 }

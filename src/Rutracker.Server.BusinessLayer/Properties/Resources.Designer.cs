@@ -115,6 +115,51 @@ namespace Rutracker.Server.BusinessLayer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid comment..
+        /// </summary>
+        internal static string Comment_Invalid_ErrorMessage {
+            get {
+                return ResourceManager.GetString("Comment_Invalid_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid comment id..
+        /// </summary>
+        internal static string Comment_InvalidId_ErrorMessage {
+            get {
+                return ResourceManager.GetString("Comment_InvalidId_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The comment must contain text..
+        /// </summary>
+        internal static string Comment_InvalidText_ErrorMessage {
+            get {
+                return ResourceManager.GetString("Comment_InvalidText_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The comment with id &apos;{0}&apos; not found..
+        /// </summary>
+        internal static string Comment_NotFoundById_ErrorMessage {
+            get {
+                return ResourceManager.GetString("Comment_NotFoundById_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The comments not found..
+        /// </summary>
+        internal static string Comment_NotFoundList_ErrorMessage {
+            get {
+                return ResourceManager.GetString("Comment_NotFoundList_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid email address..
         /// </summary>
         internal static string EmailSender_InvalidEmailAddress {
@@ -196,6 +241,33 @@ namespace Rutracker.Server.BusinessLayer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid file id..
+        /// </summary>
+        internal static string File_InvalidId_ErrorMessage {
+            get {
+                return ResourceManager.GetString("File_InvalidId_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file with id &apos;{0}&apos; not found..
+        /// </summary>
+        internal static string File_NotFoundById_ErrorMessage {
+            get {
+                return ResourceManager.GetString("File_NotFoundById_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The files with torrent id &apos;{0}&apos; not found..
+        /// </summary>
+        internal static string File_NotFoundListByTorrentId_ErrorMessage {
+            get {
+                return ResourceManager.GetString("File_NotFoundListByTorrentId_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid page..
         /// </summary>
         internal static string Page_InvalidPageNumber {
@@ -205,27 +277,7 @@ namespace Rutracker.Server.BusinessLayer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Int32 similar to 1.
-        /// </summary>
-        internal static int Page_RangeFrom {
-            get {
-                object obj = ResourceManager.GetObject("Page_RangeFrom", resourceCulture);
-                return ((int)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Int32 similar to 2147483647.
-        /// </summary>
-        internal static int Page_RangeTo {
-            get {
-                object obj = ResourceManager.GetObject("Page_RangeTo", resourceCulture);
-                return ((int)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The {0} is out of range ({1} - {2})..
+        ///   Looks up a localized string similar to The page size is out of range ({0} - {1})..
         /// </summary>
         internal static string PageSize_InvalidPageSizeNumber {
             get {
@@ -234,22 +286,11 @@ namespace Rutracker.Server.BusinessLayer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Int32 similar to 1.
+        ///   Looks up a localized string similar to The roles not found..
         /// </summary>
-        internal static int PageSize_RangeFrom {
+        internal static string Role_NotFoundList_ErrorMessage {
             get {
-                object obj = ResourceManager.GetObject("PageSize_RangeFrom", resourceCulture);
-                return ((int)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Int32 similar to 100.
-        /// </summary>
-        internal static int PageSize_RangeTo {
-            get {
-                object obj = ResourceManager.GetObject("PageSize_RangeTo", resourceCulture);
-                return ((int)(obj));
+                return ResourceManager.GetString("Role_NotFoundList_ErrorMessage", resourceCulture);
             }
         }
         
@@ -434,11 +475,200 @@ namespace Rutracker.Server.BusinessLayer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A user with this name &apos;{0}&apos; is already registered..
+        /// </summary>
+        internal static string User_AlreadyRegistered_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_AlreadyRegistered_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid user model..
+        /// </summary>
+        internal static string User_Invalid_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_Invalid_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid email..
+        /// </summary>
+        internal static string User_InvalidEmail_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_InvalidEmail_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid token..
+        /// </summary>
+        internal static string User_InvalidEmailChangeToken_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_InvalidEmailChangeToken_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid user id..
         /// </summary>
         internal static string User_InvalidId_ErrorMessage {
             get {
                 return ResourceManager.GetString("User_InvalidId_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid new password..
+        /// </summary>
+        internal static string User_InvalidNewPassword_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_InvalidNewPassword_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid old password..
+        /// </summary>
+        internal static string User_InvalidOldPassword_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_InvalidOldPassword_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid password..
+        /// </summary>
+        internal static string User_InvalidPassword_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_InvalidPassword_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid phone number..
+        /// </summary>
+        internal static string User_InvalidPhoneNumber_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_InvalidPhoneNumber_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid token..
+        /// </summary>
+        internal static string User_InvalidPhoneNumberChangeToken_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_InvalidPhoneNumberChangeToken_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid confirmation email token..
+        /// </summary>
+        internal static string User_InvalidRegistrationToken_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_InvalidRegistrationToken_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid user name..
+        /// </summary>
+        internal static string User_InvalidUserName_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_InvalidUserName_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too many login attempts, try again later..
+        /// </summary>
+        internal static string User_LockedOut_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_LockedOut_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm your account before logging in..
+        /// </summary>
+        internal static string User_NotAllowed_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_NotAllowed_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The email &apos;{0}&apos; is not confirmed..
+        /// </summary>
+        internal static string User_NotConfirmedEmail_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_NotConfirmedEmail_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The phone number &apos;{0}&apos; is not confirmed..
+        /// </summary>
+        internal static string User_NotConfirmedPhoneNumber_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_NotConfirmedPhoneNumber_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The user with id &apos;{0}&apos; not found..
+        /// </summary>
+        internal static string User_NotFoundById_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_NotFoundById_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The user with name &apos;{0}&apos; not found..
+        /// </summary>
+        internal static string User_NotFoundByName_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_NotFoundByName_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The users not found..
+        /// </summary>
+        internal static string User_NotFoundList_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_NotFoundList_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The user has not completed the registration..
+        /// </summary>
+        internal static string User_RegistrationNotFinished_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_RegistrationNotFinished_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The new password must not match the old password..
+        /// </summary>
+        internal static string User_SamePasswords_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_SamePasswords_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wrong password..
+        /// </summary>
+        internal static string User_WrongPassword_ErrorMessage {
+            get {
+                return ResourceManager.GetString("User_WrongPassword_ErrorMessage", resourceCulture);
             }
         }
     }

@@ -117,56 +117,59 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Category_NotFound_ErrorMessage" xml:space="preserve">
-    <value>The categories not found.</value>
+  <data name="Category_AlreadyExistsName_ErrorMessage" xml:space="preserve">
+    <value>Category with name '{0}' already exists.</value>
   </data>
   <data name="Category_InvalidId_ErrorMessage" xml:space="preserve">
     <value>Invalid category id.</value>
   </data>
-  <data name="Category_NotFoundById_ErrorMessage" xml:space="preserve">
-    <value>The category with id '{0}' not found.</value>
+  <data name="Category_InvalidName_ErrorMessage" xml:space="preserve">
+    <value>The category must contains a name.</value>
   </data>
   <data name="Category_Invalid_ErrorMessage" xml:space="preserve">
     <value>Invalid category.</value>
   </data>
-  <data name="Category_InvalidName_ErrorMessage" xml:space="preserve">
-    <value>The category must contains a name.</value>
+  <data name="Category_NotFoundById_ErrorMessage" xml:space="preserve">
+    <value>The category with id '{0}' not found.</value>
   </data>
-  <data name="Category_AlreadyExistsName_ErrorMessage" xml:space="preserve">
-    <value>Category with name '{0}' already exists.</value>
+  <data name="Category_NotFound_ErrorMessage" xml:space="preserve">
+    <value>The categories not found.</value>
   </data>
-  <data name="Subcategory_NotFoundList_ErrorMessage" xml:space="preserve">
-    <value>The subcategories not found.</value>
+  <data name="Comment_InvalidId_ErrorMessage" xml:space="preserve">
+    <value>Invalid comment id.</value>
   </data>
-  <data name="Subcategory_NotFoundByCategoryId_ErrorMessage" xml:space="preserve">
-    <value>The subcategories with category id '{0}' not found.</value>
+  <data name="Comment_InvalidText_ErrorMessage" xml:space="preserve">
+    <value>The comment must contain text.</value>
   </data>
-  <data name="Subcategory_InvalidId_ErrorMessage" xml:space="preserve">
-    <value>Invalid subcategory id.</value>
+  <data name="Comment_Invalid_ErrorMessage" xml:space="preserve">
+    <value>Invalid comment.</value>
   </data>
-  <data name="Subcategory_NotFoundById_ErrorMessage" xml:space="preserve">
-    <value>The subcategory with id '{0}' not found.</value>
+  <data name="Comment_NotFoundById_ErrorMessage" xml:space="preserve">
+    <value>The comment with id '{0}' not found.</value>
   </data>
-  <data name="Subcategory_Invalid_ErrorMessage" xml:space="preserve">
-    <value>Invalid subcategory.</value>
+  <data name="Comment_NotFoundList_ErrorMessage" xml:space="preserve">
+    <value>The comments not found.</value>
   </data>
-  <data name="Subcategory_InvalidName_ErrorMessage" xml:space="preserve">
-    <value>The subcategory must contains a name.</value>
+  <data name="EmailSender_InvalidEmailAddress" xml:space="preserve">
+    <value>Invalid email address.</value>
   </data>
-  <data name="Subcategory_AlreadyExistsName_ErrorMessage" xml:space="preserve">
-    <value>Subcategory with name '{0}' already exists.</value>
+  <data name="EmailSender_InvalidMessage" xml:space="preserve">
+    <value>Invalid message.</value>
   </data>
-  <data name="EmailService_ConfirmEmailSubjectMessage" xml:space="preserve">
-    <value>Rutracker | Confirm your email</value>
+  <data name="EmailSender_InvalidSubjectName" xml:space="preserve">
+    <value>Invalid subject name.</value>
   </data>
-  <data name="EmailService_ConfirmEmailMessage" xml:space="preserve">
-    <value>Confirm your email by following this &lt;a href='{0}' target='_blank'&gt;link&lt;/a&gt;</value>
+  <data name="EmailService_ConfirmChangeEmailMessage" xml:space="preserve">
+    <value>Confirm your email change by following this &lt;a href='{0}' target='_blank'&gt;link&lt;/a&gt;</value>
   </data>
   <data name="EmailService_ConfirmChangeEmailSubjectMessage" xml:space="preserve">
     <value>Rutracker | Confirm change email</value>
   </data>
-  <data name="EmailService_ConfirmChangeEmailMessage" xml:space="preserve">
-    <value>Confirm your email change by following this &lt;a href='{0}' target='_blank'&gt;link&lt;/a&gt;</value>
+  <data name="EmailService_ConfirmEmailMessage" xml:space="preserve">
+    <value>Confirm your email by following this &lt;a href='{0}' target='_blank'&gt;link&lt;/a&gt;</value>
+  </data>
+  <data name="EmailService_ConfirmEmailSubjectMessage" xml:space="preserve">
+    <value>Rutracker | Confirm your email</value>
   </data>
   <data name="EmailService_ResetPasswordEmailMessage" xml:space="preserve">
     <value>Reset password by following this &lt;a href='{0}' target='_blank'&gt;link&lt;/a&gt;</value>
@@ -174,74 +177,148 @@
   <data name="EmailService_ResetPasswordEmailSubject" xml:space="preserve">
     <value>Rutracker | Reset Password</value>
   </data>
-  <data name="EmailSender_InvalidEmailAddress" xml:space="preserve">
-    <value>Invalid email address.</value>
+  <data name="File_InvalidId_ErrorMessage" xml:space="preserve">
+    <value>Invalid file id.</value>
   </data>
-  <data name="EmailSender_InvalidSubjectName" xml:space="preserve">
-    <value>Invalid subject name.</value>
+  <data name="File_NotFoundById_ErrorMessage" xml:space="preserve">
+    <value>The file with id '{0}' not found.</value>
   </data>
-  <data name="EmailSender_InvalidMessage" xml:space="preserve">
+  <data name="File_NotFoundListByTorrentId_ErrorMessage" xml:space="preserve">
+    <value>The files with torrent id '{0}' not found.</value>
+  </data>
+  <data name="PageSize_InvalidPageSizeNumber" xml:space="preserve">
+    <value>The page size is out of range ({0} - {1}).</value>
+  </data>
+  <data name="Page_InvalidPageNumber" xml:space="preserve">
+    <value>Invalid page.</value>
+  </data>
+  <data name="Role_NotFoundList_ErrorMessage" xml:space="preserve">
+    <value>The roles not found.</value>
+  </data>
+  <data name="SmsSender_InvalidMessage" xml:space="preserve">
     <value>Invalid message.</value>
   </data>
   <data name="SmsSender_InvalidPhoneNumber" xml:space="preserve">
     <value>Invalid phone number.</value>
   </data>
-  <data name="SmsSender_InvalidMessage" xml:space="preserve">
-    <value>Invalid message.</value>
-  </data>
   <data name="SmsService_ConfirmationCodeMessage" xml:space="preserve">
     <value>Confirmation code: {0}</value>
   </data>
-  <assembly alias="netstandard" name="netstandard, Version=2.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" />
-  <data name="Page_RangeFrom" type="System.Int32, netstandard">
-    <value>1</value>
+  <data name="Subcategory_AlreadyExistsName_ErrorMessage" xml:space="preserve">
+    <value>Subcategory with name '{0}' already exists.</value>
   </data>
-  <data name="Page_RangeTo" type="System.Int32, netstandard">
-    <value>2147483647</value>
+  <data name="Subcategory_InvalidId_ErrorMessage" xml:space="preserve">
+    <value>Invalid subcategory id.</value>
   </data>
-  <data name="Page_InvalidPageNumber" xml:space="preserve">
-    <value>Invalid page.</value>
+  <data name="Subcategory_InvalidName_ErrorMessage" xml:space="preserve">
+    <value>The subcategory must contains a name.</value>
   </data>
-  <data name="PageSize_RangeFrom" type="System.Int32, netstandard">
-    <value>1</value>
+  <data name="Subcategory_Invalid_ErrorMessage" xml:space="preserve">
+    <value>Invalid subcategory.</value>
   </data>
-  <data name="PageSize_RangeTo" type="System.Int32, netstandard">
-    <value>100</value>
+  <data name="Subcategory_NotFoundByCategoryId_ErrorMessage" xml:space="preserve">
+    <value>The subcategories with category id '{0}' not found.</value>
   </data>
-  <data name="PageSize_InvalidPageSizeNumber" xml:space="preserve">
-    <value>The {0} is out of range ({1} - {2}).</value>
+  <data name="Subcategory_NotFoundById_ErrorMessage" xml:space="preserve">
+    <value>The subcategory with id '{0}' not found.</value>
+  </data>
+  <data name="Subcategory_NotFoundList_ErrorMessage" xml:space="preserve">
+    <value>The subcategories not found.</value>
   </data>
   <data name="Torrent_InvalidCategoryId_ErrorMessage" xml:space="preserve">
     <value>Invalid category id.</value>
   </data>
-  <data name="Torrent_InvalidSubcategoryId_ErrorMessage" xml:space="preserve">
-    <value>Invalid subcategory id.</value>
-  </data>
-  <data name="Torrent_NotFoundList_ErrorMessage" xml:space="preserve">
-    <value>The torrents not found.</value>
-  </data>
-  <data name="Torrent_InvalidId_ErrorMessage" xml:space="preserve">
-    <value>Invalid torrent id.</value>
-  </data>
-  <data name="User_InvalidId_ErrorMessage" xml:space="preserve">
-    <value>Invalid user id.</value>
-  </data>
-  <data name="Torrent_NotFoundById_ErrorMessage" xml:space="preserve">
-    <value>The torrent with id '{0}' not found.</value>
-  </data>
-  <data name="Torrent_Invalid_ErrorMessage" xml:space="preserve">
-    <value>Invalid torrent.</value>
-  </data>
-  <data name="Torrent_InvalidName_ErrorMessage" xml:space="preserve">
-    <value>The torrent must contain a name.</value>
+  <data name="Torrent_InvalidContent_ErrorMessage" xml:space="preserve">
+    <value>The torrent must contain a content.</value>
   </data>
   <data name="Torrent_InvalidDescription_ErrorMessage" xml:space="preserve">
     <value>The torrent must contain a description.</value>
   </data>
-  <data name="Torrent_InvalidContent_ErrorMessage" xml:space="preserve">
-    <value>The torrent must contain a content.</value>
+  <data name="Torrent_InvalidId_ErrorMessage" xml:space="preserve">
+    <value>Invalid torrent id.</value>
   </data>
   <data name="Torrent_InvalidImageUrl_ErrorMessage" xml:space="preserve">
     <value>Invalid link to the picture.</value>
+  </data>
+  <data name="Torrent_InvalidName_ErrorMessage" xml:space="preserve">
+    <value>The torrent must contain a name.</value>
+  </data>
+  <data name="Torrent_InvalidSubcategoryId_ErrorMessage" xml:space="preserve">
+    <value>Invalid subcategory id.</value>
+  </data>
+  <data name="Torrent_Invalid_ErrorMessage" xml:space="preserve">
+    <value>Invalid torrent.</value>
+  </data>
+  <data name="Torrent_NotFoundById_ErrorMessage" xml:space="preserve">
+    <value>The torrent with id '{0}' not found.</value>
+  </data>
+  <data name="Torrent_NotFoundList_ErrorMessage" xml:space="preserve">
+    <value>The torrents not found.</value>
+  </data>
+  <data name="User_AlreadyRegistered_ErrorMessage" xml:space="preserve">
+    <value>A user with this name '{0}' is already registered.</value>
+  </data>
+  <data name="User_InvalidEmailChangeToken_ErrorMessage" xml:space="preserve">
+    <value>Invalid token.</value>
+  </data>
+  <data name="User_InvalidEmail_ErrorMessage" xml:space="preserve">
+    <value>Invalid email.</value>
+  </data>
+  <data name="User_InvalidId_ErrorMessage" xml:space="preserve">
+    <value>Invalid user id.</value>
+  </data>
+  <data name="User_InvalidNewPassword_ErrorMessage" xml:space="preserve">
+    <value>Invalid new password.</value>
+  </data>
+  <data name="User_InvalidOldPassword_ErrorMessage" xml:space="preserve">
+    <value>Invalid old password.</value>
+  </data>
+  <data name="User_InvalidPassword_ErrorMessage" xml:space="preserve">
+    <value>Invalid password.</value>
+  </data>
+  <data name="User_InvalidPhoneNumberChangeToken_ErrorMessage" xml:space="preserve">
+    <value>Invalid token.</value>
+  </data>
+  <data name="User_InvalidPhoneNumber_ErrorMessage" xml:space="preserve">
+    <value>Invalid phone number.</value>
+  </data>
+  <data name="User_InvalidRegistrationToken_ErrorMessage" xml:space="preserve">
+    <value>Invalid confirmation email token.</value>
+  </data>
+  <data name="User_InvalidUserName_ErrorMessage" xml:space="preserve">
+    <value>Invalid user name.</value>
+  </data>
+  <data name="User_Invalid_ErrorMessage" xml:space="preserve">
+    <value>Invalid user model.</value>
+  </data>
+  <data name="User_LockedOut_ErrorMessage" xml:space="preserve">
+    <value>Too many login attempts, try again later.</value>
+  </data>
+  <data name="User_NotAllowed_ErrorMessage" xml:space="preserve">
+    <value>Confirm your account before logging in.</value>
+  </data>
+  <data name="User_NotConfirmedEmail_ErrorMessage" xml:space="preserve">
+    <value>The email '{0}' is not confirmed.</value>
+  </data>
+  <data name="User_NotConfirmedPhoneNumber_ErrorMessage" xml:space="preserve">
+    <value>The phone number '{0}' is not confirmed.</value>
+  </data>
+  <data name="User_NotFoundById_ErrorMessage" xml:space="preserve">
+    <value>The user with id '{0}' not found.</value>
+  </data>
+  <data name="User_NotFoundByName_ErrorMessage" xml:space="preserve">
+    <value>The user with name '{0}' not found.</value>
+  </data>
+  <data name="User_NotFoundList_ErrorMessage" xml:space="preserve">
+    <value>The users not found.</value>
+  </data>
+  <data name="User_RegistrationNotFinished_ErrorMessage" xml:space="preserve">
+    <value>The user has not completed the registration.</value>
+  </data>
+  <data name="User_SamePasswords_ErrorMessage" xml:space="preserve">
+    <value>The new password must not match the old password.</value>
+  </data>
+  <data name="User_WrongPassword_ErrorMessage" xml:space="preserve">
+    <value>Wrong password.</value>
   </data>
 </root>

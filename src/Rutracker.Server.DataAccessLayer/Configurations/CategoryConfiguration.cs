@@ -6,18 +6,19 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
 {
     public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
-        private const string CATEGORY_TABLE_NAME = "Categories";
-
         public void Configure(EntityTypeBuilder<Category> builder)
         {
-            builder.ToTable(CATEGORY_TABLE_NAME);
-            builder.HasKey(c => c.Id);
-            builder.Property(c => c.Id).ValueGeneratedOnAdd().IsRequired();
-            builder.Property(c => c.Name).IsRequired();
+            builder.ToTable("Categories");
 
-            builder.HasMany(c => c.Subcategories)
-                .WithOne(s => s.Category)
-                .HasForeignKey(s => s.CategoryId);
+            builder.HasKey(category => category.Id);
+
+            builder.HasIndex(category => category.Name).HasName("Name");
+
+            builder.Property(category => category.Id).HasColumnName("Id").ValueGeneratedOnAdd();
+            builder.Property(category => category.Name).HasColumnName("Name").HasMaxLength(100).IsRequired();
+            builder.Property(category => category.Description).HasColumnName("Description").HasMaxLength(200);
+            builder.Property(category => category.AddedDate).HasColumnName("AddedDate").HasColumnType("datetime");
+            builder.Property(category => category.ModifiedDate).HasColumnName("ModifiedDate").HasColumnType("datetime");
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Rutracker.Server.DataAccessLayer.Entities
 {
-    public class Like : BaseEntity<int>
+    public class Like : Entity<int>
     {
         public int CommentId { get; set; }
         public string UserId { get; set; }

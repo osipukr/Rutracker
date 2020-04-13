@@ -1,24 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.EntityFrameworkCore;
+using Rutracker.Server.BusinessLayer.Exceptions;
+using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.BusinessLayer.Properties;
 using Rutracker.Server.BusinessLayer.Services.Base;
+using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
-using Rutracker.Shared.Infrastructure.Exceptions;
+using Rutracker.Server.DataAccessLayer.Interfaces.Base;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
-    public class CategoryService : BaseService, ICategoryService
+    public class CategoryService : Service, ICategoryService
     {
+        private readonly IDateService _dateService;
         private readonly ICategoryRepository _categoryRepository;
 
-        public CategoryService(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork) : base(unitOfWork)
+        public CategoryService(IUnitOfWork<RutrackerContext> unitOfWork, IDateService dateService) : base(unitOfWork)
         {
-            _categoryRepository = categoryRepository;
+            _dateService = dateService;
+
+            _categoryRepository = _unitOfWork.GetRepository<ICategoryRepository>();
         }
 
         public async Task<IEnumerable<Category>> ListAsync()
@@ -53,10 +58,10 @@ namespace Rutracker.Server.BusinessLayer.Services
                 throw new RutrackerException(message, ExceptionEventTypes.InvalidParameters);
             }
 
-            category.AddedDate = DateTime.UtcNow;
+            category.AddedDate = _dateService.Now();
 
             await _categoryRepository.AddAsync(category);
-            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return category;
         }
@@ -76,11 +81,11 @@ namespace Rutracker.Server.BusinessLayer.Services
             var result = await FindAsync(id);
 
             result.Name = category.Name;
-            result.ModifiedDate = DateTime.UtcNow;
+            result.ModifiedDate = _dateService.Now();
 
             _categoryRepository.Update(result);
 
-            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return result;
         }
@@ -89,9 +94,9 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var category = await FindAsync(id);
 
-            _categoryRepository.Remove(category);
+            _categoryRepository.Delete(category);
 
-            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return category;
         }

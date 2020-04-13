@@ -6,33 +6,26 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
 {
     public class TorrentConfiguration : IEntityTypeConfiguration<Torrent>
     {
-        private const string TORRENT_TABLE_NAME = "Torrents";
-
         public void Configure(EntityTypeBuilder<Torrent> builder)
         {
-            builder.ToTable(TORRENT_TABLE_NAME);
-            builder.HasKey(t => t.Id);
-            builder.Property(t => t.Id).ValueGeneratedOnAdd().IsRequired();
-            builder.Property(t => t.Name).IsRequired();
-            builder.Property(t => t.Description).IsRequired();
-            builder.Property(t => t.Content).IsRequired();
-            builder.Property(t => t.ImageUrl);
+            builder.ToTable("Torrents");
 
-            builder.HasOne(t => t.Subcategory)
+            builder.HasKey(torrent => torrent.Id);
+
+            builder.Property(torrent => torrent.Id).HasColumnName("Id").ValueGeneratedOnAdd();
+            builder.Property(torrent => torrent.Name).HasColumnName("Name").HasMaxLength(100).IsRequired();
+            builder.Property(torrent => torrent.Description).HasColumnName("Description").HasMaxLength(200);
+            builder.Property(torrent => torrent.Content).HasColumnName("Content");
+            builder.Property(torrent => torrent.Size).HasColumnName("Size").IsRequired();
+            builder.Property(torrent => torrent.Hash).HasColumnName("Hash").HasMaxLength(250);
+            builder.Property(torrent => torrent.TrackerId).HasColumnName("TrackerId");
+            builder.Property(torrent => torrent.AddedDate).HasColumnName("AddedDate").HasColumnType("datetime");
+            builder.Property(torrent => torrent.ModifiedDate).HasColumnName("ModifiedDate").HasColumnType("datetime");
+            builder.Property(torrent => torrent.SubcategoryId).HasColumnName("SubcategoryId");
+
+            builder.HasOne(torrent => torrent.Subcategory)
                 .WithMany(s => s.Torrents)
-                .HasForeignKey(t => t.SubcategoryId);
-
-            builder.HasOne(t => t.User)
-                .WithMany(u => u.Torrents)
-                .HasForeignKey(t => t.UserId);
-
-            builder.HasMany(t => t.Files)
-                .WithOne(f => f.Torrent)
-                .HasForeignKey(f => f.TorrentId);
-
-            builder.HasMany(t => t.Comments)
-                .WithOne(c => c.Torrent)
-                .HasForeignKey(c => c.TorrentId);
+                .HasForeignKey(torrent => torrent.SubcategoryId);
         }
     }
 }

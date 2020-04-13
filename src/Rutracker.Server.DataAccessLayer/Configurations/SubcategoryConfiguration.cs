@@ -6,22 +6,24 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
 {
     public class SubcategoryConfiguration : IEntityTypeConfiguration<Subcategory>
     {
-        private const string SUBCATEGORY_TABLE_NAME = "Subcategories";
-
         public void Configure(EntityTypeBuilder<Subcategory> builder)
         {
-            builder.ToTable(SUBCATEGORY_TABLE_NAME);
-            builder.HasKey(s => s.Id);
-            builder.Property(s => s.Id).ValueGeneratedOnAdd().IsRequired();
-            builder.Property(s => s.Name).IsRequired();
+            builder.ToTable("Subcategories");
 
-            builder.HasOne(s => s.Category)
-                .WithMany(c => c.Subcategories)
-                .HasForeignKey(s => s.CategoryId);
+            builder.HasKey(subcategory => subcategory.Id);
 
-            builder.HasMany(s => s.Torrents)
-                .WithOne(t => t.Subcategory)
-                .HasForeignKey(t => t.SubcategoryId);
+            builder.HasIndex(subcategory => subcategory.Name).HasName("Name");
+
+            builder.Property(subcategory => subcategory.Id).HasColumnName("Id").ValueGeneratedOnAdd();
+            builder.Property(subcategory => subcategory.Name).HasColumnName("Name").HasMaxLength(100).IsRequired();
+            builder.Property(subcategory => subcategory.Description).HasColumnName("Description").HasMaxLength(200);
+            builder.Property(subcategory => subcategory.AddedDate).HasColumnName("AddedDate").HasColumnType("datetime");
+            builder.Property(subcategory => subcategory.ModifiedDate).HasColumnName("ModifiedDate").HasColumnType("datetime");
+            builder.Property(subcategory => subcategory.CategoryId).HasColumnName("CategoryId");
+
+            builder.HasOne(subcategory => subcategory.Category)
+                .WithMany(category => category.Subcategories)
+                .HasForeignKey(subcategory => subcategory.CategoryId);
         }
     }
 }

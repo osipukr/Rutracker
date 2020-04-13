@@ -56,7 +56,7 @@
         });
 
         ModalService.OnClose += ConfirmModalClosed;
-        ModalService.Show("Confirm phone number", typeof(PhoneConfirmModal), parameters);
+        ModalService.Show<PhoneConfirmModal>("Confirm phone number", parameters);
     }
 
     private async void ConfirmModalClosed(ModalResult result)

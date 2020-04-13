@@ -6,12 +6,19 @@
     <Authors>Roman Osipuk</Authors>
     <Product>Rutracker</Product>
     <RepositoryUrl>https://github.com/osipukr/Rutracker-Blazor</RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryType>git</RepositoryType>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ardalis.GuardClauses" Version="1.2.9" />
-    <PackageReference Include="MailKit" Version="2.3.1.6" />
-    <PackageReference Include="Twilio" Version="5.33.0" />
+    <PackageReference Include="Ardalis.GuardClauses" Version="1.3.2" />
+    <PackageReference Include="MailKit" Version="2.4.1" />
+    <PackageReference Include="MimeTypes" Version="1.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Twilio" Version="5.37.2" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 

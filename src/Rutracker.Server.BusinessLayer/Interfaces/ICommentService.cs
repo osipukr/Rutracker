@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Rutracker.Server.DataAccessLayer.Entities;
+using Rutracker.Shared.Infrastructure.Collections;
+using Rutracker.Shared.Infrastructure.Interfaces;
 
 namespace Rutracker.Server.BusinessLayer.Interfaces
 {
     public interface ICommentService
     {
-        Task<Tuple<IEnumerable<Comment>, int>> ListAsync(int page, int pageSize, int torrentId);
+        Task<IPagedList<Comment>> ListAsync(ICommentFilter filter);
         Task<Comment> FindAsync(int id);
         Task<Comment> FindAsync(int id, string userId);
         Task<Comment> AddAsync(Comment comment);

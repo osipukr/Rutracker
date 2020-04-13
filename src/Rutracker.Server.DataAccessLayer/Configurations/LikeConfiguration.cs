@@ -6,21 +6,23 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
 {
     public class LikeConfiguration : IEntityTypeConfiguration<Like>
     {
-        private const string LIKE_TABLE_NAME = "Likes";
-
         public void Configure(EntityTypeBuilder<Like> builder)
         {
-            builder.ToTable(LIKE_TABLE_NAME);
-            builder.HasKey(l => l.Id);
-            builder.Property(l => l.Id).ValueGeneratedOnAdd().IsRequired();
+            builder.ToTable("Likes");
 
-            builder.HasOne(l => l.Comment)
-                .WithMany(c => c.Likes)
-                .HasForeignKey(l => l.CommentId);
+            builder.HasKey(like => like.Id);
 
-            builder.HasOne(l => l.User)
-                .WithMany(u => u.Likes)
-                .HasForeignKey(l => l.UserId);
+            builder.Property(like => like.Id).HasColumnName("Id").ValueGeneratedOnAdd();
+            builder.Property(like => like.CommentId).HasColumnName("CommentId");
+            builder.Property(like => like.UserId).HasColumnName("UserId");
+
+            builder.HasOne(like => like.Comment)
+                .WithMany(comment => comment.Likes)
+                .HasForeignKey(like => like.CommentId);
+
+            builder.HasOne(like => like.User)
+                .WithMany(user => user.Likes)
+                .HasForeignKey(like => like.UserId);
         }
     }
 }

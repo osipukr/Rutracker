@@ -49,7 +49,7 @@ else
     private void CreateModalOpened()
     {
         ModalService.OnClose += CreateModalClosed;
-        ModalService.Show("Create subcategory", typeof(SubcategoryAddModal));
+        ModalService.Show<SubcategoryAddModal>("Create subcategory");
     }
 
     private void UpdateModelOpened(SubcategoryViewModel model)
@@ -64,7 +64,7 @@ else
         Subcategory = model;
 
         ModalService.OnClose += UpdateModalClosed;
-        ModalService.Show("Update subcategory", typeof(SubcategoryUpdateModal), parameters);
+        ModalService.Show<SubcategoryUpdateModal>("Update subcategory", parameters);
     }
 
     private void DeleteModalOpened(SubcategoryViewModel model)
@@ -74,7 +74,7 @@ else
         parameters.Add(nameof(SubcategoryViewModel), model);
 
         ModalService.OnClose += DeleteModalClosed;
-        ModalService.Show("Delete subcategory", typeof(SubcategoryDeleteModal), parameters);
+        ModalService.Show<SubcategoryDeleteModal>("Delete subcategory", parameters);
     }
 
     private async void CreateModalClosed(ModalResult result)

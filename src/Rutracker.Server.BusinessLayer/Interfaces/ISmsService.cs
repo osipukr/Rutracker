@@ -4,6 +4,6 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
 {
     public interface ISmsService
     {
-        Task SendConfirmationPhoneAsync(string phone, string code);
+        Task SendPhoneConfirmationAsync(string phone, string code);
     }
 }

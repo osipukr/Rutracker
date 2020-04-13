@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Rutracker.Server.BusinessLayer.Exceptions;
 using Rutracker.Server.WebApi.Extensions;
-using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.WebApi.Filters
 {
@@ -28,9 +28,7 @@ namespace Rutracker.Server.WebApi.Filters
                 return;
             }
 
-            var message = context.ModelState.GetError();
-
-            throw new RutrackerException(message, ExceptionEventTypes.InvalidParameters);
+            throw new RutrackerException(context.ModelState.GetError(), ExceptionEventTypes.InvalidParameters);
         }
     }
 }

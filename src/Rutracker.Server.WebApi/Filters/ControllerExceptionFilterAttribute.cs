@@ -1,15 +1,25 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-using Rutracker.Shared.Infrastructure.Exceptions;
+using Rutracker.Server.BusinessLayer.Exceptions;
 
 namespace Rutracker.Server.WebApi.Filters
 {
     public class ControllerExceptionFilterAttribute : ExceptionFilterAttribute
     {
         private readonly ILogger<ControllerExceptionFilterAttribute> _logger;
+
+        private readonly Dictionary<ExceptionEventTypes, int> _statusCodesMapper =
+            new Dictionary<ExceptionEventTypes, int>
+            {
+                [ExceptionEventTypes.NotFound] = StatusCodes.Status404NotFound,
+                [ExceptionEventTypes.InvalidParameters] = StatusCodes.Status400BadRequest,
+                [ExceptionEventTypes.LoginFailed] = StatusCodes.Status400BadRequest,
+                [ExceptionEventTypes.RegistrationFailed] = StatusCodes.Status400BadRequest
+            };
 
         public ControllerExceptionFilterAttribute(ILogger<ControllerExceptionFilterAttribute> logger)
         {
@@ -42,14 +52,11 @@ namespace Rutracker.Server.WebApi.Filters
             if (context.Exception is RutrackerException exception)
             {
                 message = exception.Message;
-                statusCode = exception.ExceptionEventType switch
+
+                if (_statusCodesMapper.ContainsKey(exception.ExceptionEventType))
                 {
-                    ExceptionEventTypes.NotFound => StatusCodes.Status404NotFound,
-                    ExceptionEventTypes.InvalidParameters => StatusCodes.Status400BadRequest,
-                    ExceptionEventTypes.LoginFailed => StatusCodes.Status400BadRequest,
-                    ExceptionEventTypes.RegistrationFailed => StatusCodes.Status400BadRequest,
-                    _ => StatusCodes.Status500InternalServerError
-                };
+                    statusCode = _statusCodesMapper[exception.ExceptionEventType];
+                }
             }
 
             context.Result = new ObjectResult(message)
@@ -57,7 +64,7 @@ namespace Rutracker.Server.WebApi.Filters
                 StatusCode = statusCode
             };
 
-            _logger.LogError(context.Exception, message: context.ActionDescriptor.ToString());
+            _logger.LogError(context.Exception, context.ActionDescriptor.ToString());
         }
     }
 }

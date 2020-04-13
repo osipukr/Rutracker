@@ -34,19 +34,21 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
         {
             try
             {
-                if (await _context.Database.EnsureCreatedAsync())
+                if (!await _context.Database.EnsureCreatedAsync())
                 {
-                    if (!await _context.Roles.AnyAsync())
-                    {
-                        await SeedRolesAsync(_roleManager);
-                        await _context.SaveChangesAsync();
-                    }
+                    return;
+                }
 
-                    if (!await _context.Users.AnyAsync())
-                    {
-                        await SeedUsersAsync(_userManager);
-                        await _context.SaveChangesAsync();
-                    }
+                if (!await _context.Roles.AnyAsync())
+                {
+                    await SeedRolesAsync(_roleManager);
+                    await _context.SaveChangesAsync();
+                }
+
+                if (!await _context.Users.AnyAsync())
+                {
+                    await SeedUsersAsync(_userManager);
+                    await _context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
@@ -66,8 +68,7 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
             PhoneNumberConfirmed = true,
             TwoFactorEnabled = true,
             ImageUrl = "https://avatars1.githubusercontent.com/u/40744739?s=300&v=4",
-            RegisteredAt = DateTime.UtcNow,
-            IsRegistrationFinished = true
+            AddedDate = DateTime.UtcNow
         };
 
         private const string AdminPassword = "Admin_Password_123";

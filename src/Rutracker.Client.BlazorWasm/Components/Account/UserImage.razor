@@ -44,19 +44,19 @@
     private void ChangeUrlModalOpened()
     {
         ModalService.OnClose += ChangeUrlModalClosed;
-        ModalService.Show("Change user image", typeof(UserImageChangeModal));
+        ModalService.Show<UserImageChangeModal>("Change user image");
     }
 
     private void ChangeFileModalOpened()
     {
         ModalService.OnClose += ChangeFileModalClosed;
-        ModalService.Show("Change user image", typeof(UserImageFileChangeModal));
+        ModalService.Show<UserImageFileChangeModal>("Change user image");
     }
 
     private void DeleteModalOpened()
     {
         ModalService.OnClose += DeleteModalClosed;
-        ModalService.Show("Delete user image", typeof(UserImageDeleteModal));
+        ModalService.Show<UserImageDeleteModal>("Delete user image");
     }
 
     private async void ChangeUrlModalClosed(ModalResult result)

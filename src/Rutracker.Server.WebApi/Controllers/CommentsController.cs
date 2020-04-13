@@ -8,13 +8,14 @@ using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Extensions;
+using Rutracker.Shared.Infrastructure.Collections;
 using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.Comment;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
     [Authorize(Policy = Policies.IsUser)]
-    public class CommentsController : BaseApiController
+    public class CommentsController : ApiController
     {
         private readonly ICommentService _commentService;
 
@@ -23,30 +24,26 @@ namespace Rutracker.Server.WebApi.Controllers
             _commentService = commentService;
         }
 
-        [HttpGet("search"), AllowAnonymous]
-        public async Task<PaginationResult<CommentViewModel>> Search(int page, int pageSize, int torrentId)
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IPagedList<CommentView>> Get([FromQuery] CommentFilter filter)
         {
-            var (comments, count) = await _commentService.ListAsync(page, pageSize, torrentId);
+            var pagedList = await _commentService.ListAsync(filter);
 
-            return new PaginationResult<CommentViewModel>
-            {
-                Page = page,
-                PageSize = pageSize,
-                TotalItems = count,
-                Items = _mapper.Map<IEnumerable<CommentViewModel>>(comments)
-            };
+            return PagedList.From(pagedList, comments => _mapper.Map<IEnumerable<CommentView>>(comments));
         }
 
-        [HttpGet("{id}"), AllowAnonymous]
-        public async Task<CommentViewModel> Find(int id)
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        public async Task<CommentView> Get(int id)
         {
             var comment = await _commentService.FindAsync(id);
 
-            return _mapper.Map<CommentViewModel>(comment);
+            return _mapper.Map<CommentView>(comment);
         }
 
         [HttpPost]
-        public async Task<CommentViewModel> Create(CommentCreateViewModel model)
+        public async Task<CommentView> Post(CommentCreateView model)
         {
             var comment = _mapper.Map<Comment>(model);
 
@@ -54,16 +51,16 @@ namespace Rutracker.Server.WebApi.Controllers
 
             var result = await _commentService.AddAsync(comment);
 
-            return _mapper.Map<CommentViewModel>(result);
+            return _mapper.Map<CommentView>(result);
         }
 
         [HttpPut("{id}")]
-        public async Task<CommentViewModel> Update(int id, CommentUpdateViewModel model)
+        public async Task<CommentView> Put(int id, CommentUpdateView model)
         {
             var comment = _mapper.Map<Comment>(model);
             var result = await _commentService.UpdateAsync(id, User.GetUserId(), comment);
 
-            return _mapper.Map<CommentViewModel>(result);
+            return _mapper.Map<CommentView>(result);
         }
 
         [HttpDelete("{id}")]
@@ -73,11 +70,11 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpGet("like/{id}")]
-        public async Task<CommentViewModel> Like(int id)
+        public async Task<CommentView> Like(int id)
         {
             var comment = await _commentService.LikeCommentAsync(id, User.GetUserId());
 
-            return _mapper.Map<CommentViewModel>(comment);
+            return _mapper.Map<CommentView>(comment);
         }
     }
 }

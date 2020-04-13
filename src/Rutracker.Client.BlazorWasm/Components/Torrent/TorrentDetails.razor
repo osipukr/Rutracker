@@ -121,19 +121,19 @@
         });
 
         ModalService.OnClose += TorrentUpdateModalClosed;
-        ModalService.Show("Edit torrent", typeof(TorrentUpdateModal), parameters);
+        ModalService.Show<TorrentUpdateModal>("Edit torrent", parameters);
     }
 
     private void DeleteTorrentModalOpened()
     {
         ModalService.OnClose += DeleteTorrentModalClosed;
-        ModalService.Show("Delete torrent", typeof(TorrentDeleteModal));
+        ModalService.Show<TorrentDeleteModal>("Delete torrent");
     }
 
     private void ChangeImageModalOpened()
     {
         ModalService.OnClose += ChangeImageModalClosed;
-        ModalService.Show("Change torrent image", typeof(TorrentImageChangeModal));
+        ModalService.Show<TorrentImageChangeModal>("Change torrent image");
     }
 
     private void ChangeImageFileModalOpened()
@@ -143,13 +143,13 @@
         parameters.Add(nameof(TorrentDetailsViewModel.Id), Torrent.Id);
 
         ModalService.OnClose += ChangeImageFileModalClosed;
-        ModalService.Show("Change torrent image", typeof(TorrentImageFileChangeModal), parameters);
+        ModalService.Show<TorrentImageFileChangeModal>("Change torrent image", parameters);
     }
 
     private void ImageDeleteModalOpened()
     {
         ModalService.OnClose += DeleteImageModalClosed;
-        ModalService.Show("Delete torrent image", typeof(TorrentImageDeleteModal));
+        ModalService.Show<TorrentImageDeleteModal>("Delete torrent image");
     }
 
     private async void TorrentUpdateModalClosed(ModalResult result)

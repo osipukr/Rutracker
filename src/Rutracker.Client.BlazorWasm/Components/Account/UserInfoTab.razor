@@ -64,7 +64,7 @@
         });
 
         ModalService.OnClose += ChangeModalClosed;
-        ModalService.Show("Change user information", typeof(UserInfoChangeModal), parameters);
+        ModalService.Show<UserInfoChangeModal>("Change user information", parameters);
     }
 
     private async void ChangeModalClosed(ModalResult result)

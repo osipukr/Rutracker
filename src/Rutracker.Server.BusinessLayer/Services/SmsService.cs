@@ -13,7 +13,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             _smsSender = smsSender;
         }
 
-        public async Task SendConfirmationPhoneAsync(string phone, string code)
+        public async Task SendPhoneConfirmationAsync(string phone, string code)
         {
             var message = string.Format(Resources.SmsService_ConfirmationCodeMessage, code);
 

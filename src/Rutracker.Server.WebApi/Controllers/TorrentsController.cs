@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -9,17 +8,15 @@ using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.Torrent;
 using Rutracker.Server.DataAccessLayer.Entities;
-using Rutracker.Server.WebApi.Extensions;
+using Rutracker.Shared.Infrastructure.Collections;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
     /// <summary>
     ///     The Torrent API controller.
     /// </summary>
-    /// <response code="400">If the parameters are not valid.</response>
-    /// <response code="404">If the item is null.</response>
-    [Authorize(Policy = Policies.IsUser)]
-    public class TorrentsController : BaseApiController
+    [Authorize(Policy = Policies.IsAdmin)]
+    public class TorrentsController : ApiController
     {
         private readonly ITorrentService _torrentService;
 
@@ -31,95 +28,53 @@ namespace Rutracker.Server.WebApi.Controllers
         /// <summary>
         ///     Get all items on the page with information for pagination.
         /// </summary>
-        /// <param name="page">Page number.</param>
-        /// <param name="pageSize">Number of items per page.</param>
-        /// <param name="filter">Information to filter elements.</param>
-        [HttpPost("search"), AllowAnonymous]
-        public async Task<PaginationResult<TorrentViewModel>> Search(int page, int pageSize, TorrentFilterViewModel filter)
+        /// <param name="filter"></param>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IPagedList<TorrentView>> Get([FromQuery] TorrentFilter filter)
         {
-            var (torrents, count) = await _torrentService.ListAsync(page, pageSize,
-                filter.CategoryId,
-                filter.SubcategoryId,
-                filter.Search);
+            var pagedList = await _torrentService.ListAsync(filter);
 
-            return new PaginationResult<TorrentViewModel>
-            {
-                Page = page,
-                PageSize = pageSize,
-                TotalItems = count,
-                Items = _mapper.Map<IEnumerable<TorrentViewModel>>(torrents)
-            };
-        }
-
-        [HttpGet("popular"), AllowAnonymous]
-        public async Task<IEnumerable<TorrentViewModel>> Popular(int count)
-        {
-            var torrents = await _torrentService.PopularAsync(count);
-
-            return _mapper.Map<IEnumerable<TorrentViewModel>>(torrents);
+            return PagedList.From(pagedList, torrents => _mapper.Map<IEnumerable<TorrentView>>(torrents));
         }
 
         /// <summary>
         ///     Get information about the item.
         /// </summary>
         /// <param name="id">ID of the element.</param>
-        [HttpGet("{id}"), AllowAnonymous]
-        public async Task<TorrentDetailsViewModel> Get(int id)
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        public async Task<TorrentDetailsView> Get(int id)
         {
             var torrent = await _torrentService.FindAsync(id);
 
-            return _mapper.Map<TorrentDetailsViewModel>(torrent);
+            return _mapper.Map<TorrentDetailsView>(torrent);
         }
 
         [HttpPost]
-        public async Task<TorrentDetailsViewModel> Create(TorrentCreateViewModel model)
+        public async Task<TorrentDetailsView> Post(TorrentCreateView model)
         {
             var torrent = _mapper.Map<Torrent>(model);
 
-            torrent.UserId = User.GetUserId();
+            var result = await _torrentService.AddAsync(torrent);
 
-            torrent = await _torrentService.AddAsync(torrent);
-
-            return _mapper.Map<TorrentDetailsViewModel>(torrent);
+            return _mapper.Map<TorrentDetailsView>(result);
         }
 
         [HttpPut("{id}")]
-        public async Task<TorrentDetailsViewModel> Update(int id, TorrentUpdateViewModel model)
+        public async Task<TorrentDetailsView> Put(int id, TorrentUpdateView model)
         {
             var torrent = _mapper.Map<Torrent>(model);
 
-            torrent = await _torrentService.UpdateAsync(id, User.GetUserId(), torrent);
+            var result = await _torrentService.UpdateAsync(id, torrent);
 
-            return _mapper.Map<TorrentDetailsViewModel>(torrent);
+            return _mapper.Map<TorrentDetailsView>(result);
         }
 
         [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
-            await _torrentService.DeleteAsync(id, User.GetUserId());
-        }
-
-        [HttpPut("image/{id}")]
-        public async Task<string> ChangeImage(int id, ChangeTorrentImageViewModel model)
-        {
-            var torrent = await _torrentService.ChangeImageAsync(id, User.GetUserId(), model.ImageUrl);
-
-            return torrent.ImageUrl;
-        }
-
-        [HttpPost("image/{id}")]
-        public async Task<string> ChangeImageFile(int id, [FromForm] ChangeTorrentImageFileViewModel model)
-        {
-            var imageStream = model.File.OpenReadStream();
-            var torrent = await _torrentService.ChangeImageAsync(id, User.GetUserId(), model.File.ContentType, imageStream);
-
-            return torrent.ImageUrl;
-        }
-
-        [HttpDelete("image/{id}")]
-        public async Task DeleteImage(int id)
-        {
-            await _torrentService.DeleteImageAsync(id, User.GetUserId());
+            await _torrentService.DeleteAsync(id);
         }
     }
 }

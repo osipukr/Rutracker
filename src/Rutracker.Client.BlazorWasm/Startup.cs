@@ -3,7 +3,6 @@ using Blazor.FileReader;
 using Blazored.LocalStorage;
 using Blazored.Modal;
 using MatBlazor;
-using Microsoft.AspNetCore.Blazor.Http;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,8 +60,6 @@ namespace Rutracker.Client.BlazorWasm
 
         public void Configure(IComponentsApplicationBuilder app)
         {
-            WebAssemblyHttpMessageHandler.DefaultCredentials = FetchCredentialsOption.Include;
-
             app.UseLoadingBar();
             app.AddComponent<App>("app");
         }

@@ -5,14 +5,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.WebApi.Controllers.Base;
-using Rutracker.Server.WebApi.Extensions;
-using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.File;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
-    [Authorize(Policy = Policies.IsUser)]
-    public class FilesController : BaseApiController
+    [AllowAnonymous]
+    public class FilesController : ApiController
     {
         private readonly IFileService _fileService;
 
@@ -21,41 +19,20 @@ namespace Rutracker.Server.WebApi.Controllers
             _fileService = fileService;
         }
 
-        [HttpGet("search"), AllowAnonymous]
-        public async Task<IEnumerable<FileViewModel>> Search(int torrentId)
+        [HttpGet]
+        public async Task<IEnumerable<FileView>> Search(int torrentId)
         {
             var files = await _fileService.ListAsync(torrentId);
 
-            return _mapper.Map<IEnumerable<FileViewModel>>(files);
+            return _mapper.Map<IEnumerable<FileView>>(files);
         }
 
-        [HttpGet("{id}"), AllowAnonymous]
-        public async Task<FileViewModel> Find(int id)
+        [HttpGet("{id}")]
+        public async Task<FileView> Get(int id)
         {
             var file = await _fileService.FindAsync(id);
 
-            return _mapper.Map<FileViewModel>(file);
-        }
-
-        [HttpPost]
-        public async Task<FileViewModel> Add([FromForm] FileCreateViewModel model)
-        {
-            var stream = model.File.OpenReadStream();
-            var result = await _fileService.AddAsync(User.GetUserId(), model.TorrentId, model.File.ContentType, model.File.FileName, stream);
-
-            return _mapper.Map<FileViewModel>(result);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task Delete(int id)
-        {
-            await _fileService.DeleteAsync(id, User.GetUserId());
-        }
-
-        [HttpGet("download/{id}"), AllowAnonymous]
-        public async Task<string> Download(int id)
-        {
-            return await _fileService.DownloadAsync(id);
+            return _mapper.Map<FileView>(file);
         }
     }
 }

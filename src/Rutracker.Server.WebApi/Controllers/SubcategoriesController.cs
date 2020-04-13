@@ -11,8 +11,11 @@ using Rutracker.Shared.Models.ViewModels.Subcategory;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Authorize(Policy = Policies.IsAdmin)]
-    public class SubcategoriesController : BaseApiController
+    public class SubcategoriesController : ApiController
     {
         private readonly ISubcategoryService _subcategoryService;
 
@@ -21,46 +24,42 @@ namespace Rutracker.Server.WebApi.Controllers
             _subcategoryService = subcategoryService;
         }
 
-        [HttpGet, AllowAnonymous]
-        public async Task<IEnumerable<SubcategoryViewModel>> List()
-        {
-            var subcategories = await _subcategoryService.ListAsync();
-
-            return _mapper.Map<IEnumerable<SubcategoryViewModel>>(subcategories);
-        }
-
-        [HttpGet("search"), AllowAnonymous]
-        public async Task<IEnumerable<SubcategoryViewModel>> Search(int categoryId)
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IEnumerable<SubcategoryView>> Get(int? categoryId)
         {
             var subcategories = await _subcategoryService.ListAsync(categoryId);
 
-            return _mapper.Map<IEnumerable<SubcategoryViewModel>>(subcategories);
+            return _mapper.Map<IEnumerable<SubcategoryView>>(subcategories);
         }
 
-        [HttpGet("{id}"), AllowAnonymous]
-        public async Task<SubcategoryViewModel> Find(int id)
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        public async Task<SubcategoryView> Get(int id)
         {
             var subcategory = await _subcategoryService.FindAsync(id);
 
-            return _mapper.Map<SubcategoryViewModel>(subcategory);
+            return _mapper.Map<SubcategoryView>(subcategory);
         }
 
         [HttpPost]
-        public async Task<SubcategoryViewModel> Create(SubcategoryCreateViewModel model)
+        public async Task<SubcategoryView> Post(SubcategoryCreateView model)
         {
             var subcategory = _mapper.Map<Subcategory>(model);
+
             var result = await _subcategoryService.AddAsync(subcategory);
 
-            return _mapper.Map<SubcategoryViewModel>(result);
+            return _mapper.Map<SubcategoryView>(result);
         }
 
         [HttpPut("{id}")]
-        public async Task<SubcategoryViewModel> Update(int id, SubcategoryUpdateViewModel model)
+        public async Task<SubcategoryView> Put(int id, SubcategoryUpdateView model)
         {
             var subcategory = _mapper.Map<Subcategory>(model);
+
             var result = await _subcategoryService.UpdateAsync(id, subcategory);
 
-            return _mapper.Map<SubcategoryViewModel>(result);
+            return _mapper.Map<SubcategoryView>(result);
         }
 
         [HttpDelete("{id}")]

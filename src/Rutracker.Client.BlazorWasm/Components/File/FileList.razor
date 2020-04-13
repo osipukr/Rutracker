@@ -64,7 +64,7 @@ else
         parameters.Add(nameof(TorrentId), TorrentId);
 
         ModalService.OnClose += CreateModalClosed;
-        ModalService.Show("Add file", typeof(FileAddModal), parameters);
+        ModalService.Show<FileAddModal>("Add file", parameters);
     }
 
     private void DeleteModalOpened(FileViewModel model)
@@ -74,7 +74,7 @@ else
         parameters.Add(nameof(FileViewModel), model);
 
         ModalService.OnClose += DeleteModalClosed;
-        ModalService.Show("Delete file", typeof(FileDeleteModal), parameters);
+        ModalService.Show<FileDeleteModal>("Delete file", parameters);
     }
 
     private async void CreateModalClosed(ModalResult result)

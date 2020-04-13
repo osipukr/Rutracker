@@ -6,21 +6,20 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
 {
     public class FileConfiguration : IEntityTypeConfiguration<File>
     {
-        private const string FILE_TABLE_NAME = "Files";
-
         public void Configure(EntityTypeBuilder<File> builder)
         {
-            builder.ToTable(FILE_TABLE_NAME);
-            builder.HasKey(f => f.Id);
-            builder.Property(f => f.Id).ValueGeneratedOnAdd().IsRequired();
-            builder.Property(f => f.Name).IsRequired();
-            builder.Property(f => f.Size).IsRequired();
-            builder.Property(f => f.Type).IsRequired();
-            builder.Property(f => f.Url).IsRequired();
+            builder.ToTable("Files");
 
-            builder.HasOne(f => f.Torrent)
-                .WithMany(t => t.Files)
-                .HasForeignKey(f => f.TorrentId);
+            builder.HasKey(file => file.Id);
+
+            builder.Property(file => file.Id).HasColumnName("Id").ValueGeneratedOnAdd();
+            builder.Property(file => file.Name).HasColumnName("Name").HasMaxLength(150).IsRequired();
+            builder.Property(file => file.Size).HasColumnName("Size").IsRequired();
+            builder.Property(file => file.TorrentId).HasColumnName("TorrentId");
+
+            builder.HasOne(file => file.Torrent)
+                .WithMany(torrent => torrent.Files)
+                .HasForeignKey(file => file.TorrentId);
         }
     }
 }

@@ -1,114 +1,53 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.EntityFrameworkCore;
+using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Server.BusinessLayer.Properties;
+using Rutracker.Server.BusinessLayer.Services.Base;
+using Rutracker.Server.DataAccessLayer.Contexts;
+using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
-using Rutracker.Shared.Infrastructure.Exceptions;
-using File = Rutracker.Server.DataAccessLayer.Entities.File;
+using Rutracker.Server.DataAccessLayer.Interfaces.Base;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
-    public class FileService : IFileService
+    public class FileService : Service, IFileService
     {
         private readonly IFileRepository _fileRepository;
-        private readonly ITorrentRepository _torrentRepository;
-        private readonly IFileStorageService _fileStorageService;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public FileService(
-            IFileRepository fileRepository,
-            ITorrentRepository torrentRepository,
-            IFileStorageService fileStorageService,
-            IUnitOfWork unitOfWork)
+        public FileService(IUnitOfWork<RutrackerContext> unitOfWork) : base(unitOfWork)
         {
-            _fileRepository = fileRepository;
-            _torrentRepository = torrentRepository;
-            _fileStorageService = fileStorageService;
-            _unitOfWork = unitOfWork;
+            _fileRepository = _unitOfWork.GetRepository<IFileRepository>();
         }
 
         public async Task<IEnumerable<File>> ListAsync(int torrentId)
         {
-            Guard.Against.LessOne(torrentId, "Invalid torrent id.");
+            Guard.Against.LessOne(torrentId, Resources.Torrent_InvalidId_ErrorMessage);
 
             var files = await _fileRepository.GetAll(x => x.TorrentId == torrentId)
                 .OrderByDescending(x => x.Size)
-                .ThenByDescending(x => x.Id)
+                .ThenByDescending(x => x.Name)
                 .ToListAsync();
 
-            Guard.Against.NullNotFound(files, $"The files with torrent id '{torrentId}' not found.");
+            var message = string.Format(Resources.File_NotFoundListByTorrentId_ErrorMessage, torrentId);
+
+            Guard.Against.NullNotFound(files, message);
 
             return files;
         }
 
         public async Task<File> FindAsync(int id)
         {
-            Guard.Against.LessOne(id, "Invalid file id.");
+            Guard.Against.LessOne(id, Resources.File_InvalidId_ErrorMessage);
 
             var file = await _fileRepository.GetAsync(id);
 
-            Guard.Against.NullNotFound(file, $"The file with id '{id}' not found.");
+            Guard.Against.NullNotFound(file, string.Format(Resources.File_NotFoundById_ErrorMessage, id));
 
             return file;
-        }
-
-        public async Task<File> FindAsync(int id, string userId)
-        {
-            Guard.Against.LessOne(id, "Invalid file id.");
-            Guard.Against.NullString(userId, message: "Invalid user id.");
-
-            var file = await _fileRepository.GetAsync(x => x.Id == id && x.Torrent.UserId == userId);
-
-            Guard.Against.NullNotFound(file, $"The file with id '{id}' not found.");
-
-            return file;
-        }
-
-        public async Task<File> AddAsync(string userId, int torrentId, string mimeType, string fileName, Stream fileStream)
-        {
-            Guard.Against.NullString(userId, message: "Invalid user id.");
-            Guard.Against.LessOne(torrentId, "Invalid torrent id.");
-
-            if (!await _torrentRepository.ExistAsync(x => x.Id == torrentId && x.UserId == userId))
-            {
-                throw new RutrackerException($"The torrent with id '{torrentId}' not found.", ExceptionEventTypes.InvalidParameters);
-            }
-
-            var name = fileName.ToLowerInvariant();
-            var type = mimeType.ToLowerInvariant();
-            var path = await _fileStorageService.UploadTorrentFileAsync(torrentId, type, name, fileStream);
-            var result = _fileRepository.Create();
-
-            result.Name = name;
-            result.Size = fileStream.Length;
-            result.Type = type;
-            result.Url = path;
-            result.TorrentId = torrentId;
-
-            await _fileRepository.AddAsync(result);
-            await _unitOfWork.CompleteAsync();
-
-            return result;
-        }
-
-        public async Task<File> DeleteAsync(int id, string userId)
-        {
-            var file = await FindAsync(id, userId);
-
-            await _fileStorageService.DeleteTorrentFileAsync(file.TorrentId, file.Name);
-
-            _fileRepository.Remove(file);
-            await _unitOfWork.CompleteAsync();
-
-            return file;
-        }
-
-        public async Task<string> DownloadAsync(int id)
-        {
-            return (await FindAsync(id)).Url;
         }
     }
 }

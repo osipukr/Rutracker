@@ -1,19 +1,19 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Rutracker.Server.BusinessLayer.Extensions;
-using Rutracker.Shared.Infrastructure.Exceptions;
+﻿using Ardalis.GuardClauses;
+using Microsoft.AspNetCore.Identity;
+using Rutracker.Server.BusinessLayer.Exceptions;
 
-namespace Ardalis.GuardClauses
+namespace Rutracker.Server.BusinessLayer.Extensions
 {
     public static class GuardClauseExtensions
     {
         public static void NullNotFound<T>(this IGuardClause guardClause, T input, string message) where T : class
         {
-            Null(guardClause, input, message, ExceptionEventTypes.NotFound);
+            guardClause.Null(input, message, ExceptionEventTypes.NotFound);
         }
 
         public static void NullNotValid<T>(this IGuardClause guardClause, T input, string message) where T : class
         {
-            Null(guardClause, input, message, ExceptionEventTypes.InvalidParameters);
+            guardClause.Null(input, message, ExceptionEventTypes.InvalidParameters);
         }
 
         public static void OutOfRange(this IGuardClause guardClause, int input, int rangeFrom, int rangeTo, string message)
