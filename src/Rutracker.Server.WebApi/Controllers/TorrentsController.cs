@@ -45,31 +45,31 @@ namespace Rutracker.Server.WebApi.Controllers
         /// <param name="id">ID of the element.</param>
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<TorrentDetailsView> Get(int id)
+        public async Task<TorrentDetailView> Get(int id)
         {
             var torrent = await _torrentService.FindAsync(id);
 
-            return _mapper.Map<TorrentDetailsView>(torrent);
+            return _mapper.Map<TorrentDetailView>(torrent);
         }
 
         [HttpPost]
-        public async Task<TorrentDetailsView> Post(TorrentCreateView model)
+        public async Task<TorrentDetailView> Post(TorrentCreateView model)
         {
             var torrent = _mapper.Map<Torrent>(model);
 
             var result = await _torrentService.AddAsync(torrent);
 
-            return _mapper.Map<TorrentDetailsView>(result);
+            return _mapper.Map<TorrentDetailView>(result);
         }
 
         [HttpPut("{id}")]
-        public async Task<TorrentDetailsView> Put(int id, TorrentUpdateView model)
+        public async Task<TorrentDetailView> Put(int id, TorrentUpdateView model)
         {
             var torrent = _mapper.Map<Torrent>(model);
 
             var result = await _torrentService.UpdateAsync(id, torrent);
 
-            return _mapper.Map<TorrentDetailsView>(result);
+            return _mapper.Map<TorrentDetailView>(result);
         }
 
         [HttpDelete("{id}")]

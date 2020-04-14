@@ -61,7 +61,7 @@ namespace Rutracker.Server.WebApi.Controllers
             return _mapper.Map<UserView>(user);
         }
 
-        [HttpGet("details")]
+        [HttpGet("profile")]
         public async Task<UserDetailView> Get()
         {
             var userId = User.GetUserId();
@@ -74,7 +74,7 @@ namespace Rutracker.Server.WebApi.Controllers
             return result;
         }
 
-        [HttpPut("change/info")]
+        [HttpPut]
         public async Task<UserDetailView> ChangeInfo(UserUpdateView model)
         {
             var userId = User.GetUserId();

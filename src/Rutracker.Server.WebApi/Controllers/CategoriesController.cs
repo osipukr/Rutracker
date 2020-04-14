@@ -35,11 +35,11 @@ namespace Rutracker.Server.WebApi.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<CategoryView> Get(int id)
+        public async Task<CategoryDetailView> Get(int id)
         {
             var category = await _categoryService.FindAsync(id);
 
-            return _mapper.Map<CategoryView>(category);
+            return _mapper.Map<CategoryDetailView>(category);
         }
 
         [HttpPost]

@@ -2,53 +2,53 @@
 using System.Threading.Tasks;
 using Blazor.FileReader;
 using Rutracker.Client.BusinessLayer.Extensions;
+using Rutracker.Client.BusinessLayer.HttpClient;
 using Rutracker.Client.BusinessLayer.Interfaces;
-using Rutracker.Client.BusinessLayer.Settings;
-using Rutracker.Shared.Models;
+using Rutracker.Client.BusinessLayer.Options;
+using Rutracker.Client.BusinessLayer.Services.Base;
+using Rutracker.Shared.Infrastructure.Collections;
+using Rutracker.Shared.Infrastructure.Filters;
 using Rutracker.Shared.Models.ViewModels.User;
 
 namespace Rutracker.Client.BusinessLayer.Services
 {
-    public class UserService : IUserService
+    public class UserService : Service, IUserService
     {
-        private readonly HttpClientService _httpClientService;
-        private readonly ApiUrlOptions _apiUrlOptions;
         private readonly FileOptions _fileOptions;
 
-        public UserService(HttpClientService httpClientService, ApiUrlOptions apiUrlOptions, FileOptions fileOptions)
+        public UserService(HttpClientService httpClientService, ApiOptions apiOptions, FileOptions fileOptions) : base(httpClientService, apiOptions)
         {
-            _httpClientService = httpClientService;
-            _apiUrlOptions = apiUrlOptions;
             _fileOptions = fileOptions;
         }
 
-        public async Task<PaginationResult<UserViewModel>> ListAsync(int page, int pageSize)
+        public async Task<IPagedList<UserView>> ListAsync(IUserFilter filter)
         {
-            var url = string.Format(_apiUrlOptions.UsersSearch, page.ToString(), pageSize.ToString());
+            var url = string.Format(_apiOptions.Users, filter?.ToQueryString());
 
-            return await _httpClientService.GetJsonAsync<PaginationResult<UserViewModel>>(url);
+            return await _httpClientService.GetJsonAsync<IPagedList<UserView>>(url);
         }
 
-        public async Task<UserProfileViewModel> ProfileAsync(string userName)
+        public async Task<UserView> FindAsync(string userName)
         {
-            var url = string.Format(_apiUrlOptions.UserProfile, userName);
+            var url = string.Format(_apiOptions.User, userName);
 
-            return await _httpClientService.GetJsonAsync<UserProfileViewModel>(url);
+            return await _httpClientService.GetJsonAsync<UserView>(url);
         }
 
-        public async Task<UserDetailsViewModel> FindAsync()
+        public async Task<UserDetailView> FindAsync()
         {
-            return await _httpClientService.GetJsonAsync<UserDetailsViewModel>(_apiUrlOptions.User);
+            return await _httpClientService.GetJsonAsync<UserDetailView>(_apiOptions.UserProfile);
         }
 
-        public async Task<UserDetailsViewModel> ChangeInfoAsync(ChangeUserViewModel model)
+        public async Task<UserDetailView> UpdateAsync(UserUpdateView model)
         {
-            return await _httpClientService.PutJsonAsync<UserDetailsViewModel>(_apiUrlOptions.ChangeUserInfo, model);
+            return await _httpClientService.PutJsonAsync<UserDetailView>(_apiOptions.ChangeUserInfo, model);
+
         }
 
-        public async Task<string> ChangeImageAsync(ChangeImageViewModel model)
+        public async Task<string> ChangeImageAsync(ImageUpdateView model)
         {
-            return await _httpClientService.PutJsonAsync<string>(_apiUrlOptions.ChangeImage, model);
+            return await _httpClientService.PutJsonAsync<string>(_apiOptions.ChangeImage, model);
         }
 
         public async Task<string> ChangeImageAsync(IFileReference file)
@@ -67,37 +67,49 @@ namespace Rutracker.Client.BusinessLayer.Services
 
             var stream = await file.OpenReadAsync();
 
-            return await _httpClientService.PostUserImageFileAsync<string>(_apiUrlOptions.ChangeImage, fileInfo.Type, fileInfo.Name, stream);
+            return null;
+
+            //return await _httpClientService.PostUserImageFileAsync<string>(_apiOptions.ChangeImage, fileInfo.Type, fileInfo.Name, stream);
         }
 
         public async Task DeleteImageAsync()
         {
-            await _httpClientService.DeleteJsonAsync(_apiUrlOptions.ChangeImage);
+            await _httpClientService.DeleteJsonAsync(_apiOptions.ChangeImage);
         }
 
-        public async Task<UserDetailsViewModel> ChangePasswordAsync(ChangePasswordViewModel model)
+        public async Task<UserDetailView> ChangePasswordAsync(PasswordUpdateView model)
         {
-            return await _httpClientService.PutJsonAsync<UserDetailsViewModel>(_apiUrlOptions.ChangePassword, model);
+            return await _httpClientService.PutJsonAsync<UserDetailView>(_apiOptions.ChangePassword, model);
         }
 
-        public async Task ChangeEmailAsync(ChangeEmailViewModel model)
+        public async Task ChangeEmailAsync(EmailUpdateView model)
         {
-            await _httpClientService.PutJsonAsync(_apiUrlOptions.ChangeEmail, model);
+            await _httpClientService.PutJsonAsync(_apiOptions.ChangeEmail, model);
         }
 
-        public async Task ChangePhoneAsync(ChangePhoneNumberViewModel model)
+        public async Task ChangePhoneAsync(PhoneUpdateView model)
         {
-            await _httpClientService.PutJsonAsync(_apiUrlOptions.ChangePhone, model);
+            await _httpClientService.PutJsonAsync(_apiOptions.ChangePhone, model);
         }
 
-        public async Task ConfirmChangeEmailAsync(ConfirmChangeEmailViewModel model)
+        public async Task ConfirmChangeEmailAsync(EmailConfirmationView model)
         {
-            await _httpClientService.PostJsonAsync(_apiUrlOptions.ConfirmChangeEmail, model);
+            await _httpClientService.PostJsonAsync(_apiOptions.ConfirmChangeEmail, model);
         }
 
-        public async Task<UserDetailsViewModel> ConfirmChangePhoneAsync(ConfirmChangePhoneNumberViewModel model)
+        public async Task<UserDetailView> ConfirmChangePhoneAsync(PhoneConfirmationView model)
         {
-            return await _httpClientService.PostJsonAsync<UserDetailsViewModel>(_apiUrlOptions.ConfirmPhone, model);
+            return await _httpClientService.PostJsonAsync<UserDetailView>(_apiOptions.ConfirmPhone, model);
+        }
+
+        public async Task ForgotPassword(ForgotPasswordView model)
+        {
+            await _httpClientService.PostJsonAsync(_apiOptions.ForgotPassword, model);
+        }
+
+        public async Task ResetPassword(ResetPasswordView model)
+        {
+            await _httpClientService.PostJsonAsync(_apiOptions.ResetPassword, model);
         }
     }
 }

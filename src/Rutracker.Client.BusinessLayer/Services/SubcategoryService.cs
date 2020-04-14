@@ -1,51 +1,48 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Rutracker.Client.BusinessLayer.HttpClient;
 using Rutracker.Client.BusinessLayer.Interfaces;
-using Rutracker.Client.BusinessLayer.Settings;
+using Rutracker.Client.BusinessLayer.Options;
+using Rutracker.Client.BusinessLayer.Services.Base;
 using Rutracker.Shared.Models.ViewModels.Subcategory;
 
 namespace Rutracker.Client.BusinessLayer.Services
 {
-    public class SubcategoryService : ISubcategoryService
+    public class SubcategoryService : Service, ISubcategoryService
     {
-        private readonly HttpClientService _httpClientService;
-        private readonly ApiUrlOptions _apiUrlOptions;
-
-        public SubcategoryService(HttpClientService httpClientService, ApiUrlOptions apiUrlOptions)
+        public SubcategoryService(HttpClientService httpClientService, ApiOptions apiOptions) : base(httpClientService, apiOptions)
         {
-            _httpClientService = httpClientService;
-            _apiUrlOptions = apiUrlOptions;
         }
 
-        public async Task<IEnumerable<SubcategoryViewModel>> ListAsync(int categoryId)
+        public async Task<IEnumerable<SubcategoryView>> ListAsync(int? categoryId)
         {
-            var url = string.Format(_apiUrlOptions.SubcategoriesSearch, categoryId.ToString());
+            var url = string.Format(_apiOptions.Subcategories, categoryId?.ToString());
 
-            return await _httpClientService.GetJsonAsync<IEnumerable<SubcategoryViewModel>>(url);
+            return await _httpClientService.GetJsonAsync<IEnumerable<SubcategoryView>>(url);
         }
 
-        public async Task<SubcategoryViewModel> FindAsync(int id)
+        public async Task<SubcategoryDetailView> FindAsync(int id)
         {
-            var url = string.Format(_apiUrlOptions.Subcategory, id.ToString());
+            var url = string.Format(_apiOptions.Subcategory, id.ToString());
 
-            return await _httpClientService.GetJsonAsync<SubcategoryViewModel>(url);
+            return await _httpClientService.GetJsonAsync<SubcategoryDetailView>(url);
         }
 
-        public async Task<SubcategoryViewModel> CreateAsync(SubcategoryCreateViewModel model)
+        public async Task<SubcategoryView> AddAsync(SubcategoryCreateView model)
         {
-            return await _httpClientService.PostJsonAsync<SubcategoryViewModel>(_apiUrlOptions.Subcategories, model);
+            return await _httpClientService.PostJsonAsync<SubcategoryView>(_apiOptions.Subcategories, model);
         }
 
-        public async Task<SubcategoryViewModel> UpdateAsync(int id, SubcategoryUpdateViewModel model)
+        public async Task<SubcategoryView> UpdateAsync(int id, SubcategoryUpdateView model)
         {
-            var url = string.Format(_apiUrlOptions.Subcategory, id.ToString());
+            var url = string.Format(_apiOptions.Subcategory, id.ToString());
 
-            return await _httpClientService.PutJsonAsync<SubcategoryViewModel>(url, model);
+            return await _httpClientService.PutJsonAsync<SubcategoryView>(url, model);
         }
 
         public async Task DeleteAsync(int id)
         {
-            var url = string.Format(_apiUrlOptions.Subcategory, id.ToString());
+            var url = string.Format(_apiOptions.Subcategory, id.ToString());
 
             await _httpClientService.DeleteJsonAsync(url);
         }

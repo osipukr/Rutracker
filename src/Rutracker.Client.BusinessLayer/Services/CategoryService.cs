@@ -1,49 +1,46 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Rutracker.Client.BusinessLayer.HttpClient;
 using Rutracker.Client.BusinessLayer.Interfaces;
-using Rutracker.Client.BusinessLayer.Settings;
+using Rutracker.Client.BusinessLayer.Options;
+using Rutracker.Client.BusinessLayer.Services.Base;
 using Rutracker.Shared.Models.ViewModels.Category;
 
 namespace Rutracker.Client.BusinessLayer.Services
 {
-    public class CategoryService : ICategoryService
+    public class CategoryService : Service, ICategoryService
     {
-        private readonly HttpClientService _httpClientService;
-        private readonly ApiUrlOptions _apiUrlOptions;
-
-        public CategoryService(HttpClientService httpClientService, ApiUrlOptions apiUrlOptions)
+        public CategoryService(HttpClientService httpClientService, ApiOptions apiOptions) : base(httpClientService, apiOptions)
         {
-            _httpClientService = httpClientService;
-            _apiUrlOptions = apiUrlOptions;
         }
 
-        public async Task<IEnumerable<CategoryViewModel>> ListAsync()
+        public async Task<IEnumerable<CategoryView>> ListAsync()
         {
-            return await _httpClientService.GetJsonAsync<IEnumerable<CategoryViewModel>>(_apiUrlOptions.Categories);
+            return await _httpClientService.GetJsonAsync<IEnumerable<CategoryView>>(_apiOptions.Categories);
         }
 
-        public async Task<CategoryViewModel> FindAsync(int id)
+        public async Task<CategoryDetailView> FindAsync(int id)
         {
-            var url = string.Format(_apiUrlOptions.Category, id.ToString());
+            var url = string.Format(_apiOptions.Category, id.ToString());
 
-            return await _httpClientService.GetJsonAsync<CategoryViewModel>(url);
+            return await _httpClientService.GetJsonAsync<CategoryDetailView>(url);
         }
 
-        public async Task<CategoryViewModel> CreateAsync(CategoryCreateViewModel model)
+        public async Task<CategoryView> AddAsync(CategoryCreateView model)
         {
-            return await _httpClientService.PostJsonAsync<CategoryViewModel>(_apiUrlOptions.Categories, model);
+            return await _httpClientService.PostJsonAsync<CategoryView>(_apiOptions.Categories, model);
         }
 
-        public async Task<CategoryViewModel> UpdateAsync(int id, CategoryUpdateViewModel model)
+        public async Task<CategoryView> UpdateAsync(int id, CategoryUpdateView model)
         {
-            var url = string.Format(_apiUrlOptions.Category, id.ToString());
+            var url = string.Format(_apiOptions.Category, id.ToString());
 
-            return await _httpClientService.PutJsonAsync<CategoryViewModel>(url, model);
+            return await _httpClientService.PutJsonAsync<CategoryView>(url, model);
         }
 
         public async Task DeleteAsync(int id)
         {
-            var url = string.Format(_apiUrlOptions.Category, id.ToString());
+            var url = string.Format(_apiOptions.Category, id.ToString());
 
             await _httpClientService.DeleteJsonAsync(url);
         }

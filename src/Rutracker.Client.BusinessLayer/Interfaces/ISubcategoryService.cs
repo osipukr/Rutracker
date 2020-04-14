@@ -6,10 +6,10 @@ namespace Rutracker.Client.BusinessLayer.Interfaces
 {
     public interface ISubcategoryService
     {
-        Task<IEnumerable<SubcategoryViewModel>> ListAsync(int categoryId);
-        Task<SubcategoryViewModel> FindAsync(int id);
-        Task<SubcategoryViewModel> CreateAsync(SubcategoryCreateViewModel model);
-        Task<SubcategoryViewModel> UpdateAsync(int id, SubcategoryUpdateViewModel model);
+        Task<IEnumerable<SubcategoryView>> ListAsync(int? categoryId);
+        Task<SubcategoryDetailView> FindAsync(int id);
+        Task<SubcategoryView> AddAsync(SubcategoryCreateView model);
+        Task<SubcategoryView> UpdateAsync(int id, SubcategoryUpdateView model);
         Task DeleteAsync(int id);
     }
 }

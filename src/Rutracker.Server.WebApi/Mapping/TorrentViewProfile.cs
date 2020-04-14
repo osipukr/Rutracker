@@ -13,7 +13,7 @@ namespace Rutracker.Server.WebApi.Mapping
                     x => x.MapFrom(y => y.Comments.Count))
                 .ReverseMap();
 
-            CreateMap<Torrent, TorrentDetailsView>().ReverseMap();
+            CreateMap<Torrent, TorrentDetailView>().ReverseMap();
             CreateMap<Torrent, TorrentCreateView>().ReverseMap();
             CreateMap<Torrent, TorrentUpdateView>().ReverseMap();
         }

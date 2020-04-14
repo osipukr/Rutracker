@@ -1,8 +1,7 @@
-﻿namespace Rutracker.Client.BusinessLayer.Settings
+﻿namespace Rutracker.Client.BusinessLayer.Options
 {
     public class FileOptions
     {
         public long MaxImageSize { get; set; }
-        public long MaxFileSize { get; set; }
     }
 }

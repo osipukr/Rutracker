@@ -1,56 +1,40 @@
 ﻿using System.Threading.Tasks;
+using Rutracker.Client.BusinessLayer.HttpClient;
 using Rutracker.Client.BusinessLayer.Interfaces;
+using Rutracker.Client.BusinessLayer.Options;
 using Rutracker.Client.BusinessLayer.Providers;
-using Rutracker.Client.BusinessLayer.Settings;
+using Rutracker.Client.BusinessLayer.Services.Base;
 using Rutracker.Shared.Models.ViewModels.Account;
 
 namespace Rutracker.Client.BusinessLayer.Services
 {
-    public class AccountService : IAccountService
+    public class AccountService : Service, IAccountService
     {
-        private readonly HttpClientService _httpClientService;
-        private readonly ApiUrlOptions _apiUrlOptions;
         private readonly ApiAuthenticationStateProvider _apiAuthenticationState;
 
-        public AccountService(HttpClientService httpClientService, ApiUrlOptions apiUrlOptions, ApiAuthenticationStateProvider apiAuthenticationState)
+        public AccountService(
+            HttpClientService httpClientService,
+            ApiOptions apiOptions,
+            ApiAuthenticationStateProvider apiAuthenticationState) : base(httpClientService, apiOptions)
         {
-            _httpClientService = httpClientService;
-            _apiUrlOptions = apiUrlOptions;
             _apiAuthenticationState = apiAuthenticationState;
         }
 
-        public async Task Login(LoginViewModel model)
+        public async Task Login(LoginView model)
         {
-            var token = await _httpClientService.PostJsonAsync<string>(_apiUrlOptions.Login, model);
+            var token = await _httpClientService.PostJsonAsync<string>(_apiOptions.Login, model);
 
             await _apiAuthenticationState.MarkUserAsAuthenticated(token);
         }
 
-        public async Task Register(RegisterViewModel model)
+        public async Task Register(RegisterView model)
         {
-            await _httpClientService.PostJsonAsync(_apiUrlOptions.Register, model);
-        }
-
-        public async Task CompleteRegistration(CompleteRegistrationViewModel model)
-        {
-            var token = await _httpClientService.PostJsonAsync<string>(_apiUrlOptions.CompleteRegistration, model);
-
-            await _apiAuthenticationState.MarkUserAsAuthenticated(token);
-        }
-
-        public async Task ForgotPassword(ForgotPasswordViewModel model)
-        {
-            await _httpClientService.PostJsonAsync(_apiUrlOptions.ForgotPassword, model);
-        }
-
-        public async Task ResetPassword(ResetPasswordViewModel model)
-        {
-            await _httpClientService.PostJsonAsync(_apiUrlOptions.ResetPassword, model);
+            await _httpClientService.PostJsonAsync(_apiOptions.Register, model);
         }
 
         public async Task Logout()
         {
-            await _httpClientService.PostJsonAsync(_apiUrlOptions.Logout, null);
+            await _httpClientService.PostJsonAsync(_apiOptions.Logout, null);
             await _apiAuthenticationState.MarkUserAsLoggedOut();
         }
     }

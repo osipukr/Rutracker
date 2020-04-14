@@ -1,15 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Blazor.FileReader;
 using Rutracker.Shared.Models.ViewModels.File;
 
 namespace Rutracker.Client.BusinessLayer.Interfaces
 {
     public interface IFileService
     {
-        Task<IEnumerable<FileViewModel>> ListAsync(int torrentId);
-        Task<FileViewModel> AddAsync(int torrentId, IFileReference file);
-        Task DeleteAsync(int id);
-        Task<string> DownloadAsync(int id);
+        Task<IEnumerable<FileView>> ListAsync(int torrentId);
+        Task<FileView> FindAsync(int id);
     }
 }

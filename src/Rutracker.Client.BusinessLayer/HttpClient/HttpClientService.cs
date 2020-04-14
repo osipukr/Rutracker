@@ -5,17 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Rutracker.Client.BusinessLayer.Services
+namespace Rutracker.Client.BusinessLayer.HttpClient
 {
     public class HttpClientService
     {
-        private readonly HttpClient _httpClient;
+        private readonly System.Net.Http.HttpClient _httpClient;
 
-        public HttpClientService(HttpClient httpClient) => _httpClient = httpClient;
+        public HttpClientService(System.Net.Http.HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
 
         public async Task<TResult> GetJsonAsync<TResult>(string url)
         {
             using var response = await _httpClient.GetAsync(url);
+
             var json = await response.Content.ReadAsStringAsync();
 
             return response.IsSuccessStatusCode
@@ -26,6 +30,7 @@ namespace Rutracker.Client.BusinessLayer.Services
         public async Task<TResult> PostAsync<TResult>(string url, HttpContent content)
         {
             using var response = await _httpClient.PostAsync(url, content);
+
             var json = await response.Content.ReadAsStringAsync();
 
             return response.IsSuccessStatusCode
@@ -58,6 +63,7 @@ namespace Rutracker.Client.BusinessLayer.Services
                 mediaType: "application/json");
 
             using var response = await _httpClient.PostAsync(url, content);
+
             var json = await response.Content.ReadAsStringAsync();
 
             return response.IsSuccessStatusCode
@@ -90,6 +96,7 @@ namespace Rutracker.Client.BusinessLayer.Services
                 mediaType: "application/json");
 
             using var response = await _httpClient.PutAsync(url, content);
+
             var json = await response.Content.ReadAsStringAsync();
 
             return response.IsSuccessStatusCode
@@ -125,7 +132,7 @@ namespace Rutracker.Client.BusinessLayer.Services
             }
         }
 
-        private static TResult DeserializeJson<TResult>(string json) => JsonConvert.DeserializeObject<TResult>(json);
-        private static string DeserializeJsonError(string json) => DeserializeJson<string>(json);
+        private TResult DeserializeJson<TResult>(string json) => JsonConvert.DeserializeObject<TResult>(json);
+        private string DeserializeJsonError(string json) => DeserializeJson<string>(json);
     }
 }

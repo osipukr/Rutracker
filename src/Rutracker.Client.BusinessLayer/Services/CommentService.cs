@@ -1,60 +1,59 @@
 ﻿using System.Threading.Tasks;
+using Rutracker.Client.BusinessLayer.Extensions;
+using Rutracker.Client.BusinessLayer.HttpClient;
 using Rutracker.Client.BusinessLayer.Interfaces;
-using Rutracker.Client.BusinessLayer.Settings;
-using Rutracker.Shared.Models;
+using Rutracker.Client.BusinessLayer.Options;
+using Rutracker.Client.BusinessLayer.Services.Base;
+using Rutracker.Shared.Infrastructure.Collections;
+using Rutracker.Shared.Infrastructure.Filters;
 using Rutracker.Shared.Models.ViewModels.Comment;
 
 namespace Rutracker.Client.BusinessLayer.Services
 {
-    public class CommentService : ICommentService
+    public class CommentService : Service, ICommentService
     {
-        private readonly HttpClientService _httpClientService;
-        private readonly ApiUrlOptions _apiUrlOptions;
-
-        public CommentService(HttpClientService httpClientService, ApiUrlOptions apiUrlOptions)
+        public CommentService(HttpClientService httpClientService, ApiOptions apiOptions) : base(httpClientService, apiOptions)
         {
-            _httpClientService = httpClientService;
-            _apiUrlOptions = apiUrlOptions;
         }
 
-        public async Task<PaginationResult<CommentViewModel>> ListAsync(int page, int pageSize, int torrentId)
+        public async Task<IPagedList<CommentView>> ListAsync(ICommentFilter filter)
         {
-            var url = string.Format(_apiUrlOptions.CommentsSearch, torrentId.ToString(), page.ToString(), pageSize.ToString());
+            var url = string.Format(_apiOptions.Comments, filter?.ToQueryString());
 
-            return await _httpClientService.GetJsonAsync<PaginationResult<CommentViewModel>>(url);
+            return await _httpClientService.GetJsonAsync<IPagedList<CommentView>>(url);
         }
 
-        public async Task<CommentViewModel> FindAsync(int id)
+        public async Task<CommentView> FindAsync(int id)
         {
-            var url = string.Format(_apiUrlOptions.Comment, id.ToString());
+            var url = string.Format(_apiOptions.Comment, id.ToString());
 
-            return await _httpClientService.GetJsonAsync<CommentViewModel>(url);
+            return await _httpClientService.GetJsonAsync<CommentView>(url);
         }
 
-        public async Task<CommentViewModel> AddAsync(CommentCreateViewModel model)
+        public async Task<CommentView> AddAsync(CommentCreateView model)
         {
-            return await _httpClientService.PostJsonAsync<CommentViewModel>(_apiUrlOptions.Comments, model);
+            return await _httpClientService.PostJsonAsync<CommentView>(_apiOptions.Comments, model);
         }
 
-        public async Task<CommentViewModel> UpdateAsync(int id, CommentUpdateViewModel model)
+        public async Task<CommentView> UpdateAsync(int id, CommentUpdateView model)
         {
-            var url = string.Format(_apiUrlOptions.Comment, id.ToString());
+            var url = string.Format(_apiOptions.Comment, id.ToString());
 
-            return await _httpClientService.PutJsonAsync<CommentViewModel>(url, model);
+            return await _httpClientService.PutJsonAsync<CommentView>(url, model);
         }
 
         public async Task DeleteAsync(int id)
         {
-            var url = string.Format(_apiUrlOptions.Comment, id.ToString());
+            var url = string.Format(_apiOptions.Comment, id.ToString());
 
             await _httpClientService.DeleteJsonAsync(url);
         }
 
-        public async Task<CommentViewModel> LikeCommentAsync(int id)
+        public async Task<CommentView> LikeCommentAsync(int id)
         {
-            var url = string.Format(_apiUrlOptions.LikeComment, id.ToString());
+            var url = string.Format(_apiOptions.CommentLike, id.ToString());
 
-            return await _httpClientService.GetJsonAsync<CommentViewModel>(url);
+            return await _httpClientService.GetJsonAsync<CommentView>(url);
         }
     }
 }

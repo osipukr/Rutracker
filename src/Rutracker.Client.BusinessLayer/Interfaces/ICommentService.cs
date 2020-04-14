@@ -1,16 +1,17 @@
 ﻿using System.Threading.Tasks;
-using Rutracker.Shared.Models;
+using Rutracker.Shared.Infrastructure.Collections;
+using Rutracker.Shared.Infrastructure.Filters;
 using Rutracker.Shared.Models.ViewModels.Comment;
 
 namespace Rutracker.Client.BusinessLayer.Interfaces
 {
     public interface ICommentService
     {
-        Task<PaginationResult<CommentViewModel>> ListAsync(int page, int pageSize, int torrentId);
-        Task<CommentViewModel> FindAsync(int id);
-        Task<CommentViewModel> AddAsync(CommentCreateViewModel model);
-        Task<CommentViewModel> UpdateAsync(int id, CommentUpdateViewModel model);
+        Task<IPagedList<CommentView>> ListAsync(ICommentFilter filter);
+        Task<CommentView> FindAsync(int id);
+        Task<CommentView> AddAsync(CommentCreateView model);
+        Task<CommentView> UpdateAsync(int id, CommentUpdateView model);
         Task DeleteAsync(int id);
-        Task<CommentViewModel> LikeCommentAsync(int id);
+        Task<CommentView> LikeCommentAsync(int id);
     }
 }
