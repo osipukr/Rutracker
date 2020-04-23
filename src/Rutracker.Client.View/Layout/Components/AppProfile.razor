@@ -1,0 +1,47 @@
+﻿@if (IsAuthenticated)
+{
+    if (IsValidAvatarUrl)
+    {
+        <Profile Name="@UserName" Bio="@(@$"{UserDescription}")" Avatar="@AvatarUrl" />
+    }
+    else
+    {
+        <Profile Name="@UserName" Bio="@UserDescription">
+            <Avatar Style="margin: 10px;">
+                @AvatarName
+            </Avatar>
+        </Profile>
+    }
+}
+
+@code
+{
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private bool IsAuthenticated { get; set; }
+    private string UserName { get; set; }
+    private string UserDescription { get; set; }
+    private string AvatarName { get; set; }
+    private string AvatarUrl { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var state = await AuthenticationStateTask;
+
+        IsAuthenticated = state.IsUserAuthenticated();
+
+        if (IsAuthenticated)
+        {
+            UserName = state.GetUserName();
+            UserDescription = string.Join(" | ", state.GetUserRole());
+            AvatarUrl = state.GetUserImage();
+
+            if (!IsValidAvatarUrl)
+            {
+                AvatarName = UserName?.Substring(0, 2).ToUpperInvariant();
+            }
+        }
+    }
+
+    private bool IsValidAvatarUrl => !string.IsNullOrWhiteSpace(AvatarUrl);
+}

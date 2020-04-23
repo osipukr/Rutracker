@@ -11,9 +11,10 @@ using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Controllers.Base;
 using Rutracker.Server.WebApi.Extensions;
-using Rutracker.Server.WebApi.Settings;
+using Rutracker.Server.WebApi.Options;
 using Rutracker.Shared.Infrastructure.Collections;
 using Rutracker.Shared.Models;
+using Rutracker.Shared.Models.ViewModels.Role;
 using Rutracker.Shared.Models.ViewModels.User;
 
 namespace Rutracker.Server.WebApi.Controllers
@@ -26,21 +27,18 @@ namespace Rutracker.Server.WebApi.Controllers
     {
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
-        private readonly ISmsService _smsService;
 
-        private readonly ClientSettings _clientSettings;
+        private readonly ClientOptions _clientOptions;
 
         public UsersController(
             IUserService userService,
             IEmailService emailService,
-            ISmsService smsService,
             IMapper mapper,
-            IOptions<ClientSettings> clientOptions) : base(mapper)
+            IOptions<ClientOptions> clientOptions) : base(mapper)
         {
             _userService = userService;
             _emailService = emailService;
-            _smsService = smsService;
-            _clientSettings = clientOptions.Value;
+            _clientOptions = clientOptions.Value;
         }
 
         [HttpGet]
@@ -66,15 +64,16 @@ namespace Rutracker.Server.WebApi.Controllers
         {
             var userId = User.GetUserId();
             var user = await _userService.FindAsync(userId);
+            var roles = await _userService.RolesAsync(userId);
 
             var result = _mapper.Map<UserDetailView>(user);
 
-            result.Roles = await _userService.RolesAsync(userId);
+            result.Roles = _mapper.Map<IEnumerable<RoleView>>(roles);
 
             return result;
         }
 
-        [HttpPut]
+        [HttpPut("profile")]
         public async Task<UserDetailView> ChangeInfo(UserUpdateView model)
         {
             var userId = User.GetUserId();
@@ -84,80 +83,11 @@ namespace Rutracker.Server.WebApi.Controllers
             return _mapper.Map<UserDetailView>(result);
         }
 
-        [HttpPut("change/image")]
-        public async Task<string> ChangeImage(ImageUpdateView model)
-        {
-            var userId = User.GetUserId();
-            var user = await _userService.ChangeImageAsync(userId, model.ImageUrl);
-
-            return user.ImageUrl;
-        }
-
-        [HttpPost("change/image")]
-        public async Task<string> ChangeImage([FromForm] ImageFileUpdateView model)
-        {
-            var userId = User.GetUserId();
-            var user = await _userService.ChangeImageAsync(userId, model.File);
-
-            return user.ImageUrl;
-        }
-
-        [HttpDelete("change/image")]
-        public async Task DeleteImage()
-        {
-            var userId = User.GetUserId();
-
-            await _userService.DeleteImageAsync(userId);
-        }
-
-        [HttpPut("change/password")]
+        [HttpPost("change/password")]
         public async Task<UserDetailView> ChangePassword(PasswordUpdateView model)
         {
             var userId = User.GetUserId();
             var user = await _userService.ChangePasswordAsync(userId, model.OldPassword, model.NewPassword);
-
-            return _mapper.Map<UserDetailView>(user);
-        }
-
-        //[HttpPut("change/email")]
-        //public async Task ChangeEmail(ChangeEmailViewModel model)
-        //{
-        //    var userId = User.GetUserId();
-        //    var token = await _userService.ChangeEmailTokenAsync(userId, model.Email);
-        //    var parameters = HttpUtility.ParseQueryString(string.Empty);
-
-        //    parameters.Add(nameof(ConfirmChangeEmailViewModel.Email), model.Email);
-        //    parameters.Add(nameof(ConfirmChangeEmailViewModel.Token), token);
-
-        //    var urlBuilder = new UriBuilder(_clientSettings.BaseUrl)
-        //    {
-        //        Path = _clientSettings.EmailChangeConfirmPath,
-        //        Query = parameters.ToString()
-        //    };
-
-        //    await _emailService.SendEmailChangeConfirmationAsync(model.Email, urlBuilder.Uri.ToString());
-        //}
-
-        [HttpPut("change/phone")]
-        public async Task ChangePhone(PhoneUpdateView model)
-        {
-            var userId = User.GetUserId();
-            var token = await _userService.ChangePhoneNumberTokenAsync(userId, model.PhoneNumber);
-
-            await _smsService.SendPhoneConfirmationAsync(model.PhoneNumber, token);
-        }
-
-        [HttpPost("confirm/changeEmail")]
-        public async Task ConfirmChangeEmail(EmailConfirmationView model)
-        {
-            await _userService.ChangeEmailAsync(User.GetUserId(), model.Email, model.Token);
-        }
-
-        [HttpPost("confirm/phone")]
-        public async Task<UserDetailView> ConfirmChangePhone(PhoneConfirmationView model)
-        {
-            var userId = User.GetUserId();
-            var user = await _userService.ChangePhoneNumberAsync(userId, model.Phone, model.Token);
 
             return _mapper.Map<UserDetailView>(user);
         }
@@ -172,9 +102,9 @@ namespace Rutracker.Server.WebApi.Controllers
             parameters.Add(nameof(ResetPasswordView.UserId), user.Id);
             parameters.Add(nameof(ResetPasswordView.Token), token);
 
-            var urlBuilder = new UriBuilder(_clientSettings.BaseUrl)
+            var urlBuilder = new UriBuilder(_clientOptions.BaseUrl)
             {
-                Path = _clientSettings.ResetPasswordPath,
+                Path = _clientOptions.ResetPasswordPath,
                 Query = parameters.ToString()
             };
 

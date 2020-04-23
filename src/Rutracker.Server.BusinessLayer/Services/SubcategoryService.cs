@@ -69,7 +69,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Subcategory> AddAsync(Subcategory subcategory)
         {
-            Guard.Against.NullNotValid(subcategory, Resources.Subcategory_Invalid_ErrorMessage);
+            Guard.Against.NullInvalid(subcategory, Resources.Subcategory_Invalid_ErrorMessage);
             Guard.Against.NullString(subcategory.Name, Resources.Subcategory_InvalidName_ErrorMessage);
             Guard.Against.LessOne(subcategory.CategoryId, Resources.Category_InvalidId_ErrorMessage);
 
@@ -97,7 +97,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Subcategory> UpdateAsync(int id, Subcategory subcategory)
         {
-            Guard.Against.NullNotValid(subcategory, Resources.Subcategory_Invalid_ErrorMessage);
+            Guard.Against.NullInvalid(subcategory, Resources.Subcategory_Invalid_ErrorMessage);
             Guard.Against.NullString(subcategory.Name, Resources.Subcategory_InvalidName_ErrorMessage);
 
             if (await _subcategoryRepository.ExistAsync(x => x.Name == subcategory.Name))

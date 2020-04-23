@@ -1,0 +1,30 @@
+﻿<Card>
+    <CardContent>
+        <Typography Align="@Align.Left" GutterBottom Variant="@TypographyVariant.H4">
+            @Category.Name
+        </Typography>
+
+        <Typography Align="@Align.Left" Variant="@TypographyVariant.Body1">
+            @Category.Description
+        </Typography>
+    </CardContent>
+
+    <Divider/>
+
+    <CardActions>
+        <Grid Container Justify="@Justify.SpaceBetween">
+            <Grid Item>
+                <GetAppIcon/>
+
+                <Typography Display="@Display.Inline" Variant="@TypographyVariant.Body2">
+                    @Category.SubcategoriesCount Subcategories
+                </Typography>
+            </Grid>
+        </Grid>
+    </CardActions>
+</Card>
+
+@code
+{
+    [Parameter] public CategoryView Category { set; get; }
+}

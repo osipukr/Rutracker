@@ -1,0 +1,112 @@
+﻿@layout AuthLayout
+
+@page "/signin"
+
+@inject IAccountService AccountService
+@inject IToastService ToastService
+@inject ScriptHelpers ScriptHelpers
+
+<EditForm Model="@LoginModel"
+          OnValidSubmit="@HandleSignIn"
+          Context="formContext"
+          class="auth-form-root">
+
+    <DataAnnotationsValidator />
+
+    <Typography Class="auth-form-title" Variant="TypographyVariant.H2">
+        Sign in
+    </Typography>
+
+
+    <FormControl class="form-constrol-root">
+        <TextField Class="auth-form-text-field"
+                   FullWidth
+                   Label="User Name"
+                   Name="userName"
+                   Value="@LoginModel.UserName"
+                   OnChange="@UserNameChangeEventHandler"
+                   Type="text"
+                   Variant="@TextFieldVariant.Outlined" />
+
+        <ValidationMessage For="@(() => LoginModel.UserName)" />
+    </FormControl>
+
+    <FormControl class="form-constrol-root">
+        <TextField Class="auth-form-text-field"
+                   FullWidth
+                   Label="Password"
+                   Name="password"
+                   Value="@LoginModel.Password"
+                   OnChange="@PasswordChangeEventHandler"
+                   Type="password"
+                   Variant="@TextFieldVariant.Outlined" />
+
+        <ValidationMessage For="@(() => LoginModel.Password)" />
+    </FormControl>
+
+
+    <div class="auth-form-remember-field">
+        <Checkbox Checked="@LoginModel.RememberMe"
+                  OnChange="@RememberChangeEventHandler"
+                  Class="auth-form-remember-checkbox"
+                  Color="@Color.Primary"
+                  Name="rememberMe" />
+
+        <Typography Color="@Color.TextSecondary" Variant="@TypographyVariant.Body1">
+            Remember me?
+        </Typography>
+    </div>
+
+    <Button Class="auth-form-submit-button"
+            Color="@Color.Primary"
+            FullWidth
+            Size="@Size.Large"
+            Type="@ButtonType.Submit"
+            Variant="@ButtonVariant.Contained">
+        Sign in now
+    </Button>
+
+    <Typography Color="@Color.TextSecondary" Variant="@TypographyVariant.Body1">
+        Don't have an account?
+
+        <Link Href="@Constants.Page.SignUp">
+        Sign up
+        </Link>
+    </Typography>
+</EditForm>
+
+@code
+{
+    private LoginView LoginModel = new LoginView();
+
+    private void UserNameChangeEventHandler(ChangeEventArgs e)
+    {
+        LoginModel.UserName = e.Value.ToString();
+    }
+
+    private void PasswordChangeEventHandler(ChangeEventArgs e)
+    {
+        LoginModel.Password = e.Value.ToString();
+    }
+
+    private void RememberChangeEventHandler(ChangeEventArgs e)
+    {
+        if (bool.TryParse(e.Value.ToString(), out var value))
+        {
+            LoginModel.RememberMe = value;
+        }
+    }
+
+    private async Task HandleSignIn()
+    {
+        try
+        {
+            await AccountService.Login(LoginModel);
+            await ScriptHelpers.GoBackAsync();
+        }
+        catch (Exception exception)
+        {
+            ToastService.ShowError(exception.Message, "Sign In");
+        }
+    }
+}

@@ -1,0 +1,8 @@
+﻿<div style="padding: 30px; height: calc(100% - 110px);">
+    @ChildContent
+</div>
+
+@code
+{
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}

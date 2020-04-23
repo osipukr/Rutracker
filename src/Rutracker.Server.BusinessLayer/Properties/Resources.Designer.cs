@@ -295,6 +295,51 @@ namespace Rutracker.Server.BusinessLayer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The role is invalid..
+        /// </summary>
+        internal static string RoleService_AddAsync_The_role_is_invalid_ {
+            get {
+                return ResourceManager.GetString("RoleService_AddAsync_The_role_is_invalid_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The role with id={0} not found..
+        /// </summary>
+        internal static string RoleService_FindAsync_ {
+            get {
+                return ResourceManager.GetString("RoleService_FindAsync_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The role id is invalid..
+        /// </summary>
+        internal static string RoleService_FindAsync_The_role_id_is_invalid_ {
+            get {
+                return ResourceManager.GetString("RoleService_FindAsync_The_role_id_is_invalid_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The role with name={0} not found..
+        /// </summary>
+        internal static string RoleService_FindByNameAsync_ {
+            get {
+                return ResourceManager.GetString("RoleService_FindByNameAsync_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The role name is invalid..
+        /// </summary>
+        internal static string RoleService_FindByNameAsync_The_role_name_is_invalid_ {
+            get {
+                return ResourceManager.GetString("RoleService_FindByNameAsync_The_role_name_is_invalid_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid message..
         /// </summary>
         internal static string SmsSender_InvalidMessage {
@@ -669,6 +714,15 @@ namespace Rutracker.Server.BusinessLayer.Properties {
         internal static string User_WrongPassword_ErrorMessage {
             get {
                 return ResourceManager.GetString("User_WrongPassword_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The role name is invalid..
+        /// </summary>
+        internal static string UserService_AddToRoleAsync_The_role_name_is_invalid_ {
+            get {
+                return ResourceManager.GetString("UserService_AddToRoleAsync_The_role_name_is_invalid_", resourceCulture);
             }
         }
     }

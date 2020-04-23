@@ -1,0 +1,44 @@
+﻿@page "/categories"
+
+
+@inject ICategoryService CategoryService
+@inject IToastService ToastService
+
+<div>
+    <CategoriesToolbar />
+
+    @if (Categories == null)
+    {
+        <ProgressCard />
+    }
+    else if (!Categories.Any())
+    {
+        <EmptyCard>
+            Categories list is empty
+        </EmptyCard>
+    }
+    else
+    {
+        foreach (var category in Categories)
+        {
+            <CategoryCard Category="@category" @key="@category" />
+        }
+    }
+</div>
+
+@code
+{
+    private List<CategoryView> Categories { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Categories = (await CategoryService.ListAsync()).ToList();
+        }
+        catch (Exception exception)
+        {
+            ToastService.ShowError(exception.Message, "Categories loading");
+        }
+    }
+}

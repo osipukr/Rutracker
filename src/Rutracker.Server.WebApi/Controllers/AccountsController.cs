@@ -18,7 +18,7 @@ namespace Rutracker.Server.WebApi.Controllers
         private readonly IUserService _userService;
         private readonly IJwtFactory _jwtFactory;
 
-        public AccountsController(IAccountService accountService, IUserService userService, IJwtFactory jwtFactory) : base(null)
+        public AccountsController(IAccountService accountService, IUserService userService, IJwtFactory jwtFactory)
         {
             _accountService = accountService;
             _userService = userService;

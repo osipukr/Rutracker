@@ -75,7 +75,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Comment> AddAsync(Comment comment)
         {
-            Guard.Against.NullNotValid(comment, Resources.Comment_Invalid_ErrorMessage);
+            Guard.Against.NullInvalid(comment, Resources.Comment_Invalid_ErrorMessage);
             Guard.Against.NullString(comment.Text, Resources.Comment_InvalidText_ErrorMessage);
             Guard.Against.NullString(comment.UserId, Resources.User_InvalidId_ErrorMessage);
             Guard.Against.LessOne(comment.TorrentId, Resources.Torrent_InvalidId_ErrorMessage);
@@ -97,7 +97,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Comment> UpdateAsync(int id, string userId, Comment comment)
         {
-            Guard.Against.NullNotValid(comment, Resources.Comment_Invalid_ErrorMessage);
+            Guard.Against.NullInvalid(comment, Resources.Comment_Invalid_ErrorMessage);
             Guard.Against.NullString(comment.Text, message: Resources.Comment_InvalidText_ErrorMessage);
 
             var result = await FindAsync(id, userId);

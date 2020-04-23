@@ -11,7 +11,7 @@ namespace Rutracker.Server.BusinessLayer.Extensions
             guardClause.Null(input, message, ExceptionEventTypes.NotFound);
         }
 
-        public static void NullNotValid<T>(this IGuardClause guardClause, T input, string message) where T : class
+        public static void NullInvalid<T>(this IGuardClause guardClause, T input, string message) where T : class
         {
             guardClause.Null(input, message, ExceptionEventTypes.InvalidParameters);
         }

@@ -1,0 +1,71 @@
+﻿<Navigation Class="FullLayout-Navigation" Items="@Items"/>
+
+@code
+{
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private readonly List<NavigationItem> Items = new List<NavigationItem>
+    {
+        new NavigationItem
+        {
+            Title = "Account",
+            Path = Constants.Page.Account,
+            Icon = @<AccountBoxIcon/>,
+            Prefix = false
+        },
+        new NavigationItem
+        {
+            Title = "Categories",
+            Path = Constants.Page.Categories,
+            Icon = @<ShoppingBasketIcon/>,
+            Prefix = false
+        },
+        new NavigationItem
+        {
+            Title = "Subcategories",
+            Path = Constants.Page.Subcategories,
+            Icon = @<ShoppingBasketIcon/>,
+            Prefix = false
+        },
+        new NavigationItem
+        {
+            Title = "Torrents",
+            Path = Constants.Page.Torrents,
+            Icon = @<ShoppingBasketIcon/>,
+            Prefix = false
+        },
+        new NavigationItem
+        {
+            Title = "Users",
+            Path = Constants.Page.Users,
+            Icon = @<PeopleIcon/>,
+            Prefix = false
+        },
+        new NavigationItem
+        {
+            Title = "Settings",
+            Path = Constants.Page.Settings,
+            Icon = @<SettingsIcon />,
+            Prefix = false
+        }
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var state = await AuthenticationStateTask;
+
+        if (state.IsUserAuthenticated())
+        {
+            Items.AddRange(new[]
+            {
+                new NavigationItem
+                {
+                    Title = "Logout",
+                    Path = Constants.Page.SignOut,
+                    Icon = @<InputIcon/>,
+                    Prefix = false
+                }
+            });
+        }
+    }
+}

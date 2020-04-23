@@ -5,8 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Rutracker.Server.DataAccessLayer\Rutracker.Server.DataAccessLayer.csproj" />
-    <ProjectReference Include="..\..\Rutracker.Shared.Infrastructure\Rutracker.Shared.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Rutracker.Server.BusinessLayer\Rutracker.Server.BusinessLayer.csproj" />
   </ItemGroup>
 
 </Project>

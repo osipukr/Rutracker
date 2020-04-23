@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Exceptions;
@@ -19,13 +18,13 @@ namespace Rutracker.Server.BusinessLayer.Services
     public class UserService : Service, IUserService
     {
         private readonly UserManager<User> _userManager;
-        private readonly IStorageService _storageService;
+        private readonly IRoleService _roleService;
         private readonly IDateService _dateService;
 
-        public UserService(UserManager<User> userManager, IStorageService storageService, IDateService dateService) : base(null)
+        public UserService(UserManager<User> userManager, IRoleService roleService, IDateService dateService)
         {
             _userManager = userManager;
-            _storageService = storageService;
+            _roleService = roleService;
             _dateService = dateService;
         }
 
@@ -43,13 +42,53 @@ namespace Rutracker.Server.BusinessLayer.Services
             return pagedList;
         }
 
-        public async Task<User> FindAsync(string id)
+        public async Task<User> AddAsync(User user)
         {
-            Guard.Against.NullString(id, Resources.User_InvalidId_ErrorMessage);
+            Guard.Against.NullInvalid(user, Resources.User_Invalid_ErrorMessage);
 
-            var user = await _userManager.FindByIdAsync(id);
+            var result = await _userManager.CreateAsync(user);
 
-            Guard.Against.NullNotFound(user, string.Format(Resources.User_NotFoundById_ErrorMessage, id));
+            Guard.Against.IsSucceeded(result);
+
+            return user;
+        }
+
+        public async Task<User> AddAsync(User user, string password)
+        {
+            Guard.Against.NullInvalid(user, Resources.User_Invalid_ErrorMessage);
+
+            var result = await _userManager.CreateAsync(user, password);
+
+            Guard.Against.IsSucceeded(result);
+
+            return user;
+        }
+
+        public async Task<User> AddToRoleAsync(string userId, string roleName)
+        {
+            var user = await FindAsync(userId);
+
+            if (!await _roleService.ExistAsync(roleName))
+            {
+                throw new RutrackerException(
+                    Resources.UserService_AddToRoleAsync_The_role_name_is_invalid_,
+                    ExceptionEventTypes.InvalidParameters);
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+
+            Guard.Against.IsSucceeded(result);
+
+            return user;
+        }
+
+        public async Task<User> FindAsync(string userId)
+        {
+            Guard.Against.NullString(userId, Resources.User_InvalidId_ErrorMessage);
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            Guard.Against.NullNotFound(user, string.Format(Resources.User_NotFoundById_ErrorMessage, userId));
 
             return user;
         }
@@ -65,15 +104,23 @@ namespace Rutracker.Server.BusinessLayer.Services
             return user;
         }
 
-        public async Task<User> UpdateAsync(string id, User user)
+        public async Task<bool> ExistAsync(string userName)
         {
-            Guard.Against.NullString(id, Resources.User_InvalidId_ErrorMessage);
-            Guard.Against.NullNotValid(user, Resources.User_Invalid_ErrorMessage);
+            Guard.Against.NullString(userName, Resources.User_InvalidUserName_ErrorMessage);
 
-            var result = await FindAsync(id);
+            return await _userManager.Users.AnyAsync(user => user.UserName == userName);
+        }
+
+        public async Task<User> UpdateAsync(string userId, User user)
+        {
+            Guard.Against.NullString(userId, Resources.User_InvalidId_ErrorMessage);
+            Guard.Against.NullInvalid(user, Resources.User_Invalid_ErrorMessage);
+
+            var result = await FindAsync(userId);
 
             result.FirstName = user.FirstName;
             result.LastName = user.LastName;
+            result.ModifiedDate = _dateService.Now();
 
             var updateResult = await _userManager.UpdateAsync(result);
 
@@ -82,90 +129,35 @@ namespace Rutracker.Server.BusinessLayer.Services
             return result;
         }
 
-        public async Task<IEnumerable<string>> RolesAsync(string id)
+        public async Task<IEnumerable<Role>> RolesAsync(string userId)
         {
-            var user = await FindAsync(id);
-            var roles = await _userManager.GetRolesAsync(user);
+            var user = await FindAsync(userId);
+            var roleNames = await _userManager.GetRolesAsync(user);
 
-            Guard.Against.NullNotFound(roles, Resources.Role_NotFoundList_ErrorMessage);
+            Guard.Against.NullNotFound(roleNames, Resources.Role_NotFoundList_ErrorMessage);
+
+            var roles = new List<Role>(roleNames.Count);
+
+            foreach (var name in roleNames)
+            {
+                var role = await _roleService.FindByNameAsync(name);
+
+                roles.Add(role);
+            }
 
             return roles;
         }
 
-        public async Task<User> ChangeImageAsync(string id, string imageUrl)
+        public async Task<string> PasswordResetTokenAsync(string userId)
         {
-            var user = await FindAsync(id);
-
-            user.ImageUrl = imageUrl;
-
-            var result = await _userManager.UpdateAsync(user);
-
-            Guard.Against.IsSucceeded(result);
-
-            return user;
-        }
-
-        public async Task<User> ChangeImageAsync(string id, IFormFile file)
-        {
-            //await _storageService.CreateImagesContainerAsync();
-
-            //var path = await _storageService.UploadUserImageAsync(id, mimeType, imageStream);
-
-            //return await ChangeImageAsync(id, path);
-            return null;
-        }
-
-        public async Task<User> DeleteImageAsync(string id)
-        {
-            //await _storageService.DeleteUserImageAsync(id);
-
-            //return await ChangeImageAsync(id, null);
-
-            return null;
-        }
-
-        public async Task<string> PasswordResetTokenAsync(string id)
-        {
-            var user = await FindAsync(id);
+            var user = await FindAsync(userId);
 
             return await _userManager.GeneratePasswordResetTokenAsync(user);
         }
 
-        public async Task<string> ChangeEmailTokenAsync(string id, string email)
+        public async Task<User> ResetPasswordAsync(string userId, string password, string token)
         {
-            Guard.Against.NullString(email, Resources.User_InvalidEmail_ErrorMessage);
-
-            var user = await FindAsync(id);
-
-            if (!user.EmailConfirmed)
-            {
-                throw new RutrackerException(
-                    string.Format(Resources.User_NotConfirmedEmail_ErrorMessage, user.Email),
-                    ExceptionEventTypes.InvalidParameters);
-            }
-
-            return await _userManager.GenerateChangeEmailTokenAsync(user, email);
-        }
-
-        public async Task<string> ChangePhoneNumberTokenAsync(string id, string phone)
-        {
-            Guard.Against.NullString(phone, message: Resources.User_InvalidPhoneNumber_ErrorMessage);
-
-            var user = await FindAsync(id);
-
-            if (!user.PhoneNumberConfirmed)
-            {
-                throw new RutrackerException(
-                    string.Format(Resources.User_NotConfirmedPhoneNumber_ErrorMessage, user.PhoneNumber),
-                    ExceptionEventTypes.InvalidParameters);
-            }
-
-            return await _userManager.GenerateChangePhoneNumberTokenAsync(user, phone);
-        }
-
-        public async Task<User> ResetPasswordAsync(string id, string password, string token)
-        {
-            var user = await FindAsync(id);
+            var user = await FindAsync(userId);
             var result = await _userManager.ResetPasswordAsync(user, token, password);
 
             Guard.Against.IsSucceeded(result);
@@ -173,12 +165,12 @@ namespace Rutracker.Server.BusinessLayer.Services
             return user;
         }
 
-        public async Task<User> ChangePasswordAsync(string id, string oldPassword, string newPassword)
+        public async Task<User> ChangePasswordAsync(string userId, string oldPassword, string newPassword)
         {
             Guard.Against.NullString(oldPassword, Resources.User_InvalidOldPassword_ErrorMessage);
             Guard.Against.NullString(newPassword, Resources.User_InvalidNewPassword_ErrorMessage);
 
-            var user = await FindAsync(id);
+            var user = await FindAsync(userId);
 
             if (!await _userManager.CheckPasswordAsync(user, oldPassword))
             {
@@ -195,32 +187,6 @@ namespace Rutracker.Server.BusinessLayer.Services
             }
 
             var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
-
-            Guard.Against.IsSucceeded(result);
-
-            return user;
-        }
-
-        public async Task<User> ChangeEmailAsync(string id, string email, string token)
-        {
-            Guard.Against.NullString(email, Resources.User_InvalidEmail_ErrorMessage);
-            Guard.Against.NullString(token, Resources.User_InvalidEmailChangeToken_ErrorMessage);
-
-            var user = await FindAsync(id);
-            var result = await _userManager.ChangeEmailAsync(user, email, token);
-
-            Guard.Against.IsSucceeded(result);
-
-            return user;
-        }
-
-        public async Task<User> ChangePhoneNumberAsync(string id, string phone, string token)
-        {
-            Guard.Against.NullString(phone, Resources.User_InvalidEmail_ErrorMessage);
-            Guard.Against.NullString(token, Resources.User_InvalidPhoneNumberChangeToken_ErrorMessage);
-
-            var user = await FindAsync(id);
-            var result = await _userManager.ChangePhoneNumberAsync(user, phone, token);
 
             Guard.Against.IsSucceeded(result);
 

@@ -8,15 +8,15 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Interfaces;
-using Rutracker.Server.WebApi.Settings;
+using Rutracker.Server.WebApi.Options;
 
 namespace Rutracker.Server.WebApi.Services
 {
     public class JwtFactory : IJwtFactory
     {
-        private readonly JwtSettings _jwtOptions;
+        private readonly JwtOptions _jwtOptions;
 
-        public JwtFactory(IOptions<JwtSettings> jwtOptions)
+        public JwtFactory(IOptions<JwtOptions> jwtOptions)
         {
             _jwtOptions = jwtOptions.Value;
 
@@ -31,18 +31,19 @@ namespace Rutracker.Server.WebApi.Services
             Guard.Against.Null(_jwtOptions.JtiGenerator, nameof(_jwtOptions.JtiGenerator));
         }
 
-        public async Task<string> GenerateTokenAsync(User user, IEnumerable<string> roles)
+        public async Task<string> GenerateTokenAsync(User user, IEnumerable<Role> roles)
         {
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Uri, user.ImageUrl ?? string.Empty),
                 new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                 new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64)
             };
 
-            var roleClaims = roles.Select(x => new Claim(ClaimTypes.Role, x));
+            var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role.Name));
 
             var jwt = new JwtSecurityToken(
                 issuer: _jwtOptions.Issuer,

@@ -8,7 +8,7 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
-            builder.Property(role => role.IsStockRole).HasColumnName("IsCustomRole");
+            builder.Property(role => role.IsStockRole).HasColumnName("IsStockRole");
         }
     }
 }

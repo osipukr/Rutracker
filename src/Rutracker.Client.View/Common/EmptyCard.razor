@@ -1,0 +1,10 @@
+﻿<Card>
+    <div>
+        @ChildContent
+    </div>
+</Card>
+
+@code
+{
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}

@@ -321,4 +321,22 @@
   <data name="User_WrongPassword_ErrorMessage" xml:space="preserve">
     <value>Wrong password.</value>
   </data>
+  <data name="RoleService_FindAsync_The_role_id_is_invalid_" xml:space="preserve">
+    <value>The role id is invalid.</value>
+  </data>
+  <data name="RoleService_FindAsync_" xml:space="preserve">
+    <value>The role with id={0} not found.</value>
+  </data>
+  <data name="RoleService_AddAsync_The_role_is_invalid_" xml:space="preserve">
+    <value>The role is invalid.</value>
+  </data>
+  <data name="RoleService_FindByNameAsync_The_role_name_is_invalid_" xml:space="preserve">
+    <value>The role name is invalid.</value>
+  </data>
+  <data name="RoleService_FindByNameAsync_" xml:space="preserve">
+    <value>The role with name={0} not found.</value>
+  </data>
+  <data name="UserService_AddToRoleAsync_The_role_name_is_invalid_" xml:space="preserve">
+    <value>The role name is invalid.</value>
+  </data>
 </root>

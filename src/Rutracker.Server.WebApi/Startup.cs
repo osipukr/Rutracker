@@ -23,8 +23,8 @@ using Rutracker.Server.DataAccessLayer.Interfaces.Base;
 using Rutracker.Server.DataAccessLayer.Services;
 using Rutracker.Server.WebApi.Filters;
 using Rutracker.Server.WebApi.Interfaces;
+using Rutracker.Server.WebApi.Options;
 using Rutracker.Server.WebApi.Services;
-using Rutracker.Server.WebApi.Settings;
 using Rutracker.Shared.Models;
 using Rutracker.Utils.DatabaseSeed.Interfaces;
 using Rutracker.Utils.DatabaseSeed.Services;
@@ -56,12 +56,9 @@ namespace Rutracker.Server.WebApi
 
             services.AddMemoryCache();
 
-            services.Configure<JwtSettings>(_configuration.GetSection(nameof(JwtSettings)));
-            services.Configure<ClientSettings>(_configuration.GetSection(nameof(ClientSettings)));
-            services.Configure<FileStorageOptions>(_configuration.GetSection(nameof(FileStorageOptions)));
-            services.Configure<StorageAuthOptions>(_configuration.GetSection(nameof(StorageAuthOptions)));
+            services.Configure<JwtOptions>(_configuration.GetSection(nameof(JwtOptions)));
+            services.Configure<ClientOptions>(_configuration.GetSection(nameof(ClientOptions)));
             services.Configure<EmailAuthOptions>(_configuration.GetSection(nameof(EmailAuthOptions)));
-            services.Configure<SmsAuthOptions>(_configuration.GetSection(nameof(SmsAuthOptions)));
 
             services.AddResponseCompression(options =>
             {
@@ -90,14 +87,20 @@ namespace Rutracker.Server.WebApi
 
             services.AddAutoMapper(typeof(Startup));
 
-            services.AddIdentity<User, Role>(config =>
+            services.AddIdentity<User, Role>(options =>
             {
-                config.SignIn.RequireConfirmedEmail = true;
-                config.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
-                config.Password.RequireNonAlphanumeric = false;
-                config.Password.RequireUppercase = false;
-                config.Password.RequireDigit = false;
-                config.Password.RequiredLength = 6;
+                options.SignIn.RequireConfirmedAccount = false;
+                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
             })
             .AddRoles<Role>()
             .AddEntityFrameworkStores<RutrackerContext>()
@@ -116,7 +119,7 @@ namespace Rutracker.Server.WebApi
             })
             .AddJwtBearer(options =>
             {
-                var jwtSettings = _configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
+                var jwtSettings = _configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>();
 
                 options.RequireHttpsMetadata = false;
                 options.SaveToken = true;
@@ -146,12 +149,13 @@ namespace Rutracker.Server.WebApi
 
             services.AddControllers(options =>
             {
-                options.Filters.Add<ControllerExceptionFilterAttribute>();
-                options.Filters.Add<ModelValidatorFilterAttribute>();
+                options.Filters.Add<GlobalExceptionFilter>();
+                options.Filters.Add<ValidatorFilter>();
 
                 options.OutputFormatters.RemoveType<StreamOutputFormatter>();
                 options.OutputFormatters.RemoveType<StringOutputFormatter>();
             })
+            .AddNewtonsoftJson()
             .ConfigureApiBehaviorOptions(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
@@ -159,20 +163,19 @@ namespace Rutracker.Server.WebApi
 
             services.AddSingleton<IJwtFactory, JwtFactory>();
             services.AddSingleton<IEmailSender, EmailSender>();
-            services.AddSingleton<ISmsSender, SmsSender>();
             services.AddSingleton<IEmailService, EmailService>();
-            services.AddSingleton<ISmsService, SmsService>();
-            services.AddSingleton<IStorageService, StorageService>();
             services.AddScoped<IUnitOfWork<RutrackerContext>, RutrackerUnitOfWork>();
             services.AddScoped<IDateService, DateService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISubcategoryService, SubcategoryService>();
             services.AddScoped<ITorrentService, TorrentService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ICommentService, CommentService>();
 
+            // Seeds
             services.AddScoped<IContextSeed, RutrackerContextSeed>();
         }
 
@@ -180,12 +183,6 @@ namespace Rutracker.Server.WebApi
         {
             app.UseResponseCaching();
             app.UseResponseCompression();
-
-            if (_environment.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseDirectoryBrowser();
-            }
 
             app.UseSwagger();
             app.UseSwaggerUI(options =>

@@ -1,0 +1,26 @@
+﻿@attribute [Authorize]
+
+@layout AuthLayout
+
+@page "/signout"
+
+@inject IAccountService AccountService
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+
+@code
+{
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await AccountService.Logout();
+
+            NavigationManager.NavigateTo(Constants.Page.Home);
+        }
+        catch (Exception exception)
+        {
+            ToastService.ShowError(exception.Message, "Sign Out");
+        }
+    }
+}

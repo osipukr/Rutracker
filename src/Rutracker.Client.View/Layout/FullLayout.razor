@@ -1,0 +1,33 @@
+﻿@inherits LayoutComponentBase
+
+<MainLayout>
+    <LogoContent>
+        <AppLogo />
+    </LogoContent>
+
+    <TitleContent>
+        <AppTitle />
+    </TitleContent>
+
+    <ActionsContent>
+        <AppActions />
+    </ActionsContent>
+
+    <SidebarContent>
+        <AppProfile />
+
+        <Divider Class="FullLayout-Divider" />
+
+        <AppSidebar />
+    </SidebarContent>
+
+    <BodyContent>
+        <AppBody>
+            @Body
+        </AppBody>
+    </BodyContent>
+
+    <FooterContent>
+        <AppFooter />
+    </FooterContent>
+</MainLayout>

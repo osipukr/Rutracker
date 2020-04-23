@@ -48,7 +48,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Category> AddAsync(Category category)
         {
-            Guard.Against.NullNotValid(category, Resources.Category_Invalid_ErrorMessage);
+            Guard.Against.NullInvalid(category, Resources.Category_Invalid_ErrorMessage);
             Guard.Against.NullString(category.Name, Resources.Category_InvalidName_ErrorMessage);
 
             if (await _categoryRepository.ExistAsync(x => x.Name == category.Name))
@@ -68,7 +68,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task<Category> UpdateAsync(int id, Category category)
         {
-            Guard.Against.NullNotValid(category, Resources.Category_Invalid_ErrorMessage);
+            Guard.Against.NullInvalid(category, Resources.Category_Invalid_ErrorMessage);
             Guard.Against.NullString(category.Name, Resources.Category_InvalidName_ErrorMessage);
 
             if (await _categoryRepository.ExistAsync(x => x.Name == category.Name))

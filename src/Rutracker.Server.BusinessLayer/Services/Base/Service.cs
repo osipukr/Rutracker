@@ -12,6 +12,10 @@ namespace Rutracker.Server.BusinessLayer.Services.Base
     {
         protected readonly IUnitOfWork<RutrackerContext> _unitOfWork;
 
+        protected Service()
+        {
+        }
+
         protected Service(IUnitOfWork<RutrackerContext> unitOfWork)
         {
             _unitOfWork = unitOfWork;
