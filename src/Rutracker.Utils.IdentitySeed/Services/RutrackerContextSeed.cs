@@ -1,26 +1,31 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities;
-using Rutracker.Utils.DatabaseSeed.Models;
-using Rutracker.Utils.DatabaseSeed.Services.Base;
+using Rutracker.Utils.IdentitySeed.Models;
+using Rutracker.Utils.IdentitySeed.Services.Base;
 
-namespace Rutracker.Utils.DatabaseSeed.Services
+namespace Rutracker.Utils.IdentitySeed.Services
 {
     public class RutrackerContextSeed : ContextSeed<RutrackerContext>
     {
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
 
-        public RutrackerContextSeed(RutrackerContext context, IUserService userService, IRoleService roleService) : base(context)
+        public RutrackerContextSeed(
+            RutrackerContext context,
+            IUserService userService,
+            IRoleService roleService,
+            ILogger<RutrackerContextSeed> logger) : base(context, logger)
         {
             _userService = userService;
             _roleService = roleService;
         }
 
-        public override async Task SeedAsync()
+        protected override async Task SeedInternalAsync()
         {
             await _context.Database.EnsureCreatedAsync();
 

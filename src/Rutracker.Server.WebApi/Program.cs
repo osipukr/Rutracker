@@ -13,7 +13,7 @@ namespace Rutracker.Server.WebApi
             WebHost.CreateDefaultBuilder(args)
                 .ConfigureLogging((context, builder) =>
                 {
-                    builder.AddFile(context.Configuration.GetSection("Logging"));
+                    builder.AddApplicationInsights();
                 })
                 .UseConfiguration(new ConfigurationBuilder()
                     .AddCommandLine(args)

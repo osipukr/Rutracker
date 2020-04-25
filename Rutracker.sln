@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Server.DataAccess
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{441EC403-CEB7-4BBD-AB60-9AD1BF37CD9F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Server.WebApi", "src\Rutracker.Server.WebApi\Rutracker.Server.WebApi.csproj", "{6CC0429D-7C42-4890-9FBC-AE4018873070}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.UnitTests", "tests\Rutracker.UnitTests\Rutracker.UnitTests.csproj", "{67227569-C7E1-4A59-95A1-34B75A70D429}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.IntegrationTests", "tests\Rutracker.IntegrationTests\Rutracker.IntegrationTests.csproj", "{3C8529FD-188C-44FC-90D2-1D1F57433A00}"
@@ -18,12 +16,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Server.BusinessLayer", "src\Rutracker.Server.BusinessLayer\Rutracker.Server.BusinessLayer.csproj", "{6110D948-2503-4CB2-BF00-75F4A1A9D9B2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Shared.Models", "src\Rutracker.Shared.Models\Rutracker.Shared.Models.csproj", "{246D1D43-1AF2-4324-BE09-66DDEBA8FB48}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-compose", "docker-compose", "{E37CA1DD-84FA-45AF-B13C-104095C2277F}"
-	ProjectSection(SolutionItems) = preProject
-		.dockerignore = .dockerignore
-		docker-compose.yml = docker-compose.yml
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{E01C8C6A-2605-455E-9438-C06089901779}"
 EndProject
@@ -37,11 +29,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Client.Infrastruc
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{44AAFDF4-3172-4089-A058-B81657E9FB92}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Utils.DatabaseSeed", "src\Utils\Rutracker.Utils.DatabaseSeed\Rutracker.Utils.DatabaseSeed.csproj", "{5BA3C9F3-2A35-42DA-AA44-AFA466462ED5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Utils.IdentitySeed", "src\Rutracker.Utils.IdentitySeed\Rutracker.Utils.IdentitySeed.csproj", "{5BA3C9F3-2A35-42DA-AA44-AFA466462ED5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Client.Host", "src\Rutracker.Client.Host\Rutracker.Client.Host.csproj", "{87FE498E-6A50-4E3A-9490-AD4D5BD4EAEC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Client.View", "src\Rutracker.Client.View\Rutracker.Client.View.csproj", "{08BCAEEA-E51E-48EC-8051-684DAFB07C19}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rutracker.Server.WebApi", "src\Rutracker.Server.WebApi\Rutracker.Server.WebApi.csproj", "{262F6087-417F-4577-B36E-BB8143DB68C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,10 +47,6 @@ Global
 		{8D5CC7D0-3745-4226-910A-6B10C5E1ACA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D5CC7D0-3745-4226-910A-6B10C5E1ACA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D5CC7D0-3745-4226-910A-6B10C5E1ACA7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6CC0429D-7C42-4890-9FBC-AE4018873070}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6CC0429D-7C42-4890-9FBC-AE4018873070}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6CC0429D-7C42-4890-9FBC-AE4018873070}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6CC0429D-7C42-4890-9FBC-AE4018873070}.Release|Any CPU.Build.0 = Release|Any CPU
 		{67227569-C7E1-4A59-95A1-34B75A70D429}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{67227569-C7E1-4A59-95A1-34B75A70D429}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67227569-C7E1-4A59-95A1-34B75A70D429}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -93,13 +83,16 @@ Global
 		{08BCAEEA-E51E-48EC-8051-684DAFB07C19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08BCAEEA-E51E-48EC-8051-684DAFB07C19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08BCAEEA-E51E-48EC-8051-684DAFB07C19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{262F6087-417F-4577-B36E-BB8143DB68C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{262F6087-417F-4577-B36E-BB8143DB68C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{262F6087-417F-4577-B36E-BB8143DB68C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{262F6087-417F-4577-B36E-BB8143DB68C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8D5CC7D0-3745-4226-910A-6B10C5E1ACA7} = {DC31B6FA-699F-417A-B154-B611CE9188F3}
-		{6CC0429D-7C42-4890-9FBC-AE4018873070} = {DC31B6FA-699F-417A-B154-B611CE9188F3}
 		{67227569-C7E1-4A59-95A1-34B75A70D429} = {441EC403-CEB7-4BBD-AB60-9AD1BF37CD9F}
 		{3C8529FD-188C-44FC-90D2-1D1F57433A00} = {441EC403-CEB7-4BBD-AB60-9AD1BF37CD9F}
 		{6110D948-2503-4CB2-BF00-75F4A1A9D9B2} = {DC31B6FA-699F-417A-B154-B611CE9188F3}
@@ -113,6 +106,7 @@ Global
 		{5BA3C9F3-2A35-42DA-AA44-AFA466462ED5} = {44AAFDF4-3172-4089-A058-B81657E9FB92}
 		{87FE498E-6A50-4E3A-9490-AD4D5BD4EAEC} = {E01C8C6A-2605-455E-9438-C06089901779}
 		{08BCAEEA-E51E-48EC-8051-684DAFB07C19} = {E01C8C6A-2605-455E-9438-C06089901779}
+		{262F6087-417F-4577-B36E-BB8143DB68C6} = {DC31B6FA-699F-417A-B154-B611CE9188F3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C27CBEED-49AD-475E-ADD1-58A34CC74CB5}

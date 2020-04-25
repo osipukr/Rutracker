@@ -1,7 +1,7 @@
 ﻿using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Shared.Infrastructure.Entities;
 
-namespace Rutracker.Utils.DatabaseSeed.Models
+namespace Rutracker.Utils.IdentitySeed.Models
 {
     public static class Roles
     {

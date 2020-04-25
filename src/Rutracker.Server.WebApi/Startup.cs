@@ -26,8 +26,7 @@ using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Options;
 using Rutracker.Server.WebApi.Services;
 using Rutracker.Shared.Models;
-using Rutracker.Utils.DatabaseSeed.Interfaces;
-using Rutracker.Utils.DatabaseSeed.Services;
+using Rutracker.Utils.IdentitySeed.Extensions;
 
 namespace Rutracker.Server.WebApi
 {
@@ -44,6 +43,12 @@ namespace Rutracker.Server.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry(options =>
+            {
+                options.ConnectionString = _configuration.GetConnectionString("ApplicationInsights");
+                options.DeveloperMode = _environment.IsDevelopment();
+            });
+
             services.AddDbContext<RutrackerContext>(options =>
             {
                 options.UseLazyLoadingProxies();
@@ -56,9 +61,9 @@ namespace Rutracker.Server.WebApi
 
             services.AddMemoryCache();
 
-            services.Configure<JwtOptions>(_configuration.GetSection(nameof(JwtOptions)));
-            services.Configure<ClientOptions>(_configuration.GetSection(nameof(ClientOptions)));
-            services.Configure<EmailAuthOptions>(_configuration.GetSection(nameof(EmailAuthOptions)));
+            services.Configure<JwtOptions>(_configuration.GetSection("JwtOptions"));
+            services.Configure<ClientOptions>(_configuration.GetSection("ClientOptions"));
+            services.Configure<EmailAuthOptions>(_configuration.GetSection("EmailAuthOptions"));
 
             services.AddResponseCompression(options =>
             {
@@ -141,10 +146,10 @@ namespace Rutracker.Server.WebApi
                 };
             });
 
-            services.AddAuthorization(config =>
+            services.AddAuthorization(options =>
             {
-                config.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
-                config.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
+                options.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
+                options.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
             });
 
             services.AddControllers(options =>
@@ -161,6 +166,8 @@ namespace Rutracker.Server.WebApi
                 options.SuppressModelStateInvalidFilter = true;
             });
 
+            services.AddIdentitySeed();
+
             services.AddSingleton<IJwtFactory, JwtFactory>();
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddSingleton<IEmailService, EmailService>();
@@ -174,15 +181,14 @@ namespace Rutracker.Server.WebApi
             services.AddScoped<ITorrentService, TorrentService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ICommentService, CommentService>();
-
-            // Seeds
-            services.AddScoped<IContextSeed, RutrackerContextSeed>();
         }
 
         public void Configure(IApplicationBuilder app)
         {
             app.UseResponseCaching();
             app.UseResponseCompression();
+
+            app.UseHttpsRedirection();
 
             app.UseSwagger();
             app.UseSwaggerUI(options =>
@@ -202,15 +208,7 @@ namespace Rutracker.Server.WebApi
                 endpoints.MapControllers();
             });
 
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                var provider = scope.ServiceProvider;
-
-                foreach (var service in provider.GetServices<IContextSeed>())
-                {
-                    service.SeedAsync().Wait();
-                }
-            }
+            app.UseIdentitySeed();
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using Rutracker.Server.DataAccessLayer.Entities;
 
-namespace Rutracker.Utils.DatabaseSeed.Models
+namespace Rutracker.Utils.IdentitySeed.Models
 {
     public static class Users
     {

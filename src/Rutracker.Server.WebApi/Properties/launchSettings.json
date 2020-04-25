@@ -23,13 +23,7 @@
       },
       "sqlDebugging": true,
       "nativeDebugging": false,
-      "applicationUrl": "http://localhost:5000/"
-    },
-    "Docker": {
-      "commandName": "Docker",
-      "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-      "httpPort": 60743
+      "applicationUrl": "https://localhost:5000/"
     }
   }
 }

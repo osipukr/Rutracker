@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Rutracker.Utils.DatabaseSeed.Interfaces
+namespace Rutracker.Utils.IdentitySeed.Interfaces
 {
     public interface IContextSeed
     {

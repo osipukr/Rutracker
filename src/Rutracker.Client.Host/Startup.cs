@@ -34,13 +34,13 @@ namespace Rutracker.Client.Host
             services.AddProtectedBrowserStorage();
             services.AddHttpClient();
 
-            services.Configure<ApiOptions>(_configuration.GetSection(nameof(ApiOptions)));
-            services.Configure<ServerOptions>(_configuration.GetSection(nameof(ServerOptions)));
+            services.Configure<ApiOptions>(_configuration.GetSection("ApiOptions"));
+            services.Configure<ServerOptions>(_configuration.GetSection("ServerOptions"));
 
             services.AddHttpContextAccessor();
-            services.AddScoped<IRenderContext>(sp =>
+            services.AddScoped<IRenderContext>(provider =>
             {
-                var httpContextAccessor = sp.GetService<IHttpContextAccessor>();
+                var httpContextAccessor = provider.GetService<IHttpContextAccessor>();
                 var hasStarted = httpContextAccessor?.HttpContext?.Response.HasStarted;
                 var isPreRendering = !(hasStarted.HasValue && hasStarted.Value);
 
