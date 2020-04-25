@@ -3,11 +3,11 @@
 @page "/signup"
 
 @inject IAccountService AccountService
-@inject IToastService ToastService
-@inject ScriptHelpers ScriptHelpers
+@inject IMatToaster ToastService
+@inject NavigationManager NavigationManager
 
 <EditForm Model="@RegisterModel"
-          OnValidSubmit="@SignUpEventHandle"
+          OnValidSubmit="@RegisterAsync"
           Context="formContext"
           class="auth-form-root">
 
@@ -22,53 +22,53 @@
     </Typography>
 
     <FormControl class="form-constrol-root">
-        <TextField Class="auth-form-text-field"
-                   FullWidth
-                   Label="User Name"
-                   Name="userName"
-                   Value="@RegisterModel.UserName"
-                   OnChange="@UserNameChangeEventHandler"
-                   Type="text"
-                   Variant="@TextFieldVariant.Outlined" />
+        <MatTextField @bind-Value="@RegisterModel.UserName"
+                      Label="User Name"
+                      Icon="@MatIconNames.Person"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true"
+                      Class="auth-form-text-field" />
 
         <ValidationMessage For="@(() => RegisterModel.UserName)" />
     </FormControl>
 
     <FormControl class="form-constrol-root">
-        <TextField Class="auth-form-text-field"
-                   FullWidth
-                   Label="Email address"
-                   Name="email"
-                   Value="@RegisterModel.Email"
-                   OnChange="@EmailChangeEventHandler"
-                   Type="email"
-                   Variant="@TextFieldVariant.Outlined" />
+        <MatTextField @bind-Value="@RegisterModel.Email"
+                      Label="Email"
+                      Icon="@MatIconNames.Mail_outline"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true"
+                      Class="auth-form-text-field" />
 
         <ValidationMessage For="@(() => RegisterModel.Email)" />
     </FormControl>
 
     <FormControl class="form-constrol-root">
-        <TextField Class="auth-form-text-field"
-                   FullWidth
-                   Label="Password"
-                   Name="password"
-                   Value="@RegisterModel.Password"
-                   OnChange="@PasswordChangeEventHandler"
-                   Type="password"
-                   Variant="@TextFieldVariant.Outlined" />
+        <MatTextField @bind-Value="@RegisterModel.Password"
+                      Label="Password"
+                      Icon="@MatIconNames.Lock_open"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Outlined="true"
+                      Required="true"
+                      Type="password"
+                      Class="auth-form-text-field" />
 
         <ValidationMessage For="@(() => RegisterModel.Password)" />
     </FormControl>
 
     <FormControl class="form-constrol-root">
-        <TextField Class="auth-form-text-field"
-                   FullWidth
-                   Label="Confirm Password"
-                   Name="confirmPassword"
-                   Value="@RegisterModel.ConfirmPassword"
-                   OnChange="@ConfirmPasswordChangeEventHandler"
-                   Type="password"
-                   Variant="@TextFieldVariant.Outlined" />
+        <MatTextField @bind-Value="@RegisterModel.ConfirmPassword"
+                      Label="Confirmation Password"
+                      Icon="@MatIconNames.Lock_open"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Outlined="true"
+                      Required="true"
+                      Type="password"
+                      Class="auth-form-text-field" />
 
         <ValidationMessage For="@(() => RegisterModel.ConfirmPassword)" />
     </FormControl>
@@ -95,44 +95,17 @@
 {
     private RegisterView RegisterModel = new RegisterView();
 
-    private void UserNameChangeEventHandler(ChangeEventArgs e)
-    {
-        RegisterModel.UserName = e.Value.ToString();
-
-        StateHasChanged();
-    }
-
-    private void EmailChangeEventHandler(ChangeEventArgs e)
-    {
-        RegisterModel.Email = e.Value.ToString();
-
-        StateHasChanged();
-    }
-
-    private void PasswordChangeEventHandler(ChangeEventArgs e)
-    {
-        RegisterModel.Password = e.Value.ToString();
-
-        StateHasChanged();
-    }
-
-    private void ConfirmPasswordChangeEventHandler(ChangeEventArgs e)
-    {
-        RegisterModel.ConfirmPassword = e.Value.ToString();
-
-        StateHasChanged();
-    }
-
-    private async Task SignUpEventHandle()
+    private async Task RegisterAsync()
     {
         try
         {
             await AccountService.Register(RegisterModel);
-            await ScriptHelpers.GoBackAsync();
+
+            NavigationManager.NavigateTo(Constants.Page.Home);
         }
         catch (Exception exception)
         {
-            ToastService.ShowError(exception.Message, "Sign Up");
+            ToastService.Add(exception.Message, MatToastType.Danger, "Sign Up");
         }
     }
 }

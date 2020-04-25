@@ -12,7 +12,6 @@ namespace Rutracker.Server.DataAccessLayer.Entities
         public DateTime? AddedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
 
-        public virtual ICollection<Torrent> Torrents { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Like> Likes { get; set; }
     }

@@ -3,11 +3,11 @@
 @page "/signin"
 
 @inject IAccountService AccountService
-@inject IToastService ToastService
-@inject ScriptHelpers ScriptHelpers
+@inject IMatToaster  ToastService
+@inject NavigationManager NavigationManager
 
 <EditForm Model="@LoginModel"
-          OnValidSubmit="@HandleSignIn"
+          OnValidSubmit="@LoginAsync"
           Context="formContext"
           class="auth-form-root">
 
@@ -19,42 +19,37 @@
 
 
     <FormControl class="form-constrol-root">
-        <TextField Class="auth-form-text-field"
-                   FullWidth
-                   Label="User Name"
-                   Name="userName"
-                   Value="@LoginModel.UserName"
-                   OnChange="@UserNameChangeEventHandler"
-                   Type="text"
-                   Variant="@TextFieldVariant.Outlined" />
+        <MatTextField @bind-Value="@LoginModel.UserName"
+                      Label="User Name"
+                      Icon="@MatIconNames.Person"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Outlined="true"
+                      Required="true" />
 
         <ValidationMessage For="@(() => LoginModel.UserName)" />
     </FormControl>
 
     <FormControl class="form-constrol-root">
-        <TextField Class="auth-form-text-field"
-                   FullWidth
-                   Label="Password"
-                   Name="password"
-                   Value="@LoginModel.Password"
-                   OnChange="@PasswordChangeEventHandler"
-                   Type="password"
-                   Variant="@TextFieldVariant.Outlined" />
+        <MatTextField @bind-Value="@LoginModel.Password"
+                      Label="Password"
+                      Icon="@MatIconNames.Lock_open"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Outlined="true"
+                      Required="true"
+                      Type="password" />
 
         <ValidationMessage For="@(() => LoginModel.Password)" />
     </FormControl>
 
 
     <div class="auth-form-remember-field">
-        <Checkbox Checked="@LoginModel.RememberMe"
-                  OnChange="@RememberChangeEventHandler"
-                  Class="auth-form-remember-checkbox"
-                  Color="@Color.Primary"
-                  Name="rememberMe" />
-
-        <Typography Color="@Color.TextSecondary" Variant="@TypographyVariant.Body1">
-            Remember me?
-        </Typography>
+        <MatCheckbox @bind-Value="@LoginModel.RememberMe" class="auth-form-remember-checkbox">
+            <Typography Color="@Color.TextSecondary" Variant="@TypographyVariant.Body1">
+                Remember me?
+            </Typography>
+        </MatCheckbox>
     </div>
 
     <Button Class="auth-form-submit-button"
@@ -79,34 +74,17 @@
 {
     private LoginView LoginModel = new LoginView();
 
-    private void UserNameChangeEventHandler(ChangeEventArgs e)
-    {
-        LoginModel.UserName = e.Value.ToString();
-    }
-
-    private void PasswordChangeEventHandler(ChangeEventArgs e)
-    {
-        LoginModel.Password = e.Value.ToString();
-    }
-
-    private void RememberChangeEventHandler(ChangeEventArgs e)
-    {
-        if (bool.TryParse(e.Value.ToString(), out var value))
-        {
-            LoginModel.RememberMe = value;
-        }
-    }
-
-    private async Task HandleSignIn()
+    private async Task LoginAsync()
     {
         try
         {
             await AccountService.Login(LoginModel);
-            await ScriptHelpers.GoBackAsync();
+            
+            NavigationManager.NavigateTo(Constants.Page.Home);
         }
         catch (Exception exception)
         {
-            ToastService.ShowError(exception.Message, "Sign In");
+            ToastService.Add(exception.Message, MatToastType.Danger, "Sign In");
         }
     }
 }

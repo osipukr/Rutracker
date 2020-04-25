@@ -1,4 +1,4 @@
-using Blazored.Toast;
+using MatBlazor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -31,7 +31,6 @@ namespace Rutracker.Client.Host
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddBlazoredToast();
             services.AddProtectedBrowserStorage();
             services.AddHttpClient();
 
@@ -61,6 +60,17 @@ namespace Rutracker.Client.Host
             {
                 config.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
                 config.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
+            });
+
+            services.AddMatToaster(config =>
+            {
+                config.Position = MatToastPosition.BottomRight;
+                config.PreventDuplicates = true;
+                config.NewestOnTop = true;
+                config.ShowCloseButton = true;
+                config.ShowProgressBar = false;
+                config.MaximumOpacity = 95;
+                config.VisibleStateDuration = 3000;
             });
 
             services.AddScoped<HttpClientService>();

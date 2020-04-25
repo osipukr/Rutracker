@@ -1,11 +1,11 @@
-﻿@attribute [Authorize]
+﻿@layout AuthLayout
 
-@layout AuthLayout
+@attribute [Authorize]
 
 @page "/signout"
 
 @inject IAccountService AccountService
-@inject IToastService ToastService
+@inject IMatToaster ToastService
 @inject NavigationManager NavigationManager
 
 @code
@@ -20,7 +20,7 @@
         }
         catch (Exception exception)
         {
-            ToastService.ShowError(exception.Message, "Sign Out");
+            ToastService.Add(exception.Message, MatToastType.Danger, "Sign Out");
         }
     }
 }

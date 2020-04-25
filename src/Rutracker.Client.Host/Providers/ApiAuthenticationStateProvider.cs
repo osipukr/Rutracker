@@ -16,8 +16,6 @@ namespace Rutracker.Client.Host.Providers
         private readonly ProtectedLocalStorage _storage;
         private readonly IHttpContextAccessor _accessor;
 
-        private static string _token = string.Empty;
-
         private const string TokenKey = "authToken";
         private const string AuthenticationType = "jwt";
 
@@ -30,7 +28,7 @@ namespace Rutracker.Client.Host.Providers
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var token = _token;
+            var token = string.Empty;
 
             if (HasStarted)
             {
@@ -58,8 +56,6 @@ namespace Rutracker.Client.Host.Providers
 
         public async Task MarkUserAsAuthenticated(string token)
         {
-            _token = token;
-
             if (HasStarted)
             {
                 await _storage.SetAsync(TokenKey, token);
@@ -70,8 +66,6 @@ namespace Rutracker.Client.Host.Providers
 
         public async Task MarkUserAsLoggedOut()
         {
-            _token = string.Empty;
-
             if (HasStarted)
             {
                 await _storage.DeleteAsync(TokenKey);

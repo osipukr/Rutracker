@@ -2,7 +2,7 @@
 
 
 @inject ICategoryService CategoryService
-@inject IToastService ToastService
+@inject IMatToaster ToastService
 
 <div>
     <CategoriesToolbar />
@@ -38,7 +38,7 @@
         }
         catch (Exception exception)
         {
-            ToastService.ShowError(exception.Message, "Categories loading");
+            ToastService.Add(exception.Message, MatToastType.Danger, "Categories loading");
         }
     }
 }

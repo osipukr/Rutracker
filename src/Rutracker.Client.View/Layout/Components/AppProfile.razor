@@ -1,5 +1,7 @@
 ﻿@if (IsAuthenticated)
 {
+    <Divider Class="FullLayout-Divider" />
+
     if (IsValidAvatarUrl)
     {
         <Profile Name="@UserName" Bio="@(@$"{UserDescription}")" Avatar="@AvatarUrl" />
