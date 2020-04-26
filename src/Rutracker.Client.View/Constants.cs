@@ -8,6 +8,8 @@
             public const string SignIn = "/signin";
             public const string SignUp = "/signup";
             public const string SignOut = "/signout";
+            public const string ForgotPassword = "/forgotPassword";
+            public const string ResetPassword = "/resetPassword";
             public const string Account = "/account";
             public const string Categories = "/categories";
             public const string Category = "/categories/{0}";

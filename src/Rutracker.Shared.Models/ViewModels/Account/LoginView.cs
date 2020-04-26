@@ -2,7 +2,7 @@
 
 namespace Rutracker.Shared.Models.ViewModels.Account
 {
-    public class LoginView
+    public class LoginView : View
     {
         [Required]
         [StringLength(maximumLength: 100, MinimumLength = 5)]

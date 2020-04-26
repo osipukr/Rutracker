@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Rutracker.Shared.Models.ViewModels.User
+namespace Rutracker.Shared.Models.ViewModels.Account
 {
-    public class ResetPasswordView
+    public class ResetPasswordView : View
     {
         [Required]
         public string UserId { get; set; }

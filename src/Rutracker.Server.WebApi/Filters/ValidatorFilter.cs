@@ -1,36 +1,33 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Rutracker.Server.BusinessLayer.Exceptions;
 
 namespace Rutracker.Server.WebApi.Filters
 {
-    public class ValidatorFilter : ActionFilterAttribute
+    public class ValidatorFilter : IActionFilter
     {
-        public override void OnActionExecuting(ActionExecutingContext context)
+        public void OnActionExecuted(ActionExecutedContext context)
         {
             ActionHandler(context);
-
-            base.OnActionExecuting(context);
         }
 
-        public override Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        public void OnActionExecuting(ActionExecutingContext context)
         {
             ActionHandler(context);
-
-            return base.OnActionExecutionAsync(context, next);
         }
 
-        private static void ActionHandler(ActionExecutingContext context)
+        private static void ActionHandler(ActionContext context)
         {
             if (context.ModelState.IsValid)
             {
                 return;
             }
 
-            var errors = context.ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage);
-            var message = string.Join(Environment.NewLine, errors);
+            var message = context.ModelState.Values
+                .SelectMany(x => x.Errors)
+                .Select(x => x.ErrorMessage)
+                .FirstOrDefault();
 
             throw new RutrackerException(message, ExceptionEventTypes.InvalidParameters);
         }

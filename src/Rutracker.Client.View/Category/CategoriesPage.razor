@@ -1,44 +1,76 @@
 ﻿@page "/categories"
 
-
 @inject ICategoryService CategoryService
 @inject IMatToaster ToastService
 
-<div>
-    <CategoriesToolbar />
+<div class="Categories-Root">
+    @if (_errorModel.IsError)
+    {
+        <ErrorCard>
+            Cannot be load category list <br />
 
-    @if (Categories == null)
-    {
-        <ProgressCard />
-    }
-    else if (!Categories.Any())
-    {
-        <EmptyCard>
-            Categories list is empty
-        </EmptyCard>
+            @_errorModel.Message
+        </ErrorCard>
     }
     else
     {
-        foreach (var category in Categories)
+        <AuthorizeView Policy="@Policies.IsAdmin">
+            <Authorized>
+                <CategoriesToolbar OnImportClicked="@OnImportEventHandler"
+                                   OnExportClicked="@OnExportEventHandler"
+                                   OnAddClicked="@OnAddEventHandler" />
+            </Authorized>
+        </AuthorizeView>
+
+        @if (_categories == null)
         {
-            <CategoryCard Category="@category" @key="@category" />
+            <ProgressCard />
+        }
+        else if (!_categories.Any())
+        {
+            <EmptyCard>
+                Categories list is empty
+            </EmptyCard>
+        }
+        else
+        {
+            <MatAccordion Class="Categories-List-Root" HideToggle="false" Multi="false">
+                @foreach (var category in _categories)
+                {
+                    <CategoryCard Category="@category" @key="@category" />
+                }
+            </MatAccordion>
         }
     }
 </div>
 
+
 @code
 {
-    private List<CategoryView> Categories { get; set; }
+    private List<CategoryView> _categories;
+    private readonly ErrorModel _errorModel = ErrorModel.Create();
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            Categories = (await CategoryService.ListAsync()).ToList();
+            _categories = await CategoryService.ListAsync();
         }
         catch (Exception exception)
         {
-            ToastService.Add(exception.Message, MatToastType.Danger, "Categories loading");
+            _errorModel.HandlerException(exception);
         }
+    }
+
+    private void OnImportEventHandler(EventArgs e)
+    {
+    }
+
+    private void OnExportEventHandler(EventArgs e)
+    {
+    }
+
+    private void OnAddEventHandler(EventArgs e)
+    {
     }
 }

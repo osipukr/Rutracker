@@ -14,9 +14,9 @@ namespace Rutracker.Client.Host.Services
         {
         }
 
-        public async Task<IEnumerable<CategoryView>> ListAsync()
+        public async Task<List<CategoryView>> ListAsync()
         {
-            return await _httpClientService.GetJsonAsync<IEnumerable<CategoryView>>(_apiOptions.Categories);
+            return await _httpClientService.GetJsonAsync<List<CategoryView>>(_apiOptions.Categories);
         }
 
         public async Task<CategoryDetailView> FindAsync(int id)

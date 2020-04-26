@@ -12,14 +12,14 @@ namespace Rutracker.Server.BusinessLayer.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IUserService _userService;
         private readonly IDateService _dateService;
 
-        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager, IDateService dateService)
+        public AccountService(SignInManager<User> signInManager, IUserService userService, IDateService dateService)
         {
-            _userManager = userManager;
             _signInManager = signInManager;
+            _userService = userService;
             _dateService = dateService;
         }
 
@@ -28,7 +28,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             Guard.Against.NullString(userName, Resources.User_InvalidUserName_ErrorMessage);
             Guard.Against.NullString(password, Resources.User_InvalidPassword_ErrorMessage);
 
-            var user = await _userManager.FindByNameAsync(userName);
+            var user = await _userService.FindByNameAsync(userName);
 
             Guard.Against.NullNotFound(user, string.Format(Resources.User_NotFoundByName_ErrorMessage, userName));
 
@@ -63,9 +63,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             Guard.Against.NullString(userName, Resources.User_InvalidUserName_ErrorMessage);
             Guard.Against.NullString(email, Resources.User_InvalidEmail_ErrorMessage);
 
-            var user = await _userManager.FindByNameAsync(userName);
-
-            if (user != null)
+            if (await _userService.ExistByNameAsync(userName))
             {
                 throw new RutrackerException(
                     string.Format(Resources.User_AlreadyRegistered_ErrorMessage, userName),
@@ -73,15 +71,15 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             }
 
-            user = new User
+            var user = new User
             {
                 UserName = userName,
                 Email = email,
                 AddedDate = _dateService.Now()
             };
 
-            await _userManager.CreateAsync(user, password);
-            await _userManager.AddToRoleAsync(user, StockRoles.User);
+            await _userService.AddAsync(user, password);
+            await _userService.AddToRoleAsync(user, StockRoles.User);
 
             return user;
         }

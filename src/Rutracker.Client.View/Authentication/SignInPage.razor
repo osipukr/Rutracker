@@ -1,4 +1,4 @@
-﻿@layout AuthLayout
+﻿@layout AuthenticationLayout
 
 @page "/signin"
 
@@ -13,10 +13,9 @@
 
     <DataAnnotationsValidator />
 
-    <Typography Class="auth-form-title" Variant="TypographyVariant.H2">
+    <Typography Class="auth-form-title" Variant="TypographyVariant.H2" Style="margin-bottom: 20px;">
         Sign in
     </Typography>
-
 
     <FormControl class="form-constrol-root">
         <MatTextField @bind-Value="@LoginModel.UserName"
@@ -43,7 +42,6 @@
         <ValidationMessage For="@(() => LoginModel.Password)" />
     </FormControl>
 
-
     <div class="auth-form-remember-field">
         <MatCheckbox @bind-Value="@LoginModel.RememberMe" class="auth-form-remember-checkbox">
             <Typography Color="@Color.TextSecondary" Variant="@TypographyVariant.Body1">
@@ -66,6 +64,14 @@
 
         <Link Href="@Constants.Page.SignUp">
         Sign up
+        </Link>
+    </Typography>
+
+    <Typography Color="@Color.TextSecondary" Variant="@TypographyVariant.Body1">
+        Forgot password?
+
+        <Link Href="@Constants.Page.ForgotPassword">
+        Reset password
         </Link>
     </Typography>
 </EditForm>

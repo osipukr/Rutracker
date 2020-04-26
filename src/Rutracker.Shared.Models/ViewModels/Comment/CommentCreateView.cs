@@ -2,7 +2,7 @@
 
 namespace Rutracker.Shared.Models.ViewModels.Comment
 {
-    public class CommentCreateView
+    public class CommentCreateView : View
     {
         [Required]
         public string Text { get; set; }

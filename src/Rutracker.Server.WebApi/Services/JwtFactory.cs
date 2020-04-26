@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Interfaces;
 using Rutracker.Server.WebApi.Options;
+using Rutracker.Shared.Models.ViewModels.Account;
 
 namespace Rutracker.Server.WebApi.Services
 {
@@ -31,7 +32,7 @@ namespace Rutracker.Server.WebApi.Services
             Guard.Against.Null(_jwtOptions.JtiGenerator, nameof(_jwtOptions.JtiGenerator));
         }
 
-        public async Task<string> GenerateTokenAsync(User user, IEnumerable<Role> roles)
+        public async Task<TokenView> GenerateTokenAsync(User user, IEnumerable<Role> roles)
         {
             var claims = new[]
             {
@@ -53,10 +54,15 @@ namespace Rutracker.Server.WebApi.Services
                 expires: _jwtOptions.Expiration,
                 signingCredentials: _jwtOptions.SigningCredentials);
 
-            return new JwtSecurityTokenHandler().WriteToken(jwt);
+            var token = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            return new TokenView
+            {
+                Token = token
+            };
         }
 
-        private static long ToUnixEpochDate(DateTime date)
+        private long ToUnixEpochDate(DateTime date)
         {
             return (long)Math.Round((date.ToUniversalTime() -
                                       new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);

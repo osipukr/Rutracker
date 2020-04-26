@@ -77,7 +77,7 @@ namespace Rutracker.Utils.IdentitySeed.Services
         {
             foreach (var (user, password, roles) in UsersList)
             {
-                if (!await _userService.ExistAsync(user.UserName))
+                if (!await _userService.ExistByNameAsync(user.UserName))
                 {
                     await _userService.AddAsync(user, password);
 

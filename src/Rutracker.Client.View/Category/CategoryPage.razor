@@ -1,0 +1,13 @@
+﻿@page "/categories/{Id:int}"
+
+<div class="Category-Root">
+    <h3>CategoryPage</h3>
+</div>
+
+@code
+{
+    [Parameter] public int Id { get; set; }
+
+    private CategoryDetailView _category;
+    private ErrorModel _errorModel = ErrorModel.Create();
+}

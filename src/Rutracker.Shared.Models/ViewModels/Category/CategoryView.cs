@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Rutracker.Shared.Models.ViewModels.Subcategory;
 
 namespace Rutracker.Shared.Models.ViewModels.Category
 {
@@ -13,5 +15,8 @@ namespace Rutracker.Shared.Models.ViewModels.Category
 
         [DataMember(Order = 3)]
         public int SubcategoriesCount { get; set; }
+
+        [DataMember(Order = 4)]
+        public IEnumerable<SubcategoryView> Subcategories { get; set; }
     }
 }

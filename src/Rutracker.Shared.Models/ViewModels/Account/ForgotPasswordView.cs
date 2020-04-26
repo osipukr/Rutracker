@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Rutracker.Shared.Models.ViewModels.User
+namespace Rutracker.Shared.Models.ViewModels.Account
 {
-    public class ForgotPasswordView
+    public class ForgotPasswordView : View
     {
         [Required]
         [StringLength(maximumLength: 100, MinimumLength = 5)]

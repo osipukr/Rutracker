@@ -2,7 +2,7 @@
 
 namespace Rutracker.Shared.Models.ViewModels.User
 {
-    public class PasswordUpdateView
+    public class PasswordUpdateView : View
     {
         [Required]
         [DataType(DataType.Password)]

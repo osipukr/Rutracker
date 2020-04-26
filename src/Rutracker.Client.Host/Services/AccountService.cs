@@ -14,28 +14,40 @@ namespace Rutracker.Client.Host.Services
 
         public AccountService(
             HttpClientService httpClientService,
-            IOptions<ApiOptions> apiOptions,
-            ApiAuthenticationStateProvider apiAuthenticationState) : base(httpClientService, apiOptions)
+            ApiAuthenticationStateProvider apiAuthenticationState,
+            IOptions<ApiOptions> apiOptions) : base(httpClientService, apiOptions)
         {
             _apiAuthenticationState = apiAuthenticationState;
         }
 
         public async Task Login(LoginView model)
         {
-            var token = await _httpClientService.PostJsonAsync<string>(_apiOptions.Login, model);
+            var token = await _httpClientService.PostJsonAsync<TokenView>(_apiOptions.Login, model);
 
-            await _apiAuthenticationState.MarkUserAsAuthenticated(token);
+            await _apiAuthenticationState.MarkUserAsAuthenticated(token.Token);
         }
 
         public async Task Register(RegisterView model)
         {
-            await _httpClientService.PostJsonAsync(_apiOptions.Register, model);
+            var token = await _httpClientService.PostJsonAsync<TokenView>(_apiOptions.Register, model);
+
+            await _apiAuthenticationState.MarkUserAsAuthenticated(token.Token);
         }
 
         public async Task Logout()
         {
             await _httpClientService.PostJsonAsync(_apiOptions.Logout, null);
             await _apiAuthenticationState.MarkUserAsLoggedOut();
+        }
+
+        public async Task ForgotPassword(ForgotPasswordView model)
+        {
+            await _httpClientService.PostJsonAsync(_apiOptions.ForgotPassword, model);
+        }
+
+        public async Task ResetPassword(ResetPasswordView model)
+        {
+            await _httpClientService.PostJsonAsync(_apiOptions.ResetPassword, model);
         }
     }
 }

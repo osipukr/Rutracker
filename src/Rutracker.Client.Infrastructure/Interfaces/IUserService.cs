@@ -12,7 +12,5 @@ namespace Rutracker.Client.Infrastructure.Interfaces
         Task<UserDetailView> FindAsync();
         Task<UserDetailView> UpdateAsync(UserUpdateView model);
         Task<UserDetailView> ChangePasswordAsync(PasswordUpdateView model);
-        Task ForgotPassword(ForgotPasswordView model);
-        Task ResetPassword(ResetPasswordView model);
     }
 }

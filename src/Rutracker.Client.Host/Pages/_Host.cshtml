@@ -4,6 +4,8 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = null;
+
+    var title = "Rutracker";
 }
 
 <!DOCTYPE html>
@@ -11,7 +13,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rutracker</title>
+    <title>@title</title>
     <base href="~/" />
     <link href="_content/MatBlazor/dist/matBlazor.css" rel="stylesheet" />
 </head>
@@ -19,27 +21,6 @@
     <app>
         <component type="typeof(App)" render-mode="ServerPrerendered" />
     </app>
-
-    <style>
-        #blazor-error-ui {
-            background: lightyellow;
-            bottom: 0;
-            box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
-            display: none;
-            left: 0;
-            padding: 0.6rem 1.25rem 0.7rem 1.25rem;
-            position: fixed;
-            width: 100%;
-            z-index: 1000;
-        }
-
-            #blazor-error-ui .dismiss {
-                cursor: pointer;
-                position: absolute;
-                right: 0.75rem;
-                top: 0.5rem;
-            }
-    </style>
 
     <div id="blazor-error-ui">
         <environment include="Staging,Production">

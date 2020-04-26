@@ -6,7 +6,7 @@ namespace Rutracker.Client.Infrastructure.Interfaces
 {
     public interface ISubcategoryService
     {
-        Task<IEnumerable<SubcategoryView>> ListAsync(int? categoryId);
+        Task<List<SubcategoryView>> ListAsync(int? categoryId);
         Task<SubcategoryDetailView> FindAsync(int id);
         Task<SubcategoryView> AddAsync(SubcategoryCreateView model);
         Task<SubcategoryView> UpdateAsync(int id, SubcategoryUpdateView model);

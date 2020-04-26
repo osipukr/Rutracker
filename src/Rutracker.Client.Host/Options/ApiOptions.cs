@@ -27,6 +27,8 @@
         public string Login { get; set; }
         public string Register { get; set; }
         public string Logout { get; set; }
+        public string ForgotPassword { get; set; }
+        public string ResetPassword { get; set; }
 
         // User
         public string Users { get; set; }
@@ -34,7 +36,5 @@
         public string UserProfile { get; set; }
         public string ChangeUserInfo { get; set; }
         public string ChangePassword { get; set; }
-        public string ForgotPassword { get; set; }
-        public string ResetPassword { get; set; }
     }
 }

@@ -1,0 +1,18 @@
+﻿<div class="Categories-Toolbar-Root">
+    <Button Class="Categories-Toolbar-Button" OnClick="@OnImportClicked">Import</Button>
+    <Button Class="Categories-Toolbar-Button" OnClick="@OnExportClicked">Export</Button>
+
+    <Button Class="Categories-Toolbar-Button"
+            Color="@Color.Primary"
+            Variant="@ButtonVariant.Contained"
+            OnClick="@OnAddClicked">
+        Add
+    </Button>
+</div>
+
+@code
+{
+    [Parameter] public EventCallback<EventArgs> OnImportClicked { get; set; }
+    [Parameter] public EventCallback<EventArgs> OnExportClicked { get; set; }
+    [Parameter] public EventCallback<EventArgs> OnAddClicked { get; set; }
+}

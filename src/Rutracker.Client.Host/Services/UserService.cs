@@ -45,15 +45,5 @@ namespace Rutracker.Client.Host.Services
         {
             return await _httpClientService.PutJsonAsync<UserDetailView>(_apiOptions.ChangePassword, model);
         }
-
-        public async Task ForgotPassword(ForgotPasswordView model)
-        {
-            await _httpClientService.PostJsonAsync(_apiOptions.ForgotPassword, model);
-        }
-
-        public async Task ResetPassword(ResetPasswordView model)
-        {
-            await _httpClientService.PostJsonAsync(_apiOptions.ResetPassword, model);
-        }
     }
 }

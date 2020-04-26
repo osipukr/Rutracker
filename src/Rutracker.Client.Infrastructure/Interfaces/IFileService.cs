@@ -6,7 +6,7 @@ namespace Rutracker.Client.Infrastructure.Interfaces
 {
     public interface IFileService
     {
-        Task<IEnumerable<FileView>> ListAsync(int torrentId);
+        Task<List<FileView>> ListAsync(int torrentId);
         Task<FileView> FindAsync(int id);
     }
 }

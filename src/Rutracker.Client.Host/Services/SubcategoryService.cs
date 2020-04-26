@@ -14,11 +14,11 @@ namespace Rutracker.Client.Host.Services
         {
         }
 
-        public async Task<IEnumerable<SubcategoryView>> ListAsync(int? categoryId)
+        public async Task<List<SubcategoryView>> ListAsync(int? categoryId)
         {
             var url = string.Format(_apiOptions.Subcategories, categoryId?.ToString());
 
-            return await _httpClientService.GetJsonAsync<IEnumerable<SubcategoryView>>(url);
+            return await _httpClientService.GetJsonAsync<List<SubcategoryView>>(url);
         }
 
         public async Task<SubcategoryDetailView> FindAsync(int id)

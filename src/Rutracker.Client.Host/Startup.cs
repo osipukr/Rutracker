@@ -74,8 +74,8 @@ namespace Rutracker.Client.Host
                 config.NewestOnTop = true;
                 config.ShowCloseButton = true;
                 config.ShowProgressBar = false;
-                config.MaximumOpacity = 95;
-                config.VisibleStateDuration = 3000;
+                config.MaximumOpacity = 100;
+                config.VisibleStateDuration = 5000;
             });
 
             services.AddScoped<HttpClientService>();

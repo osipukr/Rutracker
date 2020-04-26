@@ -2,7 +2,7 @@
 
 namespace Rutracker.Shared.Models.ViewModels.User
 {
-    public class UserUpdateView
+    public class UserUpdateView : View
     {
         [StringLength(50)]
         public string FirstName { get; set; }

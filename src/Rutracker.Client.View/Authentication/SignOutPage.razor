@@ -1,4 +1,4 @@
-﻿@layout AuthLayout
+﻿@layout AuthenticationLayout
 
 @attribute [Authorize]
 
@@ -7,10 +7,6 @@
 @inject IAccountService AccountService
 @inject IMatToaster ToastService
 @inject NavigationManager NavigationManager
-
-<div>
-    Hello
-</div>
 
 @code
 {

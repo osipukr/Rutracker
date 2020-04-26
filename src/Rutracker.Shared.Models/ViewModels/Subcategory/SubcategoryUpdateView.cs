@@ -2,7 +2,7 @@
 
 namespace Rutracker.Shared.Models.ViewModels.Subcategory
 {
-    public class SubcategoryUpdateView
+    public class SubcategoryUpdateView : View
     {
         [Required]
         [MaxLength(100)]

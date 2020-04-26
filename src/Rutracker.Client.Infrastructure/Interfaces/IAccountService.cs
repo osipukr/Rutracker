@@ -8,5 +8,8 @@ namespace Rutracker.Client.Infrastructure.Interfaces
         Task Login(LoginView model);
         Task Register(RegisterView model);
         Task Logout();
+
+        Task ForgotPassword(ForgotPasswordView model);
+        Task ResetPassword(ResetPasswordView model);
     }
 }

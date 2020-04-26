@@ -2,7 +2,7 @@
 
 namespace Rutracker.Shared.Models.ViewModels.Subcategory
 {
-    public class SubcategoryCreateView
+    public class SubcategoryCreateView : View
     {
         [Required]
         [MaxLength(100)]

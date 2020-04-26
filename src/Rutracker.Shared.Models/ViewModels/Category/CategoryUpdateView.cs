@@ -2,7 +2,7 @@
 
 namespace Rutracker.Shared.Models.ViewModels.Category
 {
-    public class CategoryUpdateView
+    public class CategoryUpdateView : View
     {
         [Required]
         [MaxLength(100)]

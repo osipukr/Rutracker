@@ -39,13 +39,20 @@ namespace Rutracker.Server.WebApi.Filters
 #endif
             var statusCode = StatusCodes.Status500InternalServerError;
 
-            if (context.Exception is RutrackerException exception)
+            if (context.Exception is RutrackerException rutrackerException)
             {
-                message = exception.Message;
+                var exception = context.Exception;
 
-                if (_statusCodesMapper.ContainsKey(exception.ExceptionEventType))
+                while (exception.InnerException != null)
                 {
-                    statusCode = _statusCodesMapper[exception.ExceptionEventType];
+                    message += exception.InnerException.Message;
+
+                    exception = exception.InnerException;
+                }
+
+                if (_statusCodesMapper.ContainsKey(rutrackerException.ExceptionEventType))
+                {
+                    statusCode = _statusCodesMapper[rutrackerException.ExceptionEventType];
                 }
             }
 

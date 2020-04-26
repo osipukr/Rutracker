@@ -1,8 +1,9 @@
 ﻿using Rutracker.Shared.Infrastructure.Filters;
+using Rutracker.Shared.Models.ViewModels;
 
 namespace Rutracker.Shared.Models
 {
-    public class PagedFilter : IPagedFilter
+    public class PagedFilter : View, IPagedFilter
     {
         public int PageIndexFrom { get; set; } = 1;
 

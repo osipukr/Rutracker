@@ -2,7 +2,7 @@
 
 namespace Rutracker.Shared.Models.ViewModels.Torrent
 {
-    public class TorrentUpdateView
+    public class TorrentUpdateView : View
     {
         [Required]
         [MaxLength(100)]

@@ -1,10 +1,12 @@
 ﻿@inject NavigationManager NavigationManager
 
-<AppResources />
+<ThemeProvider Theme="@Theme" />
+<LayoutResources />
+
+<Styles />
+<Scripts />
 
 <MatToastContainer />
-
-<ThemeProvider Theme="@Theme" />
 
 <MatThemeProvider Theme="@MatTheme">
     <CascadingAuthenticationState>
@@ -23,7 +25,7 @@
             </Found>
             <NotFound>
                 <LayoutView Layout="@typeof(SmallLayout)">
-                    <NotFound/>
+                    <NotFound />
                 </LayoutView>
             </NotFound>
         </Router>

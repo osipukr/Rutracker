@@ -1,5 +1,10 @@
-﻿<Card>
-    <CardContent>
+﻿<MatExpansionPanel>
+    <MatExpansionPanelSummary>
+        <MatExpansionPanelHeader>
+            @Category.Name (Total subcategories: @Category.SubcategoriesCount)
+        </MatExpansionPanelHeader>
+    </MatExpansionPanelSummary>
+    <MatExpansionPanelDetails>
         <Typography Align="@Align.Left" GutterBottom Variant="@TypographyVariant.H4">
             @Category.Name
         </Typography>
@@ -7,14 +12,26 @@
         <Typography Align="@Align.Left" Variant="@TypographyVariant.Body1">
             @Category.Description
         </Typography>
+    </MatExpansionPanelDetails>
+</MatExpansionPanel>
+
+@*<Card>
+    <CardContent>
+        <Typography Align="@Align.Left" GutterBottom Variant="@TypographyVariant.H4">
+            @Category.Name
+        </Typography>
+
+        <Typography Align="@Align.Left" Variant="@TypographyVariant.Body1">
+                @Category.Description
+            </Typography>
     </CardContent>
 
-    <Divider/>
+    <Divider />
 
     <CardActions>
         <Grid Container Justify="@Justify.SpaceBetween">
             <Grid Item>
-                <GetAppIcon/>
+                <GetAppIcon />
 
                 <Typography Display="@Display.Inline" Variant="@TypographyVariant.Body2">
                     @Category.SubcategoriesCount Subcategories
@@ -22,7 +39,7 @@
             </Grid>
         </Grid>
     </CardActions>
-</Card>
+</Card>*@
 
 @code
 {

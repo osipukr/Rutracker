@@ -1,0 +1,21 @@
+﻿<AuthorizeView Context="AuthorizeContext">
+    <Authorized>
+        <MatTooltip Tooltip="Logout" Wrap="true">
+            <MatIconButton Link="@Constants.Page.SignOut" Icon="@MatIconNames.Exit_to_app" />
+        </MatTooltip>
+    </Authorized>
+    <NotAuthorized>
+        <Button Color="@Color.Inherit"
+                Variant="@ButtonVariant.Outlined"
+                Href="@Constants.Page.SignIn"
+                style="margin-right: 10px;">
+            Login
+        </Button>
+
+        <Button Color="@Color.Inherit"
+                Variant="@ButtonVariant.Outlined"
+                Href="@Constants.Page.SignUp">
+            Register
+        </Button>
+    </NotAuthorized>
+</AuthorizeView>
