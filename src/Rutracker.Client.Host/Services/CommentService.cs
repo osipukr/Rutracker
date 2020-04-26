@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using Rutracker.Client.Host.Extensions;
+using Rutracker.Client.Host.Helpers;
 using Rutracker.Client.Host.Options;
 using Rutracker.Client.Host.Services.Base;
 using Rutracker.Client.Infrastructure.Interfaces;

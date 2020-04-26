@@ -14,27 +14,27 @@ namespace Rutracker.Client.Infrastructure.Extensions
 
         public static bool IsUserInRole(this AuthenticationState state, string role)
         {
-            return state.User.IsInRole(role);
+            return state.User?.IsInRole(role) ?? false;
         }
 
         public static string GetUserId(this AuthenticationState state)
         {
-            return state.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return state.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
 
         public static string GetUserName(this AuthenticationState state)
         {
-            return state.User.Identity?.Name;
+            return state.User?.Identity?.Name;
         }
 
         public static string GetUserImage(this AuthenticationState state)
         {
-            return state.User.FindFirst(ClaimTypes.Uri)?.Value;
+            return state.User?.FindFirst(ClaimTypes.Uri)?.Value;
         }
 
         public static IEnumerable<string> GetUserRole(this AuthenticationState state)
         {
-            return state.User.FindAll(ClaimTypes.Role).Select(x => x.Value);
+            return state.User?.FindAll(ClaimTypes.Role).Select(x => x.Value);
         }
     }
 }

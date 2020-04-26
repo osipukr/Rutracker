@@ -8,19 +8,26 @@
 @inject IMatToaster ToastService
 @inject NavigationManager NavigationManager
 
+<div>
+    Hello
+</div>
+
 @code
 {
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        try
-        {
-            await AccountService.Logout();
+        NavigationManager.NavigateTo(Constants.Page.Home);
 
-            NavigationManager.NavigateTo(Constants.Page.Home);
-        }
-        catch (Exception exception)
+        if (firstRender)
         {
-            ToastService.Add(exception.Message, MatToastType.Danger, "Sign Out");
+            try
+            {
+                await AccountService.Logout();
+            }
+            catch (Exception exception)
+            {
+                ToastService.Add(exception.Message, MatToastType.Danger, "Sign Out");
+            }
         }
     }
 }

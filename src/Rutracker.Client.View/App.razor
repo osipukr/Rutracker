@@ -7,24 +7,27 @@
 <ThemeProvider Theme="@Theme" />
 
 <MatThemeProvider Theme="@MatTheme">
-    <Router AppAssembly="@typeof(FullLayout).Assembly">
-        <Found Context="routeData">
-            <AuthorizeRouteView RouteData="routeData" DefaultLayout="@typeof(FullLayout)">
-                <NotAuthorized>
-                    @{
-                        NavigationManager.NavigateTo($"{Constants.Page.SignIn}?returnUrl={NavigationManager.Uri}");
-                    }
-                </NotAuthorized>
-            </AuthorizeRouteView>
-        </Found>
-        <NotFound>
-            <CascadingAuthenticationState>
+    <CascadingAuthenticationState>
+        <Router AppAssembly="@typeof(FullLayout).Assembly">
+            <Found Context="routeData">
+                <AuthorizeRouteView RouteData="routeData" DefaultLayout="@typeof(FullLayout)">
+                    <NotAuthorized>
+                        @{
+                            NavigationManager.NavigateTo($"{Constants.Page.SignIn}?returnUrl={NavigationManager.Uri}");
+                        }
+                    </NotAuthorized>
+                    <Authorizing>
+
+                    </Authorizing>
+                </AuthorizeRouteView>
+            </Found>
+            <NotFound>
                 <LayoutView Layout="@typeof(SmallLayout)">
-                    <NotFound />
+                    <NotFound/>
                 </LayoutView>
-            </CascadingAuthenticationState>
-        </NotFound>
-    </Router>
+            </NotFound>
+        </Router>
+    </CascadingAuthenticationState>
 </MatThemeProvider>
 
 @code

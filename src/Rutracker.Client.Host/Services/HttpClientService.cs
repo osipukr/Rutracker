@@ -122,15 +122,15 @@ namespace Rutracker.Client.Host.Services
             }
         }
 
-        public void SetAuthorizationToken(string token)
+        public void SetAuthorization(string token)
         {
             if (!string.IsNullOrWhiteSpace(token))
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
         }
 
-        public void RemoveAuthorizationToken()
+        public void RemoveAuthorization()
         {
             if (_httpClient.DefaultRequestHeaders.Authorization != null)
             {

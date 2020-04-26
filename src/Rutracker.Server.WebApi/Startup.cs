@@ -46,7 +46,6 @@ namespace Rutracker.Server.WebApi
             services.AddApplicationInsightsTelemetry(options =>
             {
                 options.ConnectionString = _configuration.GetConnectionString("ApplicationInsights");
-                options.DeveloperMode = _environment.IsDevelopment();
             });
 
             services.AddDbContext<RutrackerContext>(options =>
@@ -119,12 +118,11 @@ namespace Rutracker.Server.WebApi
 
             services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
-                var jwtSettings = _configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>();
+                var jwtSettings = _configuration.GetSection("JwtOptions").Get<JwtOptions>();
 
                 options.RequireHttpsMetadata = false;
                 options.SaveToken = true;

@@ -1,21 +1,35 @@
-﻿<AuthorizeView Context="AuthorizeContext">
-    <Authorized>
-        <MatTooltip Tooltip="Logout" Wrap="true">
-            <MatIconButton Link="@Constants.Page.SignOut" Icon="@MatIconNames.Exit_to_app" />
-        </MatTooltip>
-    </Authorized>
-    <NotAuthorized>
-        <Button Color="@Color.Inherit"
-                Variant="@ButtonVariant.Outlined"
-                Href="@Constants.Page.SignIn"
-                style="margin-right: 10px;">
-            Login
-        </Button>
+﻿@if (IsAuthenticated)
+{
+    <MatTooltip Tooltip="Logout" Wrap="true">
+        <MatIconButton Link="@Constants.Page.SignOut" Icon="@MatIconNames.Exit_to_app" />
+    </MatTooltip>
+}
+else
+{
+    <Button Color="@Color.Inherit"
+            Variant="@ButtonVariant.Outlined"
+            Href="@Constants.Page.SignIn"
+            style="margin-right: 10px;">
+        Login
+    </Button>
 
-        <Button Color="@Color.Inherit"
-                Variant="@ButtonVariant.Outlined"
-                Href="@Constants.Page.SignUp">
-            Register
-        </Button>
-    </NotAuthorized>
-</AuthorizeView>
+    <Button Color="@Color.Inherit"
+            Variant="@ButtonVariant.Outlined"
+            Href="@Constants.Page.SignUp">
+        Register
+    </Button>
+}
+
+@code
+{
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private bool IsAuthenticated { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var state = await AuthenticationStateTask;
+
+        IsAuthenticated = state.IsUserAuthenticated();
+    }
+}

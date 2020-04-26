@@ -3,7 +3,7 @@
 namespace Rutracker.Shared.Models.ViewModels
 {
     [DataContract]
-    public class View<T>
+    public abstract class View<T>
     {
         [DataMember(Order = 0)]
         public T Id { get; set; }

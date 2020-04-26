@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ProtectedBrowserStorage;
+using Rutracker.Client.Host.Helpers;
 using Rutracker.Client.Host.Services;
 
 namespace Rutracker.Client.Host.Providers
@@ -30,10 +31,12 @@ namespace Rutracker.Client.Host.Providers
         {
             var token = string.Empty;
 
-            if (HasStarted)
+            if (_accessor.IsServerStarted())
             {
                 token = await _storage.GetAsync<string>(TokenKey);
             }
+
+            Console.WriteLine($"Token is {token}");
 
             if (!string.IsNullOrWhiteSpace(token))
             {
@@ -41,7 +44,7 @@ namespace Rutracker.Client.Host.Providers
 
                 if (jwtToken.ValidTo > DateTime.UtcNow)
                 {
-                    _httpClientService.SetAuthorizationToken(token);
+                    _httpClientService.SetAuthorization(token);
 
                     var identity = new ClaimsIdentity(jwtToken.Claims, AuthenticationType);
 
@@ -49,14 +52,14 @@ namespace Rutracker.Client.Host.Providers
                 }
             }
 
-            _httpClientService.RemoveAuthorizationToken();
+            _httpClientService.RemoveAuthorization();
 
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
 
         public async Task MarkUserAsAuthenticated(string token)
         {
-            if (HasStarted)
+            if (_accessor.IsServerStarted())
             {
                 await _storage.SetAsync(TokenKey, token);
             }
@@ -66,14 +69,12 @@ namespace Rutracker.Client.Host.Providers
 
         public async Task MarkUserAsLoggedOut()
         {
-            if (HasStarted)
+            if (_accessor.IsServerStarted())
             {
                 await _storage.DeleteAsync(TokenKey);
             }
 
             SetAuthenticationState(GetAuthenticationStateAsync());
         }
-
-        private bool HasStarted => _accessor?.HttpContext?.Response.HasStarted ?? false;
     }
 }

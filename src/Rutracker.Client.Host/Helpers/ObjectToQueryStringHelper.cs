@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 
-namespace Rutracker.Client.Host.Extensions
+namespace Rutracker.Client.Host.Helpers
 {
-    public static class QueryStringExtensions
+    public static class ObjectToQueryStringHelper
     {
         public static string ToQueryString(this object obj)
         {

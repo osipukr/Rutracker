@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Rutracker.Client.Host.Helpers;
 using Rutracker.Client.Host.Options;
 using Rutracker.Client.Host.Providers;
 using Rutracker.Client.Host.Services;
@@ -29,10 +30,15 @@ namespace Rutracker.Client.Host
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry(options =>
+            {
+                options.ConnectionString = _configuration.GetConnectionString("ApplicationInsights");
+            });
+
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddProtectedBrowserStorage();
             services.AddHttpClient();
+            services.AddProtectedBrowserStorage();
 
             services.Configure<ApiOptions>(_configuration.GetSection("ApiOptions"));
             services.Configure<ServerOptions>(_configuration.GetSection("ServerOptions"));
@@ -41,10 +47,9 @@ namespace Rutracker.Client.Host
             services.AddScoped<IRenderContext>(provider =>
             {
                 var httpContextAccessor = provider.GetService<IHttpContextAccessor>();
-                var hasStarted = httpContextAccessor?.HttpContext?.Response.HasStarted;
-                var isPreRendering = !(hasStarted.HasValue && hasStarted.Value);
+                var isPreRending = !httpContextAccessor.IsServerStarted();
 
-                return new RenderContext(isServer: true, isPreRendering);
+                return new RenderContext(true, isPreRending);
             });
 
             services.TryAddLayoutServices

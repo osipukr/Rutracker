@@ -79,8 +79,11 @@
         try
         {
             await AccountService.Login(LoginModel);
-            
-            NavigationManager.NavigateTo(Constants.Page.Home);
+
+            NavigationManager.NavigateTo(
+                NavigationManager.TryGetQueryString<string>("returnUrl", out var redirectUrl)
+                    ? redirectUrl
+                    : Constants.Page.Home);
         }
         catch (Exception exception)
         {
