@@ -11,6 +11,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="5.0.0-preview.3.20215.14" />
     <PackageReference Include="Skclusive.Markdown.Component" Version="2.0.0" />
     <PackageReference Include="Skclusive.Material.Layout" Version="2.0.0" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup>

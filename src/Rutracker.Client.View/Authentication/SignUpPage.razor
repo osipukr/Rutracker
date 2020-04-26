@@ -5,6 +5,9 @@
 @inject IAccountService AccountService
 @inject IMatToaster ToastService
 @inject NavigationManager NavigationManager
+@inject PathHelper PageHelper
+
+<Title>@PageHelper.GetPageTitle("Sign Up")</Title>
 
 <EditForm Model="@RegisterModel"
           OnValidSubmit="@RegisterAsync"
@@ -85,9 +88,9 @@
     <Typography Color="@Color.TextSecondary" Variant="@TypographyVariant.Body1">
         Have an account?
 
-        <Link Href="@Constants.Page.SignIn">
-        Sign in
-        </Link>
+        <Skclusive.Material.Component.Link Href="@Constants.Page.SignIn">
+            Sign in
+        </Skclusive.Material.Component.Link>
     </Typography>
 </EditForm>
 

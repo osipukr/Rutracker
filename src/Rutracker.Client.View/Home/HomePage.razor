@@ -1,6 +1,10 @@
 ﻿@page "/"
 @page "/home"
 
+@inject PathHelper PageHelper
+
+<Title>@PageHelper.GetPageTitle("Home")</Title>
+
 <Typography Variant="@TypographyVariant.H3">
     Hello, world!
 </Typography>

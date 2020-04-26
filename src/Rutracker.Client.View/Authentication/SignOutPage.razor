@@ -1,12 +1,15 @@
 ﻿@layout AuthenticationLayout
 
-@attribute [Authorize]
-
 @page "/signout"
+
+@attribute [Authorize]
 
 @inject IAccountService AccountService
 @inject IMatToaster ToastService
 @inject NavigationManager NavigationManager
+@inject PathHelper PageHelper
+
+<Title>@PageHelper.GetPageTitle("Sign Out")</Title>
 
 @code
 {

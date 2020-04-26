@@ -1,0 +1,12 @@
+﻿@page "/users/{UserName}"
+
+@inject PathHelper PageHelper
+
+<Title>@PageHelper.GetPageTitle(UserName)</Title>
+
+<h3>UserPage</h3>
+
+@code
+{
+    [Parameter] public string UserName { get; set; }
+}

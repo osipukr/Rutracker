@@ -1,3 +1,4 @@
+using Blazored.Modal;
 using MatBlazor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -11,9 +12,11 @@ using Rutracker.Client.Host.Options;
 using Rutracker.Client.Host.Providers;
 using Rutracker.Client.Host.Services;
 using Rutracker.Client.Infrastructure.Interfaces;
+using Rutracker.Client.View.Helpers;
 using Rutracker.Shared.Models;
 using Skclusive.Core.Component;
 using Skclusive.Material.Layout;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace Rutracker.Client.Host
 {
@@ -67,6 +70,8 @@ namespace Rutracker.Client.Host
                 config.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
             });
 
+            services.AddBlazoredModal();
+            services.AddHeadElementHelper();
             services.AddMatToaster(config =>
             {
                 config.Position = MatToastPosition.BottomRight;
@@ -78,6 +83,7 @@ namespace Rutracker.Client.Host
                 config.VisibleStateDuration = 5000;
             });
 
+            services.AddScoped<PathHelper>();
             services.AddScoped<HttpClientService>();
             services.AddScoped<ApiAuthenticationStateProvider>();
             services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<ApiAuthenticationStateProvider>());
@@ -103,6 +109,7 @@ namespace Rutracker.Client.Host
             }
 
             app.UseHttpsRedirection();
+            app.UseHeadElementServerPrerendering();
             app.UseStaticFiles();
 
             app.UseRouting();

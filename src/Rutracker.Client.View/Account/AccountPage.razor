@@ -2,8 +2,12 @@
 
 @attribute [Authorize]
 
+@inject PathHelper PageHelper
+
+<Title>@PageHelper.GetPageTitle("Account")</Title>
+
 <h3>AccountPage</h3>
 
-@code {
-
+@code
+{
 }

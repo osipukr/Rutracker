@@ -1,7 +1,11 @@
 ﻿@page "/users"
 
+@inject PathHelper PageHelper
+
+<Title>@PageHelper.GetPageTitle("Users")</Title>
+
 <h3>UsersPage</h3>
 
-@code {
-
+@code
+{
 }

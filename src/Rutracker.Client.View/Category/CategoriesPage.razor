@@ -2,6 +2,9 @@
 
 @inject ICategoryService CategoryService
 @inject IMatToaster ToastService
+@inject PathHelper PageHelper
+
+<Title>@PageHelper.GetPageTitle("Categories")</Title>
 
 <div class="Categories-Root">
     @if (_errorModel.IsError)

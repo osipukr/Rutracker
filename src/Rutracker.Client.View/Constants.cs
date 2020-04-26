@@ -2,6 +2,8 @@
 {
     public static class Constants
     {
+        public const string BrandName = "Rutracker";
+
         public static class Page
         {
             public const string Home = "/";

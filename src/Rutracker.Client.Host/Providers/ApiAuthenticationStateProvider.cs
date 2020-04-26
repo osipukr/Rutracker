@@ -17,6 +17,7 @@ namespace Rutracker.Client.Host.Providers
         private readonly ProtectedLocalStorage _storage;
         private readonly IHttpContextAccessor _accessor;
 
+        private static string _token;
         private const string TokenKey = "authToken";
         private const string AuthenticationType = "jwt";
 
@@ -29,22 +30,20 @@ namespace Rutracker.Client.Host.Providers
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var token = string.Empty;
-
             if (_accessor.IsServerStarted())
             {
-                token = await _storage.GetAsync<string>(TokenKey);
+                _token = await _storage.GetAsync<string>(TokenKey);
             }
 
-            Console.WriteLine($"Token is {token}");
+            Console.WriteLine($"Token is {_token}");
 
-            if (!string.IsNullOrWhiteSpace(token))
+            if (!string.IsNullOrWhiteSpace(_token))
             {
-                var jwtToken = new JwtSecurityToken(token);
+                var jwtToken = new JwtSecurityToken(_token);
 
                 if (jwtToken.ValidTo > DateTime.UtcNow)
                 {
-                    _httpClientService.SetAuthorization(token);
+                    _httpClientService.SetAuthorization(_token);
 
                     var identity = new ClaimsIdentity(jwtToken.Claims, AuthenticationType);
 
@@ -61,6 +60,8 @@ namespace Rutracker.Client.Host.Providers
         {
             if (_accessor.IsServerStarted())
             {
+                _token = token;
+
                 await _storage.SetAsync(TokenKey, token);
             }
 
@@ -71,6 +72,8 @@ namespace Rutracker.Client.Host.Providers
         {
             if (_accessor.IsServerStarted())
             {
+                _token = null;
+
                 await _storage.DeleteAsync(TokenKey);
             }
 
