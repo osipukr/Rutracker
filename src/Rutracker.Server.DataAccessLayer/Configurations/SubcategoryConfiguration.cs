@@ -24,6 +24,10 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
             builder.HasOne(subcategory => subcategory.Category)
                 .WithMany(category => category.Subcategories)
                 .HasForeignKey(subcategory => subcategory.CategoryId);
+
+            builder.HasMany(subcategory => subcategory.Torrents)
+                .WithOne(torrent => torrent.Subcategory)
+                .HasForeignKey(torrent => torrent.SubcategoryId);
         }
     }
 }

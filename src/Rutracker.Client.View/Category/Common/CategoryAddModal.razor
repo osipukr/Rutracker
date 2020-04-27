@@ -1,5 +1,59 @@
-﻿<h3>CategoryAddModal</h3>
+﻿@inject IModalService ModalService
+@inject ICategoryService CategoryService
+@inject IMatToaster Toaster
 
-@code {
+<EditForm Model="@_categoryCreate" OnValidSubmit="@CreateClicked">
+    <DataAnnotationsValidator />
 
+    <FormControl Class="Category-Create-Cotrol">
+        <MatTextField @bind-Value="@_categoryCreate.Name"
+                      Label="Name"
+                      Icon="@MatIconNames.Create"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true" />
+
+        <ValidationMessage For="@(() => _categoryCreate.Name)" />
+    </FormControl>
+
+    <FormControl Class="Category-Create-Cotrol">
+        <MatTextField @bind-Value="@_categoryCreate.Description"
+                      Label="Description"
+                      Icon="@MatIconNames.Description"
+                      IconTrailing="true"
+                      FullWidth="true" />
+
+        <ValidationMessage For="@(() => _categoryCreate.Description)" />
+    </FormControl>
+
+    <div class="Category-Create-Actions">
+        <MatButton Label="Create" Type="submit" />
+        <MatButton OnClick="@CancelClicked" Label="Cancel" />
+    </div>
+</EditForm>
+
+@code
+{
+    [CascadingParameter] BlazoredModalInstance Modal { get; set; }
+
+    private readonly CategoryCreateView _categoryCreate = new CategoryCreateView();
+
+    private async Task CreateClicked()
+    {
+        try
+        {
+            var result = await CategoryService.AddAsync(_categoryCreate);
+
+            Modal.Close(ModalResult.Ok(result));
+        }
+        catch (Exception exception)
+        {
+            Toaster.Add(exception.Message, MatToastType.Danger, "Category creating");
+        }
+    }
+
+    private void CancelClicked()
+    {
+        Modal.Cancel();
+    }
 }

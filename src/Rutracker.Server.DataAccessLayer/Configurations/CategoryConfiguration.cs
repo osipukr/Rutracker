@@ -19,6 +19,10 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
             builder.Property(category => category.Description).HasColumnName("Description").HasMaxLength(200);
             builder.Property(category => category.AddedDate).HasColumnName("AddedDate").HasColumnType("datetime");
             builder.Property(category => category.ModifiedDate).HasColumnName("ModifiedDate").HasColumnType("datetime");
+
+            builder.HasMany(category => category.Subcategories)
+                .WithOne(subcategory => subcategory.Category)
+                .HasForeignKey(subcategory => subcategory.CategoryId);
         }
     }
 }

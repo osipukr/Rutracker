@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace Rutracker.Shared.Models.ViewModels.Subcategory
 {
@@ -12,6 +13,12 @@ namespace Rutracker.Shared.Models.ViewModels.Subcategory
         public string Description { get; set; }
 
         [DataMember(Order = 3)]
+        public DateTime AddedDate { get; set; }
+
+        [DataMember(Order = 4)]
+        public DateTime? ModifiedDate { get; set; }
+
+        [DataMember(Order = 5)]
         public int TorrentsCount { get; set; }
     }
 }

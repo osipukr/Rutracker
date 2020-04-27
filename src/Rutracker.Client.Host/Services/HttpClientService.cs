@@ -139,6 +139,6 @@ namespace Rutracker.Client.Host.Services
         }
 
         private TResult DeserializeJson<TResult>(string json) => JsonConvert.DeserializeObject<TResult>(json);
-        private string DeserializeJsonError(string json) => DeserializeJson<string>(json);
+        private string DeserializeJsonError(string json) => DeserializeJson<string>(json ?? string.Empty);
     }
 }

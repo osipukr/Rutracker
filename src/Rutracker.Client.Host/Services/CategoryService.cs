@@ -14,16 +14,16 @@ namespace Rutracker.Client.Host.Services
         {
         }
 
-        public async Task<List<CategoryView>> ListAsync()
+        public async Task<IEnumerable<CategoryView>> ListAsync()
         {
-            return await _httpClientService.GetJsonAsync<List<CategoryView>>(_apiOptions.Categories);
+            return await _httpClientService.GetJsonAsync<IEnumerable<CategoryView>>(_apiOptions.Categories);
         }
 
-        public async Task<CategoryDetailView> FindAsync(int id)
+        public async Task<CategoryView> FindAsync(int id)
         {
             var url = string.Format(_apiOptions.Category, id.ToString());
 
-            return await _httpClientService.GetJsonAsync<CategoryDetailView>(url);
+            return await _httpClientService.GetJsonAsync<CategoryView>(url);
         }
 
         public async Task<CategoryView> AddAsync(CategoryCreateView model)

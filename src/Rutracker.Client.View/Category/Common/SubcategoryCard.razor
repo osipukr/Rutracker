@@ -1,0 +1,35 @@
+﻿@inject PathHelper PathHelper
+
+<ListItem Button Component="a" href="@Constants.Page.Torrents" Class="Subcategory-Item-Root">
+    <ChildContent>
+        <div class="Subcategory-Item-Info">
+            <Typography Align="@Align.Left"
+                        GutterBottom
+                        Variant="@TypographyVariant.Body1"
+                        Style="word-break: break-all; font-weight: bold;">
+                @Subcategory.Name
+            </Typography>
+
+            <Typography Align="@Align.Left"
+                        Variant="@TypographyVariant.Body1"
+                        Style="word-break: break-all;">
+                <strong>Description:</strong> @Subcategory.Description
+            </Typography>
+        </div>
+    </ChildContent>
+
+    <SecondaryActionContent>
+        <ListItemSecondaryAction Component="a" Style="color: inherit;" href="@Constants.Page.Torrents">
+            <MatRipple Class="Subcategory-Item-TorrentInfo">
+                <strong style="padding-right: 5px;">@Subcategory.TorrentsCount</strong> of torrents
+
+                <MatIcon Icon="@MatIconNames.List" Style="margin-left: 5px;" />
+            </MatRipple>
+        </ListItemSecondaryAction>
+    </SecondaryActionContent>
+</ListItem>
+
+@code
+{
+    [Parameter] public SubcategoryView Subcategory { get; set; }
+}

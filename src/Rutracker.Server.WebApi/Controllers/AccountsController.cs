@@ -21,7 +21,7 @@ namespace Rutracker.Server.WebApi.Controllers
     {
         private readonly IAccountService _accountService;
         private readonly IUserService _userService;
-        private readonly IJwtFactory _jwtFactory;
+        private readonly IJwtService _jwtService;
         private readonly IEmailService _emailService;
 
         private readonly ClientOptions _clientOptions;
@@ -29,13 +29,13 @@ namespace Rutracker.Server.WebApi.Controllers
         public AccountsController(
             IAccountService accountService,
             IUserService userService,
-            IJwtFactory jwtFactory,
+            IJwtService jwtService,
             IEmailService emailService,
             IOptions<ClientOptions> options)
         {
             _accountService = accountService;
             _userService = userService;
-            _jwtFactory = jwtFactory;
+            _jwtService = jwtService;
             _emailService = emailService;
 
             _clientOptions = options.Value;
@@ -47,7 +47,7 @@ namespace Rutracker.Server.WebApi.Controllers
             var user = await _accountService.LoginAsync(model.UserName, model.Password, model.RememberMe);
             var roles = await _userService.RolesAsync(user);
 
-            return await _jwtFactory.GenerateTokenAsync(user, roles);
+            return await _jwtService.GenerateTokenAsync(user, roles);
         }
 
         [HttpPost("register")]
@@ -56,7 +56,7 @@ namespace Rutracker.Server.WebApi.Controllers
             var user = await _accountService.RegisterAsync(model.UserName, model.Email, model.Password);
             var roles = await _userService.RolesAsync(user);
 
-            return await _jwtFactory.GenerateTokenAsync(user, roles);
+            return await _jwtService.GenerateTokenAsync(user, roles);
         }
 
         [Authorize]

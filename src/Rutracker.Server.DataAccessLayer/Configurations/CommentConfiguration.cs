@@ -26,6 +26,10 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
             builder.HasOne(comment => comment.User)
                 .WithMany(user => user.Comments)
                 .HasForeignKey(comment => comment.UserId);
+
+            builder.HasMany(comment => comment.Likes)
+                .WithOne(like => like.Comment)
+                .HasForeignKey(like => like.CommentId);
         }
     }
 }

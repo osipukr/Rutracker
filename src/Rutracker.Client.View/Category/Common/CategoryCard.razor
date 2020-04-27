@@ -1,47 +1,132 @@
-﻿<MatExpansionPanel>
-    <MatExpansionPanelSummary>
-        <MatExpansionPanelHeader>
-            @Category.Name (Total subcategories: @Category.SubcategoriesCount)
-        </MatExpansionPanelHeader>
-    </MatExpansionPanelSummary>
-    <MatExpansionPanelDetails>
-        <Typography Align="@Align.Left" GutterBottom Variant="@TypographyVariant.H4">
-            @Category.Name
-        </Typography>
+﻿@using System.Globalization
+@inject NavigationManager NavigationManager
+@inject PathHelper PathHelper
 
-        <Typography Align="@Align.Left" Variant="@TypographyVariant.Body1">
-            @Category.Description
-        </Typography>
+<MatExpansionPanel @bind-Expanded="@IsExpanded">
+    <ContextMenuTrigger MenuId="@CategoryMenuId">
+        <MatExpansionPanelSummary>
+            <MatExpansionPanelHeader Style="flex-basis: 100%;">
+                <Typography Align="@Align.Left"
+                            Component="a"
+                            href="@(IsExpanded ? Constants.Page.Categories : PathHelper.GetCategoryPath(Category.Id))"
+                            Variant="@TypographyVariant.Body1"
+                            Style="display: flex; justify-content: space-between; width: 100%; height: 100%; align-items: center; color: inherit">
+                    <strong>@Category.Name</strong>
+                    <span>(Total subcategories: <strong>@Category.SubcategoriesCount)</strong></span>
+                </Typography>
+            </MatExpansionPanelHeader>
+        </MatExpansionPanelSummary>
+    </ContextMenuTrigger>
+
+    <MatExpansionPanelDetails Style="padding-top: 0;">
+        <Divider Variant="@DividerVariant.FullWidth" />
+
+        <ContextMenuTrigger MenuId="@SubcategoryShortMenuId" style="margin: 20px 0;">
+            <Typography Align="@Align.Left"
+                        GutterBottom
+                        Variant="@TypographyVariant.H4"
+                        Style="word-break: break-all;">
+                @Category.Name
+            </Typography>
+
+            <Typography Align="@Align.Left" Variant="@TypographyVariant.Body1">
+                <strong>Creation date:</strong> @Category.AddedDate
+            </Typography>
+
+            @if (Category.ModifiedDate != null)
+            {
+                <Typography Align="@Align.Left" Variant="@TypographyVariant.Body1">
+                    <strong>Last modification date:</strong> @Category.ModifiedDate
+                </Typography>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Category.Description))
+            {
+                <Typography Align="@Align.Left"
+                            Variant="@TypographyVariant.Body1"
+                            Style="word-break: break-all;">
+                    <strong>Description:</strong> @Category.Description
+                </Typography>
+            }
+        </ContextMenuTrigger>
+
+        @if (Category.SubcategoriesCount == 0)
+        {
+        }
+        else
+        {
+            <List class="Subcategories-Root">
+                @foreach (var subcategory in Category.Subcategories)
+                {
+                    <ContextMenuTrigger MenuId="@SubcategoryMenuId" Data="@Category.Subcategories">
+                        <SubcategoryCard Subcategory="@subcategory" @key="@subcategory" />
+                    </ContextMenuTrigger>
+
+                    <Divider Variant="@DividerVariant.FullWidth" />
+                }
+            </List>
+        }
     </MatExpansionPanelDetails>
 </MatExpansionPanel>
 
-@*<Card>
-    <CardContent>
-        <Typography Align="@Align.Left" GutterBottom Variant="@TypographyVariant.H4">
-            @Category.Name
-        </Typography>
+<!-- Category menu -->
+<ContextMenu Id="@CategoryMenuId" Animation="Animation.Zoom">
+    <Item OnClick="@AddCategoryClickedEventHandler">Add new category</Item>
+    <Item OnClick="@EditCategoryClickedEventHandler">Edit category</Item>
+    <Item OnClick="@DeleteCategoryClickedEventHandler">Delete category</Item>
+</ContextMenu>
 
-        <Typography Align="@Align.Left" Variant="@TypographyVariant.Body1">
-                @Category.Description
-            </Typography>
-    </CardContent>
+<!-- Subcategory short menu -->
+<ContextMenu Id="@SubcategoryShortMenuId" Animation="@Animation.Zoom">
+    <Item OnClick="@AddSubcategoryClickedEventHandler">Add new subcategory</Item>
+</ContextMenu>
 
-    <Divider />
-
-    <CardActions>
-        <Grid Container Justify="@Justify.SpaceBetween">
-            <Grid Item>
-                <GetAppIcon />
-
-                <Typography Display="@Display.Inline" Variant="@TypographyVariant.Body2">
-                    @Category.SubcategoriesCount Subcategories
-                </Typography>
-            </Grid>
-        </Grid>
-    </CardActions>
-</Card>*@
+<!-- Subcategory menu -->
+<ContextMenu Id="@SubcategoryMenuId" Animation="@Animation.Zoom">
+    <Item OnClick="@AddSubcategoryClickedEventHandler">Add new subcategory</Item>
+    <Item OnClick="@EditSubcategoryClickedEventHandler">Edit subcategory</Item>
+    <Item OnClick="@DeleteSubcategoryClickedEventHandler">Delete subcategory</Item>
+</ContextMenu>
 
 @code
 {
     [Parameter] public CategoryView Category { set; get; }
+    [Parameter] public bool IsExpanded { set; get; } = false;
+
+    [Parameter] public EventCallback OnAddCategory { get; set; }
+
+    private const string CategoryMenuId = "Category-Action-Menu-Id";
+    private const string SubcategoryMenuId = "Subcategory-Action-Menu-Id";
+    private const string SubcategoryShortMenuId = "Subcategory-Short-Action-Menu-Id";
+
+    private async Task AddCategoryClickedEventHandler()
+    {
+        await OnAddCategory.InvokeAsync(EventArgs.Empty);
+    }
+
+    private async Task EditCategoryClickedEventHandler()
+    {
+    }
+
+    private async Task DeleteCategoryClickedEventHandler()
+    {
+    }
+
+    private async Task AddSubcategoryClickedEventHandler(ItemClickEventArgs e)
+    {
+    }
+
+    private async Task EditSubcategoryClickedEventHandler(ItemClickEventArgs e)
+    {
+        if (e.Data is SubcategoryView subcategory)
+        {
+        }
+    }
+
+    private async Task DeleteSubcategoryClickedEventHandler(ItemClickEventArgs e)
+    {
+        if (e.Data is SubcategoryView subcategory)
+        {
+        }
+    }
 }

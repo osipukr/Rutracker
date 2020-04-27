@@ -14,11 +14,11 @@ namespace Rutracker.Client.Host.Services
         {
         }
 
-        public async Task<List<FileView>> ListAsync(int torrentId)
+        public async Task<IEnumerable<FileView>> ListAsync(int torrentId)
         {
             var url = string.Format(_apiOptions.Files, torrentId.ToString());
 
-            return await _httpClientService.GetJsonAsync<List<FileView>>(url);
+            return await _httpClientService.GetJsonAsync<IEnumerable<FileView>>(url);
         }
 
         public async Task<FileView> FindAsync(int id)

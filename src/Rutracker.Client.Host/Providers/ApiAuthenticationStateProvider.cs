@@ -51,6 +51,13 @@ namespace Rutracker.Client.Host.Providers
                 }
             }
 
+            _token = null;
+
+            if (_accessor.IsServerStarted())
+            {
+                await _storage.DeleteAsync(TokenKey);
+            }
+
             _httpClientService.RemoveAuthorization();
 
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
@@ -58,10 +65,10 @@ namespace Rutracker.Client.Host.Providers
 
         public async Task MarkUserAsAuthenticated(string token)
         {
+            _token = token;
+
             if (_accessor.IsServerStarted())
             {
-                _token = token;
-
                 await _storage.SetAsync(TokenKey, token);
             }
 
@@ -70,10 +77,10 @@ namespace Rutracker.Client.Host.Providers
 
         public async Task MarkUserAsLoggedOut()
         {
+            _token = null;
+
             if (_accessor.IsServerStarted())
             {
-                _token = null;
-
                 await _storage.DeleteAsync(TokenKey);
             }
 

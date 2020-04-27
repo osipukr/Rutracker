@@ -119,7 +119,8 @@ namespace Rutracker.Server.WebApi
 
             services.AddAuthentication(options =>
             {
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
@@ -167,7 +168,7 @@ namespace Rutracker.Server.WebApi
 
             services.AddIdentitySeed();
 
-            services.AddSingleton<IJwtFactory, JwtFactory>();
+            services.AddSingleton<IJwtService, JwtService>();
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddSingleton<IEmailService, EmailService>();
             services.AddScoped<IUnitOfWork<RutrackerContext>, RutrackerUnitOfWork>();

@@ -13,11 +13,11 @@ using Rutracker.Shared.Models.ViewModels.Account;
 
 namespace Rutracker.Server.WebApi.Services
 {
-    public class JwtFactory : IJwtFactory
+    public class JwtService : IJwtService
     {
         private readonly JwtOptions _jwtOptions;
 
-        public JwtFactory(IOptions<JwtOptions> jwtOptions)
+        public JwtService(IOptions<JwtOptions> jwtOptions)
         {
             _jwtOptions = jwtOptions.Value;
 

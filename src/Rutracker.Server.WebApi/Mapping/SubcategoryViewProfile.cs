@@ -13,7 +13,6 @@ namespace Rutracker.Server.WebApi.Mapping
                     x => x.MapFrom(y => y.Torrents.Count))
                 .ReverseMap();
 
-            CreateMap<Subcategory, SubcategoryDetailView>().ReverseMap();
             CreateMap<Subcategory, SubcategoryCreateView>().ReverseMap();
             CreateMap<Subcategory, SubcategoryUpdateView>().ReverseMap();
         }

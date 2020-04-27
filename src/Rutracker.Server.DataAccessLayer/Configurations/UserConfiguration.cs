@@ -11,6 +11,14 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
             builder.Property(user => user.FirstName).HasColumnName("FirstName").HasMaxLength(50);
             builder.Property(user => user.LastName).HasColumnName("LastName").HasMaxLength(50);
             builder.Property(user => user.ImageUrl).HasColumnName("ImageUrl").HasMaxLength(2083);
+
+            builder.HasMany(user => user.Comments)
+                .WithOne(comment => comment.User)
+                .HasForeignKey(comment => comment.UserId);
+
+            builder.HasMany(user => user.Likes)
+                .WithOne(like => like.User)
+                .HasForeignKey(like => like.UserId);
         }
     }
 }

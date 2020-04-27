@@ -72,6 +72,7 @@ namespace Rutracker.Client.Host
 
             services.AddBlazoredModal();
             services.AddHeadElementHelper();
+            services.AddBlazorContextMenu();
             services.AddMatToaster(config =>
             {
                 config.Position = MatToastPosition.BottomRight;

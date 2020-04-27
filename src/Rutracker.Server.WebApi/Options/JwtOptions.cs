@@ -14,7 +14,7 @@ namespace Rutracker.Server.WebApi.Options
         public DateTime Expiration => IssuedAt.Add(ValidFor);
         public DateTime NotBefore => DateTime.UtcNow;
         public DateTime IssuedAt => DateTime.UtcNow;
-        public TimeSpan ValidFor { get; set; } = TimeSpan.FromDays(3);
+        public TimeSpan ValidFor { get; set; } = TimeSpan.FromDays(1);
 
         public Func<Task<string>> JtiGenerator => () => Task.FromResult(Guid.NewGuid().ToString());
         public SymmetricSecurityKey SigningKey => new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));

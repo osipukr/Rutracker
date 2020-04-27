@@ -13,10 +13,15 @@ namespace Rutracker.Client.View.Common
         public bool IsError { get; set; }
         public string Message { get; set; }
 
-        public void HandlerException(Exception exception)
+        public void Handler(string message)
         {
             IsError = true;
-            Message = exception.Message;
+            Message = message;
+        }
+
+        public void HandlerException(Exception exception)
+        {
+            Handler(exception.Message);
         }
 
         public static ErrorModel Create()
