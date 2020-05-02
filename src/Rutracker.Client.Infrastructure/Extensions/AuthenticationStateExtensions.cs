@@ -9,7 +9,7 @@ namespace Rutracker.Client.Infrastructure.Extensions
     {
         public static bool IsUserAuthenticated(this AuthenticationState state)
         {
-            return state.User.Identity?.IsAuthenticated ?? false;
+            return state.User?.Identity?.IsAuthenticated ?? false;
         }
 
         public static bool IsUserInRole(this AuthenticationState state, string role)

@@ -5,13 +5,14 @@
 @inject IAccountService AccountService
 @inject IMatToaster  ToastService
 @inject NavigationManager NavigationManager
-@inject PathHelper PageHelper
+@inject PathHelper PathHelper
 
-<Title>@PageHelper.GetPageTitle("Sign In")</Title>
+<Title>@PathHelper.GetPageTitle("Sign In")</Title>
 
 <EditForm Model="@LoginModel"
           OnValidSubmit="@LoginAsync"
           Context="formContext"
+          autocomplete="on"
           class="auth-form-root">
 
     <DataAnnotationsValidator />

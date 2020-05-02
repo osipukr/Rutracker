@@ -37,5 +37,31 @@
     <script src="_content/MatBlazor/dist/matBlazor.js"></script>
     <script src="_content/Microsoft.AspNetCore.ProtectedBrowserStorage/protectedBrowserStorage.js"></script>
     <script src="_content/Blazor.ContextMenu/blazorContextMenu.min.js"></script>
+
+    <script>
+        window.blazorHelpers = {
+            scrollToFragment: (elementId) => {
+                var element = document.getElementById(elementId);
+
+                if (element) {
+
+                    var headerOffset = 90;
+                    var elementPosition = element.getBoundingClientRect().top;
+                    var offsetPosition = elementPosition - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        }
+
+        window.blazorPushState = {
+            pushState: (url) => {
+                history.pushState(null, null, url);
+            }
+        }
+    </script>
 </body>
 </html>

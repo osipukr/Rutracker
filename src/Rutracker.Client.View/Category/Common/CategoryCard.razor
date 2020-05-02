@@ -1,14 +1,9 @@
-﻿@using System.Globalization
-@inject NavigationManager NavigationManager
-@inject PathHelper PathHelper
-
-<MatExpansionPanel @bind-Expanded="@IsExpanded">
-    <ContextMenuTrigger MenuId="@CategoryMenuId">
+﻿<MatExpansionPanel @bind-Expanded="@IsExpanded" Id="@Id">
+    <ContextMenuTrigger MenuId="@CategoryPageHelper.CategoryMenuId" Data="@Category">
         <MatExpansionPanelSummary>
             <MatExpansionPanelHeader Style="flex-basis: 100%;">
                 <Typography Align="@Align.Left"
-                            Component="a"
-                            href="@(IsExpanded ? Constants.Page.Categories : PathHelper.GetCategoryPath(Category.Id))"
+                            OnClick="@ClickEventHandler"
                             Variant="@TypographyVariant.Body1"
                             Style="display: flex; justify-content: space-between; width: 100%; height: 100%; align-items: center; color: inherit">
                     <strong>@Category.Name</strong>
@@ -21,7 +16,10 @@
     <MatExpansionPanelDetails Style="padding-top: 0;">
         <Divider Variant="@DividerVariant.FullWidth" />
 
-        <ContextMenuTrigger MenuId="@SubcategoryShortMenuId" style="margin: 20px 0;">
+        <ContextMenuTrigger MenuId="@CategoryPageHelper.SubcategoryShortMenuId"
+                            Data="@Category"
+                            style="padding-top: 20px; padding-bottom: 30px;">
+
             <Typography Align="@Align.Left"
                         GutterBottom
                         Variant="@TypographyVariant.H4"
@@ -50,16 +48,27 @@
             }
         </ContextMenuTrigger>
 
-        @if (Category.SubcategoriesCount == 0)
+        @if (!Category.Subcategories.Any())
         {
+            <ContextMenuTrigger MenuId="@CategoryPageHelper.SubcategoryShortMenuId"
+                                Data="@Category"
+                                CssClass="mat-elevation-z15">
+                <EmptyCard>
+                    Subcategories list is empty, right click to add new subcategory
+                </EmptyCard>
+            </ContextMenuTrigger>
         }
         else
         {
-            <List class="Subcategories-Root">
+            <List Class="Subcategories-Root">
                 @foreach (var subcategory in Category.Subcategories)
                 {
-                    <ContextMenuTrigger MenuId="@SubcategoryMenuId" Data="@Category.Subcategories">
-                        <SubcategoryCard Subcategory="@subcategory" @key="@subcategory" />
+                    <ContextMenuTrigger MenuId="@CategoryPageHelper.SubcategoryMenuId" Data="@subcategory">
+
+                        <SubcategoryCard Subcategory="@subcategory"
+                                         @key="@subcategory"
+                                         Id="@CategoryPageHelper.GetSubcategoryCardId(subcategory.Id)" />
+
                     </ContextMenuTrigger>
 
                     <Divider Variant="@DividerVariant.FullWidth" />
@@ -69,64 +78,25 @@
     </MatExpansionPanelDetails>
 </MatExpansionPanel>
 
-<!-- Category menu -->
-<ContextMenu Id="@CategoryMenuId" Animation="Animation.Zoom">
-    <Item OnClick="@AddCategoryClickedEventHandler">Add new category</Item>
-    <Item OnClick="@EditCategoryClickedEventHandler">Edit category</Item>
-    <Item OnClick="@DeleteCategoryClickedEventHandler">Delete category</Item>
-</ContextMenu>
-
-<!-- Subcategory short menu -->
-<ContextMenu Id="@SubcategoryShortMenuId" Animation="@Animation.Zoom">
-    <Item OnClick="@AddSubcategoryClickedEventHandler">Add new subcategory</Item>
-</ContextMenu>
-
-<!-- Subcategory menu -->
-<ContextMenu Id="@SubcategoryMenuId" Animation="@Animation.Zoom">
-    <Item OnClick="@AddSubcategoryClickedEventHandler">Add new subcategory</Item>
-    <Item OnClick="@EditSubcategoryClickedEventHandler">Edit subcategory</Item>
-    <Item OnClick="@DeleteSubcategoryClickedEventHandler">Delete subcategory</Item>
-</ContextMenu>
-
 @code
 {
     [Parameter] public CategoryView Category { set; get; }
-    [Parameter] public bool IsExpanded { set; get; } = false;
+    [Parameter] public string Id { get; set; }
+    [Parameter] public bool IsExpanded { set; get; }
+    [Parameter] public EventCallback<int?> OnClick { set; get; }
 
-    [Parameter] public EventCallback OnAddCategory { get; set; }
-
-    private const string CategoryMenuId = "Category-Action-Menu-Id";
-    private const string SubcategoryMenuId = "Subcategory-Action-Menu-Id";
-    private const string SubcategoryShortMenuId = "Subcategory-Short-Action-Menu-Id";
-
-    private async Task AddCategoryClickedEventHandler()
+    private async Task ClickEventHandler()
     {
-        await OnAddCategory.InvokeAsync(EventArgs.Empty);
-    }
+        int? id = null;
 
-    private async Task EditCategoryClickedEventHandler()
-    {
-    }
-
-    private async Task DeleteCategoryClickedEventHandler()
-    {
-    }
-
-    private async Task AddSubcategoryClickedEventHandler(ItemClickEventArgs e)
-    {
-    }
-
-    private async Task EditSubcategoryClickedEventHandler(ItemClickEventArgs e)
-    {
-        if (e.Data is SubcategoryView subcategory)
+        if (!IsExpanded)
         {
+            id = Category.Id;
         }
-    }
 
-    private async Task DeleteSubcategoryClickedEventHandler(ItemClickEventArgs e)
-    {
-        if (e.Data is SubcategoryView subcategory)
+        if (OnClick.HasDelegate)
         {
+            await OnClick.InvokeAsync(id);
         }
     }
 }

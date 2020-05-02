@@ -1,7 +1,7 @@
-﻿@inject ICategoryService CategoryService
+﻿@inject ISubcategoryService SubcategoryService
 @inject IMatToaster MatToaster
 
-<EditForm Model="@_categoryCreate"
+<EditForm Model="@_subcategoryCreate"
           OnValidSubmit="@CreateClicked"
           Context="formContext"
           autocomplete="off">
@@ -9,24 +9,24 @@
     <DataAnnotationsValidator />
 
     <FormControl Class="Category-Cotrol">
-        <MatTextField @bind-Value="@_categoryCreate.Name"
+        <MatTextField @bind-Value="@_subcategoryCreate.Name"
                       Label="Name"
                       Icon="@MatIconNames.Create"
                       IconTrailing="true"
                       FullWidth="true"
                       Required="true" />
 
-        <ValidationMessage For="@(() => _categoryCreate.Name)" />
+        <ValidationMessage For="@(() => _subcategoryCreate.Name)" />
     </FormControl>
 
     <FormControl Class="Category-Cotrol">
-        <MatTextField @bind-Value="@_categoryCreate.Description"
+        <MatTextField @bind-Value="@_subcategoryCreate.Description"
                       Label="Description"
                       Icon="@MatIconNames.Description"
                       IconTrailing="true"
                       FullWidth="true" />
 
-        <ValidationMessage For="@(() => _categoryCreate.Description)" />
+        <ValidationMessage For="@(() => _subcategoryCreate.Description)" />
     </FormControl>
 
     <FormControl class="Category-Cotrol Category-Actions">
@@ -38,10 +38,16 @@
 @code
 {
     [CascadingParameter] BlazoredModalInstance Modal { get; set; }
+    [Parameter] public int CategoryId { get; set; }
 
-    private readonly CategoryCreateView _categoryCreate = new CategoryCreateView();
+    private readonly SubcategoryCreateView _subcategoryCreate = new SubcategoryCreateView();
 
     private bool _isCanceled;
+
+    protected override void OnInitialized()
+    {
+        _subcategoryCreate.CategoryId = CategoryId;
+    }
 
     private async Task CreateClicked()
     {
@@ -52,15 +58,15 @@
 
         try
         {
-            var result = await CategoryService.AddAsync(_categoryCreate);
+            var result = await SubcategoryService.AddAsync(_subcategoryCreate);
 
             Modal.Close(ModalResult.Ok(result));
 
-            MatToaster.Add($"The category '{result.Name}' was successfully created.", MatToastType.Success, "Category creating");
+            MatToaster.Add($"The subcategory '{result.Name}' was successfully created.", MatToastType.Success, "Subcategory creating");
         }
         catch (Exception exception)
         {
-            MatToaster.Add(exception.Message, MatToastType.Danger, "Category creating");
+            MatToaster.Add(exception.Message, MatToastType.Danger, "Subcategory creating");
         }
     }
 

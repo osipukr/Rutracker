@@ -71,16 +71,18 @@ namespace Rutracker.Server.BusinessLayer.Services
             Guard.Against.NullInvalid(category, Resources.Category_Invalid_ErrorMessage);
             Guard.Against.NullString(category.Name, Resources.Category_InvalidName_ErrorMessage);
 
-            if (await _categoryRepository.ExistAsync(x => x.Name == category.Name))
+            var result = await FindAsync(id);
+
+            if (result.Name != category.Name &&
+                await _categoryRepository.ExistAsync(x => x.Name == category.Name))
             {
                 var message = string.Format(Resources.Category_AlreadyExistsName_ErrorMessage, category.Name);
 
                 throw new RutrackerException(message, ExceptionEventTypes.InvalidParameters);
             }
 
-            var result = await FindAsync(id);
-
             result.Name = category.Name;
+            result.Description = category.Description;
             result.ModifiedDate = _dateService.Now();
 
             _categoryRepository.Update(result);

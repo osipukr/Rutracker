@@ -1,0 +1,81 @@
+﻿@inject ICategoryService CategoryService
+@inject IMatToaster MatToaster
+
+<EditForm Model="@_categoryEdit"
+          OnValidSubmit="@EditClicked"
+          Context="formContext"
+          autocomplete="off">
+
+    <DataAnnotationsValidator/>
+
+    <FormControl Class="Category-Cotrol">
+        <MatTextField @bind-Value="@_categoryEdit.Name"
+                       Label="Name"
+                       Icon="@MatIconNames.Create"
+                       IconTrailing="true"
+                       FullWidth="true"
+                       Required="true"/>
+
+        <ValidationMessage For="@(() => _categoryEdit.Name)"/>
+    </FormControl>
+
+    <FormControl Class="Category-Cotrol">
+        <MatTextField @bind-Value="@_categoryEdit.Description"
+                       Label="Description"
+                       Icon="@MatIconNames.Description"
+                       IconTrailing="true"
+                       FullWidth="true"/>
+
+        <ValidationMessage For="@(() => _categoryEdit.Description)"/>
+    </FormControl>
+
+    <FormControl class="Category-Cotrol Category-Actions">
+        <MatButton Label="Update" Type="submit" Raised="true"/>
+        <MatButton OnClick="@CancelClicked" Label="Cancel"/>
+    </FormControl>
+</EditForm>
+
+@code
+{
+    [CascadingParameter] BlazoredModalInstance Modal { get; set; }
+
+    [Parameter] public CategoryView CategoryView { get; set; }
+
+    private readonly CategoryUpdateView _categoryEdit = new CategoryUpdateView();
+
+    private bool _isCanceled;
+
+    protected override void OnInitialized()
+    {
+        _categoryEdit.Name = CategoryView.Name;
+        _categoryEdit.Description = CategoryView.Description;
+    }
+
+    private async Task EditClicked()
+    {
+        if (_isCanceled)
+        {
+            return;
+        }
+
+        try
+        {
+            var result = await CategoryService.UpdateAsync(CategoryView.Id, _categoryEdit);
+
+            Modal.Close(ModalResult.Ok(result));
+
+            MatToaster.Add("The category was successfully updated.", MatToastType.Success, "Category updating");
+        }
+        catch (Exception exception)
+        {
+            MatToaster.Add(exception.Message, MatToastType.Danger, "Category updating");
+        }
+    }
+
+    private void CancelClicked()
+    {
+        _isCanceled = true;
+
+        Modal.Cancel();
+    }
+}

@@ -1,6 +1,10 @@
 ﻿@inject PathHelper PathHelper
 
-<ListItem Button Component="a" href="@Constants.Page.Torrents" Class="Subcategory-Item-Root">
+<ListItem Button
+          Class="Subcategory-Item-Root"
+          Selected="@IsSelected"
+          OnClick="@ClickEventHandler"
+          Id="@Id">
     <ChildContent>
         <div class="Subcategory-Item-Info">
             <Typography Align="@Align.Left"
@@ -10,11 +14,25 @@
                 @Subcategory.Name
             </Typography>
 
-            <Typography Align="@Align.Left"
-                        Variant="@TypographyVariant.Body1"
-                        Style="word-break: break-all;">
-                <strong>Description:</strong> @Subcategory.Description
+            <Typography Align="@Align.Left" Variant="@TypographyVariant.Body1">
+                <strong>Creation date:</strong> @Subcategory.AddedDate
             </Typography>
+
+            @if (Subcategory.ModifiedDate != null)
+            {
+                <Typography Align="@Align.Left" Variant="@TypographyVariant.Body1">
+                    <strong>Last modification date:</strong> @Subcategory.ModifiedDate
+                </Typography>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Subcategory.Description))
+            {
+                <Typography Align="@Align.Left"
+                            Variant="@TypographyVariant.Body1"
+                            Style="word-break: break-all;">
+                    <strong>Description:</strong> @Subcategory.Description
+                </Typography>
+            }
         </div>
     </ChildContent>
 
@@ -32,4 +50,15 @@
 @code
 {
     [Parameter] public SubcategoryView Subcategory { get; set; }
+    [Parameter] public string Id { get; set; }
+    [Parameter] public bool IsSelected { get; set; }
+    [Parameter] public EventCallback<EventArgs> OnClick { get; set; }
+
+    private async Task ClickEventHandler(EventArgs e)
+    {
+        if (OnClick.HasDelegate)
+        {
+            await OnClick.InvokeAsync(e);
+        }
+    }
 }

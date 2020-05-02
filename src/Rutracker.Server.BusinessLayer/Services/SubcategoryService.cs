@@ -100,16 +100,18 @@ namespace Rutracker.Server.BusinessLayer.Services
             Guard.Against.NullInvalid(subcategory, Resources.Subcategory_Invalid_ErrorMessage);
             Guard.Against.NullString(subcategory.Name, Resources.Subcategory_InvalidName_ErrorMessage);
 
-            if (await _subcategoryRepository.ExistAsync(x => x.Name == subcategory.Name))
+            var result = await FindAsync(id);
+
+            if (result.Name != subcategory.Name &&
+                await _subcategoryRepository.ExistAsync(x => x.Name == subcategory.Name))
             {
                 var message = string.Format(Resources.Subcategory_AlreadyExistsName_ErrorMessage, subcategory.Name);
 
                 throw new RutrackerException(message, ExceptionEventTypes.InvalidParameters);
             }
 
-            var result = await FindAsync(id);
-
             result.Name = subcategory.Name;
+            result.Description = subcategory.Description;
             result.ModifiedDate = _dateService.Now();
 
             _subcategoryRepository.Update(result);

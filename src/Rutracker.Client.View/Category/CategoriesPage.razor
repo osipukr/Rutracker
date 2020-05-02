@@ -2,74 +2,109 @@
 @page "/categories/{Id:int}"
 
 @inject ICategoryService CategoryService
-@inject IMatToaster ToastService
+@inject IMatToaster MatToaster
 @inject IModalService ModelService
+@inject IJSRuntime JsRuntime
+@inject IAuthorizationService AuthorizationService
 @inject NavigationManager NavigationManager
-@inject PathHelper PageHelper
+@inject PathHelper PathHelper
 
-<Title>@PageHelper.GetPageTitle(_category == null ? "Categories" : _category.Name)</Title>
+<Title>@PathHelper.GetPageTitle(_category == null ? "Categories" : _category.Name)</Title>
 
 <div class="Categories-Root">
+    <AuthorizeView Policy="@Policies.IsAdmin">
+        <Authorized>
+            <CategoriesToolbar OnImportClicked="@ImportClickedEventHandler"
+                               OnExportClicked="@ExportClickedEventHandler"
+                               OnAddClicked="@AddClickedEventHandler"
+                               IsButtonsDisabled="@(_categories == null || _errorModel.IsError)" />
+        </Authorized>
+    </AuthorizeView>
+
     @if (_errorModel.IsError)
     {
         <ErrorCard>
             @_errorModel.Message
         </ErrorCard>
     }
+    else if (_categories == null)
+    {
+        <ProgressCard />
+    }
+    else if (!_categories.Any())
+    {
+        <ContextMenuTrigger MenuId="@CategoryPageHelper.CategoryShortMenuId">
+            <EmptyCard>
+                Categories list is empty
+            </EmptyCard>
+        </ContextMenuTrigger>
+    }
     else
     {
-        <AuthorizeView Policy="@Policies.IsAdmin">
-            <Authorized>
-                <CategoriesToolbar OnImportClicked="@ImportClickedEventHandler"
-                                   OnExportClicked="@ExportClickedEventHandler"
-                                   OnAddClicked="@AddClickedEventHandler" />
-            </Authorized>
-        </AuthorizeView>
+        <MatAccordion Class="Categories-List-Root" HideToggle="false" Multi="false">
+            @foreach (var category in _categories)
+            {
+                var isExpanded = Id.HasValue && Id == category.Id;
 
-        @if (_categories == null)
-        {
-            <ProgressCard />
-        }
-        else if (!_categories.Any())
-        {
-            <ContextMenuTrigger MenuId="@CategoryShortMenuId">
-                <EmptyCard>
-                    Categories list is empty
-                </EmptyCard>
-            </ContextMenuTrigger>
-        }
-        else
-        {
-            <MatAccordion Class="Categories-List-Root" HideToggle="false" Multi="false">
-                @foreach (var category in _categories)
-                {
-                    var isExpanded = Id.HasValue && Id == category.Id;
-
-                    <CategoryCard Category="@category"
-                                  @key="@category"
-                                  IsExpanded="@isExpanded"
-                                  OnAddCategory="@AddClickedEventHandler" />
-                }
-            </MatAccordion>
-        }
+                <CategoryCard Category="@category"
+                              @key="@category"
+                              Id="@CategoryPageHelper.GetCategoryCardId(category.Id)"
+                              IsExpanded="@isExpanded"
+                              OnClick="@OnIdChanged" />
+            }
+        </MatAccordion>
     }
 </div>
 
-<!-- Category short menu -->
-<ContextMenu Id="@CategoryShortMenuId" Animation="Animation.Zoom">
+<!-- Category menu -->
+<ContextMenu Id="@CategoryPageHelper.CategoryMenuId"
+             Animation="Animation.Zoom"
+             AutoHide="true"
+             OnAppearing="MenuOnAppearingHandler">
     <Item OnClick="@AddClickedEventHandler">Add new category</Item>
+    <Item OnClick="@EditClickedEventHandler">Edit category</Item>
+    <Item OnClick="@DeleteClickedEventHandler">Delete category</Item>
+</ContextMenu>
+
+<!-- Category short menu -->
+<ContextMenu Id="@CategoryPageHelper.CategoryShortMenuId"
+             Animation="Animation.Zoom"
+             AutoHide="true"
+             OnAppearing="MenuOnAppearingHandler">
+    <Item OnClick="@AddClickedEventHandler">Add new category</Item>
+</ContextMenu>
+
+<!-- Subcategory menu -->
+<ContextMenu Id="@CategoryPageHelper.SubcategoryMenuId"
+             Animation="@Animation.Zoom"
+             AutoHide="true"
+             OnAppearing="MenuOnAppearingHandler">
+    <Item OnClick="@AddSubcategoryClickedEventHandler">Add new subcategory</Item>
+    <Item OnClick="@EditSubcategoryClickedEventHandler">Edit subcategory</Item>
+    <Item OnClick="@DeleteSubcategoryClickedEventHandler">Delete subcategory</Item>
+</ContextMenu>
+
+<!-- Subcategory short menu -->
+<ContextMenu Id="@CategoryPageHelper.SubcategoryShortMenuId"
+             Animation="@Animation.Zoom"
+             AutoHide="true"
+             OnAppearing="MenuOnAppearingHandler">
+    <Item OnClick="@AddSubcategoryClickedEventHandler">Add new subcategory</Item>
 </ContextMenu>
 
 @code
 {
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
     [Parameter] public int? Id { get; set; }
 
     private List<CategoryView> _categories;
     private CategoryView _category;
 
-    private readonly ErrorModel _errorModel = ErrorModel.Create();
+    private bool _isUserAuthenticated;
+    private bool _isAdmin;
 
-    private const string CategoryShortMenuId = "Category-Short-Action-Menu-Id";
+    private readonly ErrorModel _errorModel = ErrorModel.Create();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -77,24 +112,33 @@
         {
             await LoadCategories();
 
-            StateHasChanged();
-        }
+            if (Id.HasValue)
+            {
+                LoadCategory();
 
-        await base.OnAfterRenderAsync(firstRender);
+                if (_category != null)
+                {
+                    StateHasChanged();
+
+                    await JsRuntime.InvokeVoidAsync("blazorHelpers.scrollToFragment", CategoryPageHelper.GetCategoryCardId(Id.Value));
+                }
+            }
+            else
+            {
+                StateHasChanged();
+            }
+        }
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        _category = null;
+        var state = await AuthenticationStateTask;
 
-        if (Id.HasValue && _categories != null)
+        _isUserAuthenticated = state.IsUserAuthenticated();
+
+        if (_isUserAuthenticated)
         {
-            _category = _categories.FirstOrDefault(category => category.Id == Id);
-
-            if (_category == null)
-            {
-                _errorModel.Handler($"Cannot find category with id '{Id}'");
-            }
+            _isAdmin = (await AuthorizationService.AuthorizeAsync(state.User, Policies.IsAdmin)).Succeeded;
         }
     }
 
@@ -110,13 +154,50 @@
         }
     }
 
+    private void LoadCategory()
+    {
+        if (_categories != null)
+        {
+            _category = _categories.FirstOrDefault(category => category.Id == Id);
+
+            if (_category == null)
+            {
+                _errorModel.Handler($"Cannot find category with id '{Id}'");
+            }
+        }
+    }
+
+    private async Task OnIdChanged(int? id)
+    {
+        Id = id;
+
+        _category = null;
+
+        if (Id.HasValue)
+        {
+            LoadCategory();
+        }
+
+        await JsRuntime.InvokeVoidAsync(
+            "blazorPushState.pushState",
+            !Id.HasValue ? Constants.Page.Categories : PathHelper.GetCategoryPath(Id.Value));
+
+        StateHasChanged();
+    }
+
+    private void MenuOnAppearingHandler(MenuAppearingEventArgs e)
+    {
+        e.PreventShow = !_isAdmin;
+    }
+
     private async Task ImportClickedEventHandler(EventArgs e)
     {
-
+        Console.WriteLine("Import clicked");
     }
 
     private async Task ExportClickedEventHandler(EventArgs e)
     {
+        Console.WriteLine("Export clicked");
     }
 
     private async Task AddClickedEventHandler()
@@ -131,29 +212,182 @@
             {
                 _categories.Add(category);
 
-                NavigationManager.NavigateTo(PageHelper.GetCategoryPath(category.Id));
-                ToastService.Add($"The category '{category.Name}' was successfully created.", MatToastType.Success, "Category creating");
+                await OnIdChanged(category.Id);
+
+                await JsRuntime.InvokeVoidAsync("blazorHelpers.scrollToFragment", CategoryPageHelper.GetCategoryCardId(Id.Value));
             }
         }
     }
 
     private async Task EditClickedEventHandler(ItemClickEventArgs e)
     {
+        if (!(e.Data is CategoryView category))
+        {
+            return;
+        }
+
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(CategoryView), category);
+
+        var reference = ModelService.Show<CategoryEditModal>("Edit category", parameters);
+
+        var result = await reference.Result;
+
+        if (!result.Cancelled)
+        {
+            if (result.Data is CategoryView updatedCategory)
+            {
+                var index = _categories.FindIndex(x => x.Id == category.Id);
+
+                if (index != -1)
+                {
+                    _categories[index] = updatedCategory;
+
+                    StateHasChanged();
+                }
+            }
+        }
     }
 
     private async Task DeleteClickedEventHandler(ItemClickEventArgs e)
     {
+        if (!(e.Data is CategoryView category))
+        {
+            return;
+        }
+
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(CategoryView), category);
+
+        var reference = ModelService.Show<CategoryDeleteModal>("Remove category", parameters);
+
+        var result = await reference.Result;
+
+        if (!result.Cancelled)
+        {
+            if (result.Data is bool isSuccess)
+            {
+                if (isSuccess)
+                {
+                    _categories.Remove(category);
+
+                    StateHasChanged();
+                }
+            }
+        }
     }
 
-    private async Task AddSubcategoryClickedEventHandler()
+    private async Task AddSubcategoryClickedEventHandler(ItemClickEventArgs e)
     {
+        if (!(e.Data is CategoryView category) &&
+            !(e.Data is SubcategoryView subcategory))
+        {
+            return;
+        }
+
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(SubcategoryCreateView.CategoryId), Id.GetValueOrDefault());
+
+        var reference = ModelService.Show<SubcategoryAddModal>("Create new subcategory", parameters);
+
+        var result = await reference.Result;
+
+        if (!result.Cancelled)
+        {
+            if (result.Data is SubcategoryView createdSubcategory)
+            {
+                var categoryView = _categories.FirstOrDefault(x => x.Id == Id);
+
+                if (categoryView != null)
+                {
+                    categoryView.SubcategoriesCount++;
+                    categoryView.Subcategories = categoryView.Subcategories.Append(createdSubcategory);
+
+                    StateHasChanged();
+                }
+            }
+        }
     }
 
-    private async Task EditSubcategoryClickedEventHandler(SubcategoryView subcategory)
+    private async Task EditSubcategoryClickedEventHandler(ItemClickEventArgs e)
     {
+        if (!(e.Data is SubcategoryView subcategory))
+        {
+            return;
+        }
+
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(SubcategoryView), subcategory);
+
+        var reference = ModelService.Show<SubcategoryEditModal>("Edit subcategory", parameters);
+
+        var result = await reference.Result;
+
+        if (!result.Cancelled)
+        {
+            if (result.Data is SubcategoryView updatedCategory)
+            {
+                var index = _categories.FindIndex(x => x.Id == Id);
+
+                if (index != -1)
+                {
+                    var existSubcategory = _categories[index].Subcategories.FirstOrDefault(x => x.Id == subcategory.Id);
+
+                    if (existSubcategory != null)
+                    {
+                        existSubcategory.Name = updatedCategory.Name;
+                        existSubcategory.Description = updatedCategory.Description;
+                        existSubcategory.AddedDate = updatedCategory.AddedDate;
+                        existSubcategory.ModifiedDate = updatedCategory.ModifiedDate;
+                        existSubcategory.TorrentsCount = updatedCategory.TorrentsCount;
+
+                        StateHasChanged();
+                    }
+                }
+            }
+        }
     }
 
-    private async Task DeleteSubcategoryClickedEventHandler(SubcategoryView subcategory)
+    private async Task DeleteSubcategoryClickedEventHandler(ItemClickEventArgs e)
     {
+        if (!(e.Data is SubcategoryView subcategory))
+        {
+            return;
+        }
+
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(SubcategoryView), subcategory);
+
+        var reference = ModelService.Show<SubcategoryDeleteModal>("Remove subcategory", parameters);
+
+        var result = await reference.Result;
+
+        if (!result.Cancelled)
+        {
+            if (result.Data is bool isSuccess)
+            {
+                if (isSuccess)
+                {
+                    var index = _categories.FindIndex(x => x.Id == Id);
+
+                    if (index != -1)
+                    {
+                        var subcategoryViews = _categories[index].Subcategories.ToList();
+
+                        subcategoryViews.Remove(subcategory);
+
+                        _categories[index].SubcategoriesCount--;
+                        _categories[index].Subcategories = subcategoryViews;
+
+                        StateHasChanged();
+                    }
+                }
+            }
+        }
     }
 }
