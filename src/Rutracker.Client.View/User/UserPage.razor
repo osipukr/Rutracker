@@ -1,12 +1,105 @@
 ﻿@page "/users/{UserName}"
 
-@inject PathHelper PageHelper
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+@inject PathHelper PathHelper
 
-<Title>@PageHelper.GetPageTitle(UserName)</Title>
+<Title>@PathHelper.GetPageTitle(UserName)</Title>
 
-<h3>UserPage</h3>
+<div class="Page-Root">
+    @if (_errorModel.IsError)
+    {
+        <ErrorCard>
+            @_errorModel.Message
+        </ErrorCard>
+    }
+    else if (_user == null)
+    {
+        <ProgressCard />
+    }
+    else
+    {
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-header__image">
+                    @if (UsersPageHelper.IsValidAvatarUrl(_user.ImageUrl))
+                    {
+                        <Avatar Alt="@Alt" Src="@_user.ImageUrl" Class="@CssClass" />
+                    }
+                    else
+                    {
+                        <Avatar Alt="@Alt" Class="@CssClass">
+                            @_user.UserName.Substring(0, 2).ToUpperInvariant()
+                        </Avatar>
+                    }
+                </div>
+
+                <h1 class="profile-header__name">@_user.UserName</h1>
+            </div>
+
+            <div class="profile-body">
+                <MatList SingleSelection="true" TwoLine="true">
+                    <MatListItem>
+                        <MatListItemText>
+                            <MatListItemPrimaryText>User Id</MatListItemPrimaryText>
+                            <MatListItemSecondaryText>@_user.Id</MatListItemSecondaryText>
+                        </MatListItemText>
+                    </MatListItem>
+
+                    <MatListItem>
+                        <MatListItemText>
+                            <MatListItemPrimaryText>First Name</MatListItemPrimaryText>
+                            <MatListItemSecondaryText>@_user.FirstName</MatListItemSecondaryText>
+                        </MatListItemText>
+                    </MatListItem>
+
+                    <MatListItem>
+                        <MatListItemText>
+                            <MatListItemPrimaryText>Last Name</MatListItemPrimaryText>
+                            <MatListItemSecondaryText>@_user.LastName</MatListItemSecondaryText>
+                        </MatListItemText>
+                    </MatListItem>
+                </MatList>
+            </div>
+        </div>
+    }
+</div>
 
 @code
 {
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
     [Parameter] public string UserName { get; set; }
+
+    private UserView _user;
+
+    private string Alt => $"Image of {UserName}";
+    private const string CssClass = "w-100 h-100 rounded-circle mat-elevation-z10";
+
+    private readonly ErrorModel _errorModel = ErrorModel.Create();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthenticationStateTask;
+
+        if (state.IsUserAuthenticated() && UserName == state.GetUserName())
+        {
+            NavigationManager.NavigateTo(Constants.Page.Account);
+        }
+        else
+        {
+            await LoadUser();
+        }
+    }
+
+    private async Task LoadUser()
+    {
+        try
+        {
+            _user = await UserService.FindAsync(UserName);
+        }
+        catch (Exception exception)
+        {
+            _errorModel.HandlerException(exception);
+        }
+    }
 }

@@ -1,16 +1,16 @@
-﻿@if (IsAuthenticated)
+﻿@if (_isAuthenticated)
 {
     <Divider Class="FullLayout-Divider" />
 
-    if (IsValidAvatarUrl)
+    @if (UsersPageHelper.IsValidAvatarUrl(_avatarUrl))
     {
-        <Profile Name="@UserName" Bio="@(@$"{UserDescription}")" Avatar="@AvatarUrl" />
+        <Profile Name="@_userName" Bio="@_userDescription" Avatar="@_avatarUrl" />
     }
     else
     {
-        <Profile Name="@UserName" Bio="@UserDescription">
+        <Profile Name="@_userName" Bio="@_userDescription">
             <Avatar Style="margin: 10px;">
-                @AvatarName
+                @_userName.Substring(0, 2).ToUpperInvariant()
             </Avatar>
         </Profile>
     }
@@ -20,30 +20,22 @@
 {
     [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
-    private bool IsAuthenticated { get; set; }
-    private string UserName { get; set; }
-    private string UserDescription { get; set; }
-    private string AvatarName { get; set; }
-    private string AvatarUrl { get; set; }
+    private bool _isAuthenticated;
+    private string _userName;
+    private string _userDescription;
+    private string _avatarUrl;
 
     protected override async Task OnParametersSetAsync()
     {
         var state = await AuthenticationStateTask;
 
-        IsAuthenticated = state.IsUserAuthenticated();
+        _isAuthenticated = state.IsUserAuthenticated();
 
-        if (IsAuthenticated)
+        if (_isAuthenticated)
         {
-            UserName = state.GetUserName();
-            UserDescription = string.Join(" | ", state.GetUserRole());
-            AvatarUrl = state.GetUserImage();
-
-            if (!IsValidAvatarUrl)
-            {
-                AvatarName = UserName?.Substring(0, 2).ToUpperInvariant();
-            }
+            _userName = state.GetUserName();
+            _userDescription = string.Join(" | ", state.GetUserRole());
+            _avatarUrl = state.GetUserImage();
         }
     }
-
-    private bool IsValidAvatarUrl => !string.IsNullOrWhiteSpace(AvatarUrl);
 }

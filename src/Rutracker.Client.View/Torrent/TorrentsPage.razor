@@ -49,40 +49,7 @@
             }
         </div>
 
-        <div class="mat-layout-grid p-0">
-            <div class="mat-layout-grid-inner">
-                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                    <div class="mdc-paginator">
-                        <div class="mdc-paginator-container">
-                            <div class="mdc-paginator-range-actions">
-                                <span class="mdc-paginator-range-label ml-0 mr-1 text-center">
-                                    @($"Page {_pagedList.Page} of {_pagedList.TotalPages}") <br />
-                                    @($"Total items: {_pagedList.TotalCount}")
-                                </span>
-
-                                <div class="mdc-paginator-range-buttons">
-                                    <MatIconButton OnClick="@(async _ => await PageChanged(_pagedList.PageIndexFrom))"
-                                                   Disabled="@(_pagedList.Page == _pagedList.PageIndexFrom)"
-                                                   Icon="@MatIconNames.First_page" />
-
-                                    <MatIconButton OnClick="@(async _ => await PageChanged(_pagedList.Page - 1))"
-                                                   Disabled="@(!_pagedList.HasPreviousPage)"
-                                                   Icon="@MatIconNames.Navigate_before" />
-
-                                    <MatIconButton OnClick="@(async _ => await PageChanged(_pagedList.Page + 1))"
-                                                   Disabled="@(!_pagedList.HasNextPage)"
-                                                   Icon="@MatIconNames.Navigate_next" />
-
-                                    <MatIconButton OnClick="@(async _ => await PageChanged(_pagedList.TotalPages))"
-                                                   Disabled="@(_pagedList.Page == _pagedList.TotalPages)"
-                                                   Icon="@MatIconNames.Last_page" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Pagination Value="@_pagedList" OnChange="@PageChanged" />
     }
 </div>
 
@@ -104,6 +71,7 @@
     private TorrentFilter _filter = new TorrentFilter
     {
         PageIndexFrom = Constants.Filter.PageIndexFrom,
+        Page = Constants.Filter.DefaultPage,
         PageSize = Constants.Filter.PageSize
     };
 

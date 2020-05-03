@@ -14,9 +14,7 @@
 <div class="Page-Root">
     <AuthorizeView Policy="@Policies.IsAdmin">
         <Authorized>
-            <CategoriesToolbar OnImportClick="@ImportClickedEventHandler"
-                               OnExportClick="@ExportClickedEventHandler"
-                               OnAddClick="@AddClickedEventHandler"
+            <CategoriesToolbar OnAddClick="@AddClickedEventHandler"
                                IsButtonsDisable="@(_categories == null || _errorModel.IsError)" />
         </Authorized>
     </AuthorizeView>
@@ -187,16 +185,6 @@
     private void MenuOnAppearingHandler(MenuAppearingEventArgs e)
     {
         e.PreventShow = !_isAdmin;
-    }
-
-    private async Task ImportClickedEventHandler(EventArgs e)
-    {
-        await Task.CompletedTask;
-    }
-
-    private async Task ExportClickedEventHandler(EventArgs e)
-    {
-        await Task.CompletedTask;
     }
 
     private async Task AddClickedEventHandler()

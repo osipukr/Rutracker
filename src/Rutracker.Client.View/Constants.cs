@@ -27,6 +27,7 @@ namespace Rutracker.Client.View
         public static class Filter
         {
             public const int PageIndexFrom = 1;
+            public const int DefaultPage = 1;
             public const int PageSize = 20;
         }
     }

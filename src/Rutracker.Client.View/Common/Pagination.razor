@@ -1,0 +1,50 @@
+﻿@typeparam TItem
+
+<div class="mat-layout-grid p-0">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+            <div class="mdc-paginator">
+                <div class="mdc-paginator-container">
+                    <div class="mdc-paginator-range-actions">
+                        <span class="mdc-paginator-range-label ml-0 mr-1 text-center">
+                            @($"Page {Value.Page} of {Value.TotalPages}") <br />
+                            @($"Total items: {Value.TotalCount}")
+                        </span>
+
+                        <div class="mdc-paginator-range-buttons">
+                            <MatIconButton OnClick="@(async _ => await PageChanged(Value.PageIndexFrom))"
+                                           Disabled="@(Value.Page == Value.PageIndexFrom)"
+                                           Icon="@MatIconNames.First_page" />
+
+                            <MatIconButton OnClick="@(async _ => await PageChanged(Value.Page - 1))"
+                                           Disabled="@(!Value.HasPreviousPage)"
+                                           Icon="@MatIconNames.Navigate_before" />
+
+                            <MatIconButton OnClick="@(async _ => await PageChanged(Value.Page + 1))"
+                                           Disabled="@(!Value.HasNextPage)"
+                                           Icon="@MatIconNames.Navigate_next" />
+
+                            <MatIconButton OnClick="@(async _ => await PageChanged(Value.TotalPages))"
+                                           Disabled="@(Value.Page == Value.TotalPages)"
+                                           Icon="@MatIconNames.Last_page" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    [Parameter] public IPagedList<TItem> Value { get; set; }
+    [Parameter] public EventCallback<int> OnChange { get; set; }
+
+    private async Task PageChanged(int page)
+    {
+        if (OnChange.HasDelegate)
+        {
+            await OnChange.InvokeAsync(page);
+        }
+    }
+}
