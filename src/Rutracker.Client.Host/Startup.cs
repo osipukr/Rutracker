@@ -11,6 +11,7 @@ using Rutracker.Client.Host.Helpers;
 using Rutracker.Client.Host.Options;
 using Rutracker.Client.Host.Providers;
 using Rutracker.Client.Host.Services;
+using Rutracker.Client.Infrastructure.Extensions;
 using Rutracker.Client.Infrastructure.Interfaces;
 using Rutracker.Client.View.Helpers;
 using Rutracker.Shared.Models;

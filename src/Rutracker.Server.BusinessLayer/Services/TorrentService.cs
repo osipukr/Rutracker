@@ -96,10 +96,11 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             torrent.AddedDate = _dateService.Now();
 
-            await _torrentRepository.AddAsync(torrent);
+            var result = await _torrentRepository.AddAsync(torrent);
+
             await _unitOfWork.SaveChangesAsync();
 
-            return torrent;
+            return result;
         }
 
         public async Task<Torrent> UpdateAsync(int id, Torrent torrent)

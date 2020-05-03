@@ -13,5 +13,7 @@ namespace Rutracker.Shared.Models.ViewModels.User
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+
+        public string ImageUrl { get; set; }
     }
 }

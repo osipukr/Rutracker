@@ -89,10 +89,11 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             subcategory.AddedDate = _dateService.Now();
 
-            await _subcategoryRepository.AddAsync(subcategory);
+            var result = await _subcategoryRepository.AddAsync(subcategory);
+
             await _unitOfWork.SaveChangesAsync();
 
-            return subcategory;
+            return result;
         }
 
         public async Task<Subcategory> UpdateAsync(int id, Subcategory subcategory)

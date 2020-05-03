@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Rutracker.Client.Host.Helpers
+namespace Rutracker.Client.Infrastructure.Extensions
 {
-    public static class HttpContextAccessorHelper
+    public static class HttpContextAccessorExtensions
     {
         public static bool IsServerStarted(this IHttpContextAccessor accessor)
         {

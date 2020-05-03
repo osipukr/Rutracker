@@ -66,6 +66,7 @@
                     <ContextMenuTrigger MenuId="@CategoryPageHelper.SubcategoryMenuId" Data="@subcategory">
 
                         <SubcategoryCard Subcategory="@subcategory"
+                                         @key="@subcategory.Id"
                                          Id="@CategoryPageHelper.GetSubcategoryCardId(subcategory.Id)" />
 
                     </ContextMenuTrigger>

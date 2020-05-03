@@ -40,8 +40,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             var query = _commentRepository.GetAll(x => x.TorrentId == filter.TorrentId)
                 .OrderByDescending(x => x.Likes.Count)
-                .ThenByDescending(x => x.AddedDate)
-                .AsNoTracking();
+                .ThenByDescending(x => x.AddedDate);
 
             var pagedList = await ApplyFilterAsync(query, filter);
 
@@ -89,10 +88,11 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             comment.AddedDate = _dateService.Now();
 
-            await _commentRepository.AddAsync(comment);
+            var result = await _commentRepository.AddAsync(comment);
+
             await _unitOfWork.SaveChangesAsync();
 
-            return comment;
+            return result;
         }
 
         public async Task<Comment> UpdateAsync(int id, string userId, Comment comment)

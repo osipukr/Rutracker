@@ -1,6 +1,6 @@
 ﻿@typeparam TItem
 
-<div class="mat-layout-grid p-0">
+<div class="mat-layout-grid p-0 @CssClass">
     <div class="mat-layout-grid-inner">
         <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
             <div class="mdc-paginator">
@@ -39,6 +39,7 @@
 {
     [Parameter] public IPagedList<TItem> Value { get; set; }
     [Parameter] public EventCallback<int> OnChange { get; set; }
+    [Parameter] public string CssClass { get; set; }
 
     private async Task PageChanged(int page)
     {

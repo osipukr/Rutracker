@@ -44,7 +44,7 @@
             @foreach (var item in _pagedList.Items)
             {
                 <ContextMenuTrigger MenuId="@TorrentPageHelper.TorrentMenuId" Data="@item">
-                    <TorrentCard Value="@item" />
+                    <TorrentCard Value="@item" @key="@item.Id" />
                 </ContextMenuTrigger>
             }
         </div>

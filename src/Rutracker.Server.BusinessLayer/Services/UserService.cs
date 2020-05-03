@@ -136,6 +136,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             result.LastName = user.LastName;
             result.Email = user.Email;
             result.EmailConfirmed = user.EmailConfirmed;
+            result.ImageUrl = user.ImageUrl;
             result.ModifiedDate = _dateService.Now();
 
             var updateResult = await _userManager.UpdateAsync(result);

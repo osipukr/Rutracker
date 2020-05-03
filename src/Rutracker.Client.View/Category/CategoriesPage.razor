@@ -45,6 +45,7 @@
                 var isExpanded = Id.HasValue && Id == category.Id;
 
                 <CategoryCard Category="@category"
+                              @key="@category.Id"
                               Id="@CategoryPageHelper.GetCategoryCardId(category.Id)"
                               IsExpanded="@isExpanded"
                               OnClick="@OnIdChanged" />
@@ -103,30 +104,6 @@
 
     private readonly ErrorModel _errorModel = ErrorModel.Create();
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await LoadCategories();
-
-            if (Id.HasValue)
-            {
-                LoadCategory();
-
-                if (_category != null)
-                {
-                    StateHasChanged();
-
-                    await JsRuntime.InvokeVoidAsync("blazorHelpers.scrollToFragment", CategoryPageHelper.GetCategoryCardId(Id.Value));
-                }
-            }
-            else
-            {
-                StateHasChanged();
-            }
-        }
-    }
-
     protected override async Task OnInitializedAsync()
     {
         var state = await AuthenticationStateTask;
@@ -136,6 +113,13 @@
         if (_isUserAuthenticated)
         {
             _isAdmin = (await AuthorizationService.AuthorizeAsync(state.User, Policies.IsAdmin)).Succeeded;
+        }
+
+        await LoadCategories();
+
+        if (Id.HasValue)
+        {
+            LoadCategory();
         }
     }
 
@@ -201,7 +185,7 @@
 
                 await OnIdChanged(category.Id);
 
-                await JsRuntime.InvokeVoidAsync("blazorHelpers.scrollToFragment", CategoryPageHelper.GetCategoryCardId(Id.Value));
+                await JsRuntime.InvokeVoidAsync("blazorHelpers.scrollToFragment", CategoryPageHelper.GetCategoryCardId(category.Id));
             }
         }
     }

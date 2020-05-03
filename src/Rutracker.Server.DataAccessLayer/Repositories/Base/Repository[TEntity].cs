@@ -62,7 +62,13 @@ namespace Rutracker.Server.DataAccessLayer.Repositories.Base
 
         public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
-            return (await _dbSet.AddAsync(entity)).Entity;
+            var proxy = _dbSet.CreateProxy();
+
+            _context.Entry(proxy).CurrentValues.SetValues(entity);
+
+            await _dbSet.AddAsync(proxy);
+
+            return proxy;
         }
 
         public virtual void Update(TEntity entity)

@@ -45,10 +45,12 @@
                 var element = document.getElementById(elementId);
 
                 if (element) {
-
-                    var headerOffset = 90;
+                    var headerOffset = 80;
                     var elementPosition = element.getBoundingClientRect().top;
                     var offsetPosition = elementPosition - headerOffset;
+
+                    console.log(elementPosition);
+                    console.log(offsetPosition);
 
                     window.scrollTo({
                         top: offsetPosition,

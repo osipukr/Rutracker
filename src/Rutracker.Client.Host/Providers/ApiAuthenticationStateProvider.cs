@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ProtectedBrowserStorage;
 using Rutracker.Client.Host.Helpers;
 using Rutracker.Client.Host.Services;
+using Rutracker.Client.Infrastructure.Extensions;
 
 namespace Rutracker.Client.Host.Providers
 {

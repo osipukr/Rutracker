@@ -1,13 +1,17 @@
 ﻿@page "/torrents/{Id:int}"
 
 @inject ITorrentService TorrentService
+@inject ICommentService CommentService
 @inject IAuthorizationService AuthorizationService
 @inject IModalService ModelService
 @inject IMatToaster MatToaster
+@inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
-@inject PathHelper PageHelper
+@inject PathHelper PathHelper
 
-<Title>@PageHelper.GetPageTitle(_torrent == null ? "Torrent" : _torrent.Name)</Title>
+@using System.Text
+
+<Title>@PathHelper.GetPageTitle(_torrent == null ? "Torrent" : _torrent.Name)</Title>
 
 <div class="Page-Root">
     @if (_errorModel.IsError)
@@ -27,7 +31,7 @@
                 <AuthorizeView Policy="@Policies.IsAdmin">
                     <Authorized>
                         <ContextMenuTrigger Class="ml-2" MenuId="@TorrentPageHelper.TorrentMenuId" MouseButtonTrigger="MouseButtonTrigger.Left">
-                            <MatIconButton Icon="@MatIconNames.Settings"/>
+                            <MatIconButton Icon="@MatIconNames.Settings" />
                         </ContextMenuTrigger>
                     </Authorized>
                 </AuthorizeView>
@@ -38,7 +42,7 @@
                             Disabled="@(string.IsNullOrEmpty(MagnetLink))"
                             Context="iconButtonContext"
                             target="_blank">
-                    <SaveIcon/>
+                    <SaveIcon />
                 </IconButton>
             </div>
 
@@ -91,6 +95,22 @@
                 </div>
             </div>
         </div>
+
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <CommentsPage Value="@_pagedList"
+                                      Error="@_commentErrorModel"
+                                      OnPageChange="@PageChanged"
+                                      OnCreate="@CreateCommentAsync"
+                                      OnUpdate="@UpdateCommentAsync"
+                                      OnDelete="@DeleteCommentAsync"
+                                      OnLike="@LikeCommentAsync" />
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 </div>
 
@@ -110,7 +130,16 @@
     private bool _isUserAuthenticated;
     private bool _isAdmin;
 
+    private PagedList<CommentView> _pagedList;
+    private CommentFilter _filter = new CommentFilter
+    {
+        PageIndexFrom = Constants.Filter.PageIndexFrom,
+        Page = Constants.Filter.DefaultPage,
+        PageSize = 5
+    };
+
     private readonly ErrorModel _errorModel = ErrorModel.Create();
+    private readonly ErrorModel _commentErrorModel = ErrorModel.Create();
 
     private string MagnetLink => TorrentPageHelper.GetMagnetLink(_torrent.TrackerId);
 
@@ -125,7 +154,15 @@
             _isAdmin = (await AuthorizationService.AuthorizeAsync(state.User, Policies.IsAdmin)).Succeeded;
         }
 
+        _filter.TorrentId = Id;
+
+        if (NavigationManager.TryGetQueryString<int>("page", out var page))
+        {
+            _filter.Page = page;
+        }
+
         await LoadTorrent();
+        await LoadPagedList();
     }
 
     private async Task LoadTorrent()
@@ -137,6 +174,18 @@
         catch (Exception exception)
         {
             _errorModel.HandlerException(exception);
+        }
+    }
+
+    private async Task LoadPagedList()
+    {
+        try
+        {
+            _pagedList = await CommentService.ListAsync(_filter);
+        }
+        catch (Exception exception)
+        {
+            _commentErrorModel.HandlerException(exception);
         }
     }
 
@@ -185,6 +234,119 @@
                     NavigationManager.NavigateTo(Constants.Page.Torrents);
                 }
             }
+        }
+    }
+
+    private async Task FilterChanged(CommentFilter filter)
+    {
+        _filter = filter;
+
+        var builder = new StringBuilder(PathHelper.GetTorrentPath(Id));
+
+        if (filter.Page != 1)
+        {
+            builder.AppendFormat("?page={0}", filter.Page.ToString());
+        }
+
+        var url = builder.ToString();
+
+        await JsRuntime.InvokeVoidAsync("blazorPushState.pushState", url);
+
+        await LoadPagedList();
+
+        StateHasChanged();
+    }
+
+    private async Task PageChanged(int page)
+    {
+        _filter.Page = page;
+
+        await FilterChanged(_filter);
+    }
+
+    private async Task CreateCommentAsync(CommentCreateView commentCreate)
+    {
+        commentCreate.TorrentId = Id;
+
+        try
+        {
+            var result = await CommentService.AddAsync(commentCreate);
+
+            _pagedList.Items.Insert(0, result);
+
+            StateHasChanged();
+        }
+        catch (Exception exception)
+        {
+            MatToaster.Add(exception.Message, MatToastType.Danger, "Comment creating");
+        }
+    }
+
+    private async Task UpdateCommentAsync(CommentView comment, CommentUpdateView commentUpdate)
+    {
+        if (comment.Text == commentUpdate.Text)
+        {
+            return;
+        }
+
+        try
+        {
+            var result = await CommentService.UpdateAsync(comment.Id, commentUpdate);
+
+            var index = _pagedList.Items.FindIndex(x => x.Id == comment.Id);
+
+            if (index != -1)
+            {
+                _pagedList.Items[index] = result;
+
+                StateHasChanged();
+            }
+        }
+        catch (Exception exception)
+        {
+            MatToaster.Add(exception.Message, MatToastType.Danger, "Comment updating");
+        }
+    }
+
+    private async Task DeleteCommentAsync(int commentId)
+    {
+        try
+        {
+            await CommentService.DeleteAsync(commentId);
+
+            var index = _pagedList.Items.FindIndex(x => x.Id == commentId);
+
+            if (index != -1)
+            {
+                _pagedList.Items.RemoveAt(index);
+
+                StateHasChanged();
+            }
+        }
+        catch (Exception exception)
+        {
+            MatToaster.Add(exception.Message, MatToastType.Danger, "Comment deleting");
+        }
+    }
+
+    private async Task LikeCommentAsync(int commentId)
+    {
+        try
+        {
+            var result = await CommentService.LikeCommentAsync(commentId);
+
+            var index = _pagedList.Items.FindIndex(x => x.Id == commentId);
+
+            if (index != -1)
+            {
+                _pagedList.Items[index] = result;
+
+                StateHasChanged();
+            }
+        }
+        catch (Exception exception)
+        {
+            MatToaster.Add(exception.Message, MatToastType.Danger, "Comment liking");
         }
     }
 }

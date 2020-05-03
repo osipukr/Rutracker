@@ -51,6 +51,18 @@
                         <ValidationMessage For="@(() => _userUpdate.Email)" />
                     </FormControl>
                 </Grid>
+
+                <Grid Item Medium="@GridSize.Six" ExtraSmall="@GridSize.Twelve">
+                    <FormControl Class="Form-Cotrol">
+                        <MatTextField FullWidth="true"
+                                      Outlined="true"
+                                      Required="true"
+                                      Label="Image Url"
+                                      @bind-Value="@_userUpdate.ImageUrl" />
+
+                        <ValidationMessage For="@(() => _userUpdate.ImageUrl)" />
+                    </FormControl>
+                </Grid>
             </Grid>
         </CardContent>
 
@@ -78,13 +90,15 @@
         _userUpdate.FirstName = Value.FirstName;
         _userUpdate.LastName = Value.LastName;
         _userUpdate.Email = Value.Email;
+        _userUpdate.ImageUrl = Value.ImageUrl;
     }
 
     private async Task UpdateClicked()
     {
         if (_userUpdate.FirstName == Value.FirstName &&
             _userUpdate.LastName == Value.LastName &&
-            _userUpdate.Email == Value.Email)
+            _userUpdate.Email == Value.Email &&
+            _userUpdate.ImageUrl == Value.ImageUrl)
         {
             return;
         }
