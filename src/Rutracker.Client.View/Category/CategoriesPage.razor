@@ -11,13 +11,13 @@
 
 <Title>@PathHelper.GetPageTitle(_category == null ? "Categories" : _category.Name)</Title>
 
-<div class="Categories-Root">
+<div class="Page-Root">
     <AuthorizeView Policy="@Policies.IsAdmin">
         <Authorized>
-            <CategoriesToolbar OnImportClicked="@ImportClickedEventHandler"
-                               OnExportClicked="@ExportClickedEventHandler"
-                               OnAddClicked="@AddClickedEventHandler"
-                               IsButtonsDisabled="@(_categories == null || _errorModel.IsError)" />
+            <CategoriesToolbar OnImportClick="@ImportClickedEventHandler"
+                               OnExportClick="@ExportClickedEventHandler"
+                               OnAddClick="@AddClickedEventHandler"
+                               IsButtonsDisable="@(_categories == null || _errorModel.IsError)" />
         </Authorized>
     </AuthorizeView>
 
@@ -47,7 +47,6 @@
                 var isExpanded = Id.HasValue && Id == category.Id;
 
                 <CategoryCard Category="@category"
-                              @key="@category"
                               Id="@CategoryPageHelper.GetCategoryCardId(category.Id)"
                               IsExpanded="@isExpanded"
                               OnClick="@OnIdChanged" />
@@ -130,7 +129,7 @@
         }
     }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
         var state = await AuthenticationStateTask;
 
@@ -192,12 +191,12 @@
 
     private async Task ImportClickedEventHandler(EventArgs e)
     {
-        Console.WriteLine("Import clicked");
+        await Task.CompletedTask;
     }
 
     private async Task ExportClickedEventHandler(EventArgs e)
     {
-        Console.WriteLine("Export clicked");
+        await Task.CompletedTask;
     }
 
     private async Task AddClickedEventHandler()

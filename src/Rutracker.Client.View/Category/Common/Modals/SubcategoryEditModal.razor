@@ -3,12 +3,11 @@
 
 <EditForm Model="@_subcategoryEdit"
           OnValidSubmit="@EditClicked"
-          Context="formContext"
           autocomplete="off">
 
     <DataAnnotationsValidator />
 
-    <FormControl Class="Category-Cotrol">
+    <FormControl Class="Form-Cotrol">
         <MatTextField @bind-Value="@_subcategoryEdit.Name"
                       Label="Name"
                       Icon="@MatIconNames.Create"
@@ -19,7 +18,7 @@
         <ValidationMessage For="@(() => _subcategoryEdit.Name)" />
     </FormControl>
 
-    <FormControl Class="Category-Cotrol">
+    <FormControl Class="Form-Cotrol">
         <MatTextField @bind-Value="@_subcategoryEdit.Description"
                       Label="Description"
                       Icon="@MatIconNames.Description"
@@ -29,7 +28,7 @@
         <ValidationMessage For="@(() => _subcategoryEdit.Description)" />
     </FormControl>
 
-    <FormControl class="Category-Cotrol Category-Actions">
+    <FormControl Class="Form-Cotrol Form-Actions">
         <MatButton Label="Update" Type="submit" Raised="true" />
         <MatButton OnClick="@CancelClicked" Label="Cancel" />
     </FormControl>

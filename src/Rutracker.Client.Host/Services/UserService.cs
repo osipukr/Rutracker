@@ -5,7 +5,6 @@ using Rutracker.Client.Host.Options;
 using Rutracker.Client.Host.Services.Base;
 using Rutracker.Client.Infrastructure.Interfaces;
 using Rutracker.Shared.Infrastructure.Collections;
-using Rutracker.Shared.Infrastructure.Filters;
 using Rutracker.Shared.Models.ViewModels.User;
 
 namespace Rutracker.Client.Host.Services
@@ -16,11 +15,11 @@ namespace Rutracker.Client.Host.Services
         {
         }
 
-        public async Task<IPagedList<UserView>> ListAsync(IUserFilter filter)
+        public async Task<PagedList<UserView>> ListAsync(UserFilter filter)
         {
-            var url = string.Format(_apiOptions.Users, filter?.ToQueryString());
+            var url = $"{_apiOptions.Users}?{filter?.ToQueryString()}";
 
-            return await _httpClientService.GetJsonAsync<IPagedList<UserView>>(url);
+            return await _httpClientService.GetJsonAsync<PagedList<UserView>>(url);
         }
 
         public async Task<UserView> FindAsync(string userName)
@@ -43,7 +42,7 @@ namespace Rutracker.Client.Host.Services
 
         public async Task<UserDetailView> ChangePasswordAsync(PasswordUpdateView model)
         {
-            return await _httpClientService.PutJsonAsync<UserDetailView>(_apiOptions.ChangePassword, model);
+            return await _httpClientService.PostJsonAsync<UserDetailView>(_apiOptions.ChangePassword, model);
         }
     }
 }

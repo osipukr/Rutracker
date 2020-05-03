@@ -9,11 +9,10 @@ namespace Rutracker.Server.WebApi.Mapping
         public TorrentViewProfile()
         {
             CreateMap<Torrent, TorrentView>()
-                .ForMember(x => x.CommentsCount,
-                    x => x.MapFrom(y => y.Comments.Count))
+                .ForMember(x => x.Category,
+                    x => x.MapFrom(y => y.Subcategory.Category))
                 .ReverseMap();
 
-            CreateMap<Torrent, TorrentDetailView>().ReverseMap();
             CreateMap<Torrent, TorrentCreateView>().ReverseMap();
             CreateMap<Torrent, TorrentUpdateView>().ReverseMap();
         }

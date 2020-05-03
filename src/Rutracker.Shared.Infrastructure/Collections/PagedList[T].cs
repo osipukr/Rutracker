@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rutracker.Shared.Infrastructure.Collections;
 
-namespace Rutracker.Server.BusinessLayer.Collections
+namespace Rutracker.Shared.Infrastructure.Collections
 {
     public class PagedList<T> : IPagedList<T>
     {
@@ -11,37 +10,37 @@ namespace Rutracker.Server.BusinessLayer.Collections
         /// Gets or sets the index of the page.
         /// </summary>
         /// <value>The index of the page.</value>
-        public int Page { get; protected set; }
+        public int Page { get; set; }
 
         /// <summary>
         /// Gets or sets the size of the page.
         /// </summary>
         /// <value>The size of the page.</value>
-        public int PageSize { get; protected set; }
+        public int PageSize { get; set; }
 
         /// <summary>
         /// Gets or sets the total count.
         /// </summary>
         /// <value>The total count.</value>
-        public int TotalCount { get; protected set; }
+        public int TotalCount { get; set; }
 
         /// <summary>
         /// Gets or sets the total pages.
         /// </summary>
         /// <value>The total pages.</value>
-        public int TotalPages { get; protected set; }
+        public int TotalPages { get; set; }
 
         /// <summary>
         /// Gets or sets the index from.
         /// </summary>
         /// <value>The index from.</value>
-        public int PageIndexFrom { get; protected set; }
+        public int PageIndexFrom { get; set; }
 
         /// <summary>
         /// Gets or sets the items.
         /// </summary>
         /// <value>The items.</value>
-        public IList<T> Items { get; protected set; }
+        public IList<T> Items { get; set; }
 
         /// <summary>
         /// Gets the has previous page.

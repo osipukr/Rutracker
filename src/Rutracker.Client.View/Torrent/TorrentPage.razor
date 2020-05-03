@@ -1,11 +1,190 @@
 ﻿@page "/torrents/{Id:int}"
 
+@inject ITorrentService TorrentService
+@inject IAuthorizationService AuthorizationService
+@inject IModalService ModelService
+@inject IMatToaster MatToaster
+@inject NavigationManager NavigationManager
 @inject PathHelper PageHelper
 
-<Title>@PageHelper.GetPageTitle("Torrent")</Title>
+<Title>@PageHelper.GetPageTitle(_torrent == null ? "Torrent" : _torrent.Name)</Title>
 
-<h3>TorrentPage</h3>
+<div class="Page-Root">
+    @if (_errorModel.IsError)
+    {
+        <ErrorCard>
+            @_errorModel.Message
+        </ErrorCard>
+    }
+    else if (_torrent == null)
+    {
+        <ProgressCard />
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-12 d-flex flex-row-reverse my-3">
+                <AuthorizeView Policy="@Policies.IsAdmin">
+                    <Authorized>
+                        <ContextMenuTrigger Class="ml-2" MenuId="@TorrentPageHelper.TorrentMenuId" MouseButtonTrigger="MouseButtonTrigger.Left">
+                            <MatIconButton Icon="@MatIconNames.Settings"/>
+                        </ContextMenuTrigger>
+                    </Authorized>
+                </AuthorizeView>
+
+                <IconButton Color="@Color.Primary"
+                            Size="@IconButtonSize.Medium"
+                            Href="@MagnetLink"
+                            Disabled="@(string.IsNullOrEmpty(MagnetLink))"
+                            Context="iconButtonContext"
+                            target="_blank">
+                    <SaveIcon/>
+                </IconButton>
+            </div>
+
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <ContextMenuTrigger MenuId="@TorrentPageHelper.TorrentMenuId">
+                            <div class="card-title mb-4">
+                                <div class="d-flex flex-wrap">
+                                    <div class="p-3">
+                                        <h5 class="font-weight-bold" style="word-break: break-all;" title="Torrent name">
+                                            @_torrent.Name
+                                        </h5>
+
+                                        <p class="m-0" title="Creation date">
+                                            Created at: <span>@_torrent.AddedDate.ToShortDateString() @_torrent.AddedDate.ToShortTimeString()</span>
+                                        </p>
+
+                                        @if (_torrent.ModifiedDate.HasValue)
+                                        {
+                                            <p class="m-0" title="Latest update">
+                                                Last updated at: <span>@_torrent.ModifiedDate.Value.ToShortDateString() @_torrent.ModifiedDate.Value.ToShortTimeString()</span>
+                                            </p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <MatRipple Color="@MatRippleColor.Primary" class="p-3">
+                                        Description: <span style="word-break: break-all;">@_torrent.Description</span>
+                                    </MatRipple>
+
+                                    <MatRipple Color="@MatRippleColor.Primary" class="p-3">
+                                        Size: <span style="word-break: break-all;">@TorrentPageHelper.GetSizeInMemory(_torrent.Size)</span>
+                                    </MatRipple>
+
+                                    <MatRipple Color="@MatRippleColor.Primary" class="p-3">
+                                        Hash: <span style="word-break: break-all;">@_torrent.Hash</span>
+                                    </MatRipple>
+
+                                    <MatRipple Color="@MatRippleColor.Primary" class="p-3">
+                                        Content: <span style="word-break: break-all;">@_torrent.Content</span>
+                                    </MatRipple>
+                                </div>
+                            </div>
+                        </ContextMenuTrigger>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Torrent menu -->
+<ContextMenu Id="@TorrentPageHelper.TorrentMenuId" Animation="Animation.Zoom" AutoHide="true" OnAppearing="@MenuOnAppearingHandler">
+    <Item OnClick="@EditClickedAsync">Edit torrent</Item>
+    <Item OnClick="@DeleteClickedAsync">Delete torrent</Item>
+</ContextMenu>
 
 @code
 {
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    [Parameter] public int Id { get; set; }
+
+    private TorrentView _torrent;
+
+    private bool _isUserAuthenticated;
+    private bool _isAdmin;
+
+    private readonly ErrorModel _errorModel = ErrorModel.Create();
+
+    private string MagnetLink => TorrentPageHelper.GetMagnetLink(_torrent.TrackerId);
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthenticationStateTask;
+
+        _isUserAuthenticated = state.IsUserAuthenticated();
+
+        if (_isUserAuthenticated)
+        {
+            _isAdmin = (await AuthorizationService.AuthorizeAsync(state.User, Policies.IsAdmin)).Succeeded;
+        }
+
+        await LoadTorrent();
+    }
+
+    private async Task LoadTorrent()
+    {
+        try
+        {
+            _torrent = await TorrentService.FindAsync(Id);
+        }
+        catch (Exception exception)
+        {
+            _errorModel.HandlerException(exception);
+        }
+    }
+
+    private void MenuOnAppearingHandler(MenuAppearingEventArgs e)
+    {
+        e.PreventShow = !_isAdmin;
+    }
+
+    private async Task EditClickedAsync()
+    {
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(TorrentView), _torrent);
+
+        var reference = ModelService.Show<TorrentEditModal>("Edit torrent", parameters);
+
+        var result = await reference.Result;
+
+        if (!result.Cancelled)
+        {
+            if (result.Data is TorrentView torrent)
+            {
+                _torrent = torrent;
+
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task DeleteClickedAsync()
+    {
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(TorrentView), _torrent);
+
+        var reference = ModelService.Show<TorrentDeleteModal>("Remove torrent", parameters);
+
+        var result = await reference.Result;
+
+        if (!result.Cancelled)
+        {
+            if (result.Data is bool isSuccess)
+            {
+                if (isSuccess)
+                {
+                    NavigationManager.NavigateTo(Constants.Page.Torrents);
+                }
+            }
+        }
+    }
 }

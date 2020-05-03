@@ -3,35 +3,34 @@
 
 <EditForm Model="@_categoryEdit"
           OnValidSubmit="@EditClicked"
-          Context="formContext"
           autocomplete="off">
 
-    <DataAnnotationsValidator/>
+    <DataAnnotationsValidator />
 
-    <FormControl Class="Category-Cotrol">
+    <FormControl Class="Form-Cotrol">
         <MatTextField @bind-Value="@_categoryEdit.Name"
-                       Label="Name"
-                       Icon="@MatIconNames.Create"
-                       IconTrailing="true"
-                       FullWidth="true"
-                       Required="true"/>
+                      Label="Name"
+                      Icon="@MatIconNames.Create"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true" />
 
-        <ValidationMessage For="@(() => _categoryEdit.Name)"/>
+        <ValidationMessage For="@(() => _categoryEdit.Name)" />
     </FormControl>
 
-    <FormControl Class="Category-Cotrol">
+    <FormControl Class="Form-Cotrol">
         <MatTextField @bind-Value="@_categoryEdit.Description"
-                       Label="Description"
-                       Icon="@MatIconNames.Description"
-                       IconTrailing="true"
-                       FullWidth="true"/>
+                      Label="Description"
+                      Icon="@MatIconNames.Description"
+                      IconTrailing="true"
+                      FullWidth="true" />
 
-        <ValidationMessage For="@(() => _categoryEdit.Description)"/>
+        <ValidationMessage For="@(() => _categoryEdit.Description)" />
     </FormControl>
 
-    <FormControl class="Category-Cotrol Category-Actions">
-        <MatButton Label="Update" Type="submit" Raised="true"/>
-        <MatButton OnClick="@CancelClicked" Label="Cancel"/>
+    <FormControl Class="Form-Cotrol Form-Actions">
+        <MatButton Label="Update" Type="submit" Raised="true" />
+        <MatButton OnClick="@CancelClicked" Label="Cancel" />
     </FormControl>
 </EditForm>
 

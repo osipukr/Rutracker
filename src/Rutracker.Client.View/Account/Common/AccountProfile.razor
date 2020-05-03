@@ -1,0 +1,31 @@
+﻿<Card Class="Account-Profile-Root">
+    <CardContent>
+        <div class="account-profile-details">
+            <div>
+                <Typography GutterBottom
+                            Variant="@TypographyVariant.H2">
+                    @Value.UserName
+                </Typography>
+
+                <Typography Class="account-profile-text"
+                            Color="@Color.TextSecondary"
+                            Variant="@TypographyVariant.Body1">
+                    @Value.FirstName @Value.LastName
+                </Typography>
+
+                <Typography Class="account-profile-text"
+                            Color="@Color.TextSecondary"
+                            Variant="@TypographyVariant.Body1">
+                    @string.Join(", ", Value.Roles.Select(x => x.Name))
+                </Typography>
+            </div>
+
+            <Avatar Class="account-profile-avatar" Src="@Value.ImageUrl" />
+        </div>
+    </CardContent>
+</Card>
+
+@code
+{
+    [Parameter] public UserDetailView Value { get; set; }
+}

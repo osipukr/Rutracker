@@ -1,11 +1,303 @@
 ﻿@page "/torrents"
 
-@inject PathHelper PageHelper
+@inject ITorrentService TorrentService
+@inject ICategoryService CategoryService
+@inject ISubcategoryService SubcategoryService
+@inject IMatToaster MatToaster
+@inject IModalService ModelService
+@inject IAuthorizationService AuthorizationService
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject PathHelper PathHelper
 
-<Title>@PageHelper.GetPageTitle("Torrents")</Title>
+@using System.Text
 
-<h3>TorrentsPage</h3>
+<Title>@PathHelper.GetPageTitle("Torrents")</Title>
+
+<div class="Page-Root">
+    <AuthorizeView Policy="@Policies.IsAdmin">
+        <Authorized>
+            <TorrentsToolbar OnAddClick="@AddClickedAsync" IsButtonsDisable="@(_pagedList == null || _errorModel.IsError)" />
+        </Authorized>
+    </AuthorizeView>
+
+    @if (_errorModel.IsError)
+    {
+        <ErrorCard>
+            @_errorModel.Message
+        </ErrorCard>
+    }
+    else if (_pagedList == null)
+    {
+        <ProgressCard />
+    }
+    else
+    {
+        <div class="Torrents-Filter-Root">
+            <TorrentsFilter Filter="@_filter"
+                            Categories="@_categories"
+                            Subcategories="@_subcategories"
+                            OnChange="@FilterChanged" />
+        </div>
+
+        <div class="Torrents-List-Root @(_pagedList.Items.Count == 0 ? null : "mat-elevation-z10")">
+            @foreach (var item in _pagedList.Items)
+            {
+                <ContextMenuTrigger MenuId="@TorrentPageHelper.TorrentMenuId" Data="@item">
+                    <TorrentCard Value="@item" />
+                </ContextMenuTrigger>
+            }
+        </div>
+
+        <div class="mat-layout-grid p-0">
+            <div class="mat-layout-grid-inner">
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                    <div class="mdc-paginator">
+                        <div class="mdc-paginator-container">
+                            <div class="mdc-paginator-range-actions">
+                                <span class="mdc-paginator-range-label ml-0 mr-1 text-center">
+                                    @($"Page {_pagedList.Page} of {_pagedList.TotalPages}") <br />
+                                    @($"Total items: {_pagedList.TotalCount}")
+                                </span>
+
+                                <div class="mdc-paginator-range-buttons">
+                                    <MatIconButton OnClick="@(async _ => await PageChanged(_pagedList.PageIndexFrom))"
+                                                   Disabled="@(_pagedList.Page == _pagedList.PageIndexFrom)"
+                                                   Icon="@MatIconNames.First_page" />
+
+                                    <MatIconButton OnClick="@(async _ => await PageChanged(_pagedList.Page - 1))"
+                                                   Disabled="@(!_pagedList.HasPreviousPage)"
+                                                   Icon="@MatIconNames.Navigate_before" />
+
+                                    <MatIconButton OnClick="@(async _ => await PageChanged(_pagedList.Page + 1))"
+                                                   Disabled="@(!_pagedList.HasNextPage)"
+                                                   Icon="@MatIconNames.Navigate_next" />
+
+                                    <MatIconButton OnClick="@(async _ => await PageChanged(_pagedList.TotalPages))"
+                                                   Disabled="@(_pagedList.Page == _pagedList.TotalPages)"
+                                                   Icon="@MatIconNames.Last_page" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Torrent menu -->
+<ContextMenu Id="@TorrentPageHelper.TorrentMenuId"
+             Animation="Animation.Zoom"
+             AutoHide="true"
+             OnAppearing="MenuOnAppearingHandler">
+    <Item OnClick="@AddClickedAsync">Add new torrent</Item>
+    <Item OnClick="@EditClickedAsync">Edit torrent</Item>
+    <Item OnClick="@DeleteClickedAsync">Delete torrent</Item>
+</ContextMenu>
 
 @code
 {
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private PagedList<TorrentView> _pagedList;
+    private TorrentFilter _filter = new TorrentFilter
+    {
+        PageIndexFrom = Constants.Filter.PageIndexFrom,
+        PageSize = Constants.Filter.PageSize
+    };
+
+    private bool _isUserAuthenticated;
+    private bool _isAdmin;
+
+    private IEnumerable<CategoryView> _categories;
+    private IEnumerable<SubcategoryView> _subcategories;
+
+    private readonly ErrorModel _errorModel = ErrorModel.Create();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthenticationStateTask;
+
+        _isUserAuthenticated = state.IsUserAuthenticated();
+
+        if (_isUserAuthenticated)
+        {
+            _isAdmin = (await AuthorizationService.AuthorizeAsync(state.User, Policies.IsAdmin)).Succeeded;
+        }
+
+        if (NavigationManager.TryGetQueryString<int?>("category", out var categoryId))
+        {
+            _filter.CategoryId = categoryId;
+        }
+
+        if (NavigationManager.TryGetQueryString<int?>("subcategory", out var subcategoryId))
+        {
+            _filter.SubcategoryId = subcategoryId;
+        }
+
+        if (NavigationManager.TryGetQueryString<string>("search", out var search))
+        {
+            _filter.Search = search;
+        }
+
+        if (NavigationManager.TryGetQueryString<int>("page", out var page))
+        {
+            _filter.Page = page;
+        }
+
+        await LoadPagedList();
+
+        if (_pagedList != null)
+        {
+            await LoadCategories();
+        }
+    }
+
+    private async Task LoadPagedList()
+    {
+        try
+        {
+            _pagedList = await TorrentService.ListAsync(_filter);
+        }
+        catch (Exception exception)
+        {
+            _errorModel.HandlerException(exception);
+        }
+    }
+
+    private async Task LoadCategories()
+    {
+        try
+        {
+            _categories = await CategoryService.ListAsync();
+            _subcategories = await SubcategoryService.ListAsync(null);
+        }
+        catch (Exception exception)
+        {
+            MatToaster.Add(exception.Message, MatToastType.Danger, "Categories loading");
+        }
+    }
+
+    private async Task FilterChanged(TorrentFilter filter)
+    {
+        _filter = filter;
+
+        var builder = new StringBuilder(Constants.Page.Torrents);
+
+        builder.Append("?");
+
+        if (filter.CategoryId.HasValue)
+        {
+            builder.AppendFormat("category={0}&", filter.CategoryId);
+        }
+
+        if (filter.SubcategoryId.HasValue)
+        {
+            builder.AppendFormat("subcategory={0}&", filter.SubcategoryId);
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Search))
+        {
+            builder.AppendFormat("search={0}&", filter.Search);
+        }
+
+        if (filter.Page != 1)
+        {
+            builder.AppendFormat("page={0}", filter.Page.ToString());
+        }
+
+        await JsRuntime.InvokeVoidAsync("blazorPushState.pushState", builder.ToString());
+
+        await LoadPagedList();
+
+        StateHasChanged();
+    }
+
+    private async Task PageChanged(int page)
+    {
+        _filter.Page = page;
+
+        await FilterChanged(_filter);
+    }
+
+    private void MenuOnAppearingHandler(MenuAppearingEventArgs e)
+    {
+        e.PreventShow = !_isAdmin;
+    }
+
+    private async Task AddClickedAsync()
+    {
+        var reference = ModelService.Show<TorrentAddModal>("Create new torrent");
+
+        var result = await reference.Result;
+
+        if (!result.Cancelled)
+        {
+            if (result.Data is TorrentView torrent)
+            {
+                NavigationManager.NavigateTo(PathHelper.GetTorrentPath(torrent.Id));
+            }
+        }
+    }
+
+    private async Task EditClickedAsync(ItemClickEventArgs e)
+    {
+        if (!(e.Data is TorrentView torrent))
+        {
+            return;
+        }
+
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(TorrentView), torrent);
+
+        var reference = ModelService.Show<TorrentEditModal>("Edit torrent", parameters);
+
+        var result = await reference.Result;
+
+        if (!result.Cancelled)
+        {
+            if (result.Data is TorrentView updatedTorrent)
+            {
+                var index = _pagedList.Items.FindIndex(x => x.Id == torrent.Id);
+
+                if (index != -1)
+                {
+                    _pagedList.Items[index] = updatedTorrent;
+
+                    StateHasChanged();
+                }
+            }
+        }
+    }
+
+    private async Task DeleteClickedAsync(ItemClickEventArgs e)
+    {
+        if (!(e.Data is TorrentView torrent))
+        {
+            return;
+        }
+
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(TorrentView), torrent);
+
+        var reference = ModelService.Show<TorrentDeleteModal>("Remove torrent", parameters);
+
+        var result = await reference.Result;
+
+        if (!result.Cancelled)
+        {
+            if (result.Data is bool isSuccess)
+            {
+                if (isSuccess)
+                {
+                    _filter.Page = 1;
+
+                    await FilterChanged(_filter);
+                }
+            }
+        }
+    }
 }

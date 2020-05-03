@@ -9,5 +9,9 @@ namespace Rutracker.Shared.Models.ViewModels.User
 
         [StringLength(50)]
         public string LastName { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
     }
 }

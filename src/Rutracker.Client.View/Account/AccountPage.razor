@@ -2,12 +2,72 @@
 
 @attribute [Authorize]
 
+@inject IUserService UserService
+@inject IMatToaster MatToaster
 @inject PathHelper PageHelper
 
 <Title>@PageHelper.GetPageTitle("Account")</Title>
 
-<h3>AccountPage</h3>
+<div class="Page-Root">
+    @if (_errorModel.IsError)
+    {
+        <ErrorCard>
+            @_errorModel.Message
+        </ErrorCard>
+    }
+    else if (_user == null)
+    {
+        <ProgressCard />
+    }
+    else
+    {
+        <Grid Container Spacing="@Spacing.Four">
+            <Grid Item
+                  Large="@GridSize.Four"
+                  Medium="@GridSize.Six"
+                  ExtraLarge="@GridSize.Four"
+                  ExtraSmall="@GridSize.Twelve">
+                <AccountProfile Value="@_user" />
+            </Grid>
+
+            <Grid Item
+                  Large="@GridSize.Eight"
+                  Medium="@GridSize.Six"
+                  ExtraLarge="@GridSize.Eight"
+                  ExtraSmall="@GridSize.Twelve">
+                <AccountDetails Value="@_user" OnUpdate="@UpdatedEventHandler" />
+            </Grid>
+        </Grid>
+    }
+</div>
 
 @code
 {
+    private UserDetailView _user;
+
+    private readonly ErrorModel _errorModel = ErrorModel.Create();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUser();
+    }
+
+    private async Task LoadUser()
+    {
+        try
+        {
+            _user = await UserService.FindAsync();
+        }
+        catch (Exception exception)
+        {
+            _errorModel.HandlerException(exception);
+        }
+    }
+
+    private void UpdatedEventHandler(UserDetailView user)
+    {
+        _user = user;
+
+        StateHasChanged();
+    }
 }

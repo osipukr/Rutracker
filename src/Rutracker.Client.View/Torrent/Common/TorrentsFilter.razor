@@ -1,0 +1,103 @@
+﻿<div class="mat-layout-grid px-0">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+            <EditForm Model="@Filter" OnValidSubmit="@ApplyClicked">
+                <DataAnnotationsValidator />
+
+                <MatTextField @bind-Value="@Filter.Search"
+                              Label="Search"
+                              Icon="@MatIconNames.Search"
+                              IconTrailing="true"
+                              FullWidth="true"
+                              ValidationDisabled="true"
+                              InputClass="pr-5"
+                              type="search" />
+
+                <ValidationMessage For="@(() => Filter.Search)" />
+
+                <div class="row px-0 pt-4 pb-3">
+                    <div class="col-md-6 py-3">
+                        <MatSelect @bind-Value="@Filter.CategoryId"
+                                   TValue="int?"
+                                   Label="Category"
+                                   Enhanced="true"
+                                   ValidationDisabled="true"
+                                   class="w-100">
+                            <MatOption TValue="int?" Value="@((int?)null)"></MatOption>
+
+                            @if (Categories != null)
+                            {
+                                @foreach (var category in Categories)
+                                {
+                                    <MatOption TValue="int?" Value="@((int?)category.Id)">@category.Name (@category.SubcategoriesCount)</MatOption>
+                                }
+                            }
+                        </MatSelect>
+                    </div>
+
+                    <div class="col-md-6 py-3">
+                        <MatSelect @bind-Value="@Filter.SubcategoryId"
+                                   TValue="int?"
+                                   Label="Subcategory"
+                                   Enhanced="true"
+                                   ValidationDisabled="true"
+                                   class="w-100">
+                            <MatOption TValue="int?" Value="@((int?)null)"></MatOption>
+
+                            @if (Subcategories != null)
+                            {
+                                @foreach (var subcategory in Subcategories.Where(x => !Filter.CategoryId.HasValue || Filter.CategoryId == x.CategoryId))
+                                {
+                                    <MatOption TValue="int?" Value="@((int?)subcategory.Id)">@subcategory.Name</MatOption>
+                                }
+                            }
+                        </MatSelect>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-between" style="width: 210px; ">
+                        <MatButton OnClick="@ResetClicked"
+                                   Label="All"
+                                   Outlined="true"
+                                   Style="width: 100px;"
+                                   Class="mat-elevation-z5"
+                                   Type="reset" />
+
+                        <MatButton Label="Apply"
+                                   TrailingIcon="@MatIconNames.Search"
+                                   Raised="true"
+                                   Style="width: 100px;"
+                                   Class="mat-elevation-z5"
+                                   Type="submit" />
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    [Parameter] public TorrentFilter Filter { get; set; }
+    [Parameter] public IEnumerable<CategoryView> Categories { get; set; }
+    [Parameter] public IEnumerable<SubcategoryView> Subcategories { get; set; }
+    [Parameter] public EventCallback<TorrentFilter> OnChange { get; set; }
+
+    private async Task ResetClicked()
+    {
+        Filter.Search = null;
+        Filter.CategoryId = null;
+        Filter.SubcategoryId = null;
+
+        await ApplyClicked();
+    }
+
+    private async Task ApplyClicked()
+    {
+        if (OnChange.HasDelegate)
+        {
+            await OnChange.InvokeAsync(Filter);
+        }
+    }
+}

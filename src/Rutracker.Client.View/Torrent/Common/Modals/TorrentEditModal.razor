@@ -1,0 +1,92 @@
+﻿@inject ITorrentService TorrentService
+@inject IMatToaster MatToaster
+
+<EditForm Model="@_torrentEdit"
+          OnValidSubmit="@EditClicked"
+          autocomplete="off">
+
+    <DataAnnotationsValidator />
+
+    <FormControl Class="Form-Cotrol">
+        <MatTextField @bind-Value="@_torrentEdit.Name"
+                      Label="Name"
+                      Icon="@MatIconNames.Title"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true" />
+
+        <ValidationMessage For="@(() => _torrentEdit.Name)" />
+    </FormControl>
+
+    <FormControl Class="Form-Cotrol">
+        <MatTextField @bind-Value="@_torrentEdit.Description"
+                      Label="Description"
+                      Icon="@MatIconNames.Description"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true" />
+
+        <ValidationMessage For="@(() => _torrentEdit.Description)" />
+    </FormControl>
+
+    <FormControl Class="Form-Cotrol mt-3">
+        <MatTextField @bind-Value="@_torrentEdit.Content"
+                      Label="Content"
+                      FullWidth="true"
+                      TextArea="true"
+                      InputStyle="height: 200px; resize: none" />
+
+        <ValidationMessage For="@(() => _torrentEdit.Content)" />
+    </FormControl>
+
+    <FormControl Class="Form-Cotrol Form-Actions">
+        <MatButton Label="Update" Type="submit" Raised="true" />
+        <MatButton OnClick="@CancelClicked" Label="Cancel" />
+    </FormControl>
+</EditForm>
+
+@code
+{
+    [CascadingParameter] BlazoredModalInstance Modal { get; set; }
+
+    [Parameter] public TorrentView TorrentView { get; set; }
+
+    private readonly TorrentUpdateView _torrentEdit = new TorrentUpdateView();
+
+    private bool _isCanceled;
+
+    protected override void OnInitialized()
+    {
+        _torrentEdit.Name = TorrentView.Name;
+        _torrentEdit.Description = TorrentView.Description;
+        _torrentEdit.Content = TorrentView.Content;
+    }
+
+    private async Task EditClicked()
+    {
+        if (_isCanceled)
+        {
+            return;
+        }
+
+        try
+        {
+            var result = await TorrentService.UpdateAsync(TorrentView.Id, _torrentEdit);
+
+            Modal.Close(ModalResult.Ok(result));
+
+            MatToaster.Add("The torrent was successfully updated.", MatToastType.Success, "Torrent updating");
+        }
+        catch (Exception exception)
+        {
+            MatToaster.Add(exception.Message, MatToastType.Danger, "Torrent updating");
+        }
+    }
+
+    private void CancelClicked()
+    {
+        _isCanceled = true;
+
+        Modal.Cancel();
+    }
+}

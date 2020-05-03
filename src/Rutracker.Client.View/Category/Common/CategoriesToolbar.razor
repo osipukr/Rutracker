@@ -1,29 +1,53 @@
-﻿<div class="Categories-Toolbar-Root">
-    <Button Class="Categories-Toolbar-Button"
-            OnClick="@OnImportClicked"
-            Disabled="@IsButtonsDisabled">
+﻿<div class="Page-Toolbar-Root">
+    <Button Class="Page-Toolbar-Button"
+            OnClick="@ImportClicked"
+            Disabled="@IsButtonsDisable">
         Import
     </Button>
 
-    <Button Class="Categories-Toolbar-Button"
-            OnClick="@OnExportClicked"
-            Disabled="@IsButtonsDisabled">
+    <Button Class="Page-Toolbar-Button"
+            OnClick="@ExportClicked"
+            Disabled="@IsButtonsDisable">
         Export
     </Button>
 
-    <Button Class="Categories-Toolbar-Button"
+    <Button Class="Page-Toolbar-Button"
             Color="@Color.Primary"
             Variant="@ButtonVariant.Contained"
-            OnClick="@OnAddClicked"
-            Disabled="@IsButtonsDisabled">
+            OnClick="@AddClicked"
+            Disabled="@IsButtonsDisable">
         Add
     </Button>
 </div>
 
 @code
 {
-    [Parameter] public EventCallback<EventArgs> OnImportClicked { get; set; }
-    [Parameter] public EventCallback<EventArgs> OnExportClicked { get; set; }
-    [Parameter] public EventCallback<EventArgs> OnAddClicked { get; set; }
-    [Parameter] public bool IsButtonsDisabled { get; set; } = false;
+    [Parameter] public EventCallback<EventArgs> OnImportClick { get; set; }
+    [Parameter] public EventCallback<EventArgs> OnExportClick { get; set; }
+    [Parameter] public EventCallback<EventArgs> OnAddClick { get; set; }
+    [Parameter] public bool IsButtonsDisable { get; set; }
+
+    private async Task ImportClicked(EventArgs e)
+    {
+        if (OnImportClick.HasDelegate)
+        {
+            await OnImportClick.InvokeAsync(e);
+        }
+    }
+
+    private async Task ExportClicked(EventArgs e)
+    {
+        if (OnExportClick.HasDelegate)
+        {
+            await OnExportClick.InvokeAsync(e);
+        }
+    }
+
+    private async Task AddClicked(EventArgs e)
+    {
+        if (OnAddClick.HasDelegate)
+        {
+            await OnAddClick.InvokeAsync(e);
+        }
+    }
 }

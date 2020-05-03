@@ -5,7 +5,6 @@ using Rutracker.Client.Host.Options;
 using Rutracker.Client.Host.Services.Base;
 using Rutracker.Client.Infrastructure.Interfaces;
 using Rutracker.Shared.Infrastructure.Collections;
-using Rutracker.Shared.Infrastructure.Filters;
 using Rutracker.Shared.Models.ViewModels.Torrent;
 
 namespace Rutracker.Client.Host.Services
@@ -16,30 +15,30 @@ namespace Rutracker.Client.Host.Services
         {
         }
 
-        public async Task<IPagedList<TorrentView>> ListAsync(ITorrentFilter filter)
+        public async Task<PagedList<TorrentView>> ListAsync(TorrentFilter filter)
         {
-            var url = string.Format(_apiOptions.Torrents, filter?.ToQueryString());
+            var url = $"{_apiOptions.Torrents}?{filter?.ToQueryString()}";
 
-            return await _httpClientService.GetJsonAsync<IPagedList<TorrentView>>(url);
+            return await _httpClientService.GetJsonAsync<PagedList<TorrentView>>(url);
         }
 
-        public async Task<TorrentDetailView> FindAsync(int id)
+        public async Task<TorrentView> FindAsync(int id)
         {
             var url = string.Format(_apiOptions.Torrent, id.ToString());
 
-            return await _httpClientService.GetJsonAsync<TorrentDetailView>(url);
+            return await _httpClientService.GetJsonAsync<TorrentView>(url);
         }
 
-        public async Task<TorrentDetailView> AddAsync(TorrentCreateView model)
+        public async Task<TorrentView> AddAsync(TorrentCreateView model)
         {
-            return await _httpClientService.PostJsonAsync<TorrentDetailView>(_apiOptions.Torrents, model);
+            return await _httpClientService.PostJsonAsync<TorrentView>(_apiOptions.Torrents, model);
         }
 
-        public async Task<TorrentDetailView> UpdateAsync(int id, TorrentUpdateView model)
+        public async Task<TorrentView> UpdateAsync(int id, TorrentUpdateView model)
         {
             var url = string.Format(_apiOptions.Torrent, id.ToString());
 
-            return await _httpClientService.PutJsonAsync<TorrentDetailView>(url, model);
+            return await _httpClientService.PutJsonAsync<TorrentView>(url, model);
         }
 
         public async Task DeleteAsync(int id)

@@ -17,9 +17,14 @@
             return string.Format(Constants.Page.Category, categoryId.ToString());
         }
 
-        public string GetSubcategoryPath(int subcategoryId)
+        public string GetTorrentPath(int torrentId)
         {
-            return string.Format(Constants.Page.Subcategory, subcategoryId.ToString());
+            return string.Format(Constants.Page.Torrent, torrentId.ToString());
+        }
+
+        public string GetUserPath(string userName)
+        {
+            return string.Format(Constants.Page.User, userName);
         }
     }
 }

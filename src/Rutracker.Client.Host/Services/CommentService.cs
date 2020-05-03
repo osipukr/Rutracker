@@ -5,7 +5,6 @@ using Rutracker.Client.Host.Options;
 using Rutracker.Client.Host.Services.Base;
 using Rutracker.Client.Infrastructure.Interfaces;
 using Rutracker.Shared.Infrastructure.Collections;
-using Rutracker.Shared.Infrastructure.Filters;
 using Rutracker.Shared.Models.ViewModels.Comment;
 
 namespace Rutracker.Client.Host.Services
@@ -16,11 +15,11 @@ namespace Rutracker.Client.Host.Services
         {
         }
 
-        public async Task<IPagedList<CommentView>> ListAsync(ICommentFilter filter)
+        public async Task<PagedList<CommentView>> ListAsync(CommentFilter filter)
         {
-            var url = string.Format(_apiOptions.Comments, filter?.ToQueryString());
+            var url = $"{_apiOptions.Comments}?{filter?.ToQueryString()}";
 
-            return await _httpClientService.GetJsonAsync<IPagedList<CommentView>>(url);
+            return await _httpClientService.GetJsonAsync<PagedList<CommentView>>(url);
         }
 
         public async Task<CommentView> FindAsync(int id)

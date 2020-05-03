@@ -49,7 +49,7 @@ namespace Rutracker.Server.BusinessLayer.Services
                 predicate = x => x.CategoryId == categoryId;
             }
 
-            var subcategories = await _subcategoryRepository.GetAll(predicate).AsNoTracking().ToListAsync();
+            var subcategories = await _subcategoryRepository.GetAll(predicate).ToListAsync();
 
             Guard.Against.NullNotFound(subcategories, string.Format(Resources.Subcategory_NotFoundByCategoryId_ErrorMessage, categoryId));
 

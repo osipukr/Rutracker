@@ -33,7 +33,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             Guard.Against.OutOfRange(filter.Page, Constants.Filter.PageRangeFrom, Constants.Filter.PageRangeTo, Resources.Page_InvalidPageNumber);
             Guard.Against.OutOfRange(filter.PageSize, Constants.Filter.PageSizeRangeFrom, Constants.Filter.PageSizeRangeTo, Resources.PageSize_InvalidPageSizeNumber);
 
-            var query = _userManager.Users.OrderBy(x => x.AddedDate).AsNoTracking();
+            var query = _userManager.Users.OrderBy(x => x.AddedDate);
 
             var pagedList = await ApplyFilterAsync(query, filter);
 
@@ -134,6 +134,8 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             result.FirstName = user.FirstName;
             result.LastName = user.LastName;
+            result.Email = user.Email;
+            result.EmailConfirmed = user.EmailConfirmed;
             result.ModifiedDate = _dateService.Now();
 
             var updateResult = await _userManager.UpdateAsync(result);

@@ -1,7 +1,7 @@
 ﻿@inject ISubcategoryService SubcategoryService
 @inject IMatToaster MatToaster
 
-<FormControl Class="Category-Cotrol">
+<FormControl Class="Form-Cotrol">
     <Typography Align="@Align.Left"
                 GutterBottom
                 Variant="@TypographyVariant.Body1">
@@ -9,7 +9,7 @@
     </Typography>
 </FormControl>
 
-<FormControl class="Category-Cotrol Category-Actions">
+<FormControl Class="Form-Cotrol Form-Actions">
     <MatButton OnClick="@DeleteClicked" Label="Delete" Raised="true" />
     <MatButton OnClick="@CancelClicked" Label="Cancel" />
 </FormControl>
@@ -20,15 +20,8 @@
 
     [Parameter] public SubcategoryView SubcategoryView { get; set; }
 
-    private bool _isCanceled;
-
     private async  Task DeleteClicked()
     {
-        if (_isCanceled)
-        {
-            return;
-        }
-
         try
         {
             await SubcategoryService.DeleteAsync(SubcategoryView.Id);
@@ -45,8 +38,6 @@
 
     private void CancelClicked()
     {
-        _isCanceled = true;
-
         Modal.Cancel();
     }
 }

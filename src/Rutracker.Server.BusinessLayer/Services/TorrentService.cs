@@ -55,7 +55,7 @@ namespace Rutracker.Server.BusinessLayer.Services
                 query = query.Where(x => x.SubcategoryId == filter.SubcategoryId.Value);
             }
 
-            query = query.OrderBy(x => x.AddedDate).AsNoTracking();
+            query = query.OrderBy(x => x.AddedDate);
 
             var pagedList = await ApplyFilterAsync(query, filter);
 

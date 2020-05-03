@@ -20,5 +20,8 @@ namespace Rutracker.Shared.Models.ViewModels.Subcategory
 
         [DataMember(Order = 5)]
         public int TorrentsCount { get; set; }
+
+        [DataMember(Order = 6)]
+        public int CategoryId { get; set; }
     }
 }

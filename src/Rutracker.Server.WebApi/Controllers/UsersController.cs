@@ -62,24 +62,34 @@ namespace Rutracker.Server.WebApi.Controllers
         }
 
         [HttpPut("profile")]
-        public async Task<UserDetailView> ChangeInfo(UserUpdateView model)
+        public async Task<UserDetailView> Put(UserUpdateView model)
         {
             var userId = User.GetUserId();
             var user = _mapper.Map<User>(model);
 
-            var result = await _userService.UpdateAsync(userId, user);
+            var newUser = await _userService.UpdateAsync(userId, user);
+            var roles = await _userService.RolesAsync(userId);
 
-            return _mapper.Map<UserDetailView>(result);
+            var result = _mapper.Map<UserDetailView>(newUser);
+
+            result.Roles = _mapper.Map<IEnumerable<RoleView>>(roles);
+
+            return result;
         }
 
         [HttpPost("profile/password")]
-        public async Task<UserDetailView> ChangePassword(PasswordUpdateView model)
+        public async Task<UserDetailView> Post(PasswordUpdateView model)
         {
             var userId = User.GetUserId();
 
             var user = await _userService.ChangePasswordAsync(userId, model.OldPassword, model.NewPassword);
+            var roles = await _userService.RolesAsync(userId);
 
-            return _mapper.Map<UserDetailView>(user);
+            var result = _mapper.Map<UserDetailView>(user);
+
+            result.Roles = _mapper.Map<IEnumerable<RoleView>>(roles);
+
+            return result;
         }
     }
 }

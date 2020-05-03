@@ -1,0 +1,64 @@
+﻿@inject PathHelper PathHelper
+
+<div id="@CardId" class="Torrent-Item">
+    <div class="Torrent-Item-Id-Root">
+        <span>@Value.Id</span>
+    </div>
+
+    <div class="Torrent-Item-Content-Root">
+        <div class="Torrent-Item-Header">
+            <div>
+                @if (Value.Category != null)
+                {
+                    <strong>@Value.Category.Name</strong>
+                    <span> - </span>
+                }
+
+                @if (Value.Subcategory != null)
+                {
+                    <strong>@Value.Subcategory.Name</strong>
+                }
+            </div>
+
+            <div>
+                Added at: <strong>@Value.AddedDate</strong>
+            </div>
+        </div>
+
+        <div class="Torrent-Item-Main">
+            <a href="@PathHelper.GetTorrentPath(Value.Id)"
+               style="word-break: break-all;"
+               title="@Value.Description">
+                @Value.Name
+            </a>
+        </div>
+
+        <div class="Torrent-Item-Footer">
+            <div>
+                Size: <strong>@TorrentPageHelper.GetSizeInMemory(Value.Size)</strong>
+            </div>
+
+            <div>
+                Hash: <strong>@Value.Hash</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="Torrent-Item-Link-Root">
+        <IconButton Color="@Color.Primary"
+                    Size="@IconButtonSize.Medium"
+                    Href="@MagnetLink"
+                    Disabled="@(string.IsNullOrEmpty(MagnetLink))"
+                    target="_blank">
+            <SaveIcon />
+        </IconButton>
+    </div>
+</div>
+
+@code
+{
+    [Parameter] public TorrentView Value { get; set; }
+
+    private string CardId => $"Torrent-Card-{Value.Id}";
+    private string MagnetLink => TorrentPageHelper.GetMagnetLink(Value.TrackerId);
+}
