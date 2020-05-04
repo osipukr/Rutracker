@@ -213,7 +213,7 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             foreach (var file in torrent.Files)
             {
-                zipOutputStream.SetLevel(0);
+                zipOutputStream.SetLevel(9);
                 zipOutputStream.PutNextEntry(new ZipEntry(file.Name));
 
                 await _storageService.DownloadToStream(containerName, file.BlobName, zipOutputStream);
