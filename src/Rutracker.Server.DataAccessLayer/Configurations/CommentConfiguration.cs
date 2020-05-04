@@ -12,12 +12,12 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
 
             builder.HasKey(comment => comment.Id);
 
-            builder.Property(comment => comment.Id).HasColumnName("CommentID").ValueGeneratedOnAdd();
-            builder.Property(comment => comment.Text).HasColumnName("Text");
-            builder.Property(comment => comment.AddedDate).HasColumnName("AddedDate").HasColumnType("datetime");
-            builder.Property(comment => comment.ModifiedDate).HasColumnName("ModifiedDate").HasColumnType("datetime");
-            builder.Property(comment => comment.TorrentId).HasColumnName("TorrentID");
-            builder.Property(comment => comment.UserId).HasColumnName("UserID");
+            builder.Property(comment => comment.Id).ValueGeneratedOnAdd();
+            builder.Property(comment => comment.Text).IsRequired();
+            builder.Property(comment => comment.AddedDate).IsRequired();
+            builder.Property(comment => comment.ModifiedDate);
+            builder.Property(comment => comment.TorrentId);
+            builder.Property(comment => comment.UserId);
 
             builder.HasOne(comment => comment.Torrent)
                 .WithMany(torrent => torrent.Comments)

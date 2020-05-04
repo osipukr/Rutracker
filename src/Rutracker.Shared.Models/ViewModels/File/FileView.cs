@@ -10,5 +10,11 @@ namespace Rutracker.Shared.Models.ViewModels.File
 
         [DataMember(Order = 2)]
         public long Size { get; set; }
+
+        [DataMember(Order = 3)]
+        public string Type { get; set; }
+
+        [DataMember(Order = 4)]
+        public string Url { get; set; }
     }
 }

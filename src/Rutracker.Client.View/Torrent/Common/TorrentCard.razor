@@ -10,13 +10,18 @@
             <div>
                 @if (Value.Category != null)
                 {
-                    <strong>@Value.Category.Name</strong>
+                    <a href="javascript:void(0);" @onclick="@CategoryChanged">
+                        @Value.Category.Name
+                    </a>
+
                     <span> - </span>
                 }
 
                 @if (Value.Subcategory != null)
                 {
-                    <strong>@Value.Subcategory.Name</strong>
+                    <a href="javascript:void(0);" @onclick="@SubcategoryChanged">
+                        @Value.Subcategory.Name
+                    </a>
                 }
             </div>
 
@@ -38,19 +43,27 @@
                 Size: <strong>@TorrentPageHelper.GetSizeInMemory(Value.Size)</strong>
             </div>
 
-            <div>
-                Hash: <strong>@Value.Hash</strong>
-            </div>
+            @if (Value.IsStockTorrent)
+            {
+                <div>
+                    Hash: <strong>@Value.Hash</strong>
+                </div>
+            }
+            else if (Value.ModifiedDate.HasValue)
+            {
+                <div>
+                    Modified at: <strong>@Value.ModifiedDate</strong>
+                </div>
+            }
         </div>
     </div>
 
     <div class="Torrent-Item-Link-Root">
         <IconButton Color="@Color.Primary"
                     Size="@IconButtonSize.Medium"
-                    Href="@MagnetLink"
-                    Disabled="@(string.IsNullOrEmpty(MagnetLink))"
+                    Href="@TorrentLink"
                     target="_blank">
-            <SaveIcon />
+            <ArrowDownwardIcon />
         </IconButton>
     </div>
 </div>
@@ -58,7 +71,25 @@
 @code
 {
     [Parameter] public TorrentView Value { get; set; }
+    [Parameter] public EventCallback<TorrentView> OnCategoryChange { get; set; }
+    [Parameter] public EventCallback<TorrentView> OnSubcategoryChange { get; set; }
 
     private string CardId => $"Torrent-Card-{Value.Id}";
-    private string MagnetLink => TorrentPageHelper.GetMagnetLink(Value.TrackerId);
+    private string TorrentLink => PathHelper.GetTorrentPath(Value.Id);
+
+    private async Task CategoryChanged()
+    {
+        if (OnCategoryChange.HasDelegate)
+        {
+            await OnCategoryChange.InvokeAsync(Value);
+        }
+    }
+
+    private async Task SubcategoryChanged()
+    {
+        if (OnSubcategoryChange.HasDelegate)
+        {
+            await OnSubcategoryChange.InvokeAsync(Value);
+        }
+    }
 }

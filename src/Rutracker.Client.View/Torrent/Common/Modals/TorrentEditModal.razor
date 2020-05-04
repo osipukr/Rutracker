@@ -34,6 +34,7 @@
                       Label="Content"
                       FullWidth="true"
                       TextArea="true"
+                      Required="true"
                       InputStyle="height: 200px; resize: none" />
 
         <ValidationMessage For="@(() => _torrentEdit.Content)" />
@@ -49,7 +50,7 @@
 {
     [CascadingParameter] BlazoredModalInstance Modal { get; set; }
 
-    [Parameter] public TorrentView TorrentView { get; set; }
+    [Parameter] public TorrentView Torrent { get; set; }
 
     private readonly TorrentUpdateView _torrentEdit = new TorrentUpdateView();
 
@@ -57,9 +58,9 @@
 
     protected override void OnInitialized()
     {
-        _torrentEdit.Name = TorrentView.Name;
-        _torrentEdit.Description = TorrentView.Description;
-        _torrentEdit.Content = TorrentView.Content;
+        _torrentEdit.Name = Torrent.Name;
+        _torrentEdit.Description = Torrent.Description;
+        _torrentEdit.Content = Torrent.Content;
     }
 
     private async Task EditClicked()
@@ -69,9 +70,16 @@
             return;
         }
 
+        if (_torrentEdit.Name == Torrent.Name &&
+            _torrentEdit.Description == Torrent.Description &&
+            _torrentEdit.Content == Torrent.Content)
+        {
+            return;
+        }
+
         try
         {
-            var result = await TorrentService.UpdateAsync(TorrentView.Id, _torrentEdit);
+            var result = await TorrentService.UpdateAsync(Torrent.Id, _torrentEdit);
 
             Modal.Close(ModalResult.Ok(result));
 

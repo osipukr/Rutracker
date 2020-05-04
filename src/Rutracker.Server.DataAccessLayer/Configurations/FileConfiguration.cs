@@ -12,10 +12,15 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
 
             builder.HasKey(file => file.Id);
 
-            builder.Property(file => file.Id).HasColumnName("Id").ValueGeneratedOnAdd();
-            builder.Property(file => file.Name).HasColumnName("Name").HasMaxLength(150).IsRequired();
-            builder.Property(file => file.Size).HasColumnName("Size").IsRequired();
-            builder.Property(file => file.TorrentId).HasColumnName("TorrentId");
+            builder.HasIndex(file => file.BlobName).IsUnique();
+
+            builder.Property(file => file.Id).ValueGeneratedOnAdd();
+            builder.Property(file => file.Name).IsRequired();
+            builder.Property(file => file.BlobName).IsRequired();
+            builder.Property(file => file.Size).IsRequired();
+            builder.Property(file => file.Type).IsRequired();
+            builder.Property(file => file.Url);
+            builder.Property(file => file.TorrentId);
 
             builder.HasOne(file => file.Torrent)
                 .WithMany(torrent => torrent.Files)

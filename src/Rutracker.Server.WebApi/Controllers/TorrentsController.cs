@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -10,6 +12,7 @@ using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.Torrent;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Shared.Infrastructure.Collections;
+using Microsoft.Net.Http.Headers;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
@@ -76,6 +79,24 @@ namespace Rutracker.Server.WebApi.Controllers
         public async Task Delete(int id)
         {
             await _torrentService.DeleteAsync(id);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}/download")]
+        public async Task Download(int id)
+        {
+            var fileName = await _torrentService.GetDownloadFileName(id);
+
+            Response.ContentType = MediaTypeNames.Application.Octet;
+            Response.Headers.Add("Content-Disposition", new ContentDisposition
+            {
+                FileName = fileName,
+                DispositionType = "attachment"
+            }.ToString());
+
+            await _torrentService.DownloadToStreamAsync(id, Response.Body);
+
+            await Response.Body.FlushAsync();
         }
     }
 }

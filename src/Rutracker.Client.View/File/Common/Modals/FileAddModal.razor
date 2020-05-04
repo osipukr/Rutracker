@@ -1,0 +1,106 @@
+﻿@inject IFileService FileService
+@inject IMatToaster MatToaster
+
+<FormControl Class="Form-Cotrol">
+    <div class="mat-file-upload">
+        <InputFile id="uploadFiles" multiple OnChange="@HandleSelection" />
+
+        <div class="mat-file-upload-content">
+            <span>Browse files</span>
+
+            <MatIcon Icon="@MatIconNames.Attach_file" />
+        </div>
+    </div>
+</FormControl>
+
+<FormControl Class="Form-Cotrol mb-0" Style="max-height: 501px; overflow: auto;">
+    @if (_selectedFiles != null)
+    {
+        foreach (var file in _selectedFiles)
+        {
+            var isLoading = file.Data.Position > 0 && file.Data.Position < file.Data.Length;
+            var isSuccess = file.Data.Position == file.Data.Length;
+
+            <div class="file-row">
+                <div class="file-row-info">
+                    <h2>@file.Name</h2>
+                    Size: <strong>@TorrentPageHelper.GetSizeInMemory(file.Size)</strong>;
+                    Last modified: <strong>@file.LastModified.ToShortDateString()</strong>;
+                    Type: <strong>@file.Type</strong>
+                </div>
+
+                <div class="file-row-button">
+                    <Button Variant="@ButtonVariant.Contained"
+                            Color="@Color.Primary"
+                            Disabled="@(isLoading || isSuccess)"
+                            OnClick="@(async _ => await LoadFile(file))"
+                            Style="@(isSuccess ? "background-color: #4caf50; color: white;" : string.Empty)">
+                        @if (isSuccess)
+                        {
+                            <span>Loaded</span>
+                        }
+                        else if (isLoading)
+                        {
+                            <span>Loading</span>
+                        }
+                        else
+                        {
+                            <span>Load file</span>
+                        }
+                    </Button>
+
+                    @if (isLoading)
+                    {
+                        <CircularProgress Size="24" Class="circular-progress-button-progress" />
+                    }
+                </div>
+            </div>
+        }
+    }
+</FormControl>
+
+<FormControl Class="Form-Cotrol Form-Actions">
+    <MatButton OnClick="@CancelClicked" Raised="true" Label="Exit" />
+</FormControl>
+
+@code
+{
+    [CascadingParameter] BlazoredModalInstance Modal { get; set; }
+
+    [Parameter] public int TorrentId { get; set; }
+
+    private IFileListEntry[] _selectedFiles;
+    private readonly List<FileView> _uploadedFiles = new List<FileView>();
+
+    private void HandleSelection(IFileListEntry[] files)
+    {
+        _selectedFiles = files;
+    }
+
+    private async Task LoadFile(IFileListEntry file)
+    {
+        file.OnDataRead += (sender, eventArgs) => InvokeAsync(StateHasChanged);
+
+        try
+        {
+            var result = await FileService.AddAsync(TorrentId, file);
+
+            MatToaster.Add($"The file '{result.Name}' successfully uploaded", MatToastType.Success, "File loading");
+
+            _uploadedFiles.Add(result);
+        }
+        catch (Exception exception)
+        {
+            MatToaster.Add(exception.Message, MatToastType.Danger, "File loading");
+        }
+    }
+
+    private void CancelClicked()
+    {
+        Modal.Close(ModalResult.Ok(
+            _uploadedFiles.Count == 0
+                ? null
+                : _uploadedFiles.AsEnumerable())
+        );
+    }
+}

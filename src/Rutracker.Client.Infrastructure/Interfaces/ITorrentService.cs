@@ -11,5 +11,6 @@ namespace Rutracker.Client.Infrastructure.Interfaces
         Task<TorrentView> AddAsync(TorrentCreateView model);
         Task<TorrentView> UpdateAsync(int id, TorrentUpdateView model);
         Task DeleteAsync(int id);
+        string DownloadLink(int id);
     }
 }

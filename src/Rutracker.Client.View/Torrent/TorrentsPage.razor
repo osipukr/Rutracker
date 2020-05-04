@@ -44,7 +44,10 @@
             @foreach (var item in _pagedList.Items)
             {
                 <ContextMenuTrigger MenuId="@TorrentPageHelper.TorrentMenuId" Data="@item">
-                    <TorrentCard Value="@item" @key="@item.Id" />
+                    <TorrentCard Value="@item"
+                                 @key="@item.Id"
+                                 OnCategoryChange="@CategoryChanged"
+                                 OnSubcategoryChange="@SubcategoryChanged" />
                 </ContextMenuTrigger>
             }
         </div>
@@ -189,6 +192,26 @@
         await FilterChanged(_filter);
     }
 
+    private async Task CategoryChanged(TorrentView torrent)
+    {
+        _filter.Search = null;
+        _filter.CategoryId = torrent.Category.Id;
+        _filter.SubcategoryId = null;
+        _filter.Page = Constants.Filter.DefaultPage;
+
+        await FilterChanged(_filter);
+    }
+
+    private async Task SubcategoryChanged(TorrentView torrent)
+    {
+        _filter.Search = null;
+        _filter.CategoryId = torrent.Category.Id;
+        _filter.SubcategoryId = torrent.Subcategory.Id;
+        _filter.Page = Constants.Filter.DefaultPage;
+
+        await FilterChanged(_filter);
+    }
+
     private void MenuOnAppearingHandler(MenuAppearingEventArgs e)
     {
         e.PreventShow = !_isAdmin;
@@ -196,7 +219,12 @@
 
     private async Task AddClickedAsync()
     {
-        var reference = ModelService.Show<TorrentAddModal>("Create new torrent");
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(TorrentAddModal.SubcategoryId), _filter.SubcategoryId);
+        parameters.Add(nameof(TorrentAddModal.Subcategories), _subcategories);
+
+        var reference = ModelService.Show<TorrentAddModal>("Create new torrent", parameters);
 
         var result = await reference.Result;
 
@@ -218,7 +246,7 @@
 
         var parameters = new ModalParameters();
 
-        parameters.Add(nameof(TorrentView), torrent);
+        parameters.Add(nameof(TorrentEditModal.Torrent), torrent);
 
         var reference = ModelService.Show<TorrentEditModal>("Edit torrent", parameters);
 
@@ -249,7 +277,7 @@
 
         var parameters = new ModalParameters();
 
-        parameters.Add(nameof(TorrentView), torrent);
+        parameters.Add(nameof(TorrentDeleteModal.Torrent), torrent);
 
         var reference = ModelService.Show<TorrentDeleteModal>("Remove torrent", parameters);
 

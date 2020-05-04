@@ -1,11 +1,11 @@
-﻿@inject ITorrentService TorrentService
+﻿@inject IFileService FileService
 @inject IMatToaster MatToaster
 
 <FormControl Class="Form-Cotrol">
     <Typography Align="@Align.Left"
                 GutterBottom
                 Variant="@TypographyVariant.Body1">
-        Do you really want to remove the torrent <strong>@Torrent.Name</strong> ?
+        Do you really want to remove the file <strong>@File.Name</strong> ?
     </Typography>
 </FormControl>
 
@@ -18,21 +18,21 @@
 {
     [CascadingParameter] BlazoredModalInstance Modal { get; set; }
 
-    [Parameter] public TorrentView Torrent { get; set; }
+    [Parameter] public FileView File { get; set; }
 
     private async Task DeleteClicked()
     {
         try
         {
-            await TorrentService.DeleteAsync(Torrent.Id);
+            await FileService.DeleteAsync(File.Id);
 
             Modal.Close(ModalResult.Ok(true));
 
-            MatToaster.Add("The torrent was successfully removed.", MatToastType.Success, "Torrent deleting");
+            MatToaster.Add("The file was successfully removed.", MatToastType.Success, "File deleting");
         }
         catch (Exception exception)
         {
-            MatToaster.Add(exception.Message, MatToastType.Danger, "Torrent deleting");
+            MatToaster.Add(exception.Message, MatToastType.Danger, "File deleting");
         }
     }
 

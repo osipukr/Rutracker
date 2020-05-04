@@ -25,7 +25,7 @@
                                            Icon="@MatIconNames.Navigate_next" />
 
                             <MatIconButton OnClick="@(async _ => await PageChanged(Value.TotalPages))"
-                                           Disabled="@(Value.Page == Value.TotalPages)"
+                                           Disabled="@(Value.Page == Value.TotalPages || Value.TotalPages == 0)"
                                            Icon="@MatIconNames.Last_page" />
                         </div>
                     </div>

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Rutracker.Client.Host.Helpers;
 using Rutracker.Client.Host.Options;
@@ -11,8 +12,14 @@ namespace Rutracker.Client.Host.Services
 {
     public class TorrentService : Service, ITorrentService
     {
-        public TorrentService(HttpClientService httpClientService, IOptions<ApiOptions> apiOptions) : base(httpClientService, apiOptions)
+        private readonly ServerOptions _serverOptions;
+
+        public TorrentService(
+            HttpClientService httpClientService,
+            IOptions<ApiOptions> apiOptions,
+            IOptions<ServerOptions> serverOptions) : base(httpClientService, apiOptions)
         {
+            _serverOptions = serverOptions.Value;
         }
 
         public async Task<PagedList<TorrentView>> ListAsync(TorrentFilter filter)
@@ -46,6 +53,14 @@ namespace Rutracker.Client.Host.Services
             var url = string.Format(_apiOptions.Torrent, id.ToString());
 
             await _httpClientService.DeleteJsonAsync(url);
+        }
+
+        public string DownloadLink(int id)
+        {
+            var relativeUrl = string.Format(_apiOptions.TorrentDownload, id.ToString());
+            var url = new Uri(new Uri(_serverOptions.BaseUrl), relativeUrl);
+
+            return url.AbsoluteUri;
         }
     }
 }

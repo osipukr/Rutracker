@@ -8,7 +8,7 @@ namespace Rutracker.Server.DataAccessLayer.Entities
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public DateTime? AddedDate { get; set; }
+        public DateTime AddedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public int CategoryId { get; set; }
 

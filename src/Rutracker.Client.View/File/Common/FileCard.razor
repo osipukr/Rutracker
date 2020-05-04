@@ -1,0 +1,17 @@
+﻿<MatListItem Class="w-100 h-100 d-flex align-items-center">
+    <MatIcon Icon="@MatIconNames.File_copy" Class="p-3" />
+    
+    <div class="d-flex justify-content-between align-items-center w-100">
+        <div class="d-flex flex-column">
+            <a href="@Value.Url" target="_blank">@Value.Name</a>
+            <small>Type: <span>@Value.Type</span></small>
+        </div>
+
+        <strong>@TorrentPageHelper.GetSizeInMemory(Value.Size)</strong>
+    </div>
+</MatListItem>
+
+@code
+{
+    [Parameter] public FileView Value { get; set; }
+}

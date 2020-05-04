@@ -1,0 +1,67 @@
+﻿<div class="Files-Root">
+    @if (Error.IsError)
+    {
+        <ErrorCard>
+            @Error.Message
+        </ErrorCard>
+    }
+    else if (Items == null)
+    {
+        <ProgressCard />
+    }
+    else
+    {
+        <div class="d-flex justify-content-between mb-4">
+            <div class="d-flex flex-column justify-content-center align-items-center">
+                <Typography Align="@Align.Left"                             Variant="@TypographyVariant.Body1">
+                    <strong>Total size: </strong>
+                    <strong>@TorrentPageHelper.GetSizeInMemory(Items.Sum(item => item.Size))</strong>
+                </Typography>
+            </div>
+
+            <AuthorizeView Policy="@Policies.IsAdmin">
+                <Authorized>
+                    <MatButton Raised="true" OnClick="@AddClicked">Upload files</MatButton>
+                </Authorized>
+            </AuthorizeView>
+        </div>
+
+        @if (!Items.Any())
+        {
+            <ContextMenuTrigger MenuId="@FilesPageHelper.FileShortMenuId">
+                <EmptyCard>
+                    Files list is empty
+                </EmptyCard>
+            </ContextMenuTrigger>
+        }
+        else
+        {
+            <div style="max-height: 350px; overflow: auto;">
+                @foreach (var item in Items)
+                {
+                    <ContextMenuTrigger MenuId="@FilesPageHelper.FileMenuId"
+                                        Data="@item"
+                                        CssClass="w-100"
+                                        style="height: 70px;">
+                        <FileCard Value="@item" @key="@item.Id" />
+                    </ContextMenuTrigger>
+                }
+            </div>
+        }
+    }
+</div>
+
+@code
+{
+    [Parameter] public IEnumerable<FileView> Items { get; set; }
+    [Parameter] public ErrorModel Error { get; set; }
+    [Parameter] public EventCallback OnAddClick { get; set; }
+
+    private async Task AddClicked()
+    {
+        if (OnAddClick.HasDelegate)
+        {
+            await OnAddClick.InvokeAsync(EventArgs.Empty);
+        }
+    }
+}

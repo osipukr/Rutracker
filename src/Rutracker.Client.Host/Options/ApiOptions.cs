@@ -13,10 +13,13 @@
         // Torrent
         public string Torrents { get; set; }
         public string Torrent { get; set; }
+        public string TorrentDownload { get; set; }
 
         // File
         public string Files { get; set; }
         public string File { get; set; }
+        public string FilesUpload { get; set; }
+        public string FileUpload { get; set; }
 
         // Comment
         public string Comments { get; set; }

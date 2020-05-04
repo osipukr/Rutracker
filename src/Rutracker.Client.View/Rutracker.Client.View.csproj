@@ -8,7 +8,8 @@
   <ItemGroup>
     <PackageReference Include="Blazor.ContextMenu" Version="1.6.0" />
     <PackageReference Include="Blazored.Modal" Version="4.1.0" />
-    <PackageReference Include="MatBlazor" Version="2.3.0" />
+    <PackageReference Include="BlazorInputFile" Version="0.2.0" />
+    <PackageReference Include="MatBlazor" Version="2.4.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="5.0.0-preview.3.20215.14" />
     <PackageReference Include="Skclusive.Markdown.Component" Version="2.0.0" />
     <PackageReference Include="Skclusive.Material.Layout" Version="2.0.0" />

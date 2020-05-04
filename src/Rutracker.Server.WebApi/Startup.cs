@@ -5,6 +5,7 @@ using System.Reflection;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -27,6 +28,7 @@ using Rutracker.Server.WebApi.Options;
 using Rutracker.Server.WebApi.Services;
 using Rutracker.Shared.Models;
 using Rutracker.Utils.IdentitySeed.Extensions;
+using FileOptions = Rutracker.Server.BusinessLayer.Options.FileOptions;
 
 namespace Rutracker.Server.WebApi
 {
@@ -63,6 +65,7 @@ namespace Rutracker.Server.WebApi
             services.Configure<JwtOptions>(_configuration.GetSection("JwtOptions"));
             services.Configure<ClientOptions>(_configuration.GetSection("ClientOptions"));
             services.Configure<EmailAuthOptions>(_configuration.GetSection("EmailAuthOptions"));
+            services.Configure<FileOptions>(_configuration.GetSection("FileOptions"));
 
             services.AddResponseCompression(options =>
             {
@@ -181,6 +184,7 @@ namespace Rutracker.Server.WebApi
             services.AddScoped<ITorrentService, TorrentService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IStorageService, StorageService>();
         }
 
         public void Configure(IApplicationBuilder app)

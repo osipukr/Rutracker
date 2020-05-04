@@ -12,9 +12,10 @@ namespace Rutracker.Server.DataAccessLayer.Entities
         public long Size { get; set; }
         public string Hash { get; set; }
         public int? TrackerId { get; set; }
-        public DateTime? AddedDate { get; set; }
+        public DateTime AddedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
-        public int? SubcategoryId { get; set; }
+        public bool IsStockTorrent { get; set; }
+        public int SubcategoryId { get; set; }
 
         public virtual Subcategory Subcategory { get; set; }
         public virtual ICollection<File> Files { get; set; }

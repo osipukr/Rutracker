@@ -8,7 +8,7 @@ namespace Rutracker.Shared.Models.ViewModels.Torrent
     [DataContract]
     public class TorrentView : View<int>
     {
-        [DataMember(Order =  1)]
+        [DataMember(Order = 1)]
         public string Name { get; set; }
 
         [DataMember(Order = 2)]
@@ -33,9 +33,12 @@ namespace Rutracker.Shared.Models.ViewModels.Torrent
         public DateTime? ModifiedDate { get; set; }
 
         [DataMember(Order = 9)]
-        public CategoryView Category { get; set; }
+        public bool IsStockTorrent { get; set; }
 
         [DataMember(Order = 10)]
+        public CategoryView Category { get; set; }
+
+        [DataMember(Order = 11)]
         public SubcategoryView Subcategory { get; set; }
     }
 }

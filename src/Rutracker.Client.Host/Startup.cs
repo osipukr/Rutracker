@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -100,6 +101,14 @@ namespace Rutracker.Client.Host
 
         public void Configure(IApplicationBuilder app)
         {
+            // Workaround for https://github.com/aspnet/AspNetCore/issues/13470
+            app.Use((context, next) =>
+            {
+                context.Features.Get<IHttpMaxRequestBodySizeFeature>().MaxRequestBodySize = null;
+
+                return next.Invoke();
+            });
+
             if (_environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

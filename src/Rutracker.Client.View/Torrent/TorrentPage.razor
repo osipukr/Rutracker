@@ -1,6 +1,7 @@
 ﻿@page "/torrents/{Id:int}"
 
 @inject ITorrentService TorrentService
+@inject IFileService FileService
 @inject ICommentService CommentService
 @inject IAuthorizationService AuthorizationService
 @inject IModalService ModelService
@@ -35,38 +36,40 @@
                         </ContextMenuTrigger>
                     </Authorized>
                 </AuthorizeView>
-
-                <IconButton Color="@Color.Primary"
-                            Size="@IconButtonSize.Medium"
-                            Href="@MagnetLink"
-                            Disabled="@(string.IsNullOrEmpty(MagnetLink))"
-                            Context="iconButtonContext"
-                            target="_blank">
-                    <SaveIcon />
-                </IconButton>
             </div>
 
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
                         <ContextMenuTrigger MenuId="@TorrentPageHelper.TorrentMenuId">
-                            <div class="card-title mb-4">
-                                <div class="d-flex flex-wrap">
+                            <div class="card-title">
+                                <div class="d-flex flex-wrap justify-content-between">
                                     <div class="p-3">
                                         <h5 class="font-weight-bold" style="word-break: break-all;" title="Torrent name">
                                             @_torrent.Name
                                         </h5>
 
                                         <p class="m-0" title="Creation date">
-                                            Created at: <span>@_torrent.AddedDate.ToShortDateString() @_torrent.AddedDate.ToShortTimeString()</span>
+                                            Created at: <strong>@_torrent.AddedDate.ToShortDateString() @_torrent.AddedDate.ToShortTimeString()</strong>
                                         </p>
 
                                         @if (_torrent.ModifiedDate.HasValue)
                                         {
                                             <p class="m-0" title="Latest update">
-                                                Last updated at: <span>@_torrent.ModifiedDate.Value.ToShortDateString() @_torrent.ModifiedDate.Value.ToShortTimeString()</span>
+                                                Last updated at: <strong>@_torrent.ModifiedDate.Value.ToShortDateString() @_torrent.ModifiedDate.Value.ToShortTimeString()</strong>
                                             </p>
                                         }
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <Fab Variant="@FabVariant.Extended"
+                                             aria-label="delete"
+                                             Style="margin: 8px;"
+                                             OnClick="@DownloadClick"
+                                             Disabled="@(!_torrent.IsStockTorrent && _files.Count == 0)">
+                                            <ArrowDownwardIcon Style="margin-right: 8px;" />
+                                            Download
+                                        </Fab>
                                     </div>
                                 </div>
                             </div>
@@ -77,17 +80,20 @@
                                         Description: <span style="word-break: break-all;">@_torrent.Description</span>
                                     </MatRipple>
 
-                                    <MatRipple Color="@MatRippleColor.Primary" class="p-3">
-                                        Size: <span style="word-break: break-all;">@TorrentPageHelper.GetSizeInMemory(_torrent.Size)</span>
-                                    </MatRipple>
+                                    @if (_torrent.IsStockTorrent)
+                                    {
+                                        <MatRipple Color="@MatRippleColor.Primary" class="p-3">
+                                            Size: <span style="word-break: break-all;">@TorrentPageHelper.GetSizeInMemory(_torrent.Size)</span>
+                                        </MatRipple>
 
-                                    <MatRipple Color="@MatRippleColor.Primary" class="p-3">
-                                        Hash: <span style="word-break: break-all;">@_torrent.Hash</span>
-                                    </MatRipple>
+                                        <MatRipple Color="@MatRippleColor.Primary" class="p-3">
+                                            Hash: <span style="word-break: break-all;">@_torrent.Hash</span>
+                                        </MatRipple>
+                                    }
 
-                                    <MatRipple Color="@MatRippleColor.Primary" class="p-3">
+                                    <div class="p-3 mt-3">
                                         Content: <span style="word-break: break-all;">@_torrent.Content</span>
-                                    </MatRipple>
+                                    </div>
                                 </div>
                             </div>
                         </ContextMenuTrigger>
@@ -95,6 +101,21 @@
                 </div>
             </div>
         </div>
+
+        @if (!_torrent.IsStockTorrent)
+        {
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <FilesPage Error="@_fileErrorModel"
+                                       Items="@_files"
+                                       OnAddClick="@AddFileAsync" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
 
         <div class="row mt-5">
             <div class="col-12">
@@ -120,6 +141,17 @@
     <Item OnClick="@DeleteClickedAsync">Delete torrent</Item>
 </ContextMenu>
 
+<!-- File menu -->
+<ContextMenu Id="@FilesPageHelper.FileMenuId" Animation="Animation.Zoom" AutoHide="true" OnAppearing="@MenuOnAppearingHandler">
+    <Item OnClick="@AddFileAsync">Add new file</Item>
+    <Item OnClick="@DeleteFileAsync">Delete file</Item>
+</ContextMenu>
+
+<!-- File short menu -->
+<ContextMenu Id="@FilesPageHelper.FileShortMenuId" Animation="Animation.Zoom" AutoHide="true" OnAppearing="@MenuOnAppearingHandler">
+    <Item OnClick="@AddFileAsync">Add new file</Item>
+</ContextMenu>
+
 @code
 {
     [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
@@ -130,6 +162,7 @@
     private bool _isUserAuthenticated;
     private bool _isAdmin;
 
+    private List<FileView> _files;
     private PagedList<CommentView> _pagedList;
     private CommentFilter _filter = new CommentFilter
     {
@@ -139,9 +172,8 @@
     };
 
     private readonly ErrorModel _errorModel = ErrorModel.Create();
+    private readonly ErrorModel _fileErrorModel = ErrorModel.Create();
     private readonly ErrorModel _commentErrorModel = ErrorModel.Create();
-
-    private string MagnetLink => TorrentPageHelper.GetMagnetLink(_torrent.TrackerId);
 
     protected override async Task OnInitializedAsync()
     {
@@ -162,7 +194,12 @@
         }
 
         await LoadTorrent();
-        await LoadPagedList();
+
+        if (_torrent != null)
+        {
+            await LoadFiles();
+            await LoadPagedList();
+        }
     }
 
     private async Task LoadTorrent()
@@ -174,6 +211,18 @@
         catch (Exception exception)
         {
             _errorModel.HandlerException(exception);
+        }
+    }
+
+    private async Task LoadFiles()
+    {
+        try
+        {
+            _files = (await FileService.ListAsync(Id)).ToList();
+        }
+        catch (Exception exception)
+        {
+            _fileErrorModel.HandlerException(exception);
         }
     }
 
@@ -198,7 +247,7 @@
     {
         var parameters = new ModalParameters();
 
-        parameters.Add(nameof(TorrentView), _torrent);
+        parameters.Add(nameof(TorrentEditModal.Torrent), _torrent);
 
         var reference = ModelService.Show<TorrentEditModal>("Edit torrent", parameters);
 
@@ -219,7 +268,7 @@
     {
         var parameters = new ModalParameters();
 
-        parameters.Add(nameof(TorrentView), _torrent);
+        parameters.Add(nameof(TorrentDeleteModal.Torrent), _torrent);
 
         var reference = ModelService.Show<TorrentDeleteModal>("Remove torrent", parameters);
 
@@ -273,6 +322,7 @@
             var result = await CommentService.AddAsync(commentCreate);
 
             _pagedList.Items.Insert(0, result);
+            _pagedList.TotalCount++;
 
             StateHasChanged();
         }
@@ -319,6 +369,7 @@
             if (index != -1)
             {
                 _pagedList.Items.RemoveAt(index);
+                _pagedList.TotalCount--;
 
                 StateHasChanged();
             }
@@ -347,6 +398,76 @@
         catch (Exception exception)
         {
             MatToaster.Add(exception.Message, MatToastType.Danger, "Comment liking");
+        }
+    }
+
+    private async Task DownloadClick()
+    {
+        var link = _torrent.IsStockTorrent
+            ? TorrentPageHelper.GetMagnetLink(_torrent.TrackerId)
+            : TorrentService.DownloadLink(Id);
+
+        await JsRuntime.InvokeAsync<object>("open", link, "_blank");
+    }
+
+    private async Task AddFileAsync()
+    {
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(FileAddModal.TorrentId), Id);
+
+        var options = new ModalOptions()
+        {
+            HideCloseButton = true,
+            DisableBackgroundCancel = true
+        };
+
+        var reference = ModelService.Show<FileAddModal>("Add new files", parameters, options);
+
+        var result = await reference.Result;
+
+        if (result.Data is IEnumerable<FileView> files)
+        {
+            foreach (var file in files)
+            {
+                _files.Insert(0, file);
+
+                _torrent.Size += file.Size;
+            }
+
+            StateHasChanged();
+        }
+    }
+
+    private async Task DeleteFileAsync(ItemClickEventArgs e)
+    {
+        if (!(e.Data is FileView file))
+        {
+            return;
+        }
+
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(FileDeleteModal.File), file);
+
+        var reference = ModelService.Show<FileDeleteModal>("Remove file", parameters);
+
+        var result = await reference.Result;
+
+        if (!result.Cancelled)
+        {
+            if (result.Data is bool isSuccess)
+            {
+                if (isSuccess)
+                {
+                    if (_files.Remove(file))
+                    {
+                        _torrent.Size -= file.Size;
+
+                        StateHasChanged();
+                    }
+                }
+            }
         }
     }
 }

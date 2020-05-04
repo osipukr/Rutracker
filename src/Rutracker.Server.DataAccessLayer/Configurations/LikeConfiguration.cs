@@ -12,9 +12,9 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
 
             builder.HasKey(like => like.Id);
 
-            builder.Property(like => like.Id).HasColumnName("Id").ValueGeneratedOnAdd();
-            builder.Property(like => like.CommentId).HasColumnName("CommentId");
-            builder.Property(like => like.UserId).HasColumnName("UserId");
+            builder.Property(like => like.Id).ValueGeneratedOnAdd();
+            builder.Property(like => like.CommentId);
+            builder.Property(like => like.UserId);
 
             builder.HasOne(like => like.Comment)
                 .WithMany(comment => comment.Likes)

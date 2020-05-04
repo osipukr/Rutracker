@@ -15,15 +15,6 @@ namespace Rutracker.Shared.Models.ViewModels.Torrent
         public string Content { get; set; }
 
         [Required]
-        [Range(0, long.MaxValue)]
-        public long Size { get; set; }
-
-        [Required]
-        public string Hash { get; set; }
-
-        public int? TrackerId { get; set; }
-
-        [Required]
         [Range(0, int.MaxValue)]
         public int SubcategoryId { get; set; }
     }

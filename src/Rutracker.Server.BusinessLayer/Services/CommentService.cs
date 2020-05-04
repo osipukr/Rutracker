@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
-using Microsoft.EntityFrameworkCore;
 using Rutracker.Server.BusinessLayer.Exceptions;
 using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
@@ -106,6 +105,7 @@ namespace Rutracker.Server.BusinessLayer.Services
             result.ModifiedDate = _dateService.Now();
 
             _commentRepository.Update(result);
+
             await _unitOfWork.SaveChangesAsync();
 
             return result;

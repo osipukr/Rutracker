@@ -46,13 +46,13 @@ namespace Rutracker.Shared.Infrastructure.Collections
         /// Gets the has previous page.
         /// </summary>
         /// <value>The has previous page.</value>
-        public bool HasPreviousPage => Page - PageIndexFrom > 0;
+        public bool HasPreviousPage => Page > PageIndexFrom && TotalPages > PageIndexFrom;
 
         /// <summary>
         /// Gets the has next page.
         /// </summary>
         /// <value>The has next page.</value>
-        public bool HasNextPage => Page - PageIndexFrom + 1 < TotalPages;
+        public bool HasNextPage => Page < TotalPages;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PagedList{T}" /> class.

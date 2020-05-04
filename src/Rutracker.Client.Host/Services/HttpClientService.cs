@@ -52,7 +52,7 @@ namespace Rutracker.Client.Host.Services
                 mediaType: "application/json");
 
             using var response = await _httpClient.PostAsync(url, content);
-
+            
             if (!response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
