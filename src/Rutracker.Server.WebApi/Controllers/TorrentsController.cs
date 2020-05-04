@@ -65,6 +65,16 @@ namespace Rutracker.Server.WebApi.Controllers
             return _mapper.Map<TorrentView>(result);
         }
 
+        [HttpPost("stock")]
+        public async Task<TorrentView> Post(TorrentStockCreateView model)
+        {
+            var torrent = _mapper.Map<Torrent>(model);
+
+            var result = await _torrentService.AddStockAsync(torrent);
+
+            return _mapper.Map<TorrentView>(result);
+        }
+
         [HttpPut("{id}")]
         public async Task<TorrentView> Put(int id, TorrentUpdateView model)
         {

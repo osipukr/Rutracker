@@ -14,6 +14,7 @@ namespace Rutracker.Server.WebApi.Mapping
                 .ReverseMap();
 
             CreateMap<Torrent, TorrentCreateView>().ReverseMap();
+            CreateMap<Torrent, TorrentStockCreateView>().ReverseMap();
             CreateMap<Torrent, TorrentUpdateView>().ReverseMap();
         }
     }

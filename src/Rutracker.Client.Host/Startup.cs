@@ -47,6 +47,7 @@ namespace Rutracker.Client.Host
 
             services.Configure<ApiOptions>(_configuration.GetSection("ApiOptions"));
             services.Configure<ServerOptions>(_configuration.GetSection("ServerOptions"));
+            services.Configure<FileOptions>(_configuration.GetSection("FileOptions"));
 
             services.AddHttpContextAccessor();
             services.AddScoped<IRenderContext>(provider =>

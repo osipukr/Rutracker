@@ -113,6 +113,38 @@ namespace Rutracker.Server.BusinessLayer.Services
             return result;
         }
 
+        public async Task<Torrent> AddStockAsync(Torrent stockTorrent)
+        {
+            Guard.Against.NullInvalid(stockTorrent, Resources.Torrent_Invalid_ErrorMessage);
+            Guard.Against.NullString(stockTorrent.Name, Resources.Torrent_InvalidName_ErrorMessage);
+            Guard.Against.NullString(stockTorrent.Content, Resources.Torrent_InvalidContent_ErrorMessage);
+            Guard.Against.NullString(stockTorrent.Hash, "Invalid torrent hash.");
+            Guard.Against.LessOne(stockTorrent.SubcategoryId, Resources.Torrent_InvalidSubcategoryId_ErrorMessage);
+
+            if (stockTorrent.Size < 0)
+            {
+                throw new RutrackerException(
+                    "Invalid torrent size (Should be above zero)",
+                    ExceptionEventTypes.InvalidParameters);
+            }
+
+            if (!stockTorrent.TrackerId.HasValue)
+            {
+                throw new RutrackerException(
+                    "Invalid tracker id (should contain value)",
+                    ExceptionEventTypes.InvalidParameters);
+            }
+
+            stockTorrent.Description = null;
+            stockTorrent.IsStockTorrent = true;
+
+            var result = await _torrentRepository.AddAsync(stockTorrent);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return result;
+        }
+
         public async Task<Torrent> UpdateAsync(int id, Torrent torrent)
         {
             Guard.Against.NullInvalid(torrent, Resources.Torrent_Invalid_ErrorMessage);

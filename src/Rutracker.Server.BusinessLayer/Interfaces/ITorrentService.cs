@@ -11,6 +11,7 @@ namespace Rutracker.Server.BusinessLayer.Interfaces
         Task<IPagedList<Torrent>> ListAsync(ITorrentFilter filter);
         Task<Torrent> FindAsync(int id);
         Task<Torrent> AddAsync(Torrent torrent);
+        Task<Torrent> AddStockAsync(Torrent stockTorrent);
         Task<Torrent> UpdateAsync(int id, Torrent torrent);
         Task<Torrent> DeleteAsync(int id);
         Task<string> GetDownloadFileName(int id);

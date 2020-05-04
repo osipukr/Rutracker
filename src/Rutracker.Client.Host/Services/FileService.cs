@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -13,8 +14,14 @@ namespace Rutracker.Client.Host.Services
 {
     public class FileService : Service, IFileService
     {
-        public FileService(HttpClientService httpClientService, IOptions<ApiOptions> apiOptions) : base(httpClientService, apiOptions)
+        private readonly FileOptions _fileOptions;
+
+        public FileService(
+            HttpClientService httpClientService,
+            IOptions<ApiOptions> apiOptions,
+            IOptions<FileOptions> fileOptions) : base(httpClientService, apiOptions)
         {
+            _fileOptions = fileOptions.Value;
         }
 
         public async Task<IEnumerable<FileView>> ListAsync(int torrentId)
@@ -33,6 +40,11 @@ namespace Rutracker.Client.Host.Services
 
         public async Task<FileView> AddAsync(int torrentId, IFileListEntry file)
         {
+            if (file.Data.Length > _fileOptions.MaxSize)
+            {
+                throw new Exception("File must be less than 200 MB.");
+            }
+
             var contents = new MultipartFormDataContent();
             var fileContent = new StreamContent(file.Data);
 

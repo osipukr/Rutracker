@@ -205,8 +205,8 @@
     private async Task SubcategoryChanged(TorrentView torrent)
     {
         _filter.Search = null;
-        _filter.CategoryId = torrent.Category.Id;
         _filter.SubcategoryId = torrent.Subcategory.Id;
+        _filter.CategoryId = torrent.Category.Id;
         _filter.Page = Constants.Filter.DefaultPage;
 
         await FilterChanged(_filter);

@@ -14,7 +14,7 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
 
             builder.Property(torrent => torrent.Id).ValueGeneratedOnAdd();
             builder.Property(torrent => torrent.Name).HasMaxLength(100).IsRequired();
-            builder.Property(torrent => torrent.Description).HasMaxLength(200).IsRequired();
+            builder.Property(torrent => torrent.Description).HasMaxLength(200);
             builder.Property(torrent => torrent.Content).IsRequired();
             builder.Property(torrent => torrent.Size).IsRequired();
             builder.Property(torrent => torrent.Hash).HasMaxLength(250);
