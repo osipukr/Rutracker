@@ -76,9 +76,12 @@
 
                             <div class="row">
                                 <div class="col-12">
-                                    <MatRipple Color="@MatRippleColor.Primary" class="p-3">
-                                        Description: <span style="word-break: break-all;">@_torrent.Description</span>
-                                    </MatRipple>
+                                    @if (_torrent.Description != null)
+                                    {
+                                        <MatRipple Color="@MatRippleColor.Primary" class="p-3">
+                                            Description: <span style="word-break: break-all;">@_torrent.Description</span>
+                                        </MatRipple>
+                                    }
 
                                     @if (_torrent.IsStockTorrent)
                                     {
@@ -91,8 +94,10 @@
                                         </MatRipple>
                                     }
 
-                                    <div class="p-3 mt-3">
-                                        Content: <span style="word-break: break-all;">@_torrent.Content</span>
+                                    <Divider Variant="@DividerVariant.FullWidth" />
+
+                                    <div class="p-3 mt-3" style="word-break: break-all;">
+                                        @((MarkupString) _torrent.Content)
                                     </div>
                                 </div>
                             </div>
@@ -404,7 +409,7 @@
     private async Task DownloadClick()
     {
         var link = _torrent.IsStockTorrent
-            ? TorrentPageHelper.GetMagnetLink(_torrent.TrackerId)
+            ? TorrentPageHelper.GetMagnetLink(_torrent)
             : TorrentService.DownloadLink(Id);
 
         await JsRuntime.InvokeAsync<object>("open", link, "_blank");

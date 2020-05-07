@@ -13,11 +13,11 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
             builder.HasKey(torrent => torrent.Id);
 
             builder.Property(torrent => torrent.Id).ValueGeneratedOnAdd();
-            builder.Property(torrent => torrent.Name).HasMaxLength(100).IsRequired();
-            builder.Property(torrent => torrent.Description).HasMaxLength(200);
+            builder.Property(torrent => torrent.Name).IsRequired();
+            builder.Property(torrent => torrent.Description);
             builder.Property(torrent => torrent.Content).IsRequired();
             builder.Property(torrent => torrent.Size).IsRequired();
-            builder.Property(torrent => torrent.Hash).HasMaxLength(250);
+            builder.Property(torrent => torrent.Hash);
             builder.Property(torrent => torrent.TrackerId);
             builder.Property(torrent => torrent.AddedDate).IsRequired();
             builder.Property(torrent => torrent.ModifiedDate);

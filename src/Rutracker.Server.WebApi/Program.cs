@@ -19,13 +19,13 @@ namespace Rutracker.Server.WebApi
                     services.Configure<FormOptions>(options =>
                     {
                         options.ValueLengthLimit = int.MaxValue;
-                        options.MultipartBodyLengthLimit = int.MaxValue; // In case of multipart
+                        options.MultipartBodyLengthLimit = long.MaxValue; // In case of multipart
                     });
                 })
                 .ConfigureKestrel((context, options) =>
                 {
                     options.AllowSynchronousIO = true;
-                    options.Limits.MaxRequestBodySize = 200 * 1024 * 1024;
+                    options.Limits.MaxRequestBodySize = long.MaxValue;
                 })
                 .ConfigureAppConfiguration((context, builder) =>
                 {

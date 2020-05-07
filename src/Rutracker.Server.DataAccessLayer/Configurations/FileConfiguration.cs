@@ -16,9 +16,9 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
 
             builder.Property(file => file.Id).ValueGeneratedOnAdd();
             builder.Property(file => file.Name).IsRequired();
-            builder.Property(file => file.BlobName).IsRequired();
+            builder.Property(file => file.BlobName);
             builder.Property(file => file.Size).IsRequired();
-            builder.Property(file => file.Type).IsRequired();
+            builder.Property(file => file.Type);
             builder.Property(file => file.Url);
             builder.Property(file => file.TorrentId);
 

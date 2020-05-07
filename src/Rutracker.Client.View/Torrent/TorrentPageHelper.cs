@@ -1,4 +1,6 @@
 ﻿using System;
+using Microsoft.AspNetCore.Components.Forms;
+using Rutracker.Shared.Models.ViewModels.Torrent;
 
 namespace Rutracker.Client.View.Torrent
 {
@@ -28,13 +30,16 @@ namespace Rutracker.Client.View.Torrent
             return $"{len:0.##} {Sizes[order]}";
         }
 
-        public static string GetMagnetLink(int? trackerId)
+        public static string GetMagnetLink(TorrentView torrent)
         {
-            return !trackerId.HasValue
-                ? string.Empty
-                : trackerId == 1
-                    ? "http://bt.t-ru.org/ann?magnet"
-                    : $"http://bt{trackerId}.t-ru.org/ann?magnet";
+            var link = string.Empty;
+
+            if (torrent != null)
+            {
+                link = $"magnet:?xt=urn:btih:{torrent.Hash}";
+            }
+
+            return link;
         }
     }
 }

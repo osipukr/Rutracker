@@ -8,9 +8,9 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.Property(user => user.FirstName).HasMaxLength(50);
-            builder.Property(user => user.LastName).HasMaxLength(50);
-            builder.Property(user => user.ImageUrl).HasMaxLength(2083);
+            builder.Property(user => user.FirstName).HasMaxLength(100);
+            builder.Property(user => user.LastName).HasMaxLength(100);
+            builder.Property(user => user.ImageUrl);
 
             builder.HasMany(user => user.Comments)
                 .WithOne(comment => comment.User)

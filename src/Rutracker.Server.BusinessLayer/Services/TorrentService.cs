@@ -85,7 +85,6 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             Guard.Against.NullInvalid(torrent, Resources.Torrent_Invalid_ErrorMessage);
             Guard.Against.NullString(torrent.Name, Resources.Torrent_InvalidName_ErrorMessage);
-            Guard.Against.NullString(torrent.Description, Resources.Torrent_InvalidDescription_ErrorMessage);
             Guard.Against.NullString(torrent.Content, Resources.Torrent_InvalidContent_ErrorMessage);
             Guard.Against.LessOne(torrent.SubcategoryId, Resources.Torrent_InvalidSubcategoryId_ErrorMessage);
 

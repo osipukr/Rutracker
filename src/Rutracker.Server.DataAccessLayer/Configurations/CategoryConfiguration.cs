@@ -15,8 +15,8 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
             builder.HasIndex(category => category.Name).IsUnique();
 
             builder.Property(category => category.Id).ValueGeneratedOnAdd();
-            builder.Property(category => category.Name).HasMaxLength(100).IsRequired();
-            builder.Property(category => category.Description).HasMaxLength(200);
+            builder.Property(category => category.Name).IsRequired();
+            builder.Property(category => category.Description);
             builder.Property(category => category.AddedDate).IsRequired();
             builder.Property(category => category.ModifiedDate);
 
