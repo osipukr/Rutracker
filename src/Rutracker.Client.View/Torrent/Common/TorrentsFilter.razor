@@ -97,6 +97,8 @@
     {
         if (OnChange.HasDelegate)
         {
+            Filter.Page = Constants.Filter.DefaultPage;
+
             await OnChange.InvokeAsync(Filter);
         }
     }

@@ -75,7 +75,7 @@
     {
         PageIndexFrom = Constants.Filter.PageIndexFrom,
         Page = Constants.Filter.DefaultPage,
-        PageSize = Constants.Filter.PageSize
+        PageSize = 5
     };
 
     private bool _isUserAuthenticated;
@@ -197,9 +197,8 @@
         _filter.Search = null;
         _filter.CategoryId = torrent.Category.Id;
         _filter.SubcategoryId = null;
-        _filter.Page = Constants.Filter.DefaultPage;
 
-        await FilterChanged(_filter);
+        await PageChanged(Constants.Filter.DefaultPage);
     }
 
     private async Task SubcategoryChanged(TorrentView torrent)
@@ -207,9 +206,8 @@
         _filter.Search = null;
         _filter.SubcategoryId = torrent.Subcategory.Id;
         _filter.CategoryId = torrent.Category.Id;
-        _filter.Page = Constants.Filter.DefaultPage;
 
-        await FilterChanged(_filter);
+        await PageChanged(Constants.Filter.DefaultPage);
     }
 
     private void MenuOnAppearingHandler(MenuAppearingEventArgs e)

@@ -16,7 +16,7 @@
                 <Typography Class="account-profile-text"
                             Color="@Color.TextSecondary"
                             Variant="@TypographyVariant.Body1">
-                    @string.Join(", ", Value.Roles.Select(x => x.Name))
+                    @string.Join(" | ", Value.Roles.Select(x => x.Name))
                 </Typography>
             </div>
             

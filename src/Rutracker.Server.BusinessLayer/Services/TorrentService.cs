@@ -148,7 +148,6 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             Guard.Against.NullInvalid(torrent, Resources.Torrent_Invalid_ErrorMessage);
             Guard.Against.NullInvalid(torrent.Name, Resources.Torrent_InvalidName_ErrorMessage);
-            Guard.Against.NullInvalid(torrent.Description, Resources.Torrent_InvalidDescription_ErrorMessage);
             Guard.Against.NullString(torrent.Content, Resources.Torrent_InvalidContent_ErrorMessage);
 
             var result = await FindAsync(id);

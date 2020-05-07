@@ -4,11 +4,11 @@
 
     @if (UsersPageHelper.IsValidAvatarUrl(_avatarUrl))
     {
-        <Profile Name="@_userName" Bio="@_userDescription" Avatar="@_avatarUrl" />
+        <Profile Name="@_userName" Avatar="@_avatarUrl" />
     }
     else
     {
-        <Profile Name="@_userName" Bio="@_userDescription">
+        <Profile Name="@_userName">
             <Avatar Style="margin: 10px;">
                 @_userName.Substring(0, 2).ToUpperInvariant()
             </Avatar>
@@ -22,7 +22,6 @@
 
     private bool _isAuthenticated;
     private string _userName;
-    private string _userDescription;
     private string _avatarUrl;
 
     protected override async Task OnParametersSetAsync()
@@ -34,7 +33,6 @@
         if (_isAuthenticated)
         {
             _userName = state.GetUserName();
-            _userDescription = string.Join(" | ", state.GetUserRole());
             _avatarUrl = state.GetUserImage();
         }
     }

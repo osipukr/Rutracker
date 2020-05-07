@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Rutracker.Client.Host.Helpers;
 using Rutracker.Client.Host.Options;
 using Rutracker.Client.Host.Providers;
 using Rutracker.Client.Host.Services;
@@ -48,6 +48,11 @@ namespace Rutracker.Client.Host
             services.Configure<ApiOptions>(_configuration.GetSection("ApiOptions"));
             services.Configure<ServerOptions>(_configuration.GetSection("ServerOptions"));
             services.Configure<FileOptions>(_configuration.GetSection("FileOptions"));
+            services.Configure<HubOptions>(options =>
+            {
+                options.EnableDetailedErrors = true;
+                options.MaximumReceiveMessageSize = null;
+            });
 
             services.AddHttpContextAccessor();
             services.AddScoped<IRenderContext>(provider =>

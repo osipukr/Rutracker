@@ -412,7 +412,7 @@
             ? TorrentPageHelper.GetMagnetLink(_torrent)
             : TorrentService.DownloadLink(Id);
 
-        await JsRuntime.InvokeAsync<object>("open", link, "_blank");
+        await JsRuntime.InvokeAsync<object>("open", link);
     }
 
     private async Task AddFileAsync()

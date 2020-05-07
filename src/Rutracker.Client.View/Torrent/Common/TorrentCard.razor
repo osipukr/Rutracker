@@ -2,7 +2,7 @@
 
 <div id="@CardId" class="Torrent-Item">
     <div class="Torrent-Item-Id-Root">
-        <span>@Value.Id</span>
+        <strong>@Value.Id</strong>
     </div>
 
     <div class="Torrent-Item-Content-Root">
@@ -32,9 +32,9 @@
 
         <div class="Torrent-Item-Main">
             <a href="@PathHelper.GetTorrentPath(Value.Id)"
-               style="word-break: break-all; font-size: larger;"
+               style="font-size: larger;"
                title="@Value.Description">
-                @Value.Name
+                <strong style="word-break: break-all;">@Value.Name</strong>
             </a>
         </div>
 
