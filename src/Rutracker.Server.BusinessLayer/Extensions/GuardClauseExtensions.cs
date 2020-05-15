@@ -1,26 +1,26 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Rutracker.Server.BusinessLayer.Extensions;
-using Rutracker.Shared.Infrastructure.Exceptions;
+﻿using Ardalis.GuardClauses;
+using Microsoft.AspNetCore.Identity;
+using Rutracker.Server.BusinessLayer.Exceptions;
 
-namespace Ardalis.GuardClauses
+namespace Rutracker.Server.BusinessLayer.Extensions
 {
     public static class GuardClauseExtensions
     {
         public static void NullNotFound<T>(this IGuardClause guardClause, T input, string message) where T : class
         {
-            Null(guardClause, input, message, ExceptionEventTypes.NotFound);
+            guardClause.Null(input, message, ExceptionEventTypes.NotFound);
         }
 
-        public static void NullNotValid<T>(this IGuardClause guardClause, T input, string message) where T : class
+        public static void NullInvalid<T>(this IGuardClause guardClause, T input, string message) where T : class
         {
-            Null(guardClause, input, message, ExceptionEventTypes.NotValidParameters);
+            guardClause.Null(input, message, ExceptionEventTypes.InvalidParameters);
         }
 
         public static void OutOfRange(this IGuardClause guardClause, int input, int rangeFrom, int rangeTo, string message)
         {
             if (input < rangeFrom || input > rangeTo)
             {
-                throw new RutrackerException(message, ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException(message, ExceptionEventTypes.InvalidParameters);
             }
         }
 
@@ -29,11 +29,11 @@ namespace Ardalis.GuardClauses
             OutOfRange(guardClause, input, 1, int.MaxValue, message);
         }
 
-        public static void NullOrWhiteSpace(this IGuardClause guardClause, string input, string message)
+        public static void NullString(this IGuardClause guardClause, string input, string message)
         {
             if (string.IsNullOrWhiteSpace(input))
             {
-                throw new RutrackerException(message, ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException(message, ExceptionEventTypes.InvalidParameters);
             }
         }
 
@@ -41,7 +41,31 @@ namespace Ardalis.GuardClauses
         {
             if (!result.Succeeded)
             {
-                throw new RutrackerException(result.GetError(), ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException(result.GetError(), ExceptionEventTypes.InvalidParameters);
+            }
+        }
+
+        public static void IsValidEmail(this IGuardClause guardClause, string email, string message)
+        {
+            if (!email.IsValidEmail())
+            {
+                throw new RutrackerException(message, ExceptionEventTypes.InvalidParameters);
+            }
+        }
+
+        public static void IsValidPhoneNumber(this IGuardClause guardClause, string phone, string message)
+        {
+            if (!phone.IsValidPhoneNumber())
+            {
+                throw new RutrackerException(message, ExceptionEventTypes.InvalidParameters);
+            }
+        }
+
+        public static void IsValidUrl(this IGuardClause guardClause, string url, string message)
+        {
+            if (!url.IsValidUrl())
+            {
+                throw new RutrackerException(message, ExceptionEventTypes.InvalidParameters);
             }
         }
 

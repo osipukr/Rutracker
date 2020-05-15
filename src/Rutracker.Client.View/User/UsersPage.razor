@@ -1,0 +1,148 @@
+﻿@page "/users"
+
+@inject IUserService UserService
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject PathHelper PathHelper
+
+@using System.Text
+
+<Title>@PathHelper.GetPageTitle("Users")</Title>
+
+<div class="Page-Root">
+    @if (_errorModel.IsError)
+    {
+        <ErrorCard>
+            @_errorModel.Message
+        </ErrorCard>
+    }
+    else if (_pagedList == null)
+    {
+        <ProgressCard />
+    }
+    else
+    {
+        <div class="Users-List-Root mb-5">
+            @if (_pagedList.Items.Count == 0)
+            {
+                <EmptyCard>
+                    Users list is empty
+                </EmptyCard>
+            }
+            else
+            {
+                <List Class="mat-elevation-z5">
+                    @foreach (var item in _pagedList.Items)
+                    {
+                        <ListItem @key="@item.Id"
+                                  Button
+                                  Component="a"
+                                  AlignItems="@AlignItems.FlexStart"
+                                  href="@PathHelper.GetUserPath(item.UserName)">
+                            <ListItemAvatar>
+                                @{
+                                    var alt = $"Image of {item.UserName}";
+                                }
+
+                                @if (UsersPageHelper.IsValidAvatarUrl(item.ImageUrl))
+                                {
+                                    <Avatar Alt="@alt" Src="@item.ImageUrl" title="@alt" />
+                                }
+                                else
+                                {
+                                    <Avatar Alt="@alt" title="@alt">
+                                        @item.UserName.Substring(0, 2).ToUpperInvariant()
+                                    </Avatar>
+                                }
+                            </ListItemAvatar>
+
+                            <ListItemText>
+                                <PrimaryContent>
+                                    @item.UserName
+                                </PrimaryContent>
+
+                                <SecondaryContent>
+                                    @if (string.IsNullOrEmpty(item.FirstName) &&
+                                     string.IsNullOrEmpty(item.LastName))
+                                    {
+                                        @item.UserName
+                                    }
+                                    else
+                                    {
+                                        @item.FirstName @item.LastName
+                                    }
+                                </SecondaryContent>
+                            </ListItemText>
+                        </ListItem>
+
+                        <Divider Variant="@DividerVariant.Inset" Class="mr-3" />
+                    }
+                </List>
+            }
+        </div>
+
+        <Pagination Value="@_pagedList" OnChange="@PageChanged" />
+    }
+</div>
+
+@code
+{
+    private PagedList<UserView> _pagedList;
+    private UserFilter _filter = new UserFilter
+    {
+        PageIndexFrom = Constants.Filter.PageIndexFrom,
+        Page = Constants.Filter.DefaultPage,
+        PageSize = Constants.Filter.PageSize
+    };
+
+    private readonly ErrorModel _errorModel = ErrorModel.Create();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (NavigationManager.TryGetQueryString<int>("page", out var page))
+        {
+            _filter.Page = page;
+        }
+
+        await LoadPagedList();
+    }
+
+    private async Task LoadPagedList()
+    {
+        try
+        {
+            _pagedList = await UserService.ListAsync(_filter);
+        }
+        catch (Exception exception)
+        {
+            _errorModel.HandlerException(exception);
+        }
+    }
+
+    private async Task FilterChanged(UserFilter filter)
+    {
+        _filter = filter;
+
+        var builder = new StringBuilder(Constants.Page.Users);
+
+        if (filter.Page != 1)
+        {
+            builder.AppendFormat("?page={0}", filter.Page.ToString());
+        }
+
+        var url = builder.ToString();
+
+        await JsRuntime.InvokeVoidAsync("blazorPushState.pushState", url);
+
+        await LoadPagedList();
+
+        StateHasChanged();
+    }
+
+    private async Task PageChanged(int page)
+    {
+        _filter.Page = page;
+
+        await FilterChanged(_filter);
+    }
+}

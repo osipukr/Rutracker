@@ -1,0 +1,43 @@
+﻿<Card Class="Account-Profile-Root">
+    <CardContent>
+        <div class="account-profile-details">
+            <div style="overflow: hidden; word-break: break-all;">
+                <Typography GutterBottom
+                            Variant="@TypographyVariant.H2">
+                    @Value.UserName
+                </Typography>
+
+                <Typography Class="account-profile-text"
+                            Color="@Color.TextSecondary"
+                            Variant="@TypographyVariant.Body1">
+                    @Value.FirstName @Value.LastName
+                </Typography>
+
+                <Typography Class="account-profile-text"
+                            Color="@Color.TextSecondary"
+                            Variant="@TypographyVariant.Body1">
+                    @string.Join(" | ", Value.Roles.Select(x => x.Name))
+                </Typography>
+            </div>
+            
+            @if (UsersPageHelper.IsValidAvatarUrl(Value.ImageUrl))
+            {
+                <Avatar Alt="@Alt" Src="@Value.ImageUrl" Class="@CssClass" />
+            }
+            else
+            {
+                <Avatar Alt="@Alt" Class="@CssClass">
+                    @Value.UserName.Substring(0, 2).ToUpperInvariant()
+                </Avatar>
+            }
+        </div>
+    </CardContent>
+</Card>
+
+@code
+{
+    [Parameter] public UserDetailView Value { get; set; }
+
+    private string Alt => $"Image of {Value.UserName}";
+    private const string CssClass = "account-profile-avatar";
+}

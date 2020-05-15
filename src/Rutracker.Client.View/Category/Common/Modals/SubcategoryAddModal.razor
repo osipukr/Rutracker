@@ -1,0 +1,78 @@
+﻿@inject ISubcategoryService SubcategoryService
+@inject IMatToaster MatToaster
+
+<EditForm Model="@_subcategoryCreate"
+          OnValidSubmit="@CreateClicked"
+          autocomplete="off">
+
+    <DataAnnotationsValidator />
+
+    <FormControl Class="Form-Cotrol">
+        <MatTextField @bind-Value="@_subcategoryCreate.Name"
+                      Label="Name"
+                      Icon="@MatIconNames.Create"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true" />
+
+        <ValidationMessage For="@(() => _subcategoryCreate.Name)" />
+    </FormControl>
+
+    <FormControl Class="Form-Cotrol">
+        <MatTextField @bind-Value="@_subcategoryCreate.Description"
+                      Label="Description"
+                      Icon="@MatIconNames.Description"
+                      IconTrailing="true"
+                      FullWidth="true" />
+
+        <ValidationMessage For="@(() => _subcategoryCreate.Description)" />
+    </FormControl>
+
+    <FormControl Class="Form-Cotrol Form-Actions">
+        <MatButton Label="Create" Type="submit" Raised="true" />
+        <MatButton OnClick="@CancelClicked" Label="Cancel" />
+    </FormControl>
+</EditForm>
+
+@code
+{
+    [CascadingParameter] BlazoredModalInstance Modal { get; set; }
+    [Parameter] public int CategoryId { get; set; }
+
+    private readonly SubcategoryCreateView _subcategoryCreate = new SubcategoryCreateView();
+
+    private bool _isCanceled;
+
+    protected override void OnInitialized()
+    {
+        _subcategoryCreate.CategoryId = CategoryId;
+    }
+
+    private async Task CreateClicked()
+    {
+        if (_isCanceled)
+        {
+            return;
+        }
+
+        try
+        {
+            var result = await SubcategoryService.AddAsync(_subcategoryCreate);
+
+            Modal.Close(ModalResult.Ok(result));
+
+            MatToaster.Add($"The subcategory '{result.Name}' was successfully created.", MatToastType.Success, "Subcategory creating");
+        }
+        catch (Exception exception)
+        {
+            MatToaster.Add(exception.Message, MatToastType.Danger, "Subcategory creating");
+        }
+    }
+
+    private void CancelClicked()
+    {
+        _isCanceled = true;
+
+        Modal.Cancel();
+    }
+}

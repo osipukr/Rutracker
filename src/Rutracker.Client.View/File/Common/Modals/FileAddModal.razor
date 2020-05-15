@@ -1,0 +1,130 @@
+﻿@inject IFileService FileService
+@inject IMatToaster MatToaster
+
+<FormControl Class="Form-Cotrol">
+    <div class="mat-file-upload">
+        <InputFile id="uploadFiles" multiple OnChange="@HandleSelection" />
+
+        <div class="mat-file-upload-content">
+            <span>Browse files</span>
+
+            <MatIcon Icon="@MatIconNames.Attach_file" />
+        </div>
+    </div>
+</FormControl>
+
+<FormControl Class="Form-Cotrol mb-0" Style="max-height: 501px; overflow: auto;">
+    @if (_selectedFiles != null)
+    {
+        foreach (var fileLoad in _selectedFiles)
+        {
+            <div class="file-row">
+                <div class="file-row-info">
+                    <h2>@fileLoad.File.Name</h2>
+                    Size: <strong>@TorrentPageHelper.GetSizeInMemory(fileLoad.File.Size)</strong>;
+                    Last modified: <strong>@fileLoad.File.LastModified.ToShortDateString()</strong>;
+                    Type: <strong>@fileLoad.File.Type</strong>
+                </div>
+
+                <div class="file-row-button">
+                    <Button Variant="@ButtonVariant.Contained"
+                            Color="@Color.Primary"
+                            Disabled="@(fileLoad.IsLoading || fileLoad.IsSuccess)"
+                            OnClick="@(async _ => await LoadFile(fileLoad))"
+                            Style="@(fileLoad.IsSuccess ? "background-color: #4caf50; color: white;" : string.Empty)">
+                        @if (fileLoad.IsSuccess)
+                        {
+                            <span>Loaded</span>
+                        }
+                        else if (fileLoad.IsLoading)
+                        {
+                            <span>Loading</span>
+                        }
+                        else
+                        {
+                            <span>Load file</span>
+                        }
+                    </Button>
+
+                    @if (fileLoad.IsLoading)
+                    {
+                        <CircularProgress Size="24" Class="circular-progress-button-progress" />
+                    }
+                </div>
+            </div>
+        }
+    }
+</FormControl>
+
+<FormControl Class="Form-Cotrol Form-Actions">
+    <MatButton OnClick="@CancelClicked"
+               Disabled="@(_selectedFiles?.Any(x => x.IsLoading) ?? false)"
+               Raised="true"
+               Label="Exit" />
+</FormControl>
+
+@code
+{
+    [CascadingParameter] BlazoredModalInstance Modal { get; set; }
+
+    [Parameter] public int TorrentId { get; set; }
+
+    private readonly List<FileLoad> _selectedFiles = new List<FileLoad>();
+    private readonly List<FileView> _uploadedFiles = new List<FileView>();
+
+    private void HandleSelection(IFileListEntry[] files)
+    {
+        _selectedFiles.Clear();
+
+        foreach (var file in files)
+        {
+            _selectedFiles.Add(
+                new FileLoad
+                {
+                    File = file,
+                    IsLoading = false,
+                    IsSuccess = false
+                });
+        }
+    }
+
+    private async Task LoadFile(FileLoad fileLoad)
+    {
+        fileLoad.File.OnDataRead += (sender, eventArgs) => InvokeAsync(StateHasChanged);
+
+        fileLoad.IsLoading = true;
+        fileLoad.IsSuccess = false;
+
+        StateHasChanged();
+
+        try
+        {
+            var result = await FileService.AddAsync(TorrentId, fileLoad.File);
+
+            fileLoad.IsLoading = false;
+            fileLoad.IsSuccess = true;
+
+            MatToaster.Add($"The file '{result.Name}' successfully uploaded", MatToastType.Success, "File loading");
+
+            _uploadedFiles.Add(result);
+        }
+        catch (Exception exception)
+        {
+            fileLoad.IsLoading = false;
+            fileLoad.IsSuccess = false;
+
+            MatToaster.Add(exception.Message, MatToastType.Danger, "File loading");
+        }
+
+        StateHasChanged();
+    }
+
+    private void CancelClicked()
+    {
+        Modal.Close(ModalResult.Ok(
+            _uploadedFiles.Count == 0
+                ? null
+                : _uploadedFiles.AsEnumerable())
+        );
+    }
+}

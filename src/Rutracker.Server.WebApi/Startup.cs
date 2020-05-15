@@ -1,11 +1,11 @@
 using System;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Reflection;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -20,13 +20,15 @@ using Rutracker.Server.BusinessLayer.Options;
 using Rutracker.Server.BusinessLayer.Services;
 using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities;
-using Rutracker.Server.DataAccessLayer.Interfaces;
-using Rutracker.Server.DataAccessLayer.Repositories;
+using Rutracker.Server.DataAccessLayer.Interfaces.Base;
+using Rutracker.Server.DataAccessLayer.Services;
 using Rutracker.Server.WebApi.Filters;
 using Rutracker.Server.WebApi.Interfaces;
+using Rutracker.Server.WebApi.Options;
 using Rutracker.Server.WebApi.Services;
-using Rutracker.Server.WebApi.Settings;
 using Rutracker.Shared.Models;
+using Rutracker.Utils.IdentitySeed.Extensions;
+using FileOptions = Rutracker.Server.BusinessLayer.Options.FileOptions;
 
 namespace Rutracker.Server.WebApi
 {
@@ -43,29 +45,31 @@ namespace Rutracker.Server.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<RutrackerContext>(options => options
-                .UseLazyLoadingProxies()
-                .UseSqlServer(
-                    _configuration.GetConnectionString("RutrackerConnection"),
-                    sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
+            services.AddApplicationInsightsTelemetry(options =>
+            {
+                options.ConnectionString = _configuration.GetConnectionString("ApplicationInsights");
+            });
+
+            services.AddDbContext<RutrackerContext>(options =>
+            {
+                options.UseLazyLoadingProxies();
+                options.UseSqlServer(_configuration.GetConnectionString("SqlServer"),
+                    sqlServerOptions =>
+                    {
+                        sqlServerOptions.EnableRetryOnFailure();
+                    });
+            });
 
             services.AddMemoryCache();
 
-            services.Configure<JwtSettings>(_configuration.GetSection(nameof(JwtSettings)));
-            services.Configure<ClientSettings>(_configuration.GetSection(nameof(ClientSettings)));
-            services.Configure<CacheOptions>(_configuration.GetSection(nameof(CacheOptions)));
-            services.Configure<FileStorageOptions>(_configuration.GetSection(nameof(FileStorageOptions)));
-            services.Configure<StorageAuthOptions>(_configuration.GetSection(nameof(StorageAuthOptions)));
-            services.Configure<EmailAuthOptions>(_configuration.GetSection(nameof(EmailAuthOptions)));
-            services.Configure<SmsAuthOptions>(_configuration.GetSection(nameof(SmsAuthOptions)));
+            services.Configure<JwtOptions>(_configuration.GetSection("JwtOptions"));
+            services.Configure<ClientOptions>(_configuration.GetSection("ClientOptions"));
+            services.Configure<EmailAuthOptions>(_configuration.GetSection("EmailAuthOptions"));
+            services.Configure<FileOptions>(_configuration.GetSection("FileOptions"));
 
             services.AddResponseCompression(options =>
             {
                 options.EnableForHttps = true;
-
-                var compressionSettings = _configuration.GetSection(nameof(ResponseCompressionSettings)).Get<ResponseCompressionSettings>();
-
-                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(compressionSettings.MimeTypes);
             })
             .Configure<GzipCompressionProviderOptions>(options =>
             {
@@ -77,6 +81,7 @@ namespace Rutracker.Server.WebApi
                 // Add the XML comment file for this assembly, so it's contents can be displayed.
                 var file = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var filePath = Path.Combine(AppContext.BaseDirectory, file);
+
                 options.IncludeXmlComments(filePath, includeControllerXmlComments: true);
 
                 options.SwaggerDoc(name: "v1", new OpenApiInfo
@@ -89,14 +94,17 @@ namespace Rutracker.Server.WebApi
 
             services.AddAutoMapper(typeof(Startup));
 
-            services.AddIdentity<User, Role>(config =>
+            services.AddIdentity<User, Role>(options =>
             {
-                config.SignIn.RequireConfirmedEmail = true;
-                config.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
-                config.Password.RequireNonAlphanumeric = false;
-                config.Password.RequireUppercase = false;
-                config.Password.RequireDigit = false;
-                config.Password.RequiredLength = 6;
+                options.SignIn.RequireConfirmedAccount = false;
+                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
             })
             .AddRoles<Role>()
             .AddEntityFrameworkStores<RutrackerContext>()
@@ -115,7 +123,7 @@ namespace Rutracker.Server.WebApi
             })
             .AddJwtBearer(options =>
             {
-                var jwtSettings = _configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
+                var jwtSettings = _configuration.GetSection("JwtOptions").Get<JwtOptions>();
 
                 options.RequireHttpsMetadata = false;
                 options.SaveToken = true;
@@ -137,16 +145,16 @@ namespace Rutracker.Server.WebApi
                 };
             });
 
-            services.AddAuthorization(config =>
+            services.AddAuthorization(options =>
             {
-                config.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
-                config.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
+                options.AddPolicy(Policies.IsUser, Policies.IsUserPolicy());
+                options.AddPolicy(Policies.IsAdmin, Policies.IsAdminPolicy());
             });
 
             services.AddControllers(options =>
             {
-                options.Filters.Add<ControllerExceptionFilterAttribute>();
-                options.Filters.Add<ModelValidatorFilterAttribute>();
+                options.Filters.Add<GlobalExceptionFilter>();
+                options.Filters.Add<ValidatorFilter>();
 
                 options.OutputFormatters.RemoveType<StreamOutputFormatter>();
                 options.OutputFormatters.RemoveType<StringOutputFormatter>();
@@ -157,61 +165,50 @@ namespace Rutracker.Server.WebApi
                 options.SuppressModelStateInvalidFilter = true;
             });
 
-            services.AddSingleton<IJwtFactory, JwtFactory>();
+            services.AddIdentitySeed();
+
+            services.AddSingleton<IJwtService, JwtService>();
             services.AddSingleton<IEmailSender, EmailSender>();
-            services.AddSingleton<ISmsSender, SmsSender>();
             services.AddSingleton<IEmailService, EmailService>();
-            services.AddSingleton<ISmsService, SmsService>();
-            services.AddSingleton<IStorageService, StorageService>();
-            services.AddSingleton<IFileStorageService, FileStorageService>();
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
-            services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
-            services.AddScoped<ITorrentRepository, TorrentRepository>();
-            services.AddScoped<IFileRepository, FileRepository>();
-            services.AddScoped<ICommentRepository, CommentRepository>();
-            services.AddScoped<ILikeRepository, LikeRepository>();
+            services.AddScoped<IUnitOfWork<RutrackerContext>, RutrackerUnitOfWork>();
+            services.AddScoped<IDateService, DateService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISubcategoryService, SubcategoryService>();
             services.AddScoped<ITorrentService, TorrentService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ICommentService, CommentService>();
-            services.AddScoped<IContextSeed, RutrackerContextSeed>();
+            services.AddScoped<IStorageService, StorageService>();
         }
 
-        public void Configure(IApplicationBuilder app, IContextSeed contextSeed)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseResponseCaching();
             app.UseResponseCompression();
 
-            if (_environment.IsDevelopment())
-            {
-                app.UseBlazorDebugging();
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseHttpsRedirection();
 
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
                 options.DocumentTitle = "Rutracker - API Endpoints";
-                options.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "v1");
+
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
             });
 
-            app.UseClientSideBlazorFiles<Client.BlazorWasm.Startup>();
-
             app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapFallbackToClientSideBlazor<Client.BlazorWasm.Startup>(filePath: "index.html");
             });
 
-            contextSeed.SeedAsync().Wait();
+            app.UseIdentitySeed();
         }
     }
 }

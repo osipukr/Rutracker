@@ -1,0 +1,173 @@
+﻿@inject PathHelper PathHelper
+
+<article class="row mb-3 justify-content-center">
+    <div class="col-md-2 col-sm-3 p-0 justify-content-center align-items-center">
+        <figure class="m-0" style="width: 126px; height: 126px;">
+            @if (Value.User == null)
+            {
+                <Avatar Alt="@Alt" Class="@CssClass" />
+            }
+            else
+            {
+                <a href="@PathHelper.GetUserPath(Value.User.UserName)">
+                    @if (UsersPageHelper.IsValidAvatarUrl(Value.User.ImageUrl))
+                    {
+                        <Avatar Alt="@Alt" Src="@Value.User.ImageUrl" Class="@CssClass" />
+                    }
+                    else
+                    {
+                        <Avatar Alt="@Alt" Class="@CssClass">
+                            @Value.User.UserName.Substring(0, 2).ToUpperInvariant()
+                        </Avatar>
+                    }
+                </a>
+            }
+        </figure>
+    </div>
+
+    <div class="col-md-8 col-sm-8">
+        <div class="panel panel-default arrow left">
+            <div class="panel-body bg-white border border-dark p-3" style="border-radius: 1rem;">
+                <header class="text-left">
+                    <div class="comment-user d-flex " title="User name">
+                        <MatIcon Icon="@MatIconNames.Account_box" class="mr-1" />
+
+                        @if (Value.User == null)
+                        {
+                            <span>UNDEFINED</span>
+                        }
+                        else
+                        {
+                            <a href="@PathHelper.GetUserPath(Value.User.UserName)">
+                                @Value.User.UserName
+                            </a>
+                        }
+                    </div>
+
+                    <time class="comment-date d-flex " datetime="@Value.AddedDate" title="Created at">
+                        <MatIcon Icon="@MatIconNames.Access_time" class="mr-1" />
+
+                        @Value.AddedDate
+                    </time>
+                </header>
+
+                @if (_isCommentEditClicked)
+                {
+                    <CommentEdit Text="@Value.Text" OnUpdate="@UpdateClicked" OnCancel="@EditCancelClicked" />
+                }
+                else
+                {
+                    <div class="comment-post">
+                        <p>@Value.Text</p>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <span style="padding-top: 5px;">@Value.LikesCount</span>
+
+                            <MatIconButton OnClick="@(_ => LikeAsync(Value.Id))"
+                                           Disabled="@(!_isAuthenticated)"
+                                           Icon="@MatIconNames.Favorite_border"
+                                           class="ml-1"
+                                           title="Like comment" />
+
+                            @if (_isUserComment)
+                            {
+                                <MatIconButton OnClick="@EditClicked" Icon="@MatIconNames.Edit" title="Edit comment" />
+                                <MatIconButton OnClick="@(_ => DeleteAsync(Value.Id))" Icon="@MatIconNames.Delete" title="Delete comment" />
+                            }
+                        </div>
+
+                        @if (Value.ModifiedDate.HasValue)
+                        {
+                            <div class="d-flex align-items-center">
+                                <span title="Recent change">@Value.ModifiedDate.Value</span>
+
+                                <MatIcon Icon="@MatIconNames.Timelapse" class="ml-1" />
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</article>
+
+@code
+{
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    [Parameter] public CommentView Value { get; set; }
+    [Parameter] public Func<CommentView, CommentUpdateView, Task> OnUpdate { get; set; }
+    [Parameter] public EventCallback<int> OnDelete { get; set; }
+    [Parameter] public EventCallback<int> OnLike { get; set; }
+
+    private bool _isAuthenticated;
+    private bool _isUserComment;
+    private bool _isCommentEditClicked;
+
+    private string Alt => $"Image of {Value.User?.UserName}";
+    private const string CssClass = "w-100 h-100 rounded-circle img-responsive";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthenticationStateTask;
+
+        _isAuthenticated = state.IsUserAuthenticated();
+
+        if (_isAuthenticated)
+        {
+            if (Value.User != null)
+            {
+                var userName = state.GetUserName();
+
+                _isUserComment = Value.User.UserName == userName;
+            }
+        }
+    }
+
+    private async Task UpdateAsync(CommentUpdateView model)
+    {
+        if (OnUpdate != null)
+        {
+            await OnUpdate.Invoke(Value, model);
+        }
+    }
+
+    private async Task DeleteAsync(int id)
+    {
+        if (OnDelete.HasDelegate)
+        {
+            await OnDelete.InvokeAsync(id);
+        }
+    }
+
+    private async Task LikeAsync(int id)
+    {
+        if (OnLike.HasDelegate)
+        {
+            await OnLike.InvokeAsync(id);
+        }
+    }
+
+    private void EditClicked()
+    {
+        _isCommentEditClicked = true;
+
+        StateHasChanged();
+    }
+
+    private async Task UpdateClicked(CommentUpdateView model)
+    {
+        await UpdateAsync(model);
+
+        EditCancelClicked();
+    }
+
+    private void EditCancelClicked()
+    {
+        _isCommentEditClicked = false;
+
+        StateHasChanged();
+    }
+}

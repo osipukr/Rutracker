@@ -1,10 +1,10 @@
-﻿{
+{
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:60742/",
-      "sslPort": 0
+      "applicationUrl": "https://localhost:5000/",
+      "sslPort": 44345
     }
   },
   "profiles": {
@@ -13,7 +13,8 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "launchUrl": "https://localhost:5000/"
     },
     "Rutracker.Server.WebApi": {
       "commandName": "Project",
@@ -21,13 +22,9 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:60744/"
-    },
-    "Docker": {
-      "commandName": "Docker",
-      "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-      "httpPort": 60743
+      "sqlDebugging": true,
+      "nativeDebugging": false,
+      "applicationUrl": "https://localhost:5000/"
     }
   }
 }

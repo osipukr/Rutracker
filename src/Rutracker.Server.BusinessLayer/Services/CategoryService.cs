@@ -2,80 +2,93 @@
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.EntityFrameworkCore;
+using Rutracker.Server.BusinessLayer.Exceptions;
+using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Server.BusinessLayer.Properties;
+using Rutracker.Server.BusinessLayer.Services.Base;
+using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
-using Rutracker.Shared.Infrastructure.Exceptions;
+using Rutracker.Server.DataAccessLayer.Interfaces.Base;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
-    public class CategoryService : ICategoryService
+    public class CategoryService : Service, ICategoryService
     {
+        private readonly IDateService _dateService;
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryService(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
+        public CategoryService(IUnitOfWork<RutrackerContext> unitOfWork, IDateService dateService) : base(unitOfWork)
         {
-            _categoryRepository = categoryRepository;
-            _unitOfWork = unitOfWork;
+            _dateService = dateService;
+
+            _categoryRepository = _unitOfWork.GetRepository<ICategoryRepository>();
         }
 
         public async Task<IEnumerable<Category>> ListAsync()
         {
             var categories = await _categoryRepository.GetAll().ToListAsync();
 
-            Guard.Against.NullNotFound(categories, "The categories not found.");
+            Guard.Against.NullNotFound(categories, Resources.Category_NotFound_ErrorMessage);
 
             return categories;
         }
 
         public async Task<Category> FindAsync(int id)
         {
-            Guard.Against.LessOne(id, "Invalid category id.");
+            Guard.Against.LessOne(id, Resources.Category_InvalidId_ErrorMessage);
 
             var category = await _categoryRepository.GetAsync(id);
 
-            Guard.Against.NullNotFound(category, $"The category with id '{id}' not found.");
+            Guard.Against.NullNotFound(category, string.Format(Resources.Category_NotFoundById_ErrorMessage, id));
 
             return category;
         }
 
         public async Task<Category> AddAsync(Category category)
         {
-            Guard.Against.NullNotValid(category, "Invalid category.");
-            Guard.Against.NullOrWhiteSpace(category.Name, message: "The category must contain a name.");
+            Guard.Against.NullInvalid(category, Resources.Category_Invalid_ErrorMessage);
+            Guard.Against.NullString(category.Name, Resources.Category_InvalidName_ErrorMessage);
 
             if (await _categoryRepository.ExistAsync(x => x.Name == category.Name))
             {
-                throw new RutrackerException($"Category with name '{category.Name}' already exists.", ExceptionEventTypes.NotValidParameters);
+                var message = string.Format(Resources.Category_AlreadyExistsName_ErrorMessage, category.Name);
+
+                throw new RutrackerException(message, ExceptionEventTypes.InvalidParameters);
             }
 
-            var result = _categoryRepository.Create();
+            category.AddedDate = _dateService.Now();
 
-            result.Name = category.Name;
+            var result = await _categoryRepository.AddAsync(category);
 
-            await _categoryRepository.AddAsync(result);
-            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return result;
         }
 
         public async Task<Category> UpdateAsync(int id, Category category)
         {
-            Guard.Against.NullNotValid(category, "Invalid category.");
-            Guard.Against.NullOrWhiteSpace(category.Name, message: "The category must contain a name.");
-
-            if (await _categoryRepository.ExistAsync(x => x.Name == category.Name))
-            {
-                throw new RutrackerException($"Category with name '{category.Name}' already exists.", ExceptionEventTypes.NotValidParameters);
-            }
+            Guard.Against.NullInvalid(category, Resources.Category_Invalid_ErrorMessage);
+            Guard.Against.NullString(category.Name, Resources.Category_InvalidName_ErrorMessage);
 
             var result = await FindAsync(id);
 
+            if (result.Name != category.Name &&
+                await _categoryRepository.ExistAsync(x => x.Name == category.Name))
+            {
+                var message = string.Format(Resources.Category_AlreadyExistsName_ErrorMessage, category.Name);
+
+                throw new RutrackerException(message, ExceptionEventTypes.InvalidParameters);
+            }
+
             result.Name = category.Name;
+            result.Description = category.Description;
+            result.ModifiedDate = _dateService.Now();
 
             _categoryRepository.Update(result);
-            await _unitOfWork.CompleteAsync();
+
+            await _unitOfWork.SaveChangesAsync();
 
             return result;
         }
@@ -84,8 +97,9 @@ namespace Rutracker.Server.BusinessLayer.Services
         {
             var category = await FindAsync(id);
 
-            _categoryRepository.Remove(category);
-            await _unitOfWork.CompleteAsync();
+            _categoryRepository.Delete(category);
+
+            await _unitOfWork.SaveChangesAsync();
 
             return category;
         }

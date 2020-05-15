@@ -11,8 +11,11 @@ using Rutracker.Shared.Models.ViewModels.Category;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Authorize(Policy = Policies.IsAdmin)]
-    public class CategoriesController : BaseApiController
+    public class CategoriesController : ApiController
     {
         private readonly ICategoryService _categoryService;
 
@@ -21,38 +24,42 @@ namespace Rutracker.Server.WebApi.Controllers
             _categoryService = categoryService;
         }
 
-        [HttpGet, AllowAnonymous]
-        public async Task<IEnumerable<CategoryViewModel>> List()
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IEnumerable<CategoryView>> Get()
         {
             var categories = await _categoryService.ListAsync();
 
-            return _mapper.Map<IEnumerable<CategoryViewModel>>(categories);
+            return _mapper.Map<IEnumerable<CategoryView>>(categories);
         }
 
-        [HttpGet("{id}"), AllowAnonymous]
-        public async Task<CategoryViewModel> Find(int id)
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        public async Task<CategoryView> Get(int id)
         {
             var category = await _categoryService.FindAsync(id);
 
-            return _mapper.Map<CategoryViewModel>(category);
+            return _mapper.Map<CategoryView>(category);
         }
 
         [HttpPost]
-        public async Task<CategoryViewModel> Create(CategoryCreateViewModel model)
+        public async Task<CategoryView> Post(CategoryCreateView model)
         {
             var category = _mapper.Map<Category>(model);
+
             var result = await _categoryService.AddAsync(category);
 
-            return _mapper.Map<CategoryViewModel>(result);
+            return _mapper.Map<CategoryView>(result);
         }
 
         [HttpPut("{id}")]
-        public async Task<CategoryViewModel> Update(int id, CategoryUpdateViewModel model)
+        public async Task<CategoryView> Put(int id, CategoryUpdateView model)
         {
             var category = _mapper.Map<Category>(model);
+
             var result = await _categoryService.UpdateAsync(id, category);
 
-            return _mapper.Map<CategoryViewModel>(result);
+            return _mapper.Map<CategoryView>(result);
         }
 
         [HttpDelete("{id}")]

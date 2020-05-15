@@ -1,0 +1,71 @@
+﻿@page "/"
+@using Rutracker.Client.View
+@namespace Rutracker.Client.Host.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Constants.BrandName</title>
+    <base href="~/" />
+    <link href="_content/MatBlazor/dist/matBlazor.css" rel="stylesheet" />
+    <link href="_content/Blazored.Modal/blazored-modal.css" rel="stylesheet" />
+    <link href="_content/Blazor.ContextMenu/blazorContextMenu.min.css" rel="stylesheet" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+    <app>
+        <component type="typeof(App)" render-mode="ServerPrerendered" />
+    </app>
+
+    <div id="blazor-error-ui">
+        <environment include="Staging,Production">
+            An error has occurred. This application may no longer respond until reloaded.
+        </environment>
+        <environment include="Development">
+            An unhandled exception has occurred. See browser dev tools for details.
+        </environment>
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="_framework/blazor.server.js"></script>
+    <script src="_content/MatBlazor/dist/matBlazor.js"></script>
+    <script src="_content/Microsoft.AspNetCore.ProtectedBrowserStorage/protectedBrowserStorage.js"></script>
+    <script src="_content/Blazor.ContextMenu/blazorContextMenu.min.js"></script>
+    <script src="_content/BlazorInputFile/inputfile.js"></script>
+
+    <script>
+        window.blazorHelpers = {
+            scrollToFragment: (elementId) => {
+                var element = document.getElementById(elementId);
+
+                if (element) {
+                    var headerOffset = 80;
+                    var elementPosition = element.getBoundingClientRect().top;
+                    var offsetPosition = elementPosition - headerOffset;
+
+                    console.log(elementPosition);
+                    console.log(offsetPosition);
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        }
+
+        window.blazorPushState = {
+            pushState: (url) => {
+                history.pushState(null, null, url);
+            }
+        }
+    </script>
+</body>
+</html>

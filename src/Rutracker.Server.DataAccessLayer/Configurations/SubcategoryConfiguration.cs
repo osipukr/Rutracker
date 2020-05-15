@@ -8,16 +8,26 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
     {
         public void Configure(EntityTypeBuilder<Subcategory> builder)
         {
-            builder.Property(s => s.Id).ValueGeneratedOnAdd().IsRequired();
-            builder.Property(s => s.Name).IsRequired();
+            builder.ToTable("Subcategories");
 
-            builder.HasOne(s => s.Category)
-                .WithMany(c => c.Subcategories)
-                .HasForeignKey(s => s.CategoryId);
+            builder.HasKey(subcategory => subcategory.Id);
 
-            builder.HasMany(s => s.Torrents)
-                .WithOne(t => t.Subcategory)
-                .HasForeignKey(t => t.SubcategoryId);
+            builder.HasIndex(subcategory => subcategory.Name).IsUnique();
+
+            builder.Property(subcategory => subcategory.Id).ValueGeneratedOnAdd();
+            builder.Property(subcategory => subcategory.Name).IsRequired();
+            builder.Property(subcategory => subcategory.Description);
+            builder.Property(subcategory => subcategory.AddedDate).IsRequired();
+            builder.Property(subcategory => subcategory.ModifiedDate);
+            builder.Property(subcategory => subcategory.CategoryId);
+
+            builder.HasOne(subcategory => subcategory.Category)
+                .WithMany(category => category.Subcategories)
+                .HasForeignKey(subcategory => subcategory.CategoryId);
+
+            builder.HasMany(subcategory => subcategory.Torrents)
+                .WithOne(torrent => torrent.Subcategory)
+                .HasForeignKey(torrent => torrent.SubcategoryId);
         }
     }
 }

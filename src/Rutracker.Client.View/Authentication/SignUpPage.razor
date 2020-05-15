@@ -1,0 +1,115 @@
+﻿@layout AuthenticationLayout
+
+@page "/signup"
+
+@inject IAccountService AccountService
+@inject IMatToaster ToastService
+@inject NavigationManager NavigationManager
+@inject PathHelper PageHelper
+
+<Title>@PageHelper.GetPageTitle("Sign Up")</Title>
+
+<EditForm Model="@RegisterModel"
+          OnValidSubmit="@RegisterAsync"
+          Context="formContext"
+          autocomplete="on"
+          class="auth-form-root">
+
+    <DataAnnotationsValidator />
+
+    <Typography Class="auth-form-title" Variant="TypographyVariant.H2">
+        Sign up
+    </Typography>
+
+    <Typography Color="@Color.TextSecondary" GutterBottom Style="margin-bottom: 20px;">
+        Use your user name, email and password to create new account
+    </Typography>
+
+    <FormControl class="form-constrol-root">
+        <MatTextField @bind-Value="@RegisterModel.UserName"
+                      Label="User Name"
+                      Icon="@MatIconNames.Person"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true"
+                      Class="auth-form-text-field" />
+
+        <ValidationMessage For="@(() => RegisterModel.UserName)" />
+    </FormControl>
+
+    <FormControl class="form-constrol-root">
+        <MatTextField @bind-Value="@RegisterModel.Email"
+                      Label="Email"
+                      Icon="@MatIconNames.Mail_outline"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true"
+                      Class="auth-form-text-field" />
+
+        <ValidationMessage For="@(() => RegisterModel.Email)" />
+    </FormControl>
+
+    <FormControl class="form-constrol-root">
+        <MatTextField @bind-Value="@RegisterModel.Password"
+                      Label="Password"
+                      Icon="@MatIconNames.Lock_open"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Outlined="true"
+                      Required="true"
+                      Type="password"
+                      Class="auth-form-text-field" />
+
+        <ValidationMessage For="@(() => RegisterModel.Password)" />
+    </FormControl>
+
+    <FormControl class="form-constrol-root">
+        <MatTextField @bind-Value="@RegisterModel.ConfirmPassword"
+                      Label="Confirmation Password"
+                      Icon="@MatIconNames.Lock_open"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Outlined="true"
+                      Required="true"
+                      Type="password"
+                      Class="auth-form-text-field" />
+
+        <ValidationMessage For="@(() => RegisterModel.ConfirmPassword)" />
+    </FormControl>
+
+    <Button Class="auth-form-submit-button"
+            Color="@Color.Primary"
+            FullWidth
+            Size="@Size.Large"
+            Type="@ButtonType.Submit"
+            Variant="@ButtonVariant.Contained">
+        Sign up now
+    </Button>
+
+    <Typography Color="@Color.TextSecondary" Variant="@TypographyVariant.Body1">
+        Have an account?
+
+        <Skclusive.Material.Component.Link Href="@Constants.Page.SignIn">
+            Sign in
+        </Skclusive.Material.Component.Link>
+    </Typography>
+</EditForm>
+
+@code
+{
+    private RegisterView RegisterModel = new RegisterView();
+
+    private async Task RegisterAsync()
+    {
+        try
+        {
+            await AccountService.Register(RegisterModel);
+
+            NavigationManager.NavigateTo(Constants.Page.Home);
+        }
+        catch (Exception exception)
+        {
+            ToastService.Add(exception.Message, MatToastType.Danger, "Sign Up");
+        }
+    }
+}

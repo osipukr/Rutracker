@@ -1,0 +1,35 @@
+﻿@inherits LayoutComponentBase
+
+<MainLayout Style="overflow: overlay;">
+    <LogoContent>
+        <AppLogo />
+    </LogoContent>
+
+    <TitleContent>
+        <AppTitle />
+    </TitleContent>
+
+    <ActionsContent>
+        <AppActions />
+    </ActionsContent>
+
+    <SidebarContent>
+        <AppProfile />
+
+        <Divider Class="FullLayout-Divider" />
+
+        <AppSidebar />
+
+        <Divider Class="FullLayout-Divider" />
+    </SidebarContent>
+
+    <BodyContent>
+        <AppBody>
+            @Body
+        </AppBody>
+    </BodyContent>
+
+    <FooterContent>
+        <AppFooter />
+    </FooterContent>
+</MainLayout>

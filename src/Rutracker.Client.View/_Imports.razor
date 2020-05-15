@@ -1,0 +1,103 @@
+@using System
+@using System.Linq
+@using System.Net.Http
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.JSInterop
+@using Rutracker.Client.View
+@using Rutracker.Client.View.Helpers
+@using Rutracker.Client.View.Layout
+@using Rutracker.Client.View.Layout.Common
+@using Rutracker.Client.View.Resource
+@using Rutracker.Client.View.Error
+@using Rutracker.Client.View.Home
+@using Rutracker.Client.View.Category
+@using Rutracker.Client.View.Category.Common
+@using Rutracker.Client.View.Category.Common.Modals
+@using Rutracker.Client.View.Torrent
+@using Rutracker.Client.View.Torrent.Common
+@using Rutracker.Client.View.Torrent.Common.Modals
+@using Rutracker.Client.View.File
+@using Rutracker.Client.View.File.Common
+@using Rutracker.Client.View.File.Common.Modals
+@using Rutracker.Client.View.Comment
+@using Rutracker.Client.View.Comment.Common
+@using Rutracker.Client.View.User
+@using Rutracker.Client.View.Account
+@using Rutracker.Client.View.Account.Common
+@using Rutracker.Client.View.Authentication
+@using Rutracker.Client.View.Common
+@using Rutracker.Client.View.Settings
+@using Rutracker.Client.View.Settings.Common
+
+@using Rutracker.Client.Infrastructure.Interfaces
+@using Rutracker.Client.Infrastructure.Extensions
+
+@using Rutracker.Shared.Infrastructure
+@using Rutracker.Shared.Infrastructure.Collections
+@using Rutracker.Shared.Infrastructure.Entities
+@using Rutracker.Shared.Infrastructure.Filters
+
+@using Rutracker.Shared.Models
+@using Rutracker.Shared.Models.ViewModels
+@using Rutracker.Shared.Models.ViewModels.Account
+@using Rutracker.Shared.Models.ViewModels.User
+@using Rutracker.Shared.Models.ViewModels.Category
+@using Rutracker.Shared.Models.ViewModels.Subcategory
+@using Rutracker.Shared.Models.ViewModels.Torrent
+@using Rutracker.Shared.Models.ViewModels.File
+@using Rutracker.Shared.Models.ViewModels.Comment
+
+@using Skclusive.Core.Component
+@using Skclusive.Transition.Component;
+
+@using Skclusive.Material.Core
+@using Skclusive.Material.Component
+@using Skclusive.Material.Theme
+@using Skclusive.Material.Form
+@using Skclusive.Material.Input
+@using Skclusive.Material.Text
+@using Skclusive.Material.Typography
+@using Skclusive.Material.Progress
+@using Skclusive.Material.Transition
+@using Skclusive.Material.Button
+@using Skclusive.Material.Icon
+@using Skclusive.Material.Paper
+@using Skclusive.Material.Avatar
+@using Skclusive.Material.Badge
+@using Skclusive.Material.Selection
+@using Skclusive.Material.Toolbar
+@using Skclusive.Material.AppBar
+@using Skclusive.Material.Divider
+@using Skclusive.Material.Grid
+@using Skclusive.Material.Table
+@using Skclusive.Material.Baseline
+@using Skclusive.Material.Card
+@using Skclusive.Material.Hidden
+@using Skclusive.Material.List
+@using Skclusive.Material.Modal
+@using Skclusive.Material.Script
+@using Skclusive.Material.Drawer
+@using Skclusive.Material.Dialog
+@using Skclusive.Material.Container
+@using Skclusive.Material.Tab
+
+@using Skclusive.Script.DomHelpers
+@using Skclusive.Markdown.Component
+
+@using Skclusive.Material.Layout
+
+@using MatBlazor
+
+@using Blazored
+@using Blazored.Modal
+@using Blazored.Modal.Services
+
+@using Toolbelt.Blazor.HeadElement
+
+@using BlazorContextMenu
+
+@using BlazorInputFile

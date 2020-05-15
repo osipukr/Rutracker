@@ -8,12 +8,21 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {
-            builder.Property(c => c.Id).ValueGeneratedOnAdd().IsRequired();
-            builder.Property(c => c.Name).IsRequired();
+            builder.ToTable("Categories");
 
-            builder.HasMany(c => c.Subcategories)
-                .WithOne(s => s.Category)
-                .HasForeignKey(s => s.CategoryId);
+            builder.HasKey(category => category.Id);
+
+            builder.HasIndex(category => category.Name).IsUnique();
+
+            builder.Property(category => category.Id).ValueGeneratedOnAdd();
+            builder.Property(category => category.Name).IsRequired();
+            builder.Property(category => category.Description);
+            builder.Property(category => category.AddedDate).IsRequired();
+            builder.Property(category => category.ModifiedDate);
+
+            builder.HasMany(category => category.Subcategories)
+                .WithOne(subcategory => subcategory.Category)
+                .HasForeignKey(subcategory => subcategory.CategoryId);
         }
     }
 }

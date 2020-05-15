@@ -1,0 +1,23 @@
+﻿@page "/settings"
+
+@attribute [Authorize]
+
+@inject PathHelper PageHelper
+
+<Title>@PageHelper.GetPageTitle("Settings")</Title>
+
+<div class="Page-Root">
+    <Grid Container Spacing="@Spacing.Zero">
+        <Grid Item
+              Large="@GridSize.Twelve"
+              Medium="@GridSize.Twelve"
+              ExtraLarge="@GridSize.Twelve"
+              ExtraSmall="@GridSize.Twelve">
+            <SettingsPassword />
+        </Grid>
+    </Grid>
+</div>
+
+@code
+{
+}

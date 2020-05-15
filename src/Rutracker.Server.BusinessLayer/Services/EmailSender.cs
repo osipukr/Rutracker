@@ -1,14 +1,21 @@
 ﻿using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using MimeKit.Text;
+using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
 using Rutracker.Server.BusinessLayer.Options;
+using Rutracker.Server.BusinessLayer.Properties;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
     public class EmailSender : IEmailSender
     {
+        private const string EMAIL_NAME = "Rutracker";
+        private const string EMAIL_ADDRESS = "no-reply@rutracker.com";
+
         private readonly EmailAuthOptions _emailSettings;
 
         public EmailSender(IOptions<EmailAuthOptions> emailOptions)
@@ -18,15 +25,21 @@ namespace Rutracker.Server.BusinessLayer.Services
 
         public async Task SendAsync(string email, string subject, string message)
         {
-            var emailMessage = new MimeMessage();
+            Guard.Against.IsValidEmail(email, Resources.EmailSender_InvalidEmailAddress);
+            Guard.Against.NullString(subject, Resources.EmailSender_InvalidSubjectName);
+            Guard.Against.NullString(message, Resources.EmailSender_InvalidMessage);
 
-            emailMessage.From.Add(new MailboxAddress("Rutracker", "no-reply@rutracker.com"));
-            emailMessage.To.Add(new MailboxAddress(string.Empty, email));
-            emailMessage.Subject = subject;
-            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            var emailMessage = new MimeMessage
             {
-                Text = message
+                Subject = subject,
+                Body = new TextPart(TextFormat.Html)
+                {
+                    Text = message
+                }
             };
+
+            emailMessage.From.Add(new MailboxAddress(EMAIL_NAME, EMAIL_ADDRESS));
+            emailMessage.To.Add(new MailboxAddress(string.Empty, email));
 
             using var client = new SmtpClient();
 

@@ -11,14 +11,14 @@ namespace Rutracker.Shared.Models
         public static AuthorizationPolicy IsAdminPolicy()
         {
             return new AuthorizationPolicyBuilder().RequireAuthenticatedUser()
-                                                   .RequireRole(UserRoles.Admin)
+                                                   .RequireRole(StockRoles.Admin)
                                                    .Build();
         }
 
         public static AuthorizationPolicy IsUserPolicy()
         {
             return new AuthorizationPolicyBuilder().RequireAuthenticatedUser()
-                                                   .RequireRole(UserRoles.User)
+                                                   .RequireRole(StockRoles.User)
                                                    .Build();
         }
     }

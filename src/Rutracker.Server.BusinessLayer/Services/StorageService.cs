@@ -1,24 +1,21 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Rutracker.Server.BusinessLayer.Interfaces;
-using Rutracker.Server.BusinessLayer.Options;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
     public class StorageService : IStorageService
     {
         private readonly CloudStorageAccount _account;
-        private readonly StorageAuthOptions _storageAuthOptions;
 
-        public StorageService(IOptions<StorageAuthOptions> storageOptions)
+        public StorageService(IConfiguration configuration)
         {
-            _storageAuthOptions = storageOptions.Value;
+            var connectionString = configuration.GetConnectionString("Storage");
 
-            CloudStorageAccount.TryParse(_storageAuthOptions.ConnectionString, out _account);
+            CloudStorageAccount.TryParse(connectionString, out _account);
         }
 
         public async Task<bool> CreateContainerAsync(string containerName)
@@ -37,12 +34,14 @@ namespace Rutracker.Server.BusinessLayer.Services
             return result;
         }
 
-        public async Task<string> UploadFileAsync(string containerName, string fileName, Stream stream)
+        public async Task<string> UploadFileAsync(string containerName, string fileName, string contentType, Stream inStream)
         {
             var container = _account.CreateCloudBlobClient().GetContainerReference(containerName);
             var block = container.GetBlockBlobReference(fileName);
 
-            await block.UploadFromStreamAsync(stream);
+            block.Properties.ContentType = contentType;
+
+            await block.UploadFromStreamAsync(inStream);
 
             return block.Uri.AbsoluteUri;
         }
@@ -60,6 +59,14 @@ namespace Rutracker.Server.BusinessLayer.Services
             var block = container.GetBlockBlobReference(fileName);
 
             return await block.DeleteIfExistsAsync();
+        }
+
+        public async Task DownloadToStream(string containerName, string fileName, Stream outStream)
+        {
+            var container = _account.CreateCloudBlobClient().GetContainerReference(containerName);
+            var block = container.GetBlockBlobReference(fileName);
+
+            await block.DownloadToStreamAsync(outStream);
         }
     }
 }

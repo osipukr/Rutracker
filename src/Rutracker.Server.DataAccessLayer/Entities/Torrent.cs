@@ -4,19 +4,20 @@ using Rutracker.Server.DataAccessLayer.Entities.Base;
 
 namespace Rutracker.Server.DataAccessLayer.Entities
 {
-    public class Torrent : BaseEntity<int>
+    public class Torrent : Entity<int>
     {
         public string Name { get; set; }
         public string Description { get; set; }
         public string Content { get; set; }
-        public string ImageUrl { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? LastUpdatedAt { get; set; }
+        public long Size { get; set; }
+        public string Hash { get; set; }
+        public int? TrackerId { get; set; }
+        public DateTime AddedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public bool IsStockTorrent { get; set; }
         public int SubcategoryId { get; set; }
-        public string UserId { get; set; }
 
         public virtual Subcategory Subcategory { get; set; }
-        public virtual User User { get; set; }
         public virtual ICollection<File> Files { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
     }

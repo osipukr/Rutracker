@@ -1,38 +1,36 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
+using Rutracker.Server.BusinessLayer.Exceptions;
+using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Server.BusinessLayer.Properties;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Shared.Infrastructure.Entities;
-using Rutracker.Shared.Infrastructure.Exceptions;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IUserService _userService;
+        private readonly IDateService _dateService;
 
-        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountService(SignInManager<User> signInManager, IUserService userService, IDateService dateService)
         {
-            _userManager = userManager;
             _signInManager = signInManager;
+            _userService = userService;
+            _dateService = dateService;
         }
 
         public async Task<User> LoginAsync(string userName, string password, bool rememberMe)
         {
-            Guard.Against.NullOrWhiteSpace(userName, message: "Invalid user name.");
-            Guard.Against.NullOrWhiteSpace(password, message: "Invalid password.");
+            Guard.Against.NullString(userName, Resources.User_InvalidUserName_ErrorMessage);
+            Guard.Against.NullString(password, Resources.User_InvalidPassword_ErrorMessage);
 
-            var user = await _userManager.FindByNameAsync(userName);
+            var user = await _userService.FindByNameAsync(userName);
 
-            Guard.Against.NullNotFound(user, $"The user with name '{userName}' not found.");
-
-            if (!user.IsRegistrationFinished)
-            {
-                throw new RutrackerException("The user has not completed the registration.", ExceptionEventTypes.NotValidParameters);
-            }
+            Guard.Against.NullNotFound(user, string.Format(Resources.User_NotFoundByName_ErrorMessage, userName));
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: true);
 
@@ -45,85 +43,43 @@ namespace Rutracker.Server.BusinessLayer.Services
 
             if (result.IsLockedOut)
             {
-                throw new RutrackerException("Too many login attempts, try again later.", ExceptionEventTypes.LoginFailed);
+                throw new RutrackerException(Resources.User_LockedOut_ErrorMessage, ExceptionEventTypes.LoginFailed);
             }
 
             if (result.IsNotAllowed)
             {
-                throw new RutrackerException("Confirm your account before logging in.", ExceptionEventTypes.LoginFailed);
+                throw new RutrackerException(Resources.User_NotAllowed_ErrorMessage, ExceptionEventTypes.LoginFailed);
             }
 
             if (result.RequiresTwoFactor)
             {
-                // RequiresTwoFactor
             }
 
-            throw new RutrackerException("Wrong password.", ExceptionEventTypes.NotValidParameters);
+            throw new RutrackerException(Resources.User_WrongPassword_ErrorMessage, ExceptionEventTypes.InvalidParameters);
         }
 
-        public async Task<User> RegisterAsync(string userName, string email)
+        public async Task<User> RegisterAsync(string userName, string email, string password)
         {
-            Guard.Against.NullOrWhiteSpace(userName, message: "Invalid user name.");
-            Guard.Against.NullOrWhiteSpace(email, message: "Invalid email.");
+            Guard.Against.NullString(userName, Resources.User_InvalidUserName_ErrorMessage);
+            Guard.Against.NullString(email, Resources.User_InvalidEmail_ErrorMessage);
 
-            var user = await _userManager.FindByNameAsync(userName);
-
-            if (user == null)
+            if (await _userService.ExistByNameAsync(userName))
             {
-                user = new User
-                {
-                    UserName = userName,
-                    Email = email,
-                    IsRegistrationFinished = false
-                };
+                throw new RutrackerException(
+                    string.Format(Resources.User_AlreadyRegistered_ErrorMessage, userName),
+                    ExceptionEventTypes.RegistrationFailed);
 
-                var result = await _userManager.CreateAsync(user);
-
-                Guard.Against.IsSucceeded(result);
             }
 
-            if (user.IsRegistrationFinished)
+            var user = new User
             {
-                throw new RutrackerException($"A user with this name '{userName}' is already registered.", ExceptionEventTypes.RegistrationFailed);
-            }
+                UserName = userName,
+                Email = email,
+                AddedDate = _dateService.Now()
+            };
 
-            user.Email = email;
-            user.RegisteredAt = DateTime.UtcNow;
-
-            await _userManager.UpdateAsync(user);
-
-            return user;
-        }
-
-        public async Task<User> CompleteRegistrationAsync(string userId, string token, string firstName, string lastName, string password)
-        {
-            Guard.Against.NullOrWhiteSpace(userId, message: "Invalid user id.");
-            Guard.Against.NullOrWhiteSpace(token, message: "Invalid confirmation email token.");
-
-            var user = await _userManager.FindByIdAsync(userId);
-
-            Guard.Against.NullNotFound(user, "No user with this id found.");
-
-            if (user.IsRegistrationFinished)
-            {
-                throw new RutrackerException($"A user with this name '{user.UserName}' is already registered.", ExceptionEventTypes.NotValidParameters);
-            }
-
-            var result = await _userManager.ConfirmEmailAsync(user, token);
-
-            Guard.Against.IsSucceeded(result);
-
-            result = await _userManager.AddPasswordAsync(user, password);
-
-            Guard.Against.IsSucceeded(result);
-
-            user.FirstName = firstName;
-            user.LastName = lastName;
-            user.RegisteredAt = DateTime.UtcNow;
-            user.IsRegistrationFinished = true;
-
-            await _userManager.UpdateAsync(user);
-            await _userManager.AddToRoleAsync(user, UserRoles.User);
+            await _userService.AddAsync(user, password);
+            await _userService.AddToRoleAsync(user, StockRoles.User);
 
             return user;
         }

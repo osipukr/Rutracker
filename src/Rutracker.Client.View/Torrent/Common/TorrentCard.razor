@@ -1,0 +1,95 @@
+﻿@inject PathHelper PathHelper
+
+<div id="@CardId" class="Torrent-Item">
+    <div class="Torrent-Item-Id-Root">
+        <strong>@Value.Id</strong>
+    </div>
+
+    <div class="Torrent-Item-Content-Root">
+        <div class="Torrent-Item-Header">
+            <div>
+                @if (Value.Category != null)
+                {
+                    <a href="javascript:void(0);" @onclick="@CategoryChanged">
+                        @Value.Category.Name
+                    </a>
+
+                    <span> - </span>
+                }
+
+                @if (Value.Subcategory != null)
+                {
+                    <a href="javascript:void(0);" @onclick="@SubcategoryChanged">
+                        @Value.Subcategory.Name
+                    </a>
+                }
+            </div>
+
+            <div>
+                Added at: <strong>@Value.AddedDate</strong>
+            </div>
+        </div>
+
+        <div class="Torrent-Item-Main">
+            <a href="@PathHelper.GetTorrentPath(Value.Id)"
+               style="font-size: larger;"
+               title="@Value.Description">
+                <strong style="word-break: break-all;">@Value.Name</strong>
+            </a>
+        </div>
+
+        <div class="Torrent-Item-Footer">
+            <div>
+                Size: <strong>@TorrentPageHelper.GetSizeInMemory(Value.Size)</strong>
+            </div>
+
+            @if (Value.IsStockTorrent)
+            {
+                <div>
+                    Hash: <strong>@Value.Hash</strong>
+                </div>
+            }
+            else if (Value.ModifiedDate.HasValue)
+            {
+                <div>
+                    Modified at: <strong>@Value.ModifiedDate</strong>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="Torrent-Item-Link-Root">
+        <IconButton Color="@Color.Primary"
+                    Size="@IconButtonSize.Medium"
+                    Href="@TorrentLink"
+                    target="_blank">
+            <ArrowDownwardIcon />
+        </IconButton>
+    </div>
+</div>
+
+@code
+{
+    [Parameter] public TorrentView Value { get; set; }
+    [Parameter] public EventCallback<TorrentView> OnCategoryChange { get; set; }
+    [Parameter] public EventCallback<TorrentView> OnSubcategoryChange { get; set; }
+
+    private string CardId => $"Torrent-Card-{Value.Id}";
+    private string TorrentLink => PathHelper.GetTorrentPath(Value.Id);
+
+    private async Task CategoryChanged()
+    {
+        if (OnCategoryChange.HasDelegate)
+        {
+            await OnCategoryChange.InvokeAsync(Value);
+        }
+    }
+
+    private async Task SubcategoryChanged()
+    {
+        if (OnSubcategoryChange.HasDelegate)
+        {
+            await OnSubcategoryChange.InvokeAsync(Value);
+        }
+    }
+}

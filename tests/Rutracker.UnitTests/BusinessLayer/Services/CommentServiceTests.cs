@@ -61,7 +61,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _commentService.ListAsync(-10, -10, -10));
 
-            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.InvalidParameters, exception.ExceptionEventType);
         }
 
         [Fact]
@@ -71,7 +71,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _commentService.FindAsync(-10));
 
-            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.InvalidParameters, exception.ExceptionEventType);
         }
 
         [Fact]
@@ -81,7 +81,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _commentService.FindAsync(-10, null));
 
-            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.InvalidParameters, exception.ExceptionEventType);
         }
 
         [Fact]
@@ -101,7 +101,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _commentService.AddAsync(null));
 
-            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.InvalidParameters, exception.ExceptionEventType);
         }
 
         [Fact]
@@ -111,7 +111,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _commentService.UpdateAsync(-10, null, null));
 
-            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.InvalidParameters, exception.ExceptionEventType);
         }
 
         [Fact]
@@ -121,7 +121,7 @@ namespace Rutracker.UnitTests.BusinessLayer.Services
             var exception = await Assert.ThrowsAsync<RutrackerException>(async () =>
                 await _commentService.DeleteAsync(-10, null));
 
-            Assert.Equal(ExceptionEventTypes.NotValidParameters, exception.ExceptionEventType);
+            Assert.Equal(ExceptionEventTypes.InvalidParameters, exception.ExceptionEventType);
         }
     }
 }

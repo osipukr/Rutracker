@@ -1,0 +1,102 @@
+﻿<MatExpansionPanel @bind-Expanded="@IsExpanded" Id="@Id">
+    <ContextMenuTrigger MenuId="@CategoryPageHelper.CategoryMenuId" Data="@Category">
+        <MatExpansionPanelSummary>
+            <MatExpansionPanelHeader Style="flex-basis: 100%;">
+                <Typography Align="@Align.Left"
+                            OnClick="@ClickEventHandler"
+                            Variant="@TypographyVariant.Body1"
+                            Style="display: flex; justify-content: space-between; width: 100%; height: 100%; align-items: center; color: inherit">
+                    <strong>@Category.Name</strong>
+                    <span>(Total subcategories: <strong>@Category.SubcategoriesCount)</strong></span>
+                </Typography>
+            </MatExpansionPanelHeader>
+        </MatExpansionPanelSummary>
+    </ContextMenuTrigger>
+
+    <MatExpansionPanelDetails Style="padding-top: 0;">
+        <Divider Variant="@DividerVariant.FullWidth" />
+
+        <ContextMenuTrigger MenuId="@CategoryPageHelper.SubcategoryShortMenuId"
+                            Data="@Category"
+                            style="padding-top: 20px; padding-bottom: 30px;">
+
+            <Typography Align="@Align.Left"
+                        GutterBottom
+                        Variant="@TypographyVariant.H4"
+                        Style="word-break: break-all;">
+                @Category.Name
+            </Typography>
+
+            <Typography Align="@Align.Left" Variant="@TypographyVariant.Body1">
+                <strong>Creation date:</strong> @Category.AddedDate
+            </Typography>
+
+            @if (Category.ModifiedDate != null)
+            {
+                <Typography Align="@Align.Left" Variant="@TypographyVariant.Body1">
+                    <strong>Last modification date:</strong> @Category.ModifiedDate
+                </Typography>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Category.Description))
+            {
+                <Typography Align="@Align.Left"
+                            Variant="@TypographyVariant.Body1"
+                            Style="word-break: break-all;">
+                    <strong>Description:</strong> @Category.Description
+                </Typography>
+            }
+        </ContextMenuTrigger>
+
+        @if (!Category.Subcategories.Any())
+        {
+            <ContextMenuTrigger MenuId="@CategoryPageHelper.SubcategoryShortMenuId"
+                                Data="@Category"
+                                CssClass="mat-elevation-z15">
+                <EmptyCard>
+                    Subcategories list is empty, right click to add new subcategory
+                </EmptyCard>
+            </ContextMenuTrigger>
+        }
+        else
+        {
+            <List Class="Subcategories-Root">
+                @foreach (var subcategory in Category.Subcategories)
+                {
+                    <ContextMenuTrigger MenuId="@CategoryPageHelper.SubcategoryMenuId" Data="@subcategory">
+
+                        <SubcategoryCard Subcategory="@subcategory"
+                                         @key="@subcategory.Id"
+                                         Id="@CategoryPageHelper.GetSubcategoryCardId(subcategory.Id)" />
+
+                    </ContextMenuTrigger>
+
+                    <Divider Variant="@DividerVariant.FullWidth" />
+                }
+            </List>
+        }
+    </MatExpansionPanelDetails>
+</MatExpansionPanel>
+
+@code
+{
+    [Parameter] public CategoryView Category { set; get; }
+    [Parameter] public string Id { get; set; }
+    [Parameter] public bool IsExpanded { set; get; }
+    [Parameter] public EventCallback<int?> OnClick { set; get; }
+
+    private async Task ClickEventHandler()
+    {
+        int? id = null;
+
+        if (!IsExpanded)
+        {
+            id = Category.Id;
+        }
+
+        if (OnClick.HasDelegate)
+        {
+            await OnClick.InvokeAsync(id);
+        }
+    }
+}

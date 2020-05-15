@@ -8,20 +8,28 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
     {
         public void Configure(EntityTypeBuilder<Comment> builder)
         {
-            builder.Property(c => c.Id).ValueGeneratedOnAdd().IsRequired();
-            builder.Property(c => c.Text).IsRequired();
+            builder.ToTable("Comments");
 
-            builder.HasOne(c => c.Torrent)
-                .WithMany(t => t.Comments)
-                .HasForeignKey(c => c.TorrentId);
+            builder.HasKey(comment => comment.Id);
 
-            builder.HasOne(c => c.User)
-                .WithMany(u => u.Comments)
-                .HasForeignKey(c => c.UserId);
+            builder.Property(comment => comment.Id).ValueGeneratedOnAdd();
+            builder.Property(comment => comment.Text).IsRequired();
+            builder.Property(comment => comment.AddedDate).IsRequired();
+            builder.Property(comment => comment.ModifiedDate);
+            builder.Property(comment => comment.TorrentId);
+            builder.Property(comment => comment.UserId);
 
-            builder.HasMany(c => c.Likes)
-                .WithOne(l => l.Comment)
-                .HasForeignKey(l => l.CommentId);
+            builder.HasOne(comment => comment.Torrent)
+                .WithMany(torrent => torrent.Comments)
+                .HasForeignKey(comment => comment.TorrentId);
+
+            builder.HasOne(comment => comment.User)
+                .WithMany(user => user.Comments)
+                .HasForeignKey(comment => comment.UserId);
+
+            builder.HasMany(comment => comment.Likes)
+                .WithOne(like => like.Comment)
+                .HasForeignKey(like => like.CommentId);
         }
     }
 }

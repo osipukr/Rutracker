@@ -1,0 +1,54 @@
+﻿<div class="container py-3">
+    <div class="row m-0 px-4">
+        <AuthorizeView Policy="@Policies.IsUser">
+            <Authorized>
+                <CommentAdd OnCreate="@OnCreate" />
+            </Authorized>
+            <NotAuthorized>
+                <div class="alert alert-success w-100 text-center">
+                    <a href="@Constants.Page.SignIn">Log in</a> to post a message.
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+
+    <div class="row m-0">
+        <section id="comments" class="comment-list mt-5 w-100">
+            @if (Error.IsError)
+            {
+                <ErrorCard>
+                    @Error.Message
+                </ErrorCard>
+            }
+            else if (Value == null)
+            {
+                <ProgressCard />
+            }
+            else
+            {
+                @foreach (var comment in Value.Items)
+                {
+                    <Comment Value="@comment"
+                             @key="@comment.Id"
+                             OnUpdate="@OnUpdate"
+                             OnDelete="@OnDelete"
+                             OnLike="@OnLike" />
+                }
+            }
+        </section>
+
+        <Pagination Value="@Value" OnChange="@OnPageChange" CssClass="w-100 mt-5" />
+    </div>
+</div>
+
+
+@code
+{
+    [Parameter] public IPagedList<CommentView> Value { get; set; }
+    [Parameter] public ErrorModel Error { get; set; }
+    [Parameter] public EventCallback<int> OnPageChange { get; set; }
+    [Parameter] public EventCallback<CommentCreateView> OnCreate { get; set; }
+    [Parameter] public Func<CommentView, CommentUpdateView, Task> OnUpdate { get; set; }
+    [Parameter] public EventCallback<int> OnDelete { get; set; }
+    [Parameter] public EventCallback<int> OnLike { get; set; }
+}

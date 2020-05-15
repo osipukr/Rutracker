@@ -2,17 +2,21 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.WebApi.Controllers.Base;
-using Rutracker.Server.WebApi.Extensions;
 using Rutracker.Shared.Models;
 using Rutracker.Shared.Models.ViewModels.File;
 
 namespace Rutracker.Server.WebApi.Controllers
 {
-    [Authorize(Policy = Policies.IsUser)]
-    public class FilesController : BaseApiController
+    /// <summary>
+    /// 
+    /// </summary>
+    [Authorize(Policy = Policies.IsAdmin)]
+    public class FilesController : ApiController
     {
         private readonly IFileService _fileService;
 
@@ -21,41 +25,47 @@ namespace Rutracker.Server.WebApi.Controllers
             _fileService = fileService;
         }
 
-        [HttpGet("search"), AllowAnonymous]
-        public async Task<IEnumerable<FileViewModel>> Search(int torrentId)
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IEnumerable<FileView>> Search(int torrentId)
         {
             var files = await _fileService.ListAsync(torrentId);
 
-            return _mapper.Map<IEnumerable<FileViewModel>>(files);
+            return _mapper.Map<IEnumerable<FileView>>(files);
         }
 
-        [HttpGet("{id}"), AllowAnonymous]
-        public async Task<FileViewModel> Find(int id)
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        public async Task<FileView> Get(int id)
         {
             var file = await _fileService.FindAsync(id);
 
-            return _mapper.Map<FileViewModel>(file);
+            return _mapper.Map<FileView>(file);
         }
 
-        [HttpPost]
-        public async Task<FileViewModel> Add([FromForm] FileCreateViewModel model)
+        [HttpPost("upload/{torrentId}")]
+        public async Task<FileView> Post(int torrentId, [FromForm] IFormFile file)
         {
-            var stream = model.File.OpenReadStream();
-            var result = await _fileService.AddAsync(User.GetUserId(), model.TorrentId, model.File.ContentType, model.File.FileName, stream);
+            var createdFile = await _fileService.AddAsync(torrentId, file);
 
-            return _mapper.Map<FileViewModel>(result);
+            return _mapper.Map<FileView>(createdFile);
+        }
+
+        [HttpPost("upload/{torrentId}/list")]
+        public async IAsyncEnumerable<FileView> Post(int torrentId, [FromForm] IFormCollection formCollection)
+        {
+            foreach (var file in formCollection.Files)
+            {
+                var createdFile = await _fileService.AddAsync(torrentId, file);
+
+                yield return _mapper.Map<FileView>(createdFile);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
-            await _fileService.DeleteAsync(id, User.GetUserId());
-        }
-
-        [HttpGet("download/{id}"), AllowAnonymous]
-        public async Task<string> Download(int id)
-        {
-            return await _fileService.DownloadAsync(id);
+            await _fileService.Delete(id);
         }
     }
 }

@@ -1,0 +1,122 @@
+﻿@inject IUserService UserService
+@inject IMatToaster MatToaster
+
+<Card Class="Account-Details-Root">
+    <EditForm Model="@_userUpdate"
+              OnValidSubmit="@UpdateClicked"
+              Context="formContext"
+              autocomplete="on">
+
+        <DataAnnotationsValidator />
+
+        <CardHeader Class="px-4 py-3"
+                    Subheader="The information can be edited"
+                    Title="Profile" />
+
+        <Divider />
+
+        <CardContent Class="px-4 py-3">
+            <Grid Container Spacing="@Spacing.Three">
+                <Grid Item Medium="@GridSize.Six" ExtraSmall="@GridSize.Twelve">
+                    <FormControl Class="Form-Cotrol">
+                        <MatTextField FullWidth="true"
+                                      Outlined="true"
+                                      Label="First Name"
+                                      @bind-Value="@_userUpdate.FirstName" />
+
+                        <ValidationMessage For="@(() => _userUpdate.FirstName)" />
+                    </FormControl>
+
+                </Grid>
+
+                <Grid Item Medium="@GridSize.Six" ExtraSmall="@GridSize.Twelve">
+                    <FormControl Class="Form-Cotrol">
+                        <MatTextField FullWidth="true"
+                                      Outlined="true"
+                                      Label="Last Name"
+                                      @bind-Value="@_userUpdate.LastName" />
+
+                        <ValidationMessage For="@(() => _userUpdate.LastName)" />
+                    </FormControl>
+                </Grid>
+
+                <Grid Item Medium="@GridSize.Six" ExtraSmall="@GridSize.Twelve">
+                    <FormControl Class="Form-Cotrol">
+                        <MatTextField FullWidth="true"
+                                      Outlined="true"
+                                      Required="true"
+                                      Label="Email Address"
+                                      @bind-Value="@_userUpdate.Email" />
+
+                        <ValidationMessage For="@(() => _userUpdate.Email)" />
+                    </FormControl>
+                </Grid>
+
+                <Grid Item Medium="@GridSize.Six" ExtraSmall="@GridSize.Twelve">
+                    <FormControl Class="Form-Cotrol">
+                        <MatTextField FullWidth="true"
+                                      Outlined="true"
+                                      Required="true"
+                                      Label="Image Url"
+                                      @bind-Value="@_userUpdate.ImageUrl" />
+
+                        <ValidationMessage For="@(() => _userUpdate.ImageUrl)" />
+                    </FormControl>
+                </Grid>
+            </Grid>
+        </CardContent>
+
+        <Divider />
+
+        <CardActions Class="px-4 py-3">
+            <Button Color="@Color.Primary"
+                    Variant="@ButtonVariant.Contained"
+                    Type="@ButtonType.Submit">
+                Save details
+            </Button>
+        </CardActions>
+    </EditForm>
+</Card>
+
+@code
+{
+    [Parameter] public UserDetailView Value { get; set; }
+    [Parameter] public EventCallback<UserDetailView> OnUpdate { get; set; }
+
+    private readonly UserUpdateView _userUpdate = new UserUpdateView();
+
+    protected override void OnInitialized()
+    {
+        _userUpdate.FirstName = Value.FirstName;
+        _userUpdate.LastName = Value.LastName;
+        _userUpdate.Email = Value.Email;
+        _userUpdate.ImageUrl = Value.ImageUrl;
+    }
+
+    private async Task UpdateClicked()
+    {
+        if (_userUpdate.FirstName == Value.FirstName &&
+            _userUpdate.LastName == Value.LastName &&
+            _userUpdate.Email == Value.Email &&
+            _userUpdate.ImageUrl == Value.ImageUrl)
+        {
+            return;
+        }
+
+        try
+        {
+            var result = await UserService.UpdateAsync(_userUpdate);
+
+            if (OnUpdate.HasDelegate)
+            {
+                await OnUpdate.InvokeAsync(result);
+            }
+
+            MatToaster.Add("Account has been successfully upgraded.", MatToastType.Success, "Account updating");
+        }
+        catch (Exception exception)
+        {
+            MatToaster.Add(exception.Message, MatToastType.Danger, "Account updating");
+        }
+    }
+}

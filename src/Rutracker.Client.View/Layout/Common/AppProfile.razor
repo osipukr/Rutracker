@@ -1,0 +1,39 @@
+﻿@if (_isAuthenticated)
+{
+    <Divider Class="FullLayout-Divider" />
+
+    @if (UsersPageHelper.IsValidAvatarUrl(_avatarUrl))
+    {
+        <Profile Name="@_userName" Avatar="@_avatarUrl" />
+    }
+    else
+    {
+        <Profile Name="@_userName">
+            <Avatar Style="margin: 10px;">
+                @_userName.Substring(0, 2).ToUpperInvariant()
+            </Avatar>
+        </Profile>
+    }
+}
+
+@code
+{
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private bool _isAuthenticated;
+    private string _userName;
+    private string _avatarUrl;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var state = await AuthenticationStateTask;
+
+        _isAuthenticated = state.IsUserAuthenticated();
+
+        if (_isAuthenticated)
+        {
+            _userName = state.GetUserName();
+            _avatarUrl = state.GetUserImage();
+        }
+    }
+}

@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Rutracker.Server.DataAccessLayer.Configurations;
 using Rutracker.Server.DataAccessLayer.Entities;
 
 namespace Rutracker.Server.DataAccessLayer.Contexts
 {
     public class RutrackerContext : IdentityDbContext<User, Role, string>
     {
+        public RutrackerContext()
+        {
+        }
+
         public RutrackerContext(DbContextOptions<RutrackerContext> options) : base(options)
         {
         }
@@ -20,15 +23,9 @@ namespace Rutracker.Server.DataAccessLayer.Contexts
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
+            builder.ApplyConfigurationsFromAssembly(typeof(RutrackerContext).Assembly);
 
-            builder.ApplyConfiguration(new UserConfiguration())
-                   .ApplyConfiguration(new CategoryConfiguration())
-                   .ApplyConfiguration(new SubcategoryConfiguration())
-                   .ApplyConfiguration(new TorrentConfiguration())
-                   .ApplyConfiguration(new FileConfiguration())
-                   .ApplyConfiguration(new CommentConfiguration())
-                   .ApplyConfiguration(new LikeConfiguration());
+            base.OnModelCreating(builder);
         }
     }
 }

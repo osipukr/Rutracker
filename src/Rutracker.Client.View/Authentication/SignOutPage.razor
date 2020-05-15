@@ -1,0 +1,32 @@
+﻿@layout AuthenticationLayout
+
+@page "/signout"
+
+@attribute [Authorize]
+
+@inject IAccountService AccountService
+@inject IMatToaster ToastService
+@inject NavigationManager NavigationManager
+@inject PathHelper PageHelper
+
+<Title>@PageHelper.GetPageTitle("Sign Out")</Title>
+
+@code
+{
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        NavigationManager.NavigateTo(Constants.Page.Home);
+
+        if (firstRender)
+        {
+            try
+            {
+                await AccountService.Logout();
+            }
+            catch (Exception exception)
+            {
+                ToastService.Add(exception.Message, MatToastType.Danger, "Sign Out");
+            }
+        }
+    }
+}

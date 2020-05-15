@@ -1,0 +1,43 @@
+﻿@inject ITorrentService TorrentService
+@inject IMatToaster MatToaster
+
+<FormControl Class="Form-Cotrol">
+    <Typography Align="@Align.Left"
+                GutterBottom
+                Variant="@TypographyVariant.Body1">
+        Do you really want to remove the torrent <strong>@Torrent.Name</strong> ?
+    </Typography>
+</FormControl>
+
+<FormControl Class="Form-Cotrol Form-Actions">
+    <MatButton OnClick="@DeleteClicked" Label="Delete" Raised="true" />
+    <MatButton OnClick="@CancelClicked" Label="Cancel" />
+</FormControl>
+
+@code
+{
+    [CascadingParameter] BlazoredModalInstance Modal { get; set; }
+
+    [Parameter] public TorrentView Torrent { get; set; }
+
+    private async Task DeleteClicked()
+    {
+        try
+        {
+            await TorrentService.DeleteAsync(Torrent.Id);
+
+            Modal.Close(ModalResult.Ok(true));
+
+            MatToaster.Add("The torrent was successfully removed.", MatToastType.Success, "Torrent deleting");
+        }
+        catch (Exception exception)
+        {
+            MatToaster.Add(exception.Message, MatToastType.Danger, "Torrent deleting");
+        }
+    }
+
+    private void CancelClicked()
+    {
+        Modal.Cancel();
+    }
+}

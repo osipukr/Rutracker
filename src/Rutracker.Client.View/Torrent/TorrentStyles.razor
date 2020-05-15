@@ -1,0 +1,73 @@
+﻿@inherits StyleComponentBase
+
+<style type="text/css" data-name="Torrent">
+
+    .Torrent-Item {
+        width: 100%;
+        height: 120px;
+        display: flex;
+    }
+
+    .Torrent-Item-Id-Root {
+        width: 100px;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid rgba(0,0,0,0.42);
+        border-right: none;
+    }
+
+    .Torrent-Item-Content-Root {
+        width: 100%;
+        height: 100%;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border: 1px solid rgba(0,0,0,0.42);
+        border-right: none;
+        overflow-y: auto;
+    }
+
+    .Torrent-Item-Link-Root {
+        width: 80px;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid rgba(0,0,0,0.42);
+    }
+
+    .Torrents-Filter-Root {
+        width: 100%;
+    }
+
+    .Torrents-List-Root {
+        margin: 40px 0;
+    }
+
+    .mdc-menu {
+        z-index: 999;
+    }
+
+    .Torrent-Item-Header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .Torrent-Item-Main {
+        overflow-y: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .Torrent-Item-Footer {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+
+</style>

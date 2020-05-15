@@ -1,114 +1,151 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Rutracker.Server.BusinessLayer.Exceptions;
+using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Server.BusinessLayer.Properties;
+using Rutracker.Server.BusinessLayer.Services.Base;
+using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Interfaces;
-using Rutracker.Shared.Infrastructure.Exceptions;
+using Rutracker.Server.DataAccessLayer.Interfaces.Base;
 using File = Rutracker.Server.DataAccessLayer.Entities.File;
+using FileOptions = Rutracker.Server.BusinessLayer.Options.FileOptions;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
-    public class FileService : IFileService
+    public class FileService : Service, IFileService
     {
+        private readonly IStorageService _storageService;
+
         private readonly IFileRepository _fileRepository;
         private readonly ITorrentRepository _torrentRepository;
-        private readonly IFileStorageService _fileStorageService;
-        private readonly IUnitOfWork _unitOfWork;
+
+        private readonly FileOptions _fileOptions;
 
         public FileService(
-            IFileRepository fileRepository,
-            ITorrentRepository torrentRepository,
-            IFileStorageService fileStorageService,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork<RutrackerContext> unitOfWork,
+            IStorageService storageService,
+            IOptions<FileOptions> fileOptions) : base(unitOfWork)
         {
-            _fileRepository = fileRepository;
-            _torrentRepository = torrentRepository;
-            _fileStorageService = fileStorageService;
-            _unitOfWork = unitOfWork;
+            _storageService = storageService;
+
+            _fileOptions = fileOptions.Value;
+
+            _fileRepository = _unitOfWork.GetRepository<IFileRepository>();
+            _torrentRepository = _unitOfWork.GetRepository<ITorrentRepository>();
         }
 
         public async Task<IEnumerable<File>> ListAsync(int torrentId)
         {
-            Guard.Against.LessOne(torrentId, "Invalid torrent id.");
+            Guard.Against.LessOne(torrentId, Resources.Torrent_InvalidId_ErrorMessage);
 
             var files = await _fileRepository.GetAll(x => x.TorrentId == torrentId)
                 .OrderByDescending(x => x.Size)
-                .ThenByDescending(x => x.Id)
+                .ThenByDescending(x => x.Name)
                 .ToListAsync();
 
-            Guard.Against.NullNotFound(files, $"The files with torrent id '{torrentId}' not found.");
+            var message = string.Format(Resources.File_NotFoundListByTorrentId_ErrorMessage, torrentId);
+
+            Guard.Against.NullNotFound(files, message);
 
             return files;
         }
 
-        public async Task<File> FindAsync(int id)
+        public async Task<File> AddAsync(int torrentId, IFormFile file)
         {
-            Guard.Against.LessOne(id, "Invalid file id.");
+            Guard.Against.NullInvalid(file, "Invalid file");
 
-            var file = await _fileRepository.GetAsync(id);
-
-            Guard.Against.NullNotFound(file, $"The file with id '{id}' not found.");
-
-            return file;
-        }
-
-        public async Task<File> FindAsync(int id, string userId)
-        {
-            Guard.Against.LessOne(id, "Invalid file id.");
-            Guard.Against.NullOrWhiteSpace(userId, message: "Invalid user id.");
-
-            var file = await _fileRepository.GetAsync(x => x.Id == id && x.Torrent.UserId == userId);
-
-            Guard.Against.NullNotFound(file, $"The file with id '{id}' not found.");
-
-            return file;
-        }
-
-        public async Task<File> AddAsync(string userId, int torrentId, string mimeType, string fileName, Stream fileStream)
-        {
-            Guard.Against.NullOrWhiteSpace(userId, message: "Invalid user id.");
-            Guard.Against.LessOne(torrentId, "Invalid torrent id.");
-
-            if (!await _torrentRepository.ExistAsync(x => x.Id == torrentId && x.UserId == userId))
+            if (string.IsNullOrWhiteSpace(file.FileName))
             {
-                throw new RutrackerException($"The torrent with id '{torrentId}' not found.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException(
+                    "The file name cannot be empty.",
+                    ExceptionEventTypes.InvalidParameters);
             }
 
-            var name = fileName.ToLowerInvariant();
-            var type = mimeType.ToLowerInvariant();
-            var path = await _fileStorageService.UploadTorrentFileAsync(torrentId, type, name, fileStream);
-            var result = _fileRepository.Create();
+            if (file.Length > _fileOptions.MaxSize)
+            {
+                throw new RutrackerException(
+                    $"File '{file.Name}' is too large (more {_fileOptions.MaxSize} bytes).",
+                    ExceptionEventTypes.InvalidParameters);
+            }
 
-            result.Name = name;
-            result.Size = fileStream.Length;
-            result.Type = type;
-            result.Url = path;
-            result.TorrentId = torrentId;
+            var torrent = await _torrentRepository.GetAsync(torrentId);
 
-            await _fileRepository.AddAsync(result);
-            await _unitOfWork.CompleteAsync();
+            if (torrent == null)
+            {
+                throw new RutrackerException(
+                    $"The torrent with '{torrentId}' not found",
+                    ExceptionEventTypes.InvalidParameters);
+            }
+
+            if (torrent.IsStockTorrent)
+            {
+                throw new RutrackerException(
+                    "Cannot add the file to the stock torrent.",
+                    ExceptionEventTypes.InvalidParameters);
+            }
+
+            var result = await _fileRepository.AddAsync(new File
+            {
+                Name = file.FileName,
+                BlobName = $"{Path.GetFileNameWithoutExtension(file.FileName)}-{Guid.NewGuid():N}{Path.GetExtension(file.FileName)}",
+                Size = file.Length,
+                Type = file.ContentType,
+                TorrentId = torrentId
+            });
+
+            await _unitOfWork.SaveChangesAsync();
+
+            var containerName = torrentId.ToString().PadLeft(10, '0');
+            var fileName = result.BlobName;
+            var contentType = result.Type;
+            var stream = file.OpenReadStream();
+
+            var url = await _storageService.UploadFileAsync(containerName, fileName, contentType, stream);
+
+            result.Url = url;
+            torrent.Size += result.Size;
+
+            _fileRepository.Update(result);
+            _torrentRepository.Update(torrent);
+
+            await _unitOfWork.SaveChangesAsync();
 
             return result;
         }
 
-        public async Task<File> DeleteAsync(int id, string userId)
+        public async Task<File> FindAsync(int id)
         {
-            var file = await FindAsync(id, userId);
+            Guard.Against.LessOne(id, Resources.File_InvalidId_ErrorMessage);
 
-            await _fileStorageService.DeleteTorrentFileAsync(file.TorrentId, file.Name);
+            var file = await _fileRepository.GetAsync(id);
 
-            _fileRepository.Remove(file);
-            await _unitOfWork.CompleteAsync();
+            Guard.Against.NullNotFound(file, string.Format(Resources.File_NotFoundById_ErrorMessage, id));
 
             return file;
         }
 
-        public async Task<string> DownloadAsync(int id)
+        public async Task<File> Delete(int id)
         {
-            return (await FindAsync(id)).Url;
+            var file = await FindAsync(id);
+
+            _fileRepository.Delete(file);
+
+            var containerName = file.TorrentId.ToString().PadLeft(10, '0');
+            var fileName = file.BlobName;
+
+            await _storageService.DeleteFileAsync(containerName, fileName);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return file;
         }
     }
 }

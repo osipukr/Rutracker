@@ -1,0 +1,59 @@
+﻿@inherits StyleComponentBase
+
+<style type="text/css" data-name="File">
+
+    .Files-Root {
+    }
+
+    .file-row {
+        background-color: #e4e4e4;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1rem;
+        border-radius: 0.6rem;
+        color: #555;
+        display: flex;
+        align-items: center;
+    }
+
+        .file-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .file-row h2 {
+            margin: 0.3rem 0 0.6rem 0;
+            font-weight: bold;
+            color: black;
+            font-size: 1.1rem;
+        }
+
+        .file-row button {
+            padding: 0.5rem 1rem;
+            width: 140px;
+        }
+
+    .file-row-info {
+        flex-grow: 1;
+    }
+
+    .file-row-button {
+        position: relative;
+    }
+
+    .circular-progress-button-progress {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        color: #4caf50;
+        margin-top: -12px;
+        margin-left: -12px;
+    }
+
+    .circular-progress-button-success {
+        background-color: #4caf50;
+        color: white;
+    }
+
+        .circular-progress-button-success:hover {
+            background-color: #388e3c;
+        }
+</style>

@@ -1,0 +1,45 @@
+﻿@inject NavigationManager NavigationManager
+
+<ThemeProvider Theme="@Theme" />
+<LayoutResources />
+
+<Styles />
+<Scripts />
+
+<MatThemeProvider Theme="@MatTheme">
+    <BlazoredModal />
+    <MatToastContainer />
+
+    <CascadingAuthenticationState>
+        <Router AppAssembly="@typeof(FullLayout).Assembly">
+            <Found Context="routeData">
+                <AuthorizeRouteView RouteData="routeData" DefaultLayout="@typeof(FullLayout)">
+                    <NotAuthorized>
+                        @{
+                            NavigationManager.NavigateTo($"{Constants.Page.SignIn}?returnUrl={NavigationManager.Uri}");
+                        }
+                    </NotAuthorized>
+                    <Authorizing>
+
+                    </Authorizing>
+                </AuthorizeRouteView>
+            </Found>
+            <NotFound>
+                <LayoutView Layout="@typeof(SmallLayout)">
+                    <NotFound />
+                </LayoutView>
+            </NotFound>
+        </Router>
+    </CascadingAuthenticationState>
+</MatThemeProvider>
+
+@code
+{
+    private Theme Theme { set; get; } = Theme.Light;
+
+    private MatTheme MatTheme { get; set; } = new MatTheme
+    {
+        Primary = "#2979ff",
+        Secondary = "#0091ea"
+    };
+}

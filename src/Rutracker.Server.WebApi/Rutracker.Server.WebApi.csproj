@@ -1,29 +1,26 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp5.0</TargetFramework>
     <LangVersion>8</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
-    <Authors>Roman Osipuk</Authors>
-    <Product>Rutracker</Product>
-    <RepositoryUrl>https://github.com/osipukr/Rutracker-Blazor</RepositoryUrl>
     <UserSecretsId>a5776e5c-3a5f-4f4a-9639-c18c3ad884cd</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.Server" Version="3.0.0-preview9.19465.2" />
-    <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0-dev-00032" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.14.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.0-preview.3.20215.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.0-preview.3.20215.14" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.3.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Rutracker.Client.BlazorWasm\Rutracker.Client.BlazorWasm.csproj" />
     <ProjectReference Include="..\Rutracker.Server.BusinessLayer\Rutracker.Server.BusinessLayer.csproj" />
     <ProjectReference Include="..\Rutracker.Shared.Models\Rutracker.Shared.Models.csproj" />
+    <ProjectReference Include="..\Rutracker.Utils.IdentitySeed\Rutracker.Utils.IdentitySeed.csproj" />
   </ItemGroup>
 
 </Project>

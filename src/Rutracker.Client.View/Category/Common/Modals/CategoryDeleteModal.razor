@@ -1,0 +1,43 @@
+﻿@inject ICategoryService CategoryService
+@inject IMatToaster MatToaster
+
+<FormControl Class="Form-Cotrol">
+    <Typography Align="@Align.Left"
+                GutterBottom
+                Variant="@TypographyVariant.Body1">
+        Do you really want to remove the category <strong>@CategoryView.Name</strong> ?
+    </Typography>
+</FormControl>
+
+<FormControl Class="Form-Cotrol Form-Actions">
+    <MatButton OnClick="@DeleteClicked" Label="Delete" Raised="true" />
+    <MatButton OnClick="@CancelClicked" Label="Cancel" />
+</FormControl>
+
+@code
+{
+    [CascadingParameter] BlazoredModalInstance Modal { get; set; }
+
+    [Parameter] public CategoryView CategoryView { get; set; }
+
+    private async Task DeleteClicked()
+    {
+        try
+        {
+            await CategoryService.DeleteAsync(CategoryView.Id);
+
+            Modal.Close(ModalResult.Ok(true));
+
+            MatToaster.Add("The category was successfully removed.", MatToastType.Success, "Category deleting");
+        }
+        catch (Exception exception)
+        {
+            MatToaster.Add(exception.Message, MatToastType.Danger, "Category deleting");
+        }
+    }
+
+    private void CancelClicked()
+    {
+        Modal.Cancel();
+    }
+}

@@ -1,0 +1,17 @@
+﻿<Paper Class="search-input-root">
+    <SearchIcon Class="search-input-icon" />
+
+    <StandardInput Class="@InputClass"
+                   DisableUnderline
+                   placeholder="@Placeholder"
+                   OnChange="@OnChange" />
+</Paper>
+
+@code
+{
+    [Parameter] public string Class { set; get; }
+    [Parameter] public string Placeholder { set; get; }
+    [Parameter] public EventCallback<ChangeEventArgs> OnChange { set; get; }
+
+    protected string InputClass => $"search-input-input {Class}";
+}

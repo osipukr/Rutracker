@@ -1,197 +1,224 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
-using Microsoft.EntityFrameworkCore;
+using ICSharpCode.SharpZipLib.Zip;
+using Rutracker.Server.BusinessLayer.Exceptions;
+using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Server.BusinessLayer.Properties;
+using Rutracker.Server.BusinessLayer.Services.Base;
+using Rutracker.Server.DataAccessLayer.Contexts;
 using Rutracker.Server.DataAccessLayer.Entities;
 using Rutracker.Server.DataAccessLayer.Interfaces;
-using Rutracker.Shared.Infrastructure.Exceptions;
+using Rutracker.Server.DataAccessLayer.Interfaces.Base;
+using Rutracker.Shared.Infrastructure.Collections;
+using Rutracker.Shared.Infrastructure.Filters;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
-    public class TorrentService : ITorrentService
+    public class TorrentService : Service, ITorrentService
     {
+        private readonly IDateService _dateService;
+        private readonly IStorageService _storageService;
+
         private readonly ITorrentRepository _torrentRepository;
         private readonly ISubcategoryRepository _subcategoryRepository;
-        private readonly IFileStorageService _fileStorageService;
-        private readonly IUnitOfWork _unitOfWork;
 
         public TorrentService(
-            ITorrentRepository torrentRepository,
-            ISubcategoryRepository subcategoryRepository,
-            IFileStorageService fileStorageService,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork<RutrackerContext> unitOfWork,
+            IDateService dateService,
+            IStorageService storageService) : base(unitOfWork)
         {
-            _torrentRepository = torrentRepository;
-            _subcategoryRepository = subcategoryRepository;
-            _fileStorageService = fileStorageService;
-            _unitOfWork = unitOfWork;
+            _dateService = dateService;
+            _storageService = storageService;
+
+            _torrentRepository = _unitOfWork.GetRepository<ITorrentRepository>();
+            _subcategoryRepository = _unitOfWork.GetRepository<ISubcategoryRepository>();
         }
 
-        public async Task<Tuple<IEnumerable<Torrent>, int>> ListAsync(int page, int pageSize, int? categoryId, int? subcategoryId, string search)
+        public async Task<IPagedList<Torrent>> ListAsync(ITorrentFilter filter)
         {
-            Guard.Against.LessOne(page, "Invalid page.");
-            Guard.Against.OutOfRange(pageSize, 1, 100, "The page size is out of range (1 - 100).");
+            Guard.Against.OutOfRange(filter.Page, Constants.Filter.PageRangeFrom, Constants.Filter.PageRangeTo, Resources.Page_InvalidPageNumber);
 
-            if (categoryId.HasValue)
+            var message = string.Format(Resources.PageSize_InvalidPageSizeNumber, Constants.Filter.PageRangeFrom, Constants.Filter.PageRangeTo);
+
+            Guard.Against.OutOfRange(filter.PageSize, Constants.Filter.PageRangeFrom, Constants.Filter.PageRangeTo, message);
+
+            var query = _torrentRepository.GetAll(x => string.IsNullOrWhiteSpace(filter.Search) || x.Name.Contains(filter.Search));
+
+            if (filter.CategoryId.HasValue)
             {
-                Guard.Against.LessOne(categoryId.Value, "Invalid category id.");
+                Guard.Against.LessOne(filter.CategoryId.Value, Resources.Torrent_InvalidCategoryId_ErrorMessage);
+
+                query = query.Where(x => x.Subcategory.CategoryId == filter.CategoryId.Value);
             }
 
-            if (subcategoryId.HasValue)
+            if (filter.SubcategoryId.HasValue)
             {
-                Guard.Against.LessOne(subcategoryId.Value, "Invalid subcategory id.");
+                Guard.Against.LessOne(filter.SubcategoryId.Value, Resources.Torrent_InvalidSubcategoryId_ErrorMessage);
+
+                query = query.Where(x => x.SubcategoryId == filter.SubcategoryId.Value);
             }
 
-            var query = _torrentRepository.GetAll(torrent =>
-                (!subcategoryId.HasValue || torrent.SubcategoryId == subcategoryId) &&
-                (!categoryId.HasValue || torrent.Subcategory.CategoryId == categoryId) &&
-                (string.IsNullOrWhiteSpace(search) || torrent.Name.Contains(search)))
-                .OrderBy(torrent => torrent.CreatedAt);
+            query = query.OrderBy(x => x.Id);
 
-            var torrents = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            var pagedList = await ApplyFilterAsync(query, filter);
 
-            Guard.Against.NullNotFound(torrents, "The torrents not found.");
+            Guard.Against.NullNotFound(pagedList.Items, Resources.Torrent_NotFoundList_ErrorMessage);
 
-            var count = await query.CountAsync();
-
-            return Tuple.Create<IEnumerable<Torrent>, int>(torrents, count);
-        }
-
-        public async Task<IEnumerable<Torrent>> PopularAsync(int count)
-        {
-            Guard.Against.OutOfRange(count, 1, 100, "The count is out of range (1 - 100).");
-
-            var torrents = await _torrentRepository.GetAll()
-                .OrderByDescending(x => x.Comments.Count)
-                .Take(count)
-                .ToListAsync();
-
-            Guard.Against.NullNotFound(torrents, "The torrents not found.");
-
-            return torrents;
+            return pagedList;
         }
 
         public async Task<Torrent> FindAsync(int id)
         {
-            Guard.Against.LessOne(id, "Invalid torrent id.");
+            Guard.Against.LessOne(id, Resources.Torrent_InvalidId_ErrorMessage);
 
             var torrent = await _torrentRepository.GetAsync(id);
 
-            Guard.Against.NullNotFound(torrent, $"The torrent with id '{id}' not found.");
-
-            return torrent;
-        }
-
-        public async Task<Torrent> FindAsync(int id, string userId)
-        {
-            Guard.Against.LessOne(id, "Invalid torrent id.");
-            Guard.Against.LessOne(id, "Invalid user id.");
-
-            var torrent = await _torrentRepository.GetAsync(id);
-
-            Guard.Against.NullNotFound(torrent, $"The torrent with id '{id}' not found.");
+            Guard.Against.NullNotFound(torrent, string.Format(Resources.Torrent_NotFoundById_ErrorMessage, id));
 
             return torrent;
         }
 
         public async Task<Torrent> AddAsync(Torrent torrent)
         {
-            Guard.Against.NullNotValid(torrent, "Invalid torrent.");
-            Guard.Against.NullOrWhiteSpace(torrent.Name, message: "The torrent must contain a name.");
-            Guard.Against.NullOrWhiteSpace(torrent.Description, message: "The torrent must contain a description.");
-            Guard.Against.LessOne(torrent.SubcategoryId, "Invalid subcategory id.");
-            Guard.Against.NullOrWhiteSpace(torrent.UserId, message: "Invalid user id.");
+            Guard.Against.NullInvalid(torrent, Resources.Torrent_Invalid_ErrorMessage);
+            Guard.Against.NullString(torrent.Name, Resources.Torrent_InvalidName_ErrorMessage);
+            Guard.Against.NullString(torrent.Content, Resources.Torrent_InvalidContent_ErrorMessage);
+            Guard.Against.LessOne(torrent.SubcategoryId, Resources.Torrent_InvalidSubcategoryId_ErrorMessage);
 
             if (!await _subcategoryRepository.ExistAsync(torrent.SubcategoryId))
             {
-                throw new RutrackerException($"The subcategory with id {torrent.SubcategoryId} not found.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException(
+                    string.Format(Resources.Subcategory_NotFoundById_ErrorMessage, torrent.SubcategoryId),
+                    ExceptionEventTypes.InvalidParameters);
             }
 
-            var result = _torrentRepository.Create();
+            torrent.TrackerId = null;
+            torrent.Hash = null;
+            torrent.Size = 0;
+            torrent.IsStockTorrent = false;
+            torrent.AddedDate = _dateService.Now();
 
-            result.Name = torrent.Name;
-            result.Description = torrent.Description;
-            result.SubcategoryId = torrent.SubcategoryId;
-            result.UserId = torrent.UserId;
-            result.CreatedAt = DateTime.UtcNow;
+            var result = await _torrentRepository.AddAsync(torrent);
 
-            await _torrentRepository.AddAsync(result);
-            await _unitOfWork.CompleteAsync();
-            await _fileStorageService.CreateTorrentContainerAsync(result.Id);
+            await _unitOfWork.SaveChangesAsync();
+
+            var containerName = result.Id.ToString().PadLeft(10, '0');
+
+            await _storageService.CreateContainerAsync(containerName);
 
             return result;
         }
 
-        public async Task<Torrent> ChangeImageAsync(int id, string userId, string imageUrl)
+        public async Task<Torrent> AddStockAsync(Torrent stockTorrent)
         {
-            Guard.Against.NullOrWhiteSpace(imageUrl, message: "Invalid link to the picture.");
+            Guard.Against.NullInvalid(stockTorrent, Resources.Torrent_Invalid_ErrorMessage);
+            Guard.Against.NullString(stockTorrent.Name, Resources.Torrent_InvalidName_ErrorMessage);
+            Guard.Against.NullString(stockTorrent.Content, Resources.Torrent_InvalidContent_ErrorMessage);
+            Guard.Against.NullString(stockTorrent.Hash, "Invalid torrent hash.");
+            Guard.Against.LessOne(stockTorrent.SubcategoryId, Resources.Torrent_InvalidSubcategoryId_ErrorMessage);
 
-            var torrent = await FindAsync(id, userId);
+            if (stockTorrent.Size < 0)
+            {
+                throw new RutrackerException(
+                    "Invalid torrent size (Should be above zero)",
+                    ExceptionEventTypes.InvalidParameters);
+            }
 
-            return await UpdateImageAsync(torrent, imageUrl);
+            if (!stockTorrent.TrackerId.HasValue)
+            {
+                throw new RutrackerException(
+                    "Invalid tracker id (should contain value)",
+                    ExceptionEventTypes.InvalidParameters);
+            }
+
+            stockTorrent.Description = null;
+            stockTorrent.IsStockTorrent = true;
+
+            var result = await _torrentRepository.AddAsync(stockTorrent);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return result;
         }
 
-        public async Task<Torrent> ChangeImageAsync(int id, string userId, string imageMimeType, Stream imageStream)
+        public async Task<Torrent> UpdateAsync(int id, Torrent torrent)
         {
-            var torrent = await FindAsync(id, userId);
+            Guard.Against.NullInvalid(torrent, Resources.Torrent_Invalid_ErrorMessage);
+            Guard.Against.NullInvalid(torrent.Name, Resources.Torrent_InvalidName_ErrorMessage);
+            Guard.Against.NullString(torrent.Content, Resources.Torrent_InvalidContent_ErrorMessage);
 
-            await _fileStorageService.CreateImagesContainerAsync();
-
-            var path = await _fileStorageService.UploadTorrentImageAsync(id, imageMimeType, imageStream);
-
-            return await UpdateImageAsync(torrent, path);
-        }
-
-        public async Task<Torrent> DeleteImageAsync(int id, string userId)
-        {
-            var torrent = await FindAsync(id, userId);
-            await _fileStorageService.DeleteTorrentImageAsync(id);
-
-            return await UpdateImageAsync(torrent, imageUrl: null);
-        }
-
-        public async Task<Torrent> UpdateAsync(int id, string userId, Torrent torrent)
-        {
-            Guard.Against.NullNotValid(torrent, "Invalid torrent.");
-            Guard.Against.NullNotValid(torrent.Name, "The torrent must contain a name.");
-            Guard.Against.NullNotValid(torrent.Description, "The torrent must contain a description.");
-
-            var result = await FindAsync(id, userId);
+            var result = await FindAsync(id);
 
             result.Name = torrent.Name;
             result.Description = torrent.Description;
             result.Content = torrent.Content;
-            result.LastUpdatedAt = DateTime.UtcNow;
+            result.ModifiedDate = _dateService.Now();
 
             _torrentRepository.Update(result);
-            await _unitOfWork.CompleteAsync();
+
+            await _unitOfWork.SaveChangesAsync();
 
             return result;
         }
 
-        public async Task<Torrent> DeleteAsync(int id, string userId)
+        public async Task<Torrent> DeleteAsync(int id)
         {
-            var torrent = await FindAsync(id, userId);
+            var torrent = await FindAsync(id);
 
-            _torrentRepository.Remove(torrent);
-            await _unitOfWork.CompleteAsync();
-            await _fileStorageService.DeleteTorrentAsync(id);
+            _torrentRepository.Delete(torrent);
+
+            var containerName = torrent.Id.ToString().PadLeft(10, '0');
+
+            await _storageService.DeleteContainerAsync(containerName);
+
+            await _unitOfWork.SaveChangesAsync();
 
             return torrent;
         }
 
-        private async Task<Torrent> UpdateImageAsync(Torrent torrent, string imageUrl)
+        public async Task<string> GetDownloadFileName(int id)
         {
-            torrent.ImageUrl = imageUrl;
+            var torrent = await FindAsync(id);
 
-            _torrentRepository.Update(torrent);
-            await _unitOfWork.CompleteAsync();
+            const int maxLength = 100;
 
-            return torrent;
+            var fileName = torrent.Name.Length > maxLength
+                ? torrent.Name.Substring(0, 100)
+                : torrent.Name;
+
+            return $"{fileName}.zip";
+        }
+
+        public async Task DownloadToStreamAsync(int id, Stream outStream)
+        {
+            Guard.Against.NullInvalid(outStream, "Invalid out stream.");
+
+            var torrent = await FindAsync(id);
+
+            if (torrent.IsStockTorrent)
+            {
+                throw new RutrackerException(
+                    "Cannot download stock torrent.",
+                    ExceptionEventTypes.InvalidParameters);
+            }
+
+            var containerName = torrent.Id.ToString().PadLeft(10, '0');
+
+            await using var zipOutputStream = new ZipOutputStream(outStream);
+
+            foreach (var file in torrent.Files)
+            {
+                zipOutputStream.SetLevel(9);
+                zipOutputStream.PutNextEntry(new ZipEntry(file.Name));
+
+                await _storageService.DownloadToStream(containerName, file.BlobName, zipOutputStream);
+            }
+
+            zipOutputStream.Finish();
+            zipOutputStream.Close();
         }
     }
 }

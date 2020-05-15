@@ -1,0 +1,107 @@
+﻿@inject ITorrentService TorrentService
+@inject IMatToaster MatToaster
+
+<EditForm Model="@_torrentCreate" OnValidSubmit="@CreateClicked" autocomplete="off">
+    <DataAnnotationsValidator />
+
+    <FormControl Class="Form-Cotrol">
+        <MatSelect @bind-Value="@_torrentCreate.SubcategoryId"
+                   TValue="int"
+                   Label="Subcategory"
+                   Enhanced="true"
+                   ValidationDisabled="true"
+                   Class="w-100">
+            @if (Subcategories != null)
+            {
+                @foreach (var subcategory in Subcategories)
+                {
+                    <MatOption TValue="int" Value="@subcategory.Id">@subcategory.Name</MatOption>
+                }
+            }
+        </MatSelect>
+    </FormControl>
+
+    <FormControl Class="Form-Cotrol">
+        <MatTextField @bind-Value="@_torrentCreate.Name"
+                      Label="Name"
+                      Icon="@MatIconNames.Title"
+                      IconTrailing="true"
+                      FullWidth="true"
+                      Required="true" />
+
+        <ValidationMessage For="@(() => _torrentCreate.Name)" />
+    </FormControl>
+
+    <FormControl Class="Form-Cotrol">
+        <MatTextField @bind-Value="@_torrentCreate.Description"
+                      Label="Description"
+                      Icon="@MatIconNames.Description"
+                      IconTrailing="true"
+                      FullWidth="true" />
+
+        <ValidationMessage For="@(() => _torrentCreate.Description)" />
+    </FormControl>
+
+    <FormControl Class="Form-Cotrol mt-3">
+        <MatTextField @bind-Value="@_torrentCreate.Content"
+                      Label="Content"
+                      FullWidth="true"
+                      Required="true"
+                      TextArea="true"
+                      InputStyle="height: 200px; resize: none" />
+
+        <ValidationMessage For="@(() => _torrentCreate.Content)" />
+    </FormControl>
+
+    <FormControl Class="Form-Cotrol Form-Actions">
+        <MatButton Label="Create" Raised="true" Disabled="@(_torrentCreate.SubcategoryId <= 0)" Type="submit" />
+        <MatButton OnClick="@CancelClicked" Label="Cancel" />
+    </FormControl>
+</EditForm>
+
+@code
+{
+    [CascadingParameter] BlazoredModalInstance Modal { get; set; }
+    [Parameter] public int? SubcategoryId { get; set; }
+    [Parameter] public IEnumerable<SubcategoryView> Subcategories { get; set; }
+
+    private readonly TorrentCreateView _torrentCreate = new TorrentCreateView();
+
+    private bool _isCanceled;
+
+    protected override void OnInitialized()
+    {
+        if (SubcategoryId.HasValue)
+        {
+            _torrentCreate.SubcategoryId = SubcategoryId.Value;
+        }
+    }
+
+    private async Task CreateClicked()
+    {
+        if (_isCanceled)
+        {
+            return;
+        }
+
+        try
+        {
+            var result = await TorrentService.AddAsync(_torrentCreate);
+
+            Modal.Close(ModalResult.Ok(result));
+
+            MatToaster.Add($"The torrent '{result.Name}' was successfully created.", MatToastType.Success, "Torrent creating");
+        }
+        catch (Exception exception)
+        {
+            MatToaster.Add(exception.Message, MatToastType.Danger, "Torrent creating");
+        }
+    }
+
+    private void CancelClicked()
+    {
+        _isCanceled = true;
+
+        Modal.Cancel();
+    }
+}

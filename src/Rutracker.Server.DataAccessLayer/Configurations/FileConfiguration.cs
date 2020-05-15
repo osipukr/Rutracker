@@ -8,15 +8,23 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
     {
         public void Configure(EntityTypeBuilder<File> builder)
         {
-            builder.Property(f => f.Id).ValueGeneratedOnAdd().IsRequired();
-            builder.Property(f => f.Name).IsRequired();
-            builder.Property(f => f.Size).IsRequired();
-            builder.Property(f => f.Type).IsRequired();
-            builder.Property(f => f.Url).IsRequired();
+            builder.ToTable("Files");
 
-            builder.HasOne(f => f.Torrent)
-                .WithMany(t => t.Files)
-                .HasForeignKey(f => f.TorrentId);
+            builder.HasKey(file => file.Id);
+
+            builder.HasIndex(file => file.BlobName).IsUnique();
+
+            builder.Property(file => file.Id).ValueGeneratedOnAdd();
+            builder.Property(file => file.Name).IsRequired();
+            builder.Property(file => file.BlobName);
+            builder.Property(file => file.Size).IsRequired();
+            builder.Property(file => file.Type);
+            builder.Property(file => file.Url);
+            builder.Property(file => file.TorrentId);
+
+            builder.HasOne(file => file.Torrent)
+                .WithMany(torrent => torrent.Files)
+                .HasForeignKey(file => file.TorrentId);
         }
     }
 }

@@ -8,17 +8,17 @@ namespace Rutracker.Server.DataAccessLayer.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasMany(u => u.Torrents)
-                .WithOne(t => t.User)
-                .HasForeignKey(t => t.UserId);
+            builder.Property(user => user.FirstName).HasMaxLength(100);
+            builder.Property(user => user.LastName).HasMaxLength(100);
+            builder.Property(user => user.ImageUrl);
 
-            builder.HasMany(u => u.Comments)
-                .WithOne(c => c.User)
-                .HasForeignKey(c => c.UserId);
+            builder.HasMany(user => user.Comments)
+                .WithOne(comment => comment.User)
+                .HasForeignKey(comment => comment.UserId);
 
-            builder.HasMany(u => u.Likes)
-                .WithOne(l => l.User)
-                .HasForeignKey(l => l.UserId);
+            builder.HasMany(user => user.Likes)
+                .WithOne(like => like.User)
+                .HasForeignKey(like => like.UserId);
         }
     }
 }

@@ -1,74 +1,143 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Rutracker.Server.BusinessLayer.Exceptions;
+using Rutracker.Server.BusinessLayer.Extensions;
 using Rutracker.Server.BusinessLayer.Interfaces;
+using Rutracker.Server.BusinessLayer.Properties;
+using Rutracker.Server.BusinessLayer.Services.Base;
 using Rutracker.Server.DataAccessLayer.Entities;
-using Rutracker.Shared.Infrastructure.Exceptions;
+using Rutracker.Shared.Infrastructure.Collections;
+using Rutracker.Shared.Infrastructure.Filters;
 
 namespace Rutracker.Server.BusinessLayer.Services
 {
-    public class UserService : IUserService
+    public class UserService : Service, IUserService
     {
         private readonly UserManager<User> _userManager;
-        private readonly IFileStorageService _fileStorageService;
+        private readonly IRoleService _roleService;
+        private readonly IDateService _dateService;
 
-        public UserService(UserManager<User> userManager, IFileStorageService fileStorageService)
+        public UserService(UserManager<User> userManager, IRoleService roleService, IDateService dateService)
         {
             _userManager = userManager;
-            _fileStorageService = fileStorageService;
+            _roleService = roleService;
+            _dateService = dateService;
         }
 
-        public async Task<Tuple<IEnumerable<User>, int>> ListAsync(int page, int pageSize)
+        public async Task<IPagedList<User>> ListAsync(IUserFilter filter)
         {
-            Guard.Against.LessOne(page, $"The {nameof(page)} is less than 1.");
-            Guard.Against.OutOfRange(pageSize, rangeFrom: 1, rangeTo: 100, $"The {nameof(pageSize)} is out of range ({1} - {100}).");
+            Guard.Against.OutOfRange(filter.Page, Constants.Filter.PageRangeFrom, Constants.Filter.PageRangeTo, Resources.Page_InvalidPageNumber);
+            Guard.Against.OutOfRange(filter.PageSize, Constants.Filter.PageSizeRangeFrom, Constants.Filter.PageSizeRangeTo, Resources.PageSize_InvalidPageSizeNumber);
 
-            var query = _userManager.Users.OrderBy(x => x.RegisteredAt);
-            var users = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            var query = _userManager.Users.OrderBy(x => x.AddedDate);
 
-            Guard.Against.NullNotFound(users, "The users not found.");
+            var pagedList = await ApplyFilterAsync(query, filter);
 
-            var count = await query.CountAsync();
+            Guard.Against.NullNotFound(pagedList.Items, Resources.User_NotFoundList_ErrorMessage);
 
-            return Tuple.Create<IEnumerable<User>, int>(users, count);
+            return pagedList;
         }
 
-        public async Task<User> FindAsync(string id)
+        public async Task<User> AddAsync(User user)
         {
-            Guard.Against.NullOrWhiteSpace(id, message: "Invalid user id.");
+            Guard.Against.NullInvalid(user, Resources.User_Invalid_ErrorMessage);
 
-            var user = await _userManager.FindByIdAsync(id);
+            var result = await _userManager.CreateAsync(user);
 
-            Guard.Against.NullNotFound(user, $"The user with id '{id}' not found.");
+            Guard.Against.IsSucceeded(result);
+
+            return user;
+        }
+
+        public async Task<User> AddAsync(User user, string password)
+        {
+            Guard.Against.NullInvalid(user, Resources.User_Invalid_ErrorMessage);
+
+            var result = await _userManager.CreateAsync(user, password);
+
+            Guard.Against.IsSucceeded(result);
+
+            return user;
+        }
+
+        public async Task<User> AddToRoleAsync(User user, string roleName)
+        {
+            Guard.Against.NullInvalid(user, Resources.User_Invalid_ErrorMessage);
+
+            if (!await _roleService.ExistAsync(roleName))
+            {
+                throw new RutrackerException(
+                    Resources.UserService_AddToRoleAsync_The_role_name_is_invalid_,
+                    ExceptionEventTypes.InvalidParameters);
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+
+            Guard.Against.IsSucceeded(result);
+
+            return user;
+        }
+
+        public async Task<User> AddToRoleAsync(string userId, string roleName)
+        {
+            var user = await FindByIdAsync(userId);
+
+            return await AddToRoleAsync(user, roleName);
+        }
+
+        public async Task<User> FindByIdAsync(string userId)
+        {
+            Guard.Against.NullString(userId, Resources.User_InvalidId_ErrorMessage);
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            Guard.Against.NullNotFound(user, string.Format(Resources.User_NotFoundById_ErrorMessage, userId));
 
             return user;
         }
 
         public async Task<User> FindByNameAsync(string userName)
         {
-            Guard.Against.NullOrWhiteSpace(userName, message: "Invalid user name.");
+            Guard.Against.NullString(userName, Resources.User_InvalidUserName_ErrorMessage);
 
             var user = await _userManager.FindByNameAsync(userName);
 
-            Guard.Against.NullNotFound(user, $"The user with name '{userName}' not found.");
+            Guard.Against.NullNotFound(user, string.Format(Resources.User_NotFoundByName_ErrorMessage, userName));
 
             return user;
         }
 
-        public async Task<User> UpdateAsync(string id, User user)
+        public async Task<bool> ExistByIdAsync(string userId)
         {
-            Guard.Against.NullOrWhiteSpace(id, message: "Invalid user id.");
-            Guard.Against.NullNotValid(user, "Invalid user model.");
+            Guard.Against.NullString(userId, Resources.User_InvalidId_ErrorMessage);
 
-            var result = await FindAsync(id);
+            return await _userManager.Users.AnyAsync(user => user.Id == userId);
+        }
+
+        public async Task<bool> ExistByNameAsync(string userName)
+        {
+            Guard.Against.NullString(userName, Resources.User_InvalidUserName_ErrorMessage);
+
+            return await _userManager.Users.AnyAsync(user => user.UserName == userName);
+        }
+
+        public async Task<User> UpdateAsync(string userId, User user)
+        {
+            Guard.Against.NullString(userId, Resources.User_InvalidId_ErrorMessage);
+            Guard.Against.NullInvalid(user, Resources.User_Invalid_ErrorMessage);
+
+            var result = await FindByIdAsync(userId);
 
             result.FirstName = user.FirstName;
             result.LastName = user.LastName;
+            result.Email = user.Email;
+            result.EmailConfirmed = user.EmailConfirmed;
+            result.ImageUrl = user.ImageUrl;
+            result.ModifiedDate = _dateService.Now();
 
             var updateResult = await _userManager.UpdateAsync(result);
 
@@ -77,90 +146,42 @@ namespace Rutracker.Server.BusinessLayer.Services
             return result;
         }
 
-        public async Task<IEnumerable<string>> RolesAsync(string id)
+        public async Task<IEnumerable<Role>> RolesAsync(string userId)
         {
-            var user = await FindAsync(id);
-            var roles = await _userManager.GetRolesAsync(user);
+            var user = await FindByIdAsync(userId);
+            var roleNames = await _userManager.GetRolesAsync(user);
 
-            Guard.Against.NullNotFound(roles, "The roles not found.");
+            Guard.Against.NullNotFound(roleNames, Resources.Role_NotFoundList_ErrorMessage);
+
+            var roles = new List<Role>(roleNames.Count);
+
+            foreach (var name in roleNames)
+            {
+                var role = await _roleService.FindByNameAsync(name);
+
+                roles.Add(role);
+            }
 
             return roles;
         }
 
-        public async Task<User> ChangeImageAsync(string id, string imageUrl)
+        public async Task<IEnumerable<Role>> RolesAsync(User user)
         {
-            var user = await FindAsync(id);
+            Guard.Against.NullInvalid(user, Resources.User_Invalid_ErrorMessage);
 
-            user.ImageUrl = imageUrl;
-
-            var result = await _userManager.UpdateAsync(user);
-
-            Guard.Against.IsSucceeded(result);
-
-            return user;
+            return await RolesAsync(user.Id);
         }
 
-        public async Task<User> ChangeImageAsync(string id, string mimeType, Stream imageStream)
+        public async Task<string> PasswordResetTokenAsync(string userId)
         {
-            await _fileStorageService.CreateImagesContainerAsync();
-
-            var path = await _fileStorageService.UploadUserImageAsync(id, mimeType, imageStream);
-
-            return await ChangeImageAsync(id, path);
-        }
-
-        public async Task<User> DeleteImageAsync(string id)
-        {
-            await _fileStorageService.DeleteUserImageAsync(id);
-
-            return await ChangeImageAsync(id, null);
-        }
-
-        public async Task<string> EmailConfirmationTokenAsync(string id)
-        {
-            var user = await FindAsync(id);
-
-            return await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        }
-
-        public async Task<string> PasswordResetTokenAsync(string id)
-        {
-            var user = await FindAsync(id);
+            var user = await FindByIdAsync(userId);
 
             return await _userManager.GeneratePasswordResetTokenAsync(user);
         }
 
-        public async Task<string> ChangeEmailTokenAsync(string id, string email)
+        public async Task<User> ResetPasswordAsync(string userId, string password, string token)
         {
-            Guard.Against.NullOrWhiteSpace(email, message: "Invalid email.");
-
-            var user = await FindAsync(id);
-
-            if (!user.EmailConfirmed)
-            {
-                throw new RutrackerException($"The email '{user.Email}' is not confirmed.", ExceptionEventTypes.NotValidParameters);
-            }
-
-            return await _userManager.GenerateChangeEmailTokenAsync(user, email);
-        }
-
-        public async Task<string> ChangePhoneNumberTokenAsync(string id, string phone)
-        {
-            Guard.Against.NullOrWhiteSpace(phone, message: "Invalid phone number.");
-
-            var user = await FindAsync(id);
-
-            if (!user.PhoneNumberConfirmed)
-            {
-                throw new RutrackerException($"The phone number '{user.PhoneNumber}' is not confirmed.", ExceptionEventTypes.NotValidParameters);
-            }
-
-            return await _userManager.GenerateChangePhoneNumberTokenAsync(user, phone);
-        }
-
-        public async Task<User> ResetPasswordAsync(string id, string password, string token)
-        {
-            var user = await FindAsync(id);
+            var user = await FindByIdAsync(userId);
             var result = await _userManager.ResetPasswordAsync(user, token, password);
 
             Guard.Against.IsSucceeded(result);
@@ -168,50 +189,28 @@ namespace Rutracker.Server.BusinessLayer.Services
             return user;
         }
 
-        public async Task<User> ChangePasswordAsync(string id, string oldPassword, string newPassword)
+        public async Task<User> ChangePasswordAsync(string userId, string oldPassword, string newPassword)
         {
-            Guard.Against.NullOrWhiteSpace(oldPassword, message: "Invalid old password.");
-            Guard.Against.NullOrWhiteSpace(newPassword, message: "Invalid new password.");
+            Guard.Against.NullString(oldPassword, Resources.User_InvalidOldPassword_ErrorMessage);
+            Guard.Against.NullString(newPassword, Resources.User_InvalidNewPassword_ErrorMessage);
 
-            var user = await FindAsync(id);
+            var user = await FindByIdAsync(userId);
 
             if (!await _userManager.CheckPasswordAsync(user, oldPassword))
             {
-                throw new RutrackerException("The old password is not correct.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException(
+                    Resources.User_WrongPassword_ErrorMessage,
+                    ExceptionEventTypes.InvalidParameters);
             }
 
             if (oldPassword == newPassword)
             {
-                throw new RutrackerException("The new password must not match the old password.", ExceptionEventTypes.NotValidParameters);
+                throw new RutrackerException(
+                    Resources.User_SamePasswords_ErrorMessage,
+                    ExceptionEventTypes.InvalidParameters);
             }
 
             var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
-
-            Guard.Against.IsSucceeded(result);
-
-            return user;
-        }
-
-        public async Task<User> ChangeEmailAsync(string id, string email, string token)
-        {
-            Guard.Against.NullOrWhiteSpace(email, message: "Invalid email.");
-            Guard.Against.NullOrWhiteSpace(token, message: "Invalid token.");
-
-            var user = await FindAsync(id);
-            var result = await _userManager.ChangeEmailAsync(user, email, token);
-
-            Guard.Against.IsSucceeded(result);
-
-            return user;
-        }
-
-        public async Task<User> ChangePhoneNumberAsync(string id, string phone, string token)
-        {
-            Guard.Against.NullOrWhiteSpace(phone, message: "Invalid phone.");
-            Guard.Against.NullOrWhiteSpace(token, message: "Invalid token.");
-
-            var user = await FindAsync(id);
-            var result = await _userManager.ChangePhoneNumberAsync(user, phone, token);
 
             Guard.Against.IsSucceeded(result);
 
