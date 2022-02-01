@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" Version="1.4.2" />
     <PackageReference Include="MailKit" Version="2.6.0" />
-    <PackageReference Include="SharpZipLib" Version="1.2.0" />
+    <PackageReference Include="SharpZipLib" Version="1.3.3" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
